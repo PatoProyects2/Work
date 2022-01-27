@@ -3,3 +3,4 @@ yarn.lock
 .secret
 .secret2
 .env
+./contracts/utils/random.sol
