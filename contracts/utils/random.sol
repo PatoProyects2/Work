@@ -25,41 +25,37 @@ pragma solidity >=0.7.0 <0.9.0;
 
 
 contract Random {
-    string originSeed = "NoTeQuemesPato!";
-    uint256  baseSeed;
-
-
-    constructor(){
-        baseSeed =(uint256(keccak256(abi.encodePacked(originSeed))))/(block.timestamp*100);
+    address owner;
+    uint seed;
+    modifier onlyOwner() {
+        require (msg.sender == owner);
+        _;
     }
 
-    function NewBaseSeed(string memory _randomString)
+    constructor(){ 
+        //balances :D       
+        owner = msg.sender;
+    }
+
+    function NewSeed(string memory _randomString)
         public                
         returns(uint256)
     {
-    uint256 seed = uint256(keccak256(abi.encodePacked(
-        block.timestamp + block.difficulty +
-        ((uint256(keccak256(abi.encodePacked(originSeed)))) / (block.timestamp)) +
-        block.gaslimit + 
-        ((uint256(keccak256(abi.encodePacked(_randomString)))) / (block.timestamp)) +
-        block.number
-    )));
-        baseSeed = seed;
+    
+        seed = (uint256(keccak256(abi.encodePacked(_randomString))))/(block.timestamp*100);
         return seed;
     }
    
-    function rand()
+    function rand(address _user)
         public
         view  
         returns(uint256)
     {
-    uint256 seed = uint256(keccak256(abi.encodePacked(
-        block.timestamp + block.difficulty +         
-        ((uint256(keccak256(abi.encodePacked(baseSeed)))) +
-        block.number
-    ))));
-        //baseSeed = NewBaseSeed(seed);
-        return seed;
+        uint balance = address(_user).balance;
+        uint256 randNum = uint256(keccak256(abi.encodePacked(block.timestamp + block.difficulty + block.number + 
+            ((uint256(keccak256(abi.encodePacked(_user,balance))))
+             ))));
+            return randNum;
     }   
 
     
@@ -67,8 +63,8 @@ contract Random {
      * @dev Generate random uint in range [a, b]
      * @return uint
      */
-    function randrange(uint a, uint b) public view returns(uint) {
-        return a + (rand() % b);
+    function randrange(uint a, uint b,address _user) external view returns(uint) {
+        return a + (rand(_user) % b);
     }
     function blockTime()public view returns(uint){
         return block.timestamp;

@@ -2,8 +2,12 @@
 pragma solidity >=0.8.0 <0.9.0;
 
 import "./utils/random.sol";
+interface IRadom{
+    function rand(address _user) external view returns(uint256);
+    function randrange(uint a, uint b,address _user) external view returns(uint);
+}
 
-contract rpsGame {
+contract rpsGame  {
     /* TODO: rock papper and seassors
     * Function : play
     * Function : setPrice (For Tokens or blockchain currenci? )
@@ -16,6 +20,7 @@ contract rpsGame {
     */
     address owner; // Dueño del contrato, maximo rango de acceso (mover fondos de la pool)
     address admin; // Funciones para editar parametros de nivel medio (editar precios, fees)
+    IRadom randomContract; //Direccion del contrato de numeros aleatoreos
 
     address NFTHolders; //Direccion del contrato que repartira la recompenza a los holders
     uint public feeForNFTHolders = 200; //% del fee para nftHolders (100 = 1%)
@@ -25,9 +30,13 @@ contract rpsGame {
 
     uint totalFee = feeForNFTHolders + feeForDevs;
     uint maxDeal; //Puja maxima en un mismo juego 
+    
     string[3] RPSop = ['rock','paper', 'scissors']; // 0 = Rock, 1 = paper, 2=scissors
-
-
+    //for testin gass
+    uint public totalWins;
+    uint public totalLoses;
+    mapping(address => uint[2]) winLosesPerUser;
+    mapping(address => uint[2]) winLosesRache;
 
     modifier onlyOwner(){
         require(msg.sender == owner);
@@ -38,71 +47,131 @@ contract rpsGame {
         _;
     }
 //EVENTS
-    event Play();// User, your hand, computer hand
-    event C_setNFTHoldersAddress(); // C_(Change), addres owner
-    event C_setDevAddress();
-    event C_setFeeForNFTHolders();
-    event C_setFeeForDevs();
-    event C_setMaxDeal();
+    event Play(address,uint,bool,uint);// User, your hand, computer hand
+    event C_setNFTHoldersAddress(address); // C_(Change), addres owner
+    event C_setDevAddress(address);//
+    event C_setFeeForNFTHolders(address);
+    event C_setFeeForDevs(address);
+    event C_setMaxDeal(address);
 
-    constructor (address _owner, address _admin, address _nftholders, address _devWallet){
+    constructor (address _owner, address _admin, address _nftholders, address _devWallet,IRadom _randomContract){
         owner = _owner;
         admin = _admin;
         NFTHolders = _nftholders;
         devWalletFees = _devWallet;
+        randomContract = _randomContract;
         maxDeal = 1 ether;
     }
 
 //FUNCTIONS FOR USERS
 
     //MSG.value = deal + totalFEE%
-    function play(uint _userHand, uint deal) public payable returns(bool results){
-        require(msg.value <= maxDeal /*+ fee*/  );
-        require( deal/*+fee)*/ == msg.value);
-        uint rand = getRandom(msg.sender);
-        if(rand > 5){
-            payable(msg.sender).transfer(deal * 2);
+    function playUno( uint _value) public payable returns(bool results){
+        uint fee = calculateFee(_value);
+        require(msg.value <= (maxDeal + fee));
+        require( (_value+fee) == msg.value);
+        uint rand = getRandom(msg.sender,0,100);
+        if(rand >= 50){
+            payable(msg.sender).transfer(_value * 2);
             results = true;
         }else {
             results = false;
         }
+        payable(NFTHolders).transfer(_value * feeForNFTHolders / 10000);
+        payable(devWalletFees).transfer(_value * feeForDevs  / 10000);
+        emit Play(msg.sender,_value,results,rand);
         //leaderBoard(result)
 
     }
+//other functions
+    function calculateFee(uint _value)public view returns(uint){
+        uint txFee = _value * totalFee / 10000;
+        return txFee;
+    }
+    function calculateValue(uint _value)public view returns(uint){
+        uint totalValue = calculateFee(_value) + _value;
+        return totalValue;
+    }
 
 //internal
-    function getRandom(address _user) internal view returns(uint){
-        uint random = uint256(keccak256(abi.encodePacked((block.timestamp + block.difficulty + block.number), _user )));
-        return (random % 10);
+    function getRandom(address _user, uint a, uint b) public view returns(uint){
+        uint random = randomContract.randrange(a,b,_user);
+        if (random == 0 ) {random = 1;}
+        return random;
     }
 
 
 //SETTERS
     
-
-    function setNFTHoldersAddress(address _newNFTHolders) public onlyOwner{
+    //Cambiar direccion del contrato a donde va el 2% para los que posen nfts
+    function setNFTHoldersAddress(address _newNFTHolders) internal onlyOwner{
         NFTHolders = _newNFTHolders;
-        //emit
+        emit C_setNFTHoldersAddress(msg.sender);
     }
-    function setDevAddress(address _newDevWalletFees) public onlyOwner {
+    //Cambiar la direccion donde va el 1.5%(devFee)
+    function setDevAddress(address _newDevWalletFees) internal onlyOwner {
         devWalletFees = _newDevWalletFees;
-        //emit
+        emit C_setDevAddress(msg.sender);
     }
-    function setFeeForNFTHolders(uint _newFeeForNFTHolders) public forAdmins{
-        //require(Totalfee < 50)
+    //Cambia el % de fee que es destinado a holders
+    function setFeeForNFTHolders(uint _newFeeForNFTHolders) internal forAdmins{
+        require((feeForDevs + _newFeeForNFTHolders) < 5000);
         feeForNFTHolders = _newFeeForNFTHolders;
         totalFee = feeForNFTHolders + feeForDevs;
-        //emit
+        emit C_setFeeForNFTHolders(msg.sender);
     }
-    function setFeeForDevs(uint _newFeeForDevs) public forAdmins{
-        //require(Totalfee < 50)
+    //Cambia el % de fee que es destinado a Devs
+    function setFeeForDevs(uint _newFeeForDevs) internal forAdmins{
+        require((_newFeeForDevs+feeForNFTHolders) < 5000);
         feeForDevs = _newFeeForDevs;
         totalFee = feeForNFTHolders + feeForDevs;
-        //emit
+        emit C_setFeeForDevs(msg.sender);
     }
-    function setMaxDeal(uint _newMaxDeal) public forAdmins{
+    //Cambia el maximo disponible en una misma jugada.
+    function setMaxDeal(uint _newMaxDeal) internal forAdmins{
+        require(_newMaxDeal > ((address(this).balance)/10));
         maxDeal = _newMaxDeal;
-        //emit
+        emit C_setMaxDeal(msg.sender);
+    }
+
+    //trasnfiere valor, usao para testeo
+    function trasnferFounds()public payable returns(bool){
+        require(msg.value > 10);
+        return true;
+    }
+
+    function playdos( uint _value) public payable returns(bool results){
+        uint fee = calculateFee(_value);
+        require(msg.value <= (maxDeal + fee));
+        require( (_value+fee) == msg.value);
+        uint rand = getRandom(msg.sender,0,100);
+        if(rand >= 50){
+            payable(msg.sender).transfer(_value * 2);
+            results = true;
+            totalWins++;
+            winLosesPerUser[msg.sender][1]++;
+            if(winLosesRache[msg.sender][0] == 1){
+                winLosesRache[msg.sender][1]++;
+            }else{
+                winLosesRache[msg.sender][0] = 1;
+                winLosesRache[msg.sender][1] = 1;
+            }
+        }else {
+            results = false;
+            totalLoses++;
+            winLosesPerUser[msg.sender][0]++;
+            if(winLosesRache[msg.sender][0] == 0){
+                winLosesRache[msg.sender][1]++;
+            }else{
+                delete winLosesRache[msg.sender][0];
+                winLosesRache[msg.sender][1] = 1;
+            }
+        }
+        payable(NFTHolders).transfer(_value * feeForNFTHolders / 10000);
+        payable(devWalletFees).transfer(_value * feeForDevs  / 10000);
+        emit Play(msg.sender,_value,results,rand);
+        //leaderBoard(result)
+
     }
 
 //LeaderBoard
