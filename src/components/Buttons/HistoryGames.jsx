@@ -81,7 +81,7 @@ export default function HistoryGames() {
             for (let count = 0; count < 1000; count++) {
                 web3.eth.getBlockNumber()
                     .then(n => {
-                        n = n - 2000
+                        n = n - 20
                         rpsgame.getPastEvents(
                             'Play',
                             {
