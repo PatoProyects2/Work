@@ -9,7 +9,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.css'
-import { Layout } from './components/Header/Layout'
+import { Layout } from './components/Layout/Layout'
 import Game from './views/Game/Game'
 import Marketplace from './views/Marketplace/Marketplace'
 import Leaderboard from './views/Leaderboard/Leaderboard'
