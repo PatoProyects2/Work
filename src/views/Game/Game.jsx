@@ -8,24 +8,23 @@ import Papper from '../../images/PAPPER.png'
 import Scissors from '../../images/SCISSORS.png'
 
 export default function Game() {
-  const [active, setActive] = useState(false);
-  const [account, setAccount] = useState('');
-  const [walletBalances, setWalletbalances] = useState(0);
-  const [userhand, setUserhand] = useState(0);
-  const [useramount, setUseramount] = useState(0);
-  const [log, setLog] = useState('');
+  const [rpsgame, setRpsgame] = useState({});
   const [usergame, setUsergame] = useState({
     hand: 0,
     amount: 0
   });
+  const [account, setAccount] = useState('');
+  const [log, setLog] = useState('');
   const [decimal, setDecimal] = useState(1000000000000000000);
-  const [rpsgame, setRpsgame] = useState({});
+  const [walletBalances, setWalletbalances] = useState(0);
+  const [userhand, setUserhand] = useState(0);
+  const [useramount, setUseramount] = useState(0);
   const [loses, setLoses] = useState(0);
   const [wins, setWins] = useState(0);
   const [userloses, setUserloses] = useState(0);
   const [userwins, setUserwins] = useState(0);
+  const [active, setActive] = useState(false);
   const [playing, setPlaying] = useState(false);
-  const [calculatevalue, setCalculatevalue] = useState(0);
 
   async function openGame() {
     setActive(true);
@@ -112,7 +111,6 @@ export default function Game() {
 
     if (usergame.hand !== 0 && usergame.amount !== 0) {
       let calculateValue = await rpsgame.methods.calculateValue(window.web3.utils.toWei((usergame.amount).toString(), "ether")).call()
-      setCalculatevalue(calculateValue)
       setPlaying(true)
       rpsgame.methods
         .playdos(window.web3.utils.toWei((usergame.amount).toString(), "ether"))
