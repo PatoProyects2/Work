@@ -25,6 +25,7 @@ export default function Game() {
   const [userloses, setUserloses] = useState(0);
   const [userwins, setUserwins] = useState(0);
   const [playing, setPlaying] = useState(false);
+  const [calculatevalue, setCalculatevalue] = useState(0);
 
   async function openGame() {
     setActive(true);
@@ -110,15 +111,18 @@ export default function Game() {
     }
 
     if (usergame.hand !== 0 && usergame.amount !== 0) {
+      let calculateValue = await rpsgame.methods.calculateValue(window.web3.utils.toWei((usergame.amount).toString(), "ether")).call()
+      setCalculatevalue(calculateValue)
       setPlaying(true)
       rpsgame.methods
-        .playdos(usergame.hand)
+        .playdos(window.web3.utils.toWei((usergame.amount).toString(), "ether"))
         .send({
           from: account,
-          value: window.web3.utils.toWei((usergame.amount).toString(), "ether"),
+          value: calculateValue,
         })
         .on('receipt', (hash) => {
           window.location.reload()
+          setPlaying(false)
         })
         .on('error', function (error) {
           setPlaying(false)
@@ -145,52 +149,60 @@ export default function Game() {
           {"BNB " + (walletBalances / decimal).toFixed(4)}
           <br></br>
           <br></br>
-          {log}
-          <h6>I choose</h6>
-          <label>
-            <input type="radio" name="hand" id="rock" onChange={handleInputChange} value="0"></input>
-            <img width="50" height="50" src={Rock} alt="" />
-          </label>
-          <label>
-            <input type="radio" name="hand" id="papper" onChange={handleInputChange} value="1"></input>
-            <img width="50" height="50" src={Papper} alt="" />
-          </label>
-          <label>
-            <input type="radio" name="hand" id="scissors" onChange={handleInputChange} value="2"></input>
-            <img width="50" height="50" src={Scissors} alt="" />
-          </label>
-          <br></br>
-          <br></br>
-          <h6>For</h6>
-          <label>
-            <input type="radio" name="amount" id="amount1" onChange={handleInputChange} value="0.005" />
-            <span>0.005 BNB</span>
-          </label>
-          <label>
-            <input type="radio" name="amount" id="amount2" onChange={handleInputChange} value="0.01" />
-            <span>0.01 BNB</span>
-          </label>
-          <label>
-            <input type="radio" name="amount" id="amount3" onChange={handleInputChange} value="0.02" />
-            <span>0.02 BNB</span>
-          </label>
-          <label>
-            <input type="radio" name="amount" id="amount4" onChange={handleInputChange} value="0.05" />
-            <span>0.05 BNB</span>
-          </label>
-          <label>
-            <input type="radio" name="amount" id="amount5" onChange={handleInputChange} value="0.1" />
-            <span>0.1 BNB</span>
-          </label>
-          <label>
-            <input type="radio" name="amount" id="amount6" onChange={handleInputChange} value="0.2" />
-            <span>0.2 BNB</span>
-          </label>
-          <br></br>
-          <br></br>
-          <button onClick={startGame}>DOUBLE OR NOTHING</button>
-          <br></br>
-          {"hand: " + userhand + " amount: " + useramount}
+          {playing === true ?
+            <div>
+              <h3>Playing...</h3>
+            </div>
+            :
+            <div>
+              {log}
+              <h6>I choose</h6>
+              <label>
+                <input type="radio" name="hand" id="rock" onChange={handleInputChange} value="0"></input>
+                <img width="50" height="50" src={Rock} alt="" />
+              </label>
+              <label>
+                <input type="radio" name="hand" id="papper" onChange={handleInputChange} value="1"></input>
+                <img width="50" height="50" src={Papper} alt="" />
+              </label>
+              <label>
+                <input type="radio" name="hand" id="scissors" onChange={handleInputChange} value="2"></input>
+                <img width="50" height="50" src={Scissors} alt="" />
+              </label>
+              <br></br>
+              <br></br>
+              <h6>For</h6>
+              <label>
+                <input type="radio" name="amount" id="amount1" onChange={handleInputChange} value="0.005" />
+                <span>0.005 BNB</span>
+              </label>
+              <label>
+                <input type="radio" name="amount" id="amount2" onChange={handleInputChange} value="0.01" />
+                <span>0.01 BNB</span>
+              </label>
+              <label>
+                <input type="radio" name="amount" id="amount3" onChange={handleInputChange} value="0.02" />
+                <span>0.02 BNB</span>
+              </label>
+              <label>
+                <input type="radio" name="amount" id="amount4" onChange={handleInputChange} value="0.05" />
+                <span>0.05 BNB</span>
+              </label>
+              <label>
+                <input type="radio" name="amount" id="amount5" onChange={handleInputChange} value="0.1" />
+                <span>0.1 BNB</span>
+              </label>
+              <label>
+                <input type="radio" name="amount" id="amount6" onChange={handleInputChange} value="0.2" />
+                <span>0.2 BNB</span>
+              </label>
+              <br></br>
+              <br></br>
+              <button onClick={startGame}>DOUBLE OR NOTHING</button>
+              <br></br>
+              {"hand: " + userhand + " amount: " + useramount}
+            </div>
+          }
         </div>
         :
         <div>
