@@ -5,9 +5,8 @@ import RpsGame from '../../abis/RpsGame/rpsGame.json'
 import chains from '../Blockchain/AvailableChains'
 
 export default function HistoryGames() {
-    const [rpsgame, setRpsgame] = useState({});
     const [userevents, setUserevents] = useState({});
-    const [account, setAccount] = useState('0x000000000000000000000000000000000000dEaD');
+    const [account, setAccount] = useState('0x0');
     const [decimal, setDecimal] = useState(1000000000000000000);
     const [blockchain, setBlockchain] = useState(0);
     const [userwinstreak0, setUserwinstreak0] = useState(0);
@@ -77,7 +76,6 @@ export default function HistoryGames() {
                 return new Promise(resolve => setTimeout(resolve, milliseconds))
             }
             const rpsgame = new web3.eth.Contract(RpsGame.abi, chainInUse.rpsGameAddress)
-            setRpsgame(rpsgame)
             for (let count = 0; count < 1000; count++) {
                 web3.eth.getBlockNumber()
                     .then(n => {

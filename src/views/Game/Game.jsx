@@ -9,8 +9,9 @@ import Scissors from '../../images/SCISSORS.png'
 
 export default function Game() {
   const [rpsgame, setRpsgame] = useState({});
+  const [web3, setWeb3] = useState({});
   const [usergame, setUsergame] = useState({
-    hand: 0,
+    hand: '',
     amount: 0
   });
   const [account, setAccount] = useState('');
@@ -19,12 +20,14 @@ export default function Game() {
   const [walletBalances, setWalletbalances] = useState(0);
   const [userhand, setUserhand] = useState(0);
   const [useramount, setUseramount] = useState(0);
-  const [loses, setLoses] = useState(0);
-  const [wins, setWins] = useState(0);
+  const [loss, setLoss] = useState(0);
+  const [won, setWon] = useState(0);
   const [userloses, setUserloses] = useState(0);
   const [userwins, setUserwins] = useState(0);
   const [active, setActive] = useState(false);
   const [playing, setPlaying] = useState(false);
+  const [result0, setResult0] = useState(undefined);
+  const [gameresult, setGameresult] = useState(undefined);
 
   async function openGame() {
     setActive(true);
@@ -50,6 +53,7 @@ export default function Game() {
 
   async function loadBlockchainData() {
     const web3 = window.web3
+    setWeb3(web3)
     const accounts = await web3.eth.getAccounts()
     setAccount(accounts[0])
     let chainId = await web3.eth.getChainId()
@@ -63,6 +67,8 @@ export default function Game() {
     if (!chainInUse) {
       window.alert('INVALID NETWORK DETECTED')
     } else {
+      const rpsgame = new web3.eth.Contract(RpsGame.abi, chainInUse.rpsGameAddress)
+      setRpsgame(rpsgame)
       try {
         let walletBalance = await web3.eth.getBalance(accounts[0])
         setWalletbalances(walletBalance)
@@ -70,12 +76,10 @@ export default function Game() {
         console.log('METAMASK NOT INSTALLED')
       }
       try {
-        const rpsgame = new web3.eth.Contract(RpsGame.abi, chainInUse.rpsGameAddress)
-        setRpsgame(rpsgame)
         let totalLoses = await rpsgame.methods.totalLoses().call()
-        setLoses(totalLoses)
+        setLoss(parseInt(totalLoses))
         let totalWins = await rpsgame.methods.totalWins().call()
-        setWins(totalWins)
+        setWon(parseInt(totalWins))
         let userLoses = await rpsgame.methods.winLosesPerUser(accounts[0], 0).call()
         setUserloses(userLoses)
         let userWins = await rpsgame.methods.winLosesPerUser(accounts[0], 1).call()
@@ -109,7 +113,7 @@ export default function Game() {
       return false
     }
 
-    if (usergame.hand !== 0 && usergame.amount !== 0) {
+    if (usergame.hand !== '' && usergame.amount !== 0) {
       let calculateValue = await rpsgame.methods.calculateValue(window.web3.utils.toWei((usergame.amount).toString(), "ether")).call()
       setPlaying(true)
       rpsgame.methods
@@ -119,8 +123,21 @@ export default function Game() {
           value: calculateValue,
         })
         .on('receipt', (hash) => {
-          window.location.reload()
-          setPlaying(false)
+          setGameresult(true)
+          web3.eth.getBlockNumber()
+            .then(n => {
+              n = n - 5
+              rpsgame.getPastEvents(
+                'Play',
+                {
+                  filter: { _to: account },
+                  fromBlock: n,
+                  toBlock: 'latest'
+                }
+              ).then(events => {
+                setResult0(events[0].returnValues[2])
+              })
+            })
         })
         .on('error', function (error) {
           setPlaying(false)
@@ -128,20 +145,27 @@ export default function Game() {
     }
   }
 
+  async function backGame() {
+    setGameresult(false)
+    setPlaying(false)
+  }
+
   return (
     <article>
       {active === true ?
         <div>
-          <HistoryGames />
+          {/* <HistoryGames /> */}
           <br></br>
           <br></br>
-          {"Total Loses: " + loses}
+          {"Total Games: " + (won + loss)}
           <br></br>
-          {"Total Wins: " + wins}
+          {"Total Won: " + won}
           <br></br>
-          {"Your Loses: " + userloses}
+          {"Total Loss: " + loss}
           <br></br>
-          {"Your Wins: " + userwins}
+          {"Your Won: " + userwins}
+          <br></br>
+          {"Your Loss: " + userloses}
           <br></br>
           <br></br>
           {"BNB " + (walletBalances / decimal).toFixed(4)}
@@ -150,21 +174,70 @@ export default function Game() {
           {playing === true ?
             <div>
               <h3>Playing...</h3>
+              <br></br>
+              {"Hand: " + userhand + " | Amount: " + useramount + " BNB"}
+              <br></br>
+              {gameresult === true
+                ?
+                <>
+                  {userhand === 'Rock' && result0 === true
+                    ?
+                    "Hand: Scissors | You Won: " + (useramount * 2) + " BNB"
+                    :
+                    ""
+                  }
+                  {userhand === 'Papper' && result0 === true
+                    ?
+                    "Hand: Rock | You Won: " + (useramount * 2) + " BNB"
+                    :
+                    ""
+                  }
+                  {userhand === 'Scissors' && result0 === true
+                    ?
+                    "Hand: Papper | You Won: " + (useramount * 2) + " BNB"
+                    :
+                    ""
+                  }
+                  {userhand === 'Rock' && result0 === false
+                    ?
+                    "Hand: Papper | You Won: " + useramount + " BNB"
+                    :
+                    ""
+                  }
+                  {userhand === 'Papper' && result0 === false
+                    ?
+                    "Hand: Scissors | You Won: " + useramount + " BNB"
+                    :
+                    ""
+                  }
+                  {userhand === 'Scissors' && result0 === false
+                    ?
+                    "Hand: Rock | You Won: " + useramount + " BNB"
+                    :
+                    ""
+                  }
+                  <br></br>
+                  <br></br>
+                  <button onClick={backGame}>BACK TO GAME</button>
+                </>
+                :
+                ""
+              }
             </div>
             :
             <div>
               {log}
               <h6>I choose</h6>
               <label>
-                <input type="radio" name="hand" id="rock" onChange={handleInputChange} value="0"></input>
+                <input type="radio" name="hand" id="rock" onChange={handleInputChange} value="Rock"></input>
                 <img width="50" height="50" src={Rock} alt="" />
               </label>
               <label>
-                <input type="radio" name="hand" id="papper" onChange={handleInputChange} value="1"></input>
+                <input type="radio" name="hand" id="papper" onChange={handleInputChange} value="Papper"></input>
                 <img width="50" height="50" src={Papper} alt="" />
               </label>
               <label>
-                <input type="radio" name="hand" id="scissors" onChange={handleInputChange} value="2"></input>
+                <input type="radio" name="hand" id="scissors" onChange={handleInputChange} value="Scissors"></input>
                 <img width="50" height="50" src={Scissors} alt="" />
               </label>
               <br></br>
@@ -197,8 +270,6 @@ export default function Game() {
               <br></br>
               <br></br>
               <button onClick={startGame}>DOUBLE OR NOTHING</button>
-              <br></br>
-              {"hand: " + userhand + " amount: " + useramount}
             </div>
           }
         </div>
