@@ -12,6 +12,7 @@ export function Layout() {
 
       </header>
       <nav>
+        <Link to="/">Game</Link>
         <Link to="/leaderboard">Leaderboard</Link>
         <Link to="/marketplace">Marketplace</Link>
         <ConnectChain />

@@ -200,19 +200,19 @@ export default function Game() {
                   }
                   {userhand === 'Rock' && result0 === false
                     ?
-                    "Hand: Papper | You Won: " + useramount + " BNB"
+                    "Hand: Papper | You Loss: " + useramount + " BNB"
                     :
                     ""
                   }
                   {userhand === 'Papper' && result0 === false
                     ?
-                    "Hand: Scissors | You Won: " + useramount + " BNB"
+                    "Hand: Scissors | You Loss: " + useramount + " BNB"
                     :
                     ""
                   }
                   {userhand === 'Scissors' && result0 === false
                     ?
-                    "Hand: Rock | You Won: " + useramount + " BNB"
+                    "Hand: Rock | You Loss: " + useramount + " BNB"
                     :
                     ""
                   }
