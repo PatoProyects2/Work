@@ -113,13 +113,14 @@ export default function HistoryGames() {
                             rpsgame.methods.winLosesRache(events[6].returnValues[0], 1).call().then(winStreak => setUserwinstreak6(winStreak))
                             rpsgame.methods.winLosesRache(events[7].returnValues[0], 0).call().then(loseStreak => setUserlosestreak7(loseStreak))
                             rpsgame.methods.winLosesRache(events[7].returnValues[0], 1).call().then(winStreak => setUserwinstreak7(winStreak))
+                        }).catch(error => {
+
                         })
                     })
 
                 web3.eth.getBlockNumber()
                     .then(n => setBlockchain(n))
 
-                console.log(count)
                 await sleep(3000);
             }
         }

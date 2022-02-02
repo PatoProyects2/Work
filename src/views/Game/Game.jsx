@@ -3,9 +3,9 @@ import Web3 from 'web3'
 import RpsGame from '../../abis/RpsGame/rpsGame.json'
 import chains from '../../components/Blockchain/AvailableChains'
 import HistoryGames from '../../components/Buttons/HistoryGames'
-import Rock from '../../images/ROCK.png'
-import Papper from '../../images/PAPPER.png'
-import Scissors from '../../images/SCISSORS.png'
+import Rock from '../../images/rock.gif'
+import Papper from '../../images/papper.gif'
+import Scissors from '../../images/scissors.gif'
 
 export default function Game() {
   const [rpsgame, setRpsgame] = useState({});
@@ -99,7 +99,6 @@ export default function Game() {
   }
 
   async function startGame() {
-    const buyed = false
     if (document.getElementById('rock').checked || document.getElementById('papper').checked || document.getElementById('scissors').checked) {
       setUserhand(usergame.hand)
       setLog('')
@@ -165,7 +164,7 @@ export default function Game() {
     <article>
       {active === true ?
         <div>
-          {/* <HistoryGames /> */}
+          <HistoryGames />
           <br></br>
           <br></br>
           {"Total Games: " + (won + loss)}
