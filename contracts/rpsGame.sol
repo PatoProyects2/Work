@@ -1,10 +1,17 @@
 //SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0 <0.9.0;
 
-import "./utils/random.sol";
+
 interface IRadom{
     function rand(address _user) external view returns(uint256);
     function randrange(uint a, uint b,address _user) external view returns(uint);
+}
+interface IRandomNumberVRF{
+    function getRandomNumber() external returns (bytes32 requestId);
+    function getRandomRangeNumber(address _user, uint a, uint b) external returns(uint256);
+}
+interface IstakingNFT{
+    function newPlay(uint _amount) external;
 }
 
 contract rpsGame  {
@@ -21,6 +28,9 @@ contract rpsGame  {
     address owner; // Dueño del contrato, maximo rango de acceso (mover fondos de la pool)
     address admin; // Funciones para editar parametros de nivel medio (editar precios, fees)
     IRadom randomContract; //Direccion del contrato de numeros aleatoreos
+    IRandomNumberVRF randomLinkContract; //Direccion de VRF random contract
+    IstakingNFT stakingContrac;
+
 
     address NFTHolders; //Direccion del contrato que repartira la recompenza a los holders
     uint public feeForNFTHolders = 200; //% del fee para nftHolders (100 = 1%)
@@ -54,12 +64,20 @@ contract rpsGame  {
     event C_setFeeForDevs(address);
     event C_setMaxDeal(address);
 
-    constructor (address _owner, address _admin, address _nftholders, address _devWallet,IRadom _randomContract){
+    constructor (
+        address _owner,         
+        address _devWallet,
+        IRadom _randomContract, 
+        IRandomNumberVRF _randomLinkContract,
+        IstakingNFT _stakingAdd 
+    ){
         owner = _owner;
-        admin = _admin;
-        NFTHolders = _nftholders;
+        admin = _owner;
+        //NFTHolders = _nftholders;
         devWalletFees = _devWallet;
         randomContract = _randomContract;
+        randomLinkContract = _randomLinkContract;
+        stakingContrac = _stakingAdd;// es la misma que _devWallet
         maxDeal = 1 ether;
     }
 
@@ -96,6 +114,11 @@ contract rpsGame  {
 //internal
     function getRandom(address _user, uint a, uint b) public view returns(uint){
         uint random = randomContract.randrange(a,b,_user);
+        if (random == 0 ) {random = 1;}
+        return random;
+    }
+    function getRandomRangeLink(address _user,uint a, uint b) public returns(uint){
+        uint random = randomLinkContract.getRandomRangeNumber(_user,a,b);
         if (random == 0 ) {random = 1;}
         return random;
     }
@@ -174,7 +197,63 @@ contract rpsGame  {
 
     }
 
-//LeaderBoard
+    function playTres( uint _value) public payable returns(bool results){
 
+        uint fee = calculateFee(_value);
+        require(msg.value <= (maxDeal + fee));
+        require( (_value+fee) == msg.value);
+        uint rand = getRandom(msg.sender,0,100);
+        if(rand >= 50){
+            payable(msg.sender).transfer(_value * 2);
+            results = true;
+            totalWins++;
+            winLosesPerUser[msg.sender][1]++;
+            if(winLosesRache[msg.sender][0] == 1){
+                winLosesRache[msg.sender][1]++;
+            }else{
+                winLosesRache[msg.sender][0] = 1;
+                winLosesRache[msg.sender][1] = 1;
+            }
+        }else {
+            results = false;
+            totalLoses++;
+            winLosesPerUser[msg.sender][0]++;
+            if(winLosesRache[msg.sender][0] == 0){
+                winLosesRache[msg.sender][1]++;
+            }else{
+                delete winLosesRache[msg.sender][0];
+                winLosesRache[msg.sender][1] = 1;
+            }
+        }
+        payable(NFTHolders).transfer(_value * feeForNFTHolders / 10000);
+        payable(devWalletFees).transfer(_value * feeForDevs  / 10000);
+        emit Play(msg.sender,_value,results,rand);
+        stakingContrac.newPlay(fee);
+        //leaderBoard(result)
+
+    }
+
+    function playCuatro( uint _value) public payable returns(bool results){
+        uint fee = calculateFee(_value);
+        require(msg.value <= (maxDeal + fee));
+        require( (_value+fee) == msg.value);
+        uint rand = getRandomRangeLink(msg.sender,1,100);
+        if(rand >= 50){
+            payable(msg.sender).transfer(_value * 2);
+            results = true;
+            totalWins++;
+            winLosesPerUser[msg.sender][1]++;            
+        }else {
+            results = false;
+            totalLoses++;
+            winLosesPerUser[msg.sender][0]++;            
+        }
+        payable(NFTHolders).transfer(_value * feeForNFTHolders / 10000);
+        payable(devWalletFees).transfer(_value * feeForDevs  / 10000);
+        stakingContrac.newPlay(fee);// cambiar fee por (_value * feeForDevs  / 10000)
+        emit Play(msg.sender,_value,results,rand);
+        //leaderBoard(result)
+
+    }
 
 }

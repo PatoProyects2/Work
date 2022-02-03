@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-import "./nfts/rpsNFTRock.sol"; 
+//import "./nfts/rpsNFTRock.sol"; 
 /*
 Dev @PatoVerde : 
  * Se crea un vector, en cada posicion guardara cuanto(value) debe repartirse a cada id EN STAKE. (newPlayFunction)
@@ -20,26 +20,27 @@ contract Staking is Ownable {
         uint lastClaim;
     }
 
-    uint[] earningPerPlay;
+    uint[] public earningPerPlay;
     mapping(address => infoUser) infOfUsers; // informacion de cada usuario (address => ([id1,id2...],ultimoRetiro))
     mapping(uint => uint) IdDeposit; //Info de en que "play" fue depositado el nft.
 
-    IERC721 public ROCK;
+    //IERC721 public ROCK;
     uint256 public nftInStake;
     bool public rewardsActive = true;
 
     event Deposit(address, uint);
     event Claim();
     event Withdraw();
+    /*
     modifier onlyGame(){
         require(msg.sender == address(ROCK));
         _;
-    }
+    }*/
 
     constructor(){
 
     }
-
+/*
     function deposit(uint _id) public{    
         require(ROCK.ownerOf(_id) == msg.sender, "no eres propietario de ese nft");    
         if(infOfUsers[msg.sender].nftIdStake.length > 0){
@@ -63,16 +64,31 @@ contract Staking is Ownable {
         infOfUsers[msg.sender].lastClaim = earningPerPlay.length - 1;
         emit Deposit(msg.sender,_id);
          
-    }
+    }*/
     function withdraw(uint _id) public {
 
     }
-    function claim() public {}
+    function claim() public {}/*
     function payTo(address _to, uint _amount)public payable {
         require(msg.sender == address(this));
-    }
+    }*/
 
-    function newPlay(uint _amount) public onlyGame(){
-        earningPerPlay.push(_amount / ROCK.balanceOf(address(this)));
+
+    uint testValueUsers = 10;
+    function newPlay(uint _amount) public {        
+        earningPerPlay.push(_amount / testValueUsers);
+    }
+    function setTestValueUsers(uint _cantUsers) public {
+        testValueUsers = _cantUsers;
+    }
+    function returnLength() public view returns(uint){
+        return earningPerPlay.length;
+    }
+    function returnTotalFee() public view returns(uint){
+        uint total;
+        for(uint i; i<returnLength(); i++){
+            total += earningPerPlay[i];
+        }
+        return total;
     }
 }
