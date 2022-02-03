@@ -8,20 +8,19 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
-import 'bootstrap/dist/css/bootstrap.css'
 import { Layout } from './components/layout/Layout'
 import Game from './views/game/Game'
 import About from './views/about/About'
 import Marketplace from './views/marketplace/Marketplace'
 import Leaderboard from './views/leaderboard/Leaderboard'
 import * as serviceWorker from './serviceWorker'
-
+import 'bootstrap/dist/css/bootstrap.css'
 import './index.scss'
 
 function getLibrary(provider) {
   return new Web3(provider)
 }
- 
+
 ReactDOM.render(
   <Web3ReactProvider getLibrary={getLibrary}>
     <BrowserRouter>
