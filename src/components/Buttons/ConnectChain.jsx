@@ -42,14 +42,11 @@ export default function ConnectChain() {
         if (!chainInUse) {
             window.alert('INVALID NETWORK, CONNECT TO POLYGON MAINNET NETWORK!')
         } else {
-            if (chainIds === 56) {
-                setNetwork('BSC')
-            }
             if (chainIds === 137) {
                 setNetwork('POLYGON')
             }
-            if (chainIds === 97) {
-                setNetwork('BSC TEST')
+            if (chainIds === 80001) {
+                setNetwork('MUMBAI TEST')
             }
         }
     }
@@ -91,51 +88,13 @@ export default function ConnectChain() {
         }
     }
 
-    async function addBsc() {
-        try {
-            const provider = window.web3.currentProvider
-            await provider.sendAsync({
-                method: 'wallet_addEthereumChain',
-                params: [{
-                    chainId: "0x38",
-                    chainName: "BSC Mainnet",
-                    rpcUrls: ["https://bsc-dataseed.binance.org/"],
-                    iconUrls: ["https://queesunbitcoin.com/wp-content/uploads/2021/05/curso-sobre-binance-online.png"],
-                    nativeCurrency: {
-                        name: "BNB",
-                        symbol: "BNB",
-                        decimals: 18,
-                    },
-                    blockExplorerUrls: ["https://bscscan.com/"],
-                }],
-            });
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-    async function switchBsc() {
-        try {
-            const provider = window.web3.currentProvider
-            await provider.sendAsync({
-                method: 'wallet_switchEthereumChain',
-                params: [{
-                    chainId: "0x38",
-                }],
-            });
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
     return (
         <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="sm">
             <DropdownToggle caret>
                 {network}
             </DropdownToggle>
             <DropdownMenu>
-                <DropdownItem onClick={addBsc}>BSC</DropdownItem>
-                <DropdownItem onClick={addPolygon} disabled>POLYGON (soon)</DropdownItem>
+                <DropdownItem onClick={addPolygon}>POLYGON</DropdownItem>
             </DropdownMenu>
         </Dropdown>
     )

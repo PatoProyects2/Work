@@ -1,3 +1,3 @@
-export const rpsGameContract = "0xc01250935B4a5122E017483014568a004720f6A9"
+export const rpsGameContract = "0xBFBD3f5a9eAaFA309cD9bCBc879E50171899B02e"
 
 

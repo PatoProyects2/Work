@@ -20,7 +20,7 @@ import './index.scss'
 function getLibrary(provider) {
   return new Web3(provider)
 }
-
+ 
 ReactDOM.render(
   <Web3ReactProvider getLibrary={getLibrary}>
     <BrowserRouter>

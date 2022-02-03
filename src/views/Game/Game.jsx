@@ -81,10 +81,10 @@ export default function Game() {
         setLoss(parseInt(totalLoses))
         let totalWins = await rpsgame.methods.totalWins().call()
         setWon(parseInt(totalWins))
-        let userLoses = await rpsgame.methods.winLosesPerUser(accounts[0], 0).call()
-        setUserloses(userLoses)
-        let userWins = await rpsgame.methods.winLosesPerUser(accounts[0], 1).call()
-        setUserwins(userWins)
+        // let userLoses = await rpsgame.methods.winLosesPerUser(accounts[0], 0).call()
+        // setUserloses(userLoses)
+        // let userWins = await rpsgame.methods.winLosesPerUser(accounts[0], 1).call()
+        // setUserwins(userWins)
       } catch (e) {
         console.log('RPSGAME CONTRACT NOT DEPLOYED TO DETECTED NETWORK')
       }
@@ -159,6 +159,10 @@ export default function Game() {
     window.location.reload()
   }
 
+  async function signMessage() {
+    web3.eth.personal.sign(web3.utils.utf8ToHex("Hello world"), account)
+      .then(console.log);
+  }
 
   return (
     <article>
@@ -178,51 +182,51 @@ export default function Game() {
           {"Your Loss: " + userloses}
           <br></br>
           <br></br>
-          {"BNB " + (walletBalances / decimal).toFixed(4)}
+          {"MATIC " + (walletBalances / decimal).toFixed(4)}
           <br></br>
           <br></br>
           {playing === true ?
             <div>
               <h3>Playing... {pause}</h3>
               <br></br>
-              {userhand + " | Amount: " + useramount + " BNB"}
+              {userhand + " | Amount: " + useramount + " MATIC"}
               <br></br>
               {gameresult === true
                 ?
                 <>
                   {userhand === 'Rock' && result0 === true
                     ?
-                    "Scissors | You Won: " + (useramount * 2) + " BNB"
+                    "Scissors | You Won: " + (useramount * 2) + " MATIC"
                     :
                     ""
                   }
                   {userhand === 'Papper' && result0 === true
                     ?
-                    "Rock | You Won: " + (useramount * 2) + " BNB"
+                    "Rock | You Won: " + (useramount * 2) + " MATIC"
                     :
                     ""
                   }
                   {userhand === 'Scissors' && result0 === true
                     ?
-                    "Papper | You Won: " + (useramount * 2) + " BNB"
+                    "Papper | You Won: " + (useramount * 2) + " MATIC"
                     :
                     ""
                   }
                   {userhand === 'Rock' && result0 === false
                     ?
-                    "Papper | You Loss: " + useramount + " BNB"
+                    "Papper | You Loss: " + useramount + " MATIC"
                     :
                     ""
                   }
                   {userhand === 'Papper' && result0 === false
                     ?
-                    "Scissors | You Loss: " + useramount + " BNB"
+                    "Scissors | You Loss: " + useramount + " MATIC"
                     :
                     ""
                   }
                   {userhand === 'Scissors' && result0 === false
                     ?
-                    "Rock | You Loss: " + useramount + " BNB"
+                    "Rock | You Loss: " + useramount + " MATIC"
                     :
                     ""
                   }
@@ -253,46 +257,48 @@ export default function Game() {
               <br></br>
               <h6>For</h6>
               <table>
-                <tr>
-                  <td>
-                    <label>
-                      <input type="radio" name="amount" id="amount1" onChange={handleInputChange} value="0.005" />
-                      <span>0.005 BNB</span>
-                    </label>
-                  </td>
-                  <td>
-                    <label>
-                      <input type="radio" name="amount" id="amount2" onChange={handleInputChange} value="0.01" />
-                      <span>0.01 BNB</span>
-                    </label>
-                  </td>
-                  <td>
-                    <label>
-                      <input type="radio" name="amount" id="amount3" onChange={handleInputChange} value="0.02" />
-                      <span>0.02 BNB</span>
-                    </label>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <label>
-                      <input type="radio" name="amount" id="amount4" onChange={handleInputChange} value="0.04" />
-                      <span>0.04 BNB</span>
-                    </label>
-                  </td>
-                  <td>
-                    <label>
-                      <input type="radio" name="amount" id="amount5" onChange={handleInputChange} value="0.08" />
-                      <span>0.08 BNB</span>
-                    </label>
-                  </td>
-                  <td>
-                    <label>
-                      <input type="radio" name="amount" id="amount6" onChange={handleInputChange} value="0.16" />
-                      <span>0.16 BNB</span>
-                    </label>
-                  </td>
-                </tr>
+                <tbody>
+                  <tr>
+                    <td>
+                      <label>
+                        <input type="radio" name="amount" id="amount1" onChange={handleInputChange} value="0.005" />
+                        <span>0.005 MATIC</span>
+                      </label>
+                    </td>
+                    <td>
+                      <label>
+                        <input type="radio" name="amount" id="amount2" onChange={handleInputChange} value="0.01" />
+                        <span>0.01 MATIC</span>
+                      </label>
+                    </td>
+                    <td>
+                      <label>
+                        <input type="radio" name="amount" id="amount3" onChange={handleInputChange} value="0.02" />
+                        <span>0.02 MATIC</span>
+                      </label>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <label>
+                        <input type="radio" name="amount" id="amount4" onChange={handleInputChange} value="0.04" />
+                        <span>0.04 MATIC</span>
+                      </label>
+                    </td>
+                    <td>
+                      <label>
+                        <input type="radio" name="amount" id="amount5" onChange={handleInputChange} value="0.08" />
+                        <span>0.08 MATIC</span>
+                      </label>
+                    </td>
+                    <td>
+                      <label>
+                        <input type="radio" name="amount" id="amount6" onChange={handleInputChange} value="0.16" />
+                        <span>0.16 MATIC</span>
+                      </label>
+                    </td>
+                  </tr>
+                </tbody>
               </table>
               <br></br>
               <button onClick={startGame}>DOUBLE OR NOTHING</button>
@@ -302,6 +308,7 @@ export default function Game() {
         :
         <div>
           <button onClick={openGame}>START GAME</button>
+          <button onClick={signMessage}>SIGN MESSAGE</button>
         </div>
       }
     </article >

@@ -1,11 +1,21 @@
 import React, { useState, useEffect } from 'react'
 import Web3 from 'web3'
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap'
+import { doc, getDoc } from "firebase/firestore";
 import RpsGame from '../../abis/RpsGame/rpsGame.json'
 import chains from '../Blockchain/AvailableChains'
+import db from '../../firebase/firesbaseConfig'
 
 export default function HistoryGames() {
     const [userevents, setUserevents] = useState({});
+    const [userdata0, setUserdata0] = useState({});
+    const [userdata1, setUserdata1] = useState({});
+    const [userdata2, setUserdata2] = useState({});
+    const [userdata3, setUserdata3] = useState({});
+    const [userdata4, setUserdata4] = useState({});
+    const [userdata5, setUserdata5] = useState({});
+    const [userdata6, setUserdata6] = useState({});
+    const [userdata7, setUserdata7] = useState({});
     const [account, setAccount] = useState('0x0');
     const [decimal, setDecimal] = useState(1000000000000000000);
     const [blockchain, setBlockchain] = useState(0);
@@ -89,28 +99,60 @@ export default function HistoryGames() {
                             }
                         ).then(events => {
                             setUserevents(events)
+
+                            getDoc(doc(db, "users", events[0].returnValues[0])).then(data => {
+                                setUserdata0(data.data())
+                            })
                             setResult0(events[0].returnValues[2])
-                            setResult1(events[1].returnValues[2])
-                            setResult2(events[2].returnValues[2])
-                            setResult3(events[3].returnValues[2])
-                            setResult4(events[4].returnValues[2])
-                            setResult5(events[5].returnValues[2])
-                            setResult6(events[6].returnValues[2])
-                            setResult7(events[7].returnValues[2])
                             rpsgame.methods.winLosesRache(events[0].returnValues[0], 0).call().then(loseStreak => setUserlosestreak0(loseStreak))
                             rpsgame.methods.winLosesRache(events[0].returnValues[0], 1).call().then(winStreak => setUserwinstreak0(winStreak))
+
+                            getDoc(doc(db, "users", events[1].returnValues[0])).then(data => {
+                                setUserdata1(data.data())
+                            })
+                            setResult1(events[1].returnValues[2])
                             rpsgame.methods.winLosesRache(events[1].returnValues[0], 0).call().then(loseStreak => setUserlosestreak1(loseStreak))
                             rpsgame.methods.winLosesRache(events[1].returnValues[0], 1).call().then(winStreak => setUserwinstreak1(winStreak))
+
+                            getDoc(doc(db, "users", events[2].returnValues[0])).then(data => {
+                                setUserdata2(data.data())
+                            })
+                            setResult2(events[2].returnValues[2])
                             rpsgame.methods.winLosesRache(events[2].returnValues[0], 0).call().then(loseStreak => setUserlosestreak2(loseStreak))
                             rpsgame.methods.winLosesRache(events[2].returnValues[0], 1).call().then(winStreak => setUserwinstreak2(winStreak))
+
+                            getDoc(doc(db, "users", events[3].returnValues[0])).then(data => {
+                                setUserdata3(data.data())
+                            })
+                            setResult3(events[3].returnValues[2])
                             rpsgame.methods.winLosesRache(events[3].returnValues[0], 0).call().then(loseStreak => setUserlosestreak3(loseStreak))
                             rpsgame.methods.winLosesRache(events[3].returnValues[0], 1).call().then(winStreak => setUserwinstreak3(winStreak))
+
+                            getDoc(doc(db, "users", events[4].returnValues[0])).then(data => {
+                                setUserdata3(data.data())
+                            })
+                            setResult4(events[4].returnValues[2])
                             rpsgame.methods.winLosesRache(events[4].returnValues[0], 0).call().then(loseStreak => setUserlosestreak4(loseStreak))
                             rpsgame.methods.winLosesRache(events[4].returnValues[0], 1).call().then(winStreak => setUserwinstreak4(winStreak))
+
+                            getDoc(doc(db, "users", events[5].returnValues[0])).then(data => {
+                                setUserdata3(data.data())
+                            })
+                            setResult5(events[5].returnValues[2])
                             rpsgame.methods.winLosesRache(events[5].returnValues[0], 0).call().then(loseStreak => setUserlosestreak5(loseStreak))
                             rpsgame.methods.winLosesRache(events[5].returnValues[0], 1).call().then(winStreak => setUserwinstreak5(winStreak))
+
+                            getDoc(doc(db, "users", events[6].returnValues[0])).then(data => {
+                                setUserdata3(data.data())
+                            })
+                            setResult6(events[6].returnValues[2])
                             rpsgame.methods.winLosesRache(events[6].returnValues[0], 0).call().then(loseStreak => setUserlosestreak6(loseStreak))
                             rpsgame.methods.winLosesRache(events[6].returnValues[0], 1).call().then(winStreak => setUserwinstreak6(winStreak))
+
+                            getDoc(doc(db, "users", events[7].returnValues[0])).then(data => {
+                                setUserdata3(data.data())
+                            })
+                            setResult7(events[7].returnValues[2])
                             rpsgame.methods.winLosesRache(events[7].returnValues[0], 0).call().then(loseStreak => setUserlosestreak7(loseStreak))
                             rpsgame.methods.winLosesRache(events[7].returnValues[0], 1).call().then(winStreak => setUserwinstreak7(winStreak))
                         }).catch(error => {
@@ -121,7 +163,7 @@ export default function HistoryGames() {
                 web3.eth.getBlockNumber()
                     .then(n => setBlockchain(n))
 
-                await sleep(3000);
+                await sleep(5000);
             }
         }
     }
@@ -137,7 +179,7 @@ export default function HistoryGames() {
                         {userevents[7] !== undefined
                             ?
                             <>
-                                {userevents[7].returnValues[0] + " played " + (userevents[7].returnValues[1] / decimal) + " BNB and"}
+                                {userdata7.name1 + " played " + (userevents[7].returnValues[1] / decimal) + " MATIC and"}
                                 {result7 === false
                                     ?
                                     " lost all "
@@ -166,7 +208,7 @@ export default function HistoryGames() {
                         {userevents[6] !== undefined
                             ?
                             <>
-                                {userevents[6].returnValues[0] + " played " + (userevents[6].returnValues[1] / decimal) + " BNB and"}
+                                {userdata6.name1 + " played " + (userevents[6].returnValues[1] / decimal) + " MATIC and"}
                                 {result6 === false
                                     ?
                                     " lost all "
@@ -195,7 +237,7 @@ export default function HistoryGames() {
                         {userevents[5] !== undefined
                             ?
                             <>
-                                {userevents[5].returnValues[0] + " played " + (userevents[5].returnValues[1] / decimal) + " BNB and"}
+                                {userdata5.name1 + " played " + (userevents[5].returnValues[1] / decimal) + " MATIC and"}
                                 {result5 === false
                                     ?
                                     " lost all "
@@ -224,7 +266,7 @@ export default function HistoryGames() {
                         {userevents[4] !== undefined
                             ?
                             <>
-                                {userevents[4].returnValues[0] + " played " + (userevents[4].returnValues[1] / decimal) + " BNB and"}
+                                {userdata4.name1 + " played " + (userevents[4].returnValues[1] / decimal) + " MATIC and"}
                                 {result4 === false
                                     ?
                                     " lost all "
@@ -253,7 +295,7 @@ export default function HistoryGames() {
                         {userevents[3] !== undefined
                             ?
                             <>
-                                {userevents[3].returnValues[0] + " played " + (userevents[3].returnValues[1] / decimal) + " BNB and"}
+                                {userdata3.name1 + " played " + (userevents[3].returnValues[1] / decimal) + " MATIC and"}
                                 {result3 === false
                                     ?
                                     " lost all "
@@ -282,7 +324,7 @@ export default function HistoryGames() {
                         {userevents[2] !== undefined
                             ?
                             <>
-                                {userevents[2].returnValues[0] + " played " + (userevents[2].returnValues[1] / decimal) + " BNB and"}
+                                {userdata2.name1 + " played " + (userevents[2].returnValues[1] / decimal) + " MATIC and"}
                                 {result2 === false
                                     ?
                                     " lost all "
@@ -311,7 +353,7 @@ export default function HistoryGames() {
                         {userevents[1] !== undefined
                             ?
                             <>
-                                {userevents[1].returnValues[0] + " played " + (userevents[1].returnValues[1] / decimal) + " BNB and"}
+                                {userdata1.name1 + " played " + (userevents[1].returnValues[1] / decimal) + " MATIC and"}
                                 {result1 === false
                                     ?
                                     " lost all "
@@ -340,7 +382,7 @@ export default function HistoryGames() {
                         {userevents[0] !== undefined
                             ?
                             <>
-                                {userevents[0].returnValues[0] + " played " + (userevents[0].returnValues[1] / decimal) + " BNB and"}
+                                {userdata0.name1 + " played " + (userevents[0].returnValues[1] / decimal) + " MATIC and"}
                                 {result0 === false
                                     ?
                                     " lost all "

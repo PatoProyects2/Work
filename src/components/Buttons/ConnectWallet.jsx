@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from 'react'
 import Web3 from 'web3'
 import { useWeb3React } from "@web3-react/core"
+import { doc, setDoc, getDoc } from "firebase/firestore";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Input, Label } from 'reactstrap'
 import { injected } from "../Blockchain/Connectors"
+import db from '../../firebase/firesbaseConfig'
 
 export default function ConnectWalletButton() {
+  const [userdata, setUserdata] = useState({});
   const { active, activate, deactivate } = useWeb3React();
   const [dropdown, setDropdown] = useState(false);
   const [account, setAccount] = useState('0x0');
-  const [username, setUsername] = useState('User1');
-  const [userpic, setUserpic] = useState('QmQCXbQfDcJ5HRfKoRVaJ1L6mgh5dvaQkZw1bhKbrs8t7o?filename=nft2.jpg');
   const [edit, setEdit] = useState(false);
   const [userinfo, setUserinfo] = useState({
-    pic1: '',
-    name1: ''
+    name1: '',
+    pic1: ''
   });
   const [log1, setLog1] = useState('Photo');
   const [log2, setLog2] = useState('Username');
@@ -44,6 +45,10 @@ export default function ConnectWalletButton() {
     const web3 = window.web3
     const accounts = await web3.eth.getAccounts()
     setAccount(accounts[0])
+
+    const query = doc(db, "users", accounts[0]);
+    const document = await getDoc(query)
+    setUserdata(document.data())
   }
 
   async function connect() {
@@ -79,27 +84,27 @@ export default function ConnectWalletButton() {
 
   async function updateProfile() {
     if (document.getElementById('nft1').checked || document.getElementById('nft2').checked) {
-      setUserpic(userinfo.pic1);
       setLog1('Photo');
     } else {
       setLog1('Select a profile picture');
       return false
     }
-    if (userinfo.name1.length >= 3 && userinfo.name1.length <= 7) {
-      setUsername(userinfo.name1);
+    if (userinfo.name1.length >= 3 && userinfo.name1.length <= 12) {
       setLog2('Username');
     } else {
-      setLog2('The name must be between 3 and 7 characters');
+      setLog2('The name must be between 3 and 12 characters');
       return false
     }
     setUserinfo({
       ...userinfo,
-      pic1: '',
-      name1: ''
+      name1: '',
+      pic1: ''
     })
+    await setDoc(doc(db, "users", account), userinfo)
     setLog1('Photo');
     setLog2('Username');
     setEdit(false);
+    loadBlockchainData()
   }
 
   return (
@@ -110,8 +115,8 @@ export default function ConnectWalletButton() {
             WALLET
           </DropdownToggle>
           <DropdownMenu>
-            <DropdownItem header><img width="150" height="150" src={`https://ipfs.io/ipfs/${userpic}`} alt="" /></DropdownItem>
-            <DropdownItem header>{username}</DropdownItem>
+            <DropdownItem header><img width="150" height="150" src={`https://ipfs.io/ipfs/${userdata.pic1}`} alt="" /></DropdownItem>
+            <DropdownItem header>{userdata.name1}</DropdownItem>
             <DropdownItem header>{account.substring(0, 5) + "..." + account.substring(12, 16)}</DropdownItem>
             <DropdownItem divider />
             <DropdownItem onClick={editProfile}>Edit Profile</DropdownItem>
@@ -119,7 +124,7 @@ export default function ConnectWalletButton() {
           </DropdownMenu>
         </Dropdown>
         :
-        <button type="submit" class="btn1" onClick={connect}>CONNECT</button>
+        <button type="submit" onClick={connect}>CONNECT</button>
       }
       <Modal isOpen={edit}>
         <ModalHeader>
@@ -132,7 +137,6 @@ export default function ConnectWalletButton() {
               <Input name="pic1" id="nft1" onChange={handleInputChange} type="radio" value="QmQ1cjPaQr8oCRvQk5KDDWfTRuoBgNnZVhQo1VzTF7S6c8?filename=nft%20bored%20ape.jpg" />
               <img width="50" height="50" src={`https://ipfs.io/ipfs/QmQ1cjPaQr8oCRvQk5KDDWfTRuoBgNnZVhQo1VzTF7S6c8?filename=nft%20bored%20ape.jpg`} alt="" />
             </Label>
-
             <Label>
               <Input name="pic1" id="nft2" onChange={handleInputChange} type="radio" value="QmQCXbQfDcJ5HRfKoRVaJ1L6mgh5dvaQkZw1bhKbrs8t7o?filename=nft2.jpg" />
               <img width="50" height="50" src={`https://ipfs.io/ipfs/QmQCXbQfDcJ5HRfKoRVaJ1L6mgh5dvaQkZw1bhKbrs8t7o?filename=nft2.jpg`} alt="" />
