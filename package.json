@@ -24,7 +24,7 @@
         "react-router-dom": "6.2.1",
         "react-scripts": "4.0.3",
         "react-scroll-to-bottom": "4.2.0",
-        "reactstrap": "9.0.1",
+        "reactstrap": "^9.0.1",
         "socket.io-client": "4.4.1",
         "styled-components": "5.3.3",
         "web3": "1.6.0"

@@ -3,7 +3,7 @@ import Web3 from 'web3'
 import { useWeb3React } from "@web3-react/core"
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Input, Label } from 'reactstrap'
-import { injected } from "../Blockchain/Connectors"
+import { injected } from "../blockchain/Connectors"
 import db from '../../firebase/firesbaseConfig'
 
 export default function ConnectWalletButton() {
@@ -111,7 +111,7 @@ export default function ConnectWalletButton() {
     <>
       {active ?
         <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="sm">
-          <DropdownToggle caret>
+          <DropdownToggle caret color='warning'>
             WALLET
           </DropdownToggle>
           <DropdownMenu>
@@ -124,7 +124,7 @@ export default function ConnectWalletButton() {
           </DropdownMenu>
         </Dropdown>
         :
-        <button type="submit" onClick={connect}>CONNECT</button>
+        <button type="submit" onClick={connect} className='btn btn-warning'>CONNECT WALLET</button>
       }
       <Modal isOpen={edit}>
         <ModalHeader>

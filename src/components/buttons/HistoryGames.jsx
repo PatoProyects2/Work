@@ -3,7 +3,7 @@ import Web3 from 'web3'
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap'
 import { doc, getDoc } from "firebase/firestore";
 import RpsGame from '../../abis/RpsGame/rpsGame.json'
-import chains from '../Blockchain/AvailableChains'
+import chains from '../blockchain/AvailableChains'
 import db from '../../firebase/firesbaseConfig'
 
 export default function HistoryGames() {

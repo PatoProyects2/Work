@@ -9,10 +9,11 @@ import {
   Navigate,
 } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.css'
-import { Layout } from './components/Layout/Layout'
-import Game from './views/Game/Game'
-import Marketplace from './views/Marketplace/Marketplace'
-import Leaderboard from './views/Leaderboard/Leaderboard'
+import { Layout } from './components/layout/Layout'
+import Game from './views/game/Game'
+import About from './views/about/About'
+import Marketplace from './views/marketplace/Marketplace'
+import Leaderboard from './views/leaderboard/Leaderboard'
 import * as serviceWorker from './serviceWorker'
 
 import './index.scss'
@@ -27,6 +28,7 @@ ReactDOM.render(
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Game />} />
+          <Route path="about" element={<About />} />
           <Route path="leaderboard" element={<Leaderboard />} />
           <Route path="marketplace" element={<Marketplace />} />
           <Route path="*" element={<Navigate replace to="/" />} />

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Web3 from 'web3'
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap'
-import chains from '../Blockchain/AvailableChains'
+import chains from '../blockchain/AvailableChains'
 
 export default function ConnectChain() {
     const [dropdown, setDropdown] = useState(false);
@@ -89,11 +89,11 @@ export default function ConnectChain() {
     }
 
     return (
-        <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="sm">
-            <DropdownToggle caret>
+        <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="sm" className="my-2">
+            <DropdownToggle caret color='danger'>
                 {network}
             </DropdownToggle>
-            <DropdownMenu>
+            <DropdownMenu >
                 <DropdownItem onClick={addPolygon}>POLYGON</DropdownItem>
             </DropdownMenu>
         </Dropdown>
