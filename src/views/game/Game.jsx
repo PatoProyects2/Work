@@ -274,19 +274,19 @@ export default function Game() {
                 <div className="row mb-3">
                   <div className="col">
                     <label className="amount">
-                      <input type="radio" name="amount" id="amount1" onChange={handleInputChange} value="0.005" />
+                      <input type="radio" name="amount" id="amount1" onChange={handleInputChange} value="1" />
                       <span>1 MATIC</span>
                     </label>
                   </div>
                   <div className="col">
                     <label className="amount">
-                      <input type="radio" name="amount" id="amount2" onChange={handleInputChange} value="0.01" />
+                      <input type="radio" name="amount" id="amount2" onChange={handleInputChange} value="2" />
                       <span>2 MATIC</span>
                     </label>
                   </div>
                   <div className="col">
                     <label className="amount">
-                      <input type="radio" name="amount" id="amount3" onChange={handleInputChange} value="0.02" />
+                      <input type="radio" name="amount" id="amount3" onChange={handleInputChange} value="4" />
                       <span>4 MATIC</span>
                     </label>
                   </div>
@@ -294,19 +294,19 @@ export default function Game() {
                 <div className="row mt-3">
                   <div className="col">
                     <label className="amount">
-                      <input type="radio" name="amount" id="amount4" onChange={handleInputChange} value="0.04" />
+                      <input type="radio" name="amount" id="amount4" onChange={handleInputChange} value="8" />
                       <span>8 MATIC</span>
                     </label>
                   </div>
                   <div className="col">
                     <label className="amount">
-                      <input type="radio" name="amount" id="amount5" onChange={handleInputChange} value="0.08" />
+                      <input type="radio" name="amount" id="amount5" onChange={handleInputChange} value="16" />
                       <span>16 MATIC</span>
                     </label>
                   </div>
                   <div className="col">
                     <label className="amount">
-                      <input type="radio" name="amount" id="amount6" onChange={handleInputChange} value="0.16" />
+                      <input type="radio" name="amount" id="amount6" onChange={handleInputChange} value="32" />
                       <span>32 MATIC</span>
                     </label>
                   </div>
