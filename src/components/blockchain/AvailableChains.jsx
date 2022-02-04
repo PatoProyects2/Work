@@ -1,6 +1,7 @@
 import Chain from "./Chain"
 import {
-    rpsGameContract
+    rpsGameContract,
+    polygonSwapContract
 } from './Contracts'
 
 let chains = []
@@ -12,6 +13,8 @@ chains.push(
         "MATIC",
         "https://polygon-rpc.com/",
         "https://explorer.matic.network/",
+        rpsGameContract,
+        polygonSwapContract
     )
 )
 
@@ -22,7 +25,8 @@ chains.push(
         "MATIC",
         "https://rpc-mumbai.maticvigil.com",
         "https://mumbai.polygonscan.com/",
-        rpsGameContract
+        rpsGameContract,
+        polygonSwapContract
     )
 )
 

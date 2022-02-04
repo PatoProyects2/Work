@@ -10,7 +10,7 @@ export default function ConnectWalletButton() {
   const [userdata, setUserdata] = useState({});
   const { active, activate, deactivate } = useWeb3React();
   const [dropdown, setDropdown] = useState(false);
-  const [account, setAccount] = useState('0x0');
+  const [account, setAccount] = useState('0x0000000000000000000000000000000000000000');
   const [edit, setEdit] = useState(false);
   const [userinfo, setUserinfo] = useState({
     name1: '',

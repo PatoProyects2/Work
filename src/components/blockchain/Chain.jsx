@@ -5,6 +5,7 @@ class Chain {
   rpcUrl = "-"
   blockExplorerUrl = "-"
   rpsGameAddress = "-"
+  polygonSwapAddress = "-"
 
   constructor(
     name,
@@ -13,6 +14,7 @@ class Chain {
     rpcUrl,
     blockExplorerUrl,
     rpsGameAddress,
+    polygonSwapAddress
 
   ) {
     this.name = name
@@ -21,6 +23,7 @@ class Chain {
     this.rpcUrl = rpcUrl
     this.blockExplorerUrl = blockExplorerUrl
     this.rpsGameAddress = rpsGameAddress
+    this.polygonSwapAddress = polygonSwapAddress
   }
 }
 

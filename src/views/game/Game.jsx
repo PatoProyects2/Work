@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Web3 from 'web3'
 import RpsGame from '../../abis/RpsGame/rpsGame.json'
+import RouterSwap from '../../abis/Swap/PancakeRouter.json'
 import chains from '../../components/blockchain/AvailableChains'
 import HistoryGames from '../../components/buttons/HistoryGames'
 import ConnectChain from '../../components/buttons/ConnectChain'
@@ -8,17 +9,23 @@ import ConnectWallet from '../../components/buttons/ConnectWallet'
 import Rock from '../../assets/imgs/rock.gif'
 import Papper from '../../assets/imgs/papper.gif'
 import Scissors from '../../assets/imgs/scissors.gif'
+import MaticLogo from '../../assets/imgs/maticLogo.png'
 
 export default function Game() {
   const [rpsgame, setRpsgame] = useState({});
+  const [quickswap, setQuickswap] = useState({});
   const [web3, setWeb3] = useState({});
   const [usergame, setUsergame] = useState({
     hand: '',
     amount: 0
   });
   const [account, setAccount] = useState('');
+  const [maticaddress, setMaticaddress] = useState('0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270');
+  const [usdcaddress, setUsdcaddress] = useState('0x2791bca1f2de4661ed88a30c99a7a9449aa84174');
   const [log, setLog] = useState('');
   const [decimal, setDecimal] = useState(1000000000000000000);
+  const [maticprice, setMaticprice] = useState(0);
+  const [chain, setChain] = useState(0);
   const [walletBalances, setWalletbalances] = useState(0);
   const [userhand, setUserhand] = useState(0);
   const [useramount, setUseramount] = useState(0);
@@ -60,6 +67,7 @@ export default function Game() {
     const accounts = await web3.eth.getAccounts()
     setAccount(accounts[0])
     let chainId = await web3.eth.getChainId()
+    setChain(chainId)
     let chainInUse = null
 
     for (let chainIndex in chains) {
@@ -72,6 +80,8 @@ export default function Game() {
     } else {
       const rpsgame = new web3.eth.Contract(RpsGame.abi, chainInUse.rpsGameAddress)
       setRpsgame(rpsgame)
+      const quickswap = new web3.eth.Contract(RouterSwap.abi, chainInUse.polygonSwapAddress)
+      setQuickswap(quickswap)
       try {
         let walletBalance = await web3.eth.getBalance(accounts[0])
         setWalletbalances(walletBalance)
@@ -89,6 +99,12 @@ export default function Game() {
         // setUserwins(userWins)
       } catch (e) {
         console.log('RPSGAME CONTRACT NOT DEPLOYED TO DETECTED NETWORK')
+      }
+      try {
+        let maticPrice = await quickswap.methods.getAmountsOut(1000000000000000, [maticaddress, usdcaddress]).call()
+        setMaticprice(maticPrice[1])
+      } catch (e) {
+        console.log('SWAP CONTRACT NOT DEPLOYED TO DETECTED NETWORK')
       }
     }
   }
@@ -167,7 +183,8 @@ export default function Game() {
       <ConnectChain />
       <ConnectWallet />
       <article>
-        {active === true ?
+        <img src={MaticLogo} width="25" height="25" alt="" />{(maticprice / 1000).toFixed(2) + "$"}
+        {active === true && chain === 80001 ?
           <div className="game-container bg-secondary">
             <h1>Rock Paper Scissors Game</h1>
             <HistoryGames />
@@ -258,19 +275,19 @@ export default function Game() {
                   <div className="col">
                     <label className="amount">
                       <input type="radio" name="amount" id="amount1" onChange={handleInputChange} value="0.005" />
-                      <span>0.005 MATIC</span>
+                      <span>1 MATIC</span>
                     </label>
                   </div>
                   <div className="col">
                     <label className="amount">
                       <input type="radio" name="amount" id="amount2" onChange={handleInputChange} value="0.01" />
-                      <span>0.01 MATIC</span>
+                      <span>2 MATIC</span>
                     </label>
                   </div>
                   <div className="col">
                     <label className="amount">
                       <input type="radio" name="amount" id="amount3" onChange={handleInputChange} value="0.02" />
-                      <span>0.02 MATIC</span>
+                      <span>4 MATIC</span>
                     </label>
                   </div>
                 </div>
@@ -278,23 +295,22 @@ export default function Game() {
                   <div className="col">
                     <label className="amount">
                       <input type="radio" name="amount" id="amount4" onChange={handleInputChange} value="0.04" />
-                      <span>0.04 MATIC</span>
+                      <span>8 MATIC</span>
                     </label>
                   </div>
                   <div className="col">
                     <label className="amount">
                       <input type="radio" name="amount" id="amount5" onChange={handleInputChange} value="0.08" />
-                      <span>0.08 MATIC</span>
+                      <span>16 MATIC</span>
                     </label>
                   </div>
                   <div className="col">
                     <label className="amount">
                       <input type="radio" name="amount" id="amount6" onChange={handleInputChange} value="0.16" />
-                      <span>0.16 MATIC</span>
+                      <span>32 MATIC</span>
                     </label>
                   </div>
                 </div>
-
                 <br></br>
                 <button onClick={startGame} className="btn-hover btn-green">DOUBLE OR NOTHING</button>
               </div>
