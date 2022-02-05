@@ -7,17 +7,27 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
-contract MyToken is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
+contract rpsNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIdCounter;
     mapping(uint256 => string) private _hashIPFS;
+   /* struct typeNft{
+        uint id;
+        uint hand;
+    }*/
 
-
-    uint maxSupply = 333; 
+    string[3] hand = ["Rock", "Papper", "Siccors"];
+    uint public maxSupply = 333; 
     uint maxMintAmount = 20;
     uint priceMint;
     string baseURI;
-    
+    /*
+     - 150 comunes, 100 no comunes, 51 raros, 21 epicos, 11 legendarios
+        333 de suply 
+     - 5 FOTOS (1 para cada rareza)
+     - Tenemos 3 tipos (ROCK, Papper, Siccors). 
+     - 15 fotos. 999 nfts
+    */
 
     
 
@@ -27,7 +37,7 @@ contract MyToken is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         baseURI = "https://ipfs.io/ipfs";
         safeMint(msg.sender, _initialMint);
     }
-    function safeMint(address to, uint256 _mintAmount) public payable onlyOwner {
+    function safeMint(address to, uint256 _mintAmount) public payable {
         uint256 supply = totalSupply();
         require(_mintAmount > 0);
         require(_mintAmount < maxMintAmount);
@@ -35,6 +45,7 @@ contract MyToken is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         
         if(msg.sender !=owner()){
             require(msg.value >= priceMint * _mintAmount, "Not Founds");
+            require(_mintAmount == 1);
         }
 
         for(uint256 i = 1; i<= _mintAmount; i++ ){
@@ -59,7 +70,25 @@ contract MyToken is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     function _setbaseURI(string memory _newBaseURI) public onlyOwner {
         baseURI = _newBaseURI;
     }
-
+    function setHand() internal view returns(uint){
+        uint256 supply = totalSupply();
+        if(supply < 333){
+            return 0;
+        }else if (supply < 666){
+            return 1;
+        }else{
+            return 2;
+        }
+    }
+    function newMax() public onlyOwner{
+        uint256 supply = totalSupply();
+        if (supply < 666){
+            maxSupply = 666;
+        }else{
+            maxSupply = 999;
+        }
+        
+    }
 
 
 
