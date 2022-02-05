@@ -1,70 +1,44 @@
-import React, { useState, useEffect } from 'react'
-import Web3 from 'web3'
-import { useWeb3React } from "@web3-react/core"
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import React, { useState } from 'react'
+import { doc, setDoc } from "firebase/firestore";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Input, Label } from 'reactstrap'
-import { injected } from "../blockchain/Connectors"
 import db from '../../firebase/firesbaseConfig'
 
-export default function ConnectWalletButton() {
-  const [userdata, setUserdata] = useState({});
-  const { active, activate, deactivate } = useWeb3React();
-  const [dropdown, setDropdown] = useState(false);
-  const [account, setAccount] = useState('0x0000000000000000000000000000000000000000');
-  const [edit, setEdit] = useState(false);
+export default function ConnectWalletButton(props) {
   const [userinfo, setUserinfo] = useState({
     name1: '',
     pic1: ''
   });
   const [log1, setLog1] = useState('Photo');
   const [log2, setLog2] = useState('Username');
+  const [edit, setEdit] = useState(false);
+  const [dropdown, setDropdown] = useState(false);
+
+  function connect() {
+    ethereum
+      .request({ method: 'eth_requestAccounts' })
+      .then(handleAccountsChanged)
+      .catch((err) => {
+        if (err.code === 4001) {
+          console.log('User denied connection');
+        } else {
+          console.error(err);
+        }
+      });
+  }
+
+  function handleAccountsChanged() {
+    console.log("Wallet connected!")
+  }
+
+  const handleInputChange = (event) => {
+    setUserinfo({
+      ...userinfo,
+      [event.target.name]: event.target.value
+    })
+  }
 
   const toggleMenu = () => {
     setDropdown(!dropdown);
-  }
-
-  useEffect(() => {
-    loadWeb3()
-    loadBlockchainData()
-  }, []);
-
-  async function loadWeb3() {
-    if (window.ethereum) {
-      window.web3 = new Web3(window.ethereum)
-      await window.ethereum.enable()
-    }
-    else if (window.web3) {
-      window.web3 = new Web3(window.web3.currentProvider)
-    }
-    else {
-      window.alert('ETHEREUM - BROWSER NOT DETECTED! PLEASE INSTALL METAMASK EXTENSION')
-    }
-  }
-
-  async function loadBlockchainData() {
-    const web3 = window.web3
-    const accounts = await web3.eth.getAccounts()
-    setAccount(accounts[0])
-
-    const query = doc(db, "users", accounts[0]);
-    const document = await getDoc(query)
-    setUserdata(document.data())
-  }
-
-  async function connect() {
-    try {
-      await activate(injected)
-    } catch (ex) {
-      console.log(ex)
-    }
-  }
-
-  async function disconnect() {
-    try {
-      deactivate()
-    } catch (ex) {
-      console.log(ex)
-    }
   }
 
   async function editProfile() {
@@ -73,13 +47,6 @@ export default function ConnectWalletButton() {
     } else {
       setEdit(false);
     }
-  }
-
-  const handleInputChange = (event) => {
-    setUserinfo({
-      ...userinfo,
-      [event.target.name]: event.target.value
-    })
   }
 
   async function updateProfile() {
@@ -100,27 +67,23 @@ export default function ConnectWalletButton() {
       name1: '',
       pic1: ''
     })
-    await setDoc(doc(db, "users", account), userinfo)
-    setLog1('Photo');
-    setLog2('Username');
-    setEdit(false);
-    loadBlockchainData()
+    setDoc(doc(db, "users", props.account), userinfo).then(r => window.location.reload())
   }
 
   return (
     <>
-      {active ?
+      {props.account !== '' ?
         <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="sm">
           <DropdownToggle caret color='warning'>
             WALLET
           </DropdownToggle>
           <DropdownMenu>
-            <DropdownItem header><img width="150" height="150" src={`https://ipfs.io/ipfs/${userdata.pic1}`} alt="" /></DropdownItem>
-            <DropdownItem header>{userdata.name1}</DropdownItem>
-            <DropdownItem header>{account.substring(0, 5) + "..." + account.substring(12, 16)}</DropdownItem>
+            <DropdownItem header><img width="150" height="150" src={`https://ipfs.io/ipfs/${props.data.pic1}`} alt="" /></DropdownItem>
+            <DropdownItem header>{props.data.name1}</DropdownItem>
+            <DropdownItem header>{props.account.substring(0, 5) + "..." + props.account.substring(12, 16)}<button onClick={() => navigator.clipboard.writeText(props.account)}>[C]</button></DropdownItem>
             <DropdownItem divider />
             <DropdownItem onClick={editProfile}>Edit Profile</DropdownItem>
-            <DropdownItem onClick={disconnect}>Disconnect</DropdownItem>
+            <DropdownItem >Disconnect</DropdownItem>
           </DropdownMenu>
         </Dropdown>
         :

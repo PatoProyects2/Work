@@ -1,8 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import Web3 from 'web3'
+import detectEthereumProvider from '@metamask/detect-provider'
+import { doc, setDoc, getDoc } from "firebase/firestore";
 import RpsGame from '../../abis/RpsGame/rpsGame.json'
 import RouterSwap from '../../abis/Swap/PancakeRouter.json'
-import chains from '../../components/blockchain/AvailableChains'
+import {
+  rpsGameContract,
+  polygonSwapContract,
+  maticContract,
+  usdcContract
+} from '../../components/blockchain/Contracts'
 import HistoryGames from '../../components/buttons/HistoryGames'
 import ConnectChain from '../../components/buttons/ConnectChain'
 import ConnectWallet from '../../components/buttons/ConnectWallet'
@@ -10,6 +17,7 @@ import Rock from '../../assets/imgs/rock.gif'
 import Papper from '../../assets/imgs/papper.gif'
 import Scissors from '../../assets/imgs/scissors.gif'
 import MaticLogo from '../../assets/imgs/maticLogo.png'
+import db from '../../firebase/firesbaseConfig'
 
 export default function Game() {
   const [rpsgame, setRpsgame] = useState({});
@@ -19,13 +27,16 @@ export default function Game() {
     hand: '',
     amount: 0
   });
+  const [userdata, setUserdata] = useState({
+    name1: 'guest',
+    pic1: 'QmQ1cjPaQr8oCRvQk5KDDWfTRuoBgNnZVhQo1VzTF7S6c8?filename=nft%20bored%20ape.jpg'
+  });
   const [account, setAccount] = useState('');
-  const [maticaddress, setMaticaddress] = useState('0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270');
-  const [usdcaddress, setUsdcaddress] = useState('0x2791bca1f2de4661ed88a30c99a7a9449aa84174');
+  const [chain, setChain] = useState('');
+  const [network, setNetwork] = useState('');
   const [log, setLog] = useState('');
   const [decimal, setDecimal] = useState(1000000000000000000);
   const [maticprice, setMaticprice] = useState(0);
-  const [chain, setChain] = useState(0);
   const [walletBalances, setWalletbalances] = useState(0);
   const [userhand, setUserhand] = useState(0);
   const [useramount, setUseramount] = useState(0);
@@ -36,57 +47,48 @@ export default function Game() {
   const [pause, setPause] = useState('Waiting Metamask');
   const [active, setActive] = useState(false);
   const [playing, setPlaying] = useState(false);
-  const [result0, setResult0] = useState(undefined);
+  const [gameresult0, setGameresult0] = useState(undefined);
   const [gameresult, setGameresult] = useState(undefined);
-
-  async function openGame() {
-    setActive(true);
-  }
+  const [blockchain, setBlockchain] = useState(0);
+  const [events, setEvents] = useState({});
 
   useEffect(() => {
     loadWeb3()
-    loadBlockchainData()
   }, []);
 
   async function loadWeb3() {
-    if (window.ethereum) {
-      window.web3 = new Web3(window.ethereum)
-      await window.ethereum.enable()
-    }
-    else if (window.web3) {
-      window.web3 = new Web3(window.web3.currentProvider)
-    }
-    else {
-      window.alert('METAMASK BROWSER NOT DETECTED! PLEASE INSTALL METAMASK EXTENSION')
-    }
-  }
+    const provider = await detectEthereumProvider();
+    if (provider) {
 
-  async function loadBlockchainData() {
-    const web3 = window.web3
-    setWeb3(web3)
-    const accounts = await web3.eth.getAccounts()
-    setAccount(accounts[0])
-    let chainId = await web3.eth.getChainId()
-    setChain(chainId)
-    let chainInUse = null
-
-    for (let chainIndex in chains) {
-      if (chains[chainIndex].id === chainId) {
-        chainInUse = chains[chainIndex]
-      }
-    }
-    if (!chainInUse) {
-      window.alert('INVALID NETWORK DETECTED')
     } else {
-      const rpsgame = new web3.eth.Contract(RpsGame.abi, chainInUse.rpsGameAddress)
+      window.alert('Please install MetaMask!')
+      return false
+    }
+    if (provider !== window.ethereum) {
+      window.alert('Do you have multiple wallets installed?')
+    }
+    const web3 = new Web3(new Web3(window.ethereum), provider)
+    setWeb3(web3)
+    const chainId = await ethereum.request({ method: 'eth_chainId' })
+    handleChainChanged(chainId)
+    ethereum.on('chainChanged', handleChainChanged)
+    const accounts = await ethereum.request({ method: 'eth_accounts' })
+    handleAccountsChanged(accounts)
+    ethereum.on('accountsChanged', handleAccountsChanged)
+    if (chainId === '0x89') {
+      setNetwork('POLYGON')
+    }
+    if (chainId === '0x13881') {
+      setNetwork('MUMBAI')
+      const rpsgame = new web3.eth.Contract(RpsGame.abi, rpsGameContract)
       setRpsgame(rpsgame)
-      const quickswap = new web3.eth.Contract(RouterSwap.abi, chainInUse.polygonSwapAddress)
+      const quickswap = new web3.eth.Contract(RouterSwap.abi, polygonSwapContract)
       setQuickswap(quickswap)
       try {
         let walletBalance = await web3.eth.getBalance(accounts[0])
         setWalletbalances(walletBalance)
       } catch (e) {
-        console.log('METAMASK NOT INSTALLED')
+        console.log('Cant read balance!')
       }
       try {
         let totalLoses = await rpsgame.methods.totalLoses().call()
@@ -101,12 +103,69 @@ export default function Game() {
         console.log('RPSGAME CONTRACT NOT DEPLOYED TO DETECTED NETWORK')
       }
       try {
-        let maticPrice = await quickswap.methods.getAmountsOut(1000000000000000, [maticaddress, usdcaddress]).call()
+        let maticPrice = await quickswap.methods.getAmountsOut(1000000000000000, [maticContract, usdcContract]).call()
         setMaticprice(maticPrice[1])
       } catch (e) {
         console.log('SWAP CONTRACT NOT DEPLOYED TO DETECTED NETWORK')
       }
+      try {
+        const query = doc(db, "users", accounts[0])
+        const document = await getDoc(query)
+        const userData = document.data()
+        if (userData) {
+          setUserdata(userData)
+        } else {
+          setDoc(doc(db, "users", accounts[0]), userdata)
+        }
+      } catch (e) {
+        console.log("Cant read profile")
+      }
+      const sleep = (milliseconds) => {
+        return new Promise(resolve => setTimeout(resolve, milliseconds))
+      }
+      for (let count = 0; count < 1000; count++) {
+        web3.eth.getBlockNumber()
+          .then(n => {
+            setBlockchain(n)
+            n = n - 28
+            rpsgame.getPastEvents(
+              'Play',
+              {
+                // filter: { _to: account.toString() },
+                fromBlock: n,
+                toBlock: 'latest'
+              }
+            )
+              .then(events => {
+                setEvents(events)
+
+              }).catch(error => {
+                console.log(error)
+              })
+          })
+        await sleep(1000);
+      }
+    } else {
+      console.log('Please connect to mumbai network!')
     }
+  }
+
+  function handleChainChanged(_chainId) {
+    setChain(_chainId)
+    console.log("Chain loaded!")
+  }
+
+  function handleAccountsChanged(accounts) {
+    console.log("Account loaded!")
+    if (accounts.length === 0) {
+      console.log('Please connect to MetaMask.');
+    } else if (accounts[0] !== null) {
+      setAccount(accounts[0])
+    }
+  }
+
+  async function openGame() {
+    setActive(true);
   }
 
   const handleInputChange = (event) => {
@@ -133,32 +192,16 @@ export default function Game() {
     }
 
     if (usergame.hand !== '' && usergame.amount !== 0) {
-      let calculateValue = await rpsgame.methods.calculateValue(window.web3.utils.toWei((usergame.amount).toString(), "ether")).call()
+      let calculateValue = await rpsgame.methods.calculateValue((web3.utils.toWei((usergame.amount).toString(), "ether"))).call()
       setPlaying(true)
       rpsgame.methods
-        .playCuatro(window.web3.utils.toWei((usergame.amount).toString(), "ether"))
+        .playCuatro(web3.utils.toWei((usergame.amount).toString(), "ether"))
         .send({
           from: account,
           value: calculateValue,
         })
         .on('receipt', (hash) => {
-          web3.eth.getBlockNumber()
-            .then(n => {
-              n = n - 4
-              rpsgame.getPastEvents(
-                'Play',
-                {
-                  filter: { _to: account },
-                  fromBlock: n,
-                  toBlock: 'latest'
-                }
-              ).then(events => {
-                setResult0(events[0].returnValues[2])
-              }).then(events => {
-                setGameresult(true)
-                backGame()
-              })
-            })
+          setTimeout(readUserGame, 1000)
         })
         .on('error', function (error) {
           setPlaying(false)
@@ -166,28 +209,51 @@ export default function Game() {
     }
   }
 
+  async function readUserGame() {
+    web3.eth.getBlockNumber()
+      .then(n => {
+        n = n - 10
+        rpsgame.getPastEvents(
+          'Play',
+          {
+            filter: { _to: account },
+            fromBlock: n,
+            toBlock: 'latest'
+          }
+        )
+          .then(events => {
+            setGameresult0(events[0].returnValues[2])
+            setGameresult(true)
+          })
+          .catch(error => {
+            console.log("USER GAME NOT FOUND!")
+          })
+      })
+      .catch(error => {
+        console.log("BLOCK NOT FOUND!")
+      })
+  }
+
   async function backGame() {
-    const sleep = (milliseconds) => {
-      return new Promise(resolve => setTimeout(resolve, milliseconds))
-    }
-    for (let count = 15; count > 0; count--) {
-      setPause(count)
-      await sleep(1000)
-    }
-    window.location.reload()
+    setPlaying(false)
+    setGameresult(undefined)
+    setGameresult0(undefined)
   }
 
   return (
     <>
       <img className="my-3 rounded-circle" src="https://random.imagecdn.app/256/256" alt="" width="256" height="256" />
-      <ConnectChain />
-      <ConnectWallet />
+      <ConnectChain network={network} />
+      <ConnectWallet account={account} data={userdata} />
       <article>
         <img src={MaticLogo} width="25" height="25" alt="" />{(maticprice / 1000).toFixed(2) + "$"}
-        {active === true && chain === 80001 ?
+        {active === true && chain === '0x13881' ?
           <div className="game-container bg-secondary">
             <h1>Rock Paper Scissors Game</h1>
-            <HistoryGames />
+            <HistoryGames
+              blockchain={blockchain}
+              events={events}
+            />
             <div className="row">
               <div className="col fs-4">{`Total Games: ${won + loss}`}</div>
             </div>
@@ -200,9 +266,7 @@ export default function Game() {
               <div className="col">{`Your Loss: ${userloses}`}</div>
             </div>
             <h3 className="my-2">Balance: {(walletBalances / decimal).toFixed(4) + " MATIC"}</h3>
-
             {log && (<span className="alert alert-danger mx-5">{log}</span>)}
-
             {playing === true ?
               <div className="mt-3">
                 <h3>Playing... {pause}</h3>
@@ -212,42 +276,44 @@ export default function Game() {
                 {gameresult === true
                   ?
                   <>
-                    {userhand === 'Rock' && result0 === true
+                    {userhand === 'Rock' && gameresult0 === true
                       ?
                       "Scissors | You Won: " + (useramount * 2) + " MATIC"
                       :
                       ""
                     }
-                    {userhand === 'Papper' && result0 === true
+                    {userhand === 'Papper' && gameresult0 === true
                       ?
                       "Rock | You Won: " + (useramount * 2) + " MATIC"
                       :
                       ""
                     }
-                    {userhand === 'Scissors' && result0 === true
+                    {userhand === 'Scissors' && gameresult0 === true
                       ?
                       "Papper | You Won: " + (useramount * 2) + " MATIC"
                       :
                       ""
                     }
-                    {userhand === 'Rock' && result0 === false
+                    {userhand === 'Rock' && gameresult0 === false
                       ?
                       "Papper | You Loss: " + useramount + " MATIC"
                       :
                       ""
                     }
-                    {userhand === 'Papper' && result0 === false
+                    {userhand === 'Papper' && gameresult0 === false
                       ?
                       "Scissors | You Loss: " + useramount + " MATIC"
                       :
                       ""
                     }
-                    {userhand === 'Scissors' && result0 === false
+                    {userhand === 'Scissors' && gameresult0 === false
                       ?
                       "Rock | You Loss: " + useramount + " MATIC"
                       :
                       ""
                     }
+                    <br></br>
+                    <button onClick={backGame}>BACK</button>
                   </>
                   :
                   ""
@@ -274,19 +340,19 @@ export default function Game() {
                 <div className="row mb-3">
                   <div className="col">
                     <label className="amount">
-                      <input type="radio" name="amount" id="amount1" onChange={handleInputChange} value="1" />
+                      <input type="radio" name="amount" id="amount1" onChange={handleInputChange} value="0.1" />
                       <span>1 MATIC</span>
                     </label>
                   </div>
                   <div className="col">
                     <label className="amount">
-                      <input type="radio" name="amount" id="amount2" onChange={handleInputChange} value="2" />
+                      <input type="radio" name="amount" id="amount2" onChange={handleInputChange} value="0.2" />
                       <span>2 MATIC</span>
                     </label>
                   </div>
                   <div className="col">
                     <label className="amount">
-                      <input type="radio" name="amount" id="amount3" onChange={handleInputChange} value="4" />
+                      <input type="radio" name="amount" id="amount3" onChange={handleInputChange} value="0.4" />
                       <span>4 MATIC</span>
                     </label>
                   </div>
@@ -294,19 +360,19 @@ export default function Game() {
                 <div className="row mt-3">
                   <div className="col">
                     <label className="amount">
-                      <input type="radio" name="amount" id="amount4" onChange={handleInputChange} value="8" />
+                      <input type="radio" name="amount" id="amount4" onChange={handleInputChange} value="0.8" />
                       <span>8 MATIC</span>
                     </label>
                   </div>
                   <div className="col">
                     <label className="amount">
-                      <input type="radio" name="amount" id="amount5" onChange={handleInputChange} value="16" />
+                      <input type="radio" name="amount" id="amount5" onChange={handleInputChange} value="1.6" />
                       <span>16 MATIC</span>
                     </label>
                   </div>
                   <div className="col">
                     <label className="amount">
-                      <input type="radio" name="amount" id="amount6" onChange={handleInputChange} value="32" />
+                      <input type="radio" name="amount" id="amount6" onChange={handleInputChange} value="3.2" />
                       <span>32 MATIC</span>
                     </label>
                   </div>
@@ -318,11 +384,15 @@ export default function Game() {
           </div>
           :
           <div>
-            <button className="btn-hover btn-start" onClick={openGame}>START</button>
+            {account !== ''
+              ?
+              <button className="btn-hover btn-start" onClick={openGame}>START</button>
+              :
+              ""
+            }
           </div>
         }
       </article >
     </>
   );
-
 }

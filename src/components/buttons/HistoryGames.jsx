@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import Web3 from 'web3'
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap'
 import { doc, getDoc } from "firebase/firestore";
-import RpsGame from '../../abis/RpsGame/rpsGame.json'
-import chains from '../blockchain/AvailableChains'
 import db from '../../firebase/firesbaseConfig'
 
-export default function HistoryGames() {
-    const [userevents, setUserevents] = useState({});
+export default function HistoryGames(props) {
+    const [dropdown, setDropdown] = useState(false);
+    const [decimal, setDecimal] = useState(1000000000000000000);
     const [userdata0, setUserdata0] = useState({});
     const [userdata1, setUserdata1] = useState({});
     const [userdata2, setUserdata2] = useState({});
@@ -16,156 +14,23 @@ export default function HistoryGames() {
     const [userdata5, setUserdata5] = useState({});
     const [userdata6, setUserdata6] = useState({});
     const [userdata7, setUserdata7] = useState({});
-    const [account, setAccount] = useState('0x0');
-    const [decimal, setDecimal] = useState(1000000000000000000);
-    const [blockchain, setBlockchain] = useState(0);
-    const [userwinstreak0, setUserwinstreak0] = useState(0);
-    const [userwinstreak1, setUserwinstreak1] = useState(0);
-    const [userwinstreak2, setUserwinstreak2] = useState(0);
-    const [userwinstreak3, setUserwinstreak3] = useState(0);
-    const [userwinstreak4, setUserwinstreak4] = useState(0);
-    const [userwinstreak5, setUserwinstreak5] = useState(0);
-    const [userwinstreak6, setUserwinstreak6] = useState(0);
-    const [userwinstreak7, setUserwinstreak7] = useState(0);
-    const [userlosestreak0, setUserlosestreak0] = useState(0);
-    const [userlosestreak1, setUserlosestreak1] = useState(0);
-    const [userlosestreak2, setUserlosestreak2] = useState(0);
-    const [userlosestreak3, setUserlosestreak3] = useState(0);
-    const [userlosestreak4, setUserlosestreak4] = useState(0);
-    const [userlosestreak5, setUserlosestreak5] = useState(0);
-    const [userlosestreak6, setUserlosestreak6] = useState(0);
-    const [userlosestreak7, setUserlosestreak7] = useState(0);
-    const [result0, setResult0] = useState(undefined);
-    const [result1, setResult1] = useState(undefined);
-    const [result2, setResult2] = useState(undefined);
-    const [result3, setResult3] = useState(undefined);
-    const [result4, setResult4] = useState(undefined);
-    const [result5, setResult5] = useState(undefined);
-    const [result6, setResult6] = useState(undefined);
-    const [result7, setResult7] = useState(undefined);
-    const [dropdown, setDropdown] = useState(false);
+
+    useEffect(() => {
+        readUserName(props.events)
+    }, [props.events]);
+
+    async function readUserName(events) {
+        console.log(events)
+        try {
+            const userData0 = await getDoc(doc(db, "users", events[0].returnValues[0]))
+            setUserdata0(userData0.data())
+        } catch (e) {
+            console.log("HistoryGame0 not found!")
+        }
+    }
 
     const toggleMenu = () => {
         setDropdown(!dropdown);
-    }
-
-    useEffect(() => {
-        loadWeb3()
-        loadBlockchainData()
-    }, []);
-
-    async function loadWeb3() {
-        if (window.ethereum) {
-            window.web3 = new Web3(window.ethereum)
-            await window.ethereum.enable()
-        }
-        else if (window.web3) {
-            window.web3 = new Web3(window.web3.currentProvider)
-        }
-        else {
-            window.alert('METAMASK BROWSER NOT DETECTED! PLEASE INSTALL METAMASK EXTENSION')
-        }
-    }
-
-    async function loadBlockchainData() {
-        const web3 = window.web3
-        const accounts = await web3.eth.getAccounts()
-        setAccount(accounts[0])
-        let chainId = await web3.eth.getChainId()
-        let chainInUse = null
-
-        for (let chainIndex in chains) {
-            if (chains[chainIndex].id === chainId) {
-                chainInUse = chains[chainIndex]
-            }
-        }
-        if (!chainInUse) {
-            window.alert('INVALID NETWORK DETECTED')
-        } else {
-            const sleep = (milliseconds) => {
-                return new Promise(resolve => setTimeout(resolve, milliseconds))
-            }
-            const rpsgame = new web3.eth.Contract(RpsGame.abi, chainInUse.rpsGameAddress)
-            for (let count = 0; count < 1000; count++) {
-                web3.eth.getBlockNumber()
-                    .then(n => {
-                        n = n - 20
-                        rpsgame.getPastEvents(
-                            'Play',
-                            {
-                                // filter: { _to: account.toString() },
-                                fromBlock: n,
-                                toBlock: 'latest'
-                            }
-                        ).then(events => {
-                            setUserevents(events)
-
-                            getDoc(doc(db, "users", events[0].returnValues[0])).then(data => {
-                                setUserdata0(data.data())
-                            })
-                            setResult0(events[0].returnValues[2])
-                            rpsgame.methods.winLosesRache(events[0].returnValues[0], 0).call().then(loseStreak => setUserlosestreak0(loseStreak))
-                            rpsgame.methods.winLosesRache(events[0].returnValues[0], 1).call().then(winStreak => setUserwinstreak0(winStreak))
-
-                            getDoc(doc(db, "users", events[1].returnValues[0])).then(data => {
-                                setUserdata1(data.data())
-                            })
-                            setResult1(events[1].returnValues[2])
-                            rpsgame.methods.winLosesRache(events[1].returnValues[0], 0).call().then(loseStreak => setUserlosestreak1(loseStreak))
-                            rpsgame.methods.winLosesRache(events[1].returnValues[0], 1).call().then(winStreak => setUserwinstreak1(winStreak))
-
-                            getDoc(doc(db, "users", events[2].returnValues[0])).then(data => {
-                                setUserdata2(data.data())
-                            })
-                            setResult2(events[2].returnValues[2])
-                            rpsgame.methods.winLosesRache(events[2].returnValues[0], 0).call().then(loseStreak => setUserlosestreak2(loseStreak))
-                            rpsgame.methods.winLosesRache(events[2].returnValues[0], 1).call().then(winStreak => setUserwinstreak2(winStreak))
-
-                            getDoc(doc(db, "users", events[3].returnValues[0])).then(data => {
-                                setUserdata3(data.data())
-                            })
-                            setResult3(events[3].returnValues[2])
-                            rpsgame.methods.winLosesRache(events[3].returnValues[0], 0).call().then(loseStreak => setUserlosestreak3(loseStreak))
-                            rpsgame.methods.winLosesRache(events[3].returnValues[0], 1).call().then(winStreak => setUserwinstreak3(winStreak))
-
-                            getDoc(doc(db, "users", events[4].returnValues[0])).then(data => {
-                                setUserdata3(data.data())
-                            })
-                            setResult4(events[4].returnValues[2])
-                            rpsgame.methods.winLosesRache(events[4].returnValues[0], 0).call().then(loseStreak => setUserlosestreak4(loseStreak))
-                            rpsgame.methods.winLosesRache(events[4].returnValues[0], 1).call().then(winStreak => setUserwinstreak4(winStreak))
-
-                            getDoc(doc(db, "users", events[5].returnValues[0])).then(data => {
-                                setUserdata3(data.data())
-                            })
-                            setResult5(events[5].returnValues[2])
-                            rpsgame.methods.winLosesRache(events[5].returnValues[0], 0).call().then(loseStreak => setUserlosestreak5(loseStreak))
-                            rpsgame.methods.winLosesRache(events[5].returnValues[0], 1).call().then(winStreak => setUserwinstreak5(winStreak))
-
-                            getDoc(doc(db, "users", events[6].returnValues[0])).then(data => {
-                                setUserdata3(data.data())
-                            })
-                            setResult6(events[6].returnValues[2])
-                            rpsgame.methods.winLosesRache(events[6].returnValues[0], 0).call().then(loseStreak => setUserlosestreak6(loseStreak))
-                            rpsgame.methods.winLosesRache(events[6].returnValues[0], 1).call().then(winStreak => setUserwinstreak6(winStreak))
-
-                            getDoc(doc(db, "users", events[7].returnValues[0])).then(data => {
-                                setUserdata3(data.data())
-                            })
-                            setResult7(events[7].returnValues[2])
-                            rpsgame.methods.winLosesRache(events[7].returnValues[0], 0).call().then(loseStreak => setUserlosestreak7(loseStreak))
-                            rpsgame.methods.winLosesRache(events[7].returnValues[0], 1).call().then(winStreak => setUserwinstreak7(winStreak))
-                        }).catch(error => {
-
-                        })
-                    })
-
-                web3.eth.getBlockNumber()
-                    .then(n => setBlockchain(n))
-
-                await sleep(5000);
-            }
-        }
     }
 
     return (
@@ -176,232 +41,96 @@ export default function HistoryGames() {
                 </DropdownToggle>
                 <DropdownMenu>
                     <DropdownItem header>
-                        {userevents[7] !== undefined
+                        {props.events[7] !== undefined
                             ?
                             <>
-                                {userdata7.name1 + " played " + (userevents[7].returnValues[1] / decimal) + " MATIC and"}
-                                {result7 === false
-                                    ?
-                                    " lost all "
-                                    :
-                                    " doubled "
-                                }
-                                {userlosestreak7 > 0
-                                    ?
-                                    userlosestreak7 + " times | "
-                                    :
-                                    ""
-                                }
-                                {userwinstreak7 > 0
-                                    ?
-                                    userwinstreak7 + " times | "
-                                    :
-                                    ""
-                                }
-                                {((blockchain - userevents[7].blockNumber) * 3) + " seconds ago"}
+                                {userdata7.name1 + " played " + (props.events[7].returnValues[1] / decimal) + " MATIC and"}
+                                {props.events[7].returnValues[2] === false ? " lost all " : ""}{props.events[7].returnValues[2] === true ? " doubled " : ""}
+                                {((props.blockchain - props.events[7].blockNumber) * 2) + " seconds ago"}
                             </>
                             :
                             ""
                         }
                     </DropdownItem>
                     <DropdownItem header>
-                        {userevents[6] !== undefined
+                        {props.events[6] !== undefined
                             ?
                             <>
-                                {userdata6.name1 + " played " + (userevents[6].returnValues[1] / decimal) + " MATIC and"}
-                                {result6 === false
-                                    ?
-                                    " lost all "
-                                    :
-                                    " doubled "
-                                }
-                                {userlosestreak6 > 0
-                                    ?
-                                    userlosestreak6 + " times | "
-                                    :
-                                    ""
-                                }
-                                {userwinstreak6 > 0
-                                    ?
-                                    userwinstreak6 + " times | "
-                                    :
-                                    ""
-                                }
-                                {((blockchain - userevents[6].blockNumber) * 3) + " seconds ago"}
+                                {userdata6.name1 + " played " + (props.events[6].returnValues[1] / decimal) + " MATIC and"}
+                                {props.events[6].returnValues[2] === false ? " lost all " : ""}{props.events[6].returnValues[2] === true ? " doubled " : ""}
+                                {((props.blockchain - props.events[6].blockNumber) * 2) + " seconds ago"}
                             </>
                             :
                             ""
                         }
                     </DropdownItem>
                     <DropdownItem header>
-                        {userevents[5] !== undefined
+                        {props.events[5] !== undefined
                             ?
                             <>
-                                {userdata5.name1 + " played " + (userevents[5].returnValues[1] / decimal) + " MATIC and"}
-                                {result5 === false
-                                    ?
-                                    " lost all "
-                                    :
-                                    " doubled "
-                                }
-                                {userlosestreak5 > 0
-                                    ?
-                                    userlosestreak5 + " times | "
-                                    :
-                                    ""
-                                }
-                                {userwinstreak5 > 0
-                                    ?
-                                    userwinstreak5 + " times | "
-                                    :
-                                    ""
-                                }
-                                {((blockchain - userevents[5].blockNumber) * 3) + " seconds ago"}
+                                {userdata5.name1 + " played " + (props.events[5].returnValues[1] / decimal) + " MATIC and"}
+                                {props.events[5].returnValues[2] === false ? " lost all " : ""}{props.events[5].returnValues[2] === true ? " doubled " : ""}
+                                {((props.blockchain - props.events[5].blockNumber) * 2) + " seconds ago"}
                             </>
                             :
                             ""
                         }
                     </DropdownItem>
                     <DropdownItem header>
-                        {userevents[4] !== undefined
+                        {props.events[4] !== undefined
                             ?
                             <>
-                                {userdata4.name1 + " played " + (userevents[4].returnValues[1] / decimal) + " MATIC and"}
-                                {result4 === false
-                                    ?
-                                    " lost all "
-                                    :
-                                    " doubled "
-                                }
-                                {userlosestreak4 > 0
-                                    ?
-                                    userlosestreak4 + " times | "
-                                    :
-                                    ""
-                                }
-                                {userwinstreak4 > 0
-                                    ?
-                                    userwinstreak4 + " times | "
-                                    :
-                                    ""
-                                }
-                                {((blockchain - userevents[4].blockNumber) * 3) + " seconds ago"}
+                                {userdata4.name1 + " played " + (props.events[4].returnValues[1] / decimal) + " MATIC and"}
+                                {props.events[4].returnValues[2] === false ? " lost all " : ""}{props.events[4].returnValues[2] === true ? " doubled " : ""}
+                                {((props.blockchain - props.events[4].blockNumber) * 2) + " seconds ago"}
                             </>
                             :
                             ""
                         }
                     </DropdownItem>
                     <DropdownItem header>
-                        {userevents[3] !== undefined
+                        {props.events[3] !== undefined
                             ?
                             <>
-                                {userdata3.name1 + " played " + (userevents[3].returnValues[1] / decimal) + " MATIC and"}
-                                {result3 === false
-                                    ?
-                                    " lost all "
-                                    :
-                                    " doubled "
-                                }
-                                {userlosestreak3 > 0
-                                    ?
-                                    userlosestreak3 + " times | "
-                                    :
-                                    ""
-                                }
-                                {userwinstreak3 > 0
-                                    ?
-                                    userwinstreak3 + " times | "
-                                    :
-                                    ""
-                                }
-                                {((blockchain - userevents[3].blockNumber) * 3) + " seconds ago"}
+                                {userdata3.name1 + " played " + (props.events[3].returnValues[1] / decimal) + " MATIC and"}
+                                {props.events[3].returnValues[2] === false ? " lost all " : ""}{props.events[3].returnValues[2] === true ? " doubled " : ""}
+                                {((props.blockchain - props.events[3].blockNumber) * 2) + " seconds ago"}
                             </>
                             :
                             ""
                         }
                     </DropdownItem>
                     <DropdownItem header>
-                        {userevents[2] !== undefined
+                        {props.events[2] !== undefined
                             ?
                             <>
-                                {userdata2.name1 + " played " + (userevents[2].returnValues[1] / decimal) + " MATIC and"}
-                                {result2 === false
-                                    ?
-                                    " lost all "
-                                    :
-                                    " doubled "
-                                }
-                                {userlosestreak2 > 0
-                                    ?
-                                    userlosestreak2 + " times | "
-                                    :
-                                    ""
-                                }
-                                {userwinstreak2 > 0
-                                    ?
-                                    userwinstreak2 + " times | "
-                                    :
-                                    ""
-                                }
-                                {((blockchain - userevents[2].blockNumber) * 3) + " seconds ago"}
+                                {userdata2.name1 + " played " + (props.events[2].returnValues[1] / decimal) + " MATIC and"}
+                                {props.events[2].returnValues[2] === false ? " lost all " : ""}{props.events[2].returnValues[2] === true ? " doubled " : ""}
+                                {((props.blockchain - props.events[2].blockNumber) * 2) + " seconds ago"}
                             </>
                             :
                             ""
                         }
                     </DropdownItem>
                     <DropdownItem header>
-                        {userevents[1] !== undefined
+                        {props.events[1] !== undefined
                             ?
                             <>
-                                {userdata1.name1 + " played " + (userevents[1].returnValues[1] / decimal) + " MATIC and"}
-                                {result1 === false
-                                    ?
-                                    " lost all "
-                                    :
-                                    " doubled "
-                                }
-                                {userlosestreak1 > 0
-                                    ?
-                                    userlosestreak1 + " times | "
-                                    :
-                                    ""
-                                }
-                                {userwinstreak1 > 0
-                                    ?
-                                    userwinstreak1 + " times | "
-                                    :
-                                    ""
-                                }
-                                {((blockchain - userevents[1].blockNumber) * 3) + " seconds ago"}
+                                {userdata1.name1 + " played " + (props.events[1].returnValues[1] / decimal) + " MATIC and"}
+                                {props.events[1].returnValues[2] === false ? " lost all " : ""}{props.events[1].returnValues[2] === true ? " doubled " : ""}
+                                {((props.blockchain - props.events[1].blockNumber) * 2) + " seconds ago"}
                             </>
                             :
                             ""
                         }
                     </DropdownItem>
                     <DropdownItem header>
-                        {userevents[0] !== undefined
+                        {props.events[0] !== undefined
                             ?
                             <>
-                                {userdata0.name1 + " played " + (userevents[0].returnValues[1] / decimal) + " MATIC and"}
-                                {result0 === false
-                                    ?
-                                    " lost all "
-                                    :
-                                    " doubled "
-                                }
-                                {userlosestreak0 > 0
-                                    ?
-                                    userlosestreak0 + " times | "
-                                    :
-                                    ""
-                                }
-                                {userwinstreak0 > 0
-                                    ?
-                                    userwinstreak0 + " times | "
-                                    :
-                                    ""
-                                }
-                                {((blockchain - userevents[0].blockNumber) * 3) + " seconds ago"}
+                                {userdata0.name1 + " played " + (props.events[0].returnValues[1] / decimal) + " MATIC and"}
+                                {props.events[0].returnValues[2] === false ? " lost all " : ""}{props.events[0].returnValues[2] === true ? " doubled " : ""}
+                                {((props.blockchain - props.events[0].blockNumber) * 2) + " seconds ago"}
                             </>
                             :
                             ""
