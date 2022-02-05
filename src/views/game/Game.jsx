@@ -49,104 +49,82 @@ export default function Game() {
   const [playing, setPlaying] = useState(false);
   const [gameresult0, setGameresult0] = useState(undefined);
   const [gameresult, setGameresult] = useState(undefined);
-  const [blockchain, setBlockchain] = useState(0);
-  const [events, setEvents] = useState({});
+
 
   useEffect(() => {
     loadWeb3()
   }, []);
 
   async function loadWeb3() {
-    const provider = await detectEthereumProvider();
-    if (provider) {
+    try {
+      const provider = await detectEthereumProvider();
+      if (provider) {
 
-    } else {
-      window.alert('Please install MetaMask!')
-      return false
-    }
-    if (provider !== window.ethereum) {
-      window.alert('Do you have multiple wallets installed?')
-    }
-    const web3 = new Web3(new Web3(window.ethereum), provider)
-    setWeb3(web3)
-    const chainId = await ethereum.request({ method: 'eth_chainId' })
-    handleChainChanged(chainId)
-    ethereum.on('chainChanged', handleChainChanged)
-    const accounts = await ethereum.request({ method: 'eth_accounts' })
-    handleAccountsChanged(accounts)
-    ethereum.on('accountsChanged', handleAccountsChanged)
-    if (chainId === '0x89') {
-      setNetwork('POLYGON')
-    }
-    if (chainId === '0x13881') {
-      setNetwork('MUMBAI')
-      const rpsgame = new web3.eth.Contract(RpsGame.abi, rpsGameContract)
-      setRpsgame(rpsgame)
-      const quickswap = new web3.eth.Contract(RouterSwap.abi, polygonSwapContract)
-      setQuickswap(quickswap)
-      try {
-        let walletBalance = await web3.eth.getBalance(accounts[0])
-        setWalletbalances(walletBalance)
-      } catch (e) {
-        console.log('Cant read balance!')
+      } else {
+        window.alert('Please install MetaMask!')
+        return false
       }
-      try {
-        let totalLoses = await rpsgame.methods.totalLoses().call()
-        setLoss(parseInt(totalLoses))
-        let totalWins = await rpsgame.methods.totalWins().call()
-        setWon(parseInt(totalWins))
-        // let userLoses = await rpsgame.methods.winLosesPerUser(accounts[0], 0).call()
-        // setUserloses(userLoses)
-        // let userWins = await rpsgame.methods.winLosesPerUser(accounts[0], 1).call()
-        // setUserwins(userWins)
-      } catch (e) {
-        console.log('RPSGAME CONTRACT NOT DEPLOYED TO DETECTED NETWORK')
+      if (provider !== window.ethereum) {
+        window.alert('Do you have multiple wallets installed?')
       }
-      try {
-        let maticPrice = await quickswap.methods.getAmountsOut(1000000000000000, [maticContract, usdcContract]).call()
-        setMaticprice(maticPrice[1])
-      } catch (e) {
-        console.log('SWAP CONTRACT NOT DEPLOYED TO DETECTED NETWORK')
+      const web3 = new Web3(new Web3(window.ethereum), provider)
+      setWeb3(web3)
+      const chainId = await ethereum.request({ method: 'eth_chainId' })
+      handleChainChanged(chainId)
+      ethereum.on('chainChanged', handleChainChanged)
+      const accounts = await ethereum.request({ method: 'eth_accounts' })
+      handleAccountsChanged(accounts)
+      ethereum.on('accountsChanged', handleAccountsChanged)
+      if (chainId === '0x89') {
+        setNetwork('POLYGON')
       }
-      try {
-        const query = doc(db, "users", accounts[0])
-        const document = await getDoc(query)
-        const userData = document.data()
-        if (userData) {
-          setUserdata(userData)
-        } else {
-          setDoc(doc(db, "users", accounts[0]), userdata)
+      if (chainId === '0x13881') {
+        setNetwork('MUMBAI')
+        const rpsgame = new web3.eth.Contract(RpsGame.abi, rpsGameContract)
+        setRpsgame(rpsgame)
+        const quickswap = new web3.eth.Contract(RouterSwap.abi, polygonSwapContract)
+        setQuickswap(quickswap)
+        try {
+          let walletBalance = await web3.eth.getBalance(accounts[0])
+          setWalletbalances(walletBalance)
+        } catch (e) {
+          console.log('Cant read balance!')
         }
-      } catch (e) {
-        console.log("Cant read profile")
+        try {
+          let totalLoses = await rpsgame.methods.totalLoses().call()
+          setLoss(parseInt(totalLoses))
+          let totalWins = await rpsgame.methods.totalWins().call()
+          setWon(parseInt(totalWins))
+          // let userLoses = await rpsgame.methods.winLosesPerUser(accounts[0], 0).call()
+          // setUserloses(userLoses)
+          // let userWins = await rpsgame.methods.winLosesPerUser(accounts[0], 1).call()
+          // setUserwins(userWins)
+        } catch (e) {
+          console.log('RPSGAME CONTRACT NOT DEPLOYED TO DETECTED NETWORK')
+        }
+        try {
+          let maticPrice = await quickswap.methods.getAmountsOut(1000000000000000, [maticContract, usdcContract]).call()
+          setMaticprice(maticPrice[1])
+        } catch (e) {
+          console.log('SWAP CONTRACT NOT DEPLOYED TO DETECTED NETWORK')
+        }
+        try {
+          const query = doc(db, "users", accounts[0])
+          const document = await getDoc(query)
+          const userData = document.data()
+          if (userData) {
+            setUserdata(userData)
+          } else {
+            setDoc(doc(db, "users", accounts[0]), userdata)
+          }
+        } catch (e) {
+          console.log("Cant read profile")
+        }
+      } else {
+        console.log('Please connect to mumbai network!')
       }
-      const sleep = (milliseconds) => {
-        return new Promise(resolve => setTimeout(resolve, milliseconds))
-      }
-      for (let count = 0; count < 1000; count++) {
-        web3.eth.getBlockNumber()
-          .then(n => {
-            setBlockchain(n)
-            n = n - 28
-            rpsgame.getPastEvents(
-              'Play',
-              {
-                // filter: { _to: account.toString() },
-                fromBlock: n,
-                toBlock: 'latest'
-              }
-            )
-              .then(events => {
-                setEvents(events)
-
-              }).catch(error => {
-                console.log(error)
-              })
-          })
-        await sleep(1000);
-      }
-    } else {
-      console.log('Please connect to mumbai network!')
+    } catch (e) {
+      console.log("Cant read blockchain")
     }
   }
 
@@ -250,10 +228,7 @@ export default function Game() {
         {active === true && chain === '0x13881' ?
           <div className="game-container bg-secondary">
             <h1>Rock Paper Scissors Game</h1>
-            <HistoryGames
-              blockchain={blockchain}
-              events={events}
-            />
+            <HistoryGames />
             <div className="row">
               <div className="col fs-4">{`Total Games: ${won + loss}`}</div>
             </div>

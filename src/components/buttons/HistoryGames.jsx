@@ -3,9 +3,11 @@ import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap
 import { doc, getDoc } from "firebase/firestore";
 import db from '../../firebase/firesbaseConfig'
 
-export default function HistoryGames(props) {
+export default function HistoryGames() {
     const [dropdown, setDropdown] = useState(false);
     const [decimal, setDecimal] = useState(1000000000000000000);
+    const [blockchain, setBlockchain] = useState(0);
+    const [events, setEvents] = useState({});
     const [userdata0, setUserdata0] = useState({});
     const [userdata1, setUserdata1] = useState({});
     const [userdata2, setUserdata2] = useState({});
@@ -16,16 +18,47 @@ export default function HistoryGames(props) {
     const [userdata7, setUserdata7] = useState({});
 
     useEffect(() => {
-        readUserName(props.events)
-    }, [props.events]);
+        readUserName()
+    }, []);
 
     async function readUserName(events) {
-        console.log(events)
-        try {
-            const userData0 = await getDoc(doc(db, "users", events[0].returnValues[0]))
-            setUserdata0(userData0.data())
-        } catch (e) {
-            console.log("HistoryGame0 not found!")
+        const sleep = (milliseconds) => {
+            return new Promise(resolve => setTimeout(resolve, milliseconds))
+        }
+        for (let i = 0; i < 2000; i++) {
+            try {
+                const actuallBlock = await web3.eth.getBlockNumber()
+                setBlockchain(actuallBlock)
+                const lastMinuteBlock = actuallBlock - 28
+                const events = await rpsgame.getPastEvents('Play',
+                    {
+                        // filter: { _to: account.toString() },
+                        fromBlock: lastMinuteBlock,
+                        toBlock: 'latest'
+                    })
+                setEvents(events)
+                console.log(events)
+                const userData0 = await getDoc(doc(db, "users", events[0].returnValues[0].toLowerCase()))
+                setUserdata0(userData0.data())
+                const userData1 = await getDoc(doc(db, "users", events[1].returnValues[0].toLowerCase()))
+                setUserdata1(userData1.data())
+                const userData2 = await getDoc(doc(db, "users", events[2].returnValues[0].toLowerCase()))
+                setUserdata2(userData2.data())
+                const userData3 = await getDoc(doc(db, "users", events[3].returnValues[0].toLowerCase()))
+                setUserdata3(userData3.data())
+                const userData4 = await getDoc(doc(db, "users", events[4].returnValues[0].toLowerCase()))
+                setUserdata4(userData4.data())
+                const userData5 = await getDoc(doc(db, "users", events[5].returnValues[0].toLowerCase()))
+                setUserdata5(userData5.data())
+                const userData6 = await getDoc(doc(db, "users", events[6].returnValues[0].toLowerCase()))
+                setUserdata6(userData6.data())
+                const userData7 = await getDoc(doc(db, "users", events[7].returnValues[0].toLowerCase()))
+                setUserdata7(userData7.data())
+            } catch (e) {
+                console.log("Event not found!")
+            }
+            console.log(i)
+            await sleep(2000)
         }
     }
 
@@ -41,96 +74,96 @@ export default function HistoryGames(props) {
                 </DropdownToggle>
                 <DropdownMenu>
                     <DropdownItem header>
-                        {props.events[7] !== undefined
+                        {events[7] !== undefined
                             ?
                             <>
-                                {userdata7.name1 + " played " + (props.events[7].returnValues[1] / decimal) + " MATIC and"}
-                                {props.events[7].returnValues[2] === false ? " lost all " : ""}{props.events[7].returnValues[2] === true ? " doubled " : ""}
-                                {((props.blockchain - props.events[7].blockNumber) * 2) + " seconds ago"}
+                                {userdata7.name1 + " played " + (events[7].returnValues[1] / decimal) + " MATIC and"}
+                                {events[7].returnValues[2] === false ? " lost all " : ""}{events[7].returnValues[2] === true ? " doubled " : ""}
+                                {((blockchain - events[7].blockNumber) * 2) + " seconds ago"}
                             </>
                             :
                             ""
                         }
                     </DropdownItem>
                     <DropdownItem header>
-                        {props.events[6] !== undefined
+                        {events[6] !== undefined
                             ?
                             <>
-                                {userdata6.name1 + " played " + (props.events[6].returnValues[1] / decimal) + " MATIC and"}
-                                {props.events[6].returnValues[2] === false ? " lost all " : ""}{props.events[6].returnValues[2] === true ? " doubled " : ""}
-                                {((props.blockchain - props.events[6].blockNumber) * 2) + " seconds ago"}
+                                {userdata6.name1 + " played " + (events[6].returnValues[1] / decimal) + " MATIC and"}
+                                {events[6].returnValues[2] === false ? " lost all " : ""}{events[6].returnValues[2] === true ? " doubled " : ""}
+                                {((blockchain - events[6].blockNumber) * 2) + " seconds ago"}
                             </>
                             :
                             ""
                         }
                     </DropdownItem>
                     <DropdownItem header>
-                        {props.events[5] !== undefined
+                        {events[5] !== undefined
                             ?
                             <>
-                                {userdata5.name1 + " played " + (props.events[5].returnValues[1] / decimal) + " MATIC and"}
-                                {props.events[5].returnValues[2] === false ? " lost all " : ""}{props.events[5].returnValues[2] === true ? " doubled " : ""}
-                                {((props.blockchain - props.events[5].blockNumber) * 2) + " seconds ago"}
+                                {userdata5.name1 + " played " + (events[5].returnValues[1] / decimal) + " MATIC and"}
+                                {events[5].returnValues[2] === false ? " lost all " : ""}{events[5].returnValues[2] === true ? " doubled " : ""}
+                                {((blockchain - events[5].blockNumber) * 2) + " seconds ago"}
                             </>
                             :
                             ""
                         }
                     </DropdownItem>
                     <DropdownItem header>
-                        {props.events[4] !== undefined
+                        {events[4] !== undefined
                             ?
                             <>
-                                {userdata4.name1 + " played " + (props.events[4].returnValues[1] / decimal) + " MATIC and"}
-                                {props.events[4].returnValues[2] === false ? " lost all " : ""}{props.events[4].returnValues[2] === true ? " doubled " : ""}
-                                {((props.blockchain - props.events[4].blockNumber) * 2) + " seconds ago"}
+                                {userdata4.name1 + " played " + (events[4].returnValues[1] / decimal) + " MATIC and"}
+                                {events[4].returnValues[2] === false ? " lost all " : ""}{events[4].returnValues[2] === true ? " doubled " : ""}
+                                {((blockchain - events[4].blockNumber) * 2) + " seconds ago"}
                             </>
                             :
                             ""
                         }
                     </DropdownItem>
                     <DropdownItem header>
-                        {props.events[3] !== undefined
+                        {events[3] !== undefined
                             ?
                             <>
-                                {userdata3.name1 + " played " + (props.events[3].returnValues[1] / decimal) + " MATIC and"}
-                                {props.events[3].returnValues[2] === false ? " lost all " : ""}{props.events[3].returnValues[2] === true ? " doubled " : ""}
-                                {((props.blockchain - props.events[3].blockNumber) * 2) + " seconds ago"}
+                                {userdata3.name1 + " played " + (events[3].returnValues[1] / decimal) + " MATIC and"}
+                                {events[3].returnValues[2] === false ? " lost all " : ""}{events[3].returnValues[2] === true ? " doubled " : ""}
+                                {((blockchain - events[3].blockNumber) * 2) + " seconds ago"}
                             </>
                             :
                             ""
                         }
                     </DropdownItem>
                     <DropdownItem header>
-                        {props.events[2] !== undefined
+                        {events[2] !== undefined
                             ?
                             <>
-                                {userdata2.name1 + " played " + (props.events[2].returnValues[1] / decimal) + " MATIC and"}
-                                {props.events[2].returnValues[2] === false ? " lost all " : ""}{props.events[2].returnValues[2] === true ? " doubled " : ""}
-                                {((props.blockchain - props.events[2].blockNumber) * 2) + " seconds ago"}
+                                {userdata2.name1 + " played " + (events[2].returnValues[1] / decimal) + " MATIC and"}
+                                {events[2].returnValues[2] === false ? " lost all " : ""}{events[2].returnValues[2] === true ? " doubled " : ""}
+                                {((blockchain - events[2].blockNumber) * 2) + " seconds ago"}
                             </>
                             :
                             ""
                         }
                     </DropdownItem>
                     <DropdownItem header>
-                        {props.events[1] !== undefined
+                        {events[1] !== undefined
                             ?
                             <>
-                                {userdata1.name1 + " played " + (props.events[1].returnValues[1] / decimal) + " MATIC and"}
-                                {props.events[1].returnValues[2] === false ? " lost all " : ""}{props.events[1].returnValues[2] === true ? " doubled " : ""}
-                                {((props.blockchain - props.events[1].blockNumber) * 2) + " seconds ago"}
+                                {userdata1.name1 + " played " + (events[1].returnValues[1] / decimal) + " MATIC and"}
+                                {events[1].returnValues[2] === false ? " lost all " : ""}{events[1].returnValues[2] === true ? " doubled " : ""}
+                                {((blockchain - events[1].blockNumber) * 2) + " seconds ago"}
                             </>
                             :
                             ""
                         }
                     </DropdownItem>
                     <DropdownItem header>
-                        {props.events[0] !== undefined
+                        {events[0] !== undefined
                             ?
                             <>
-                                {userdata0.name1 + " played " + (props.events[0].returnValues[1] / decimal) + " MATIC and"}
-                                {props.events[0].returnValues[2] === false ? " lost all " : ""}{props.events[0].returnValues[2] === true ? " doubled " : ""}
-                                {((props.blockchain - props.events[0].blockNumber) * 2) + " seconds ago"}
+                                {userdata0.name1 + " played " + (events[0].returnValues[1] / decimal) + " MATIC and"}
+                                {events[0].returnValues[2] === false ? " lost all " : ""}{events[0].returnValues[2] === true ? " doubled " : ""}
+                                {((blockchain - events[0].blockNumber) * 2) + " seconds ago"}
                             </>
                             :
                             ""
