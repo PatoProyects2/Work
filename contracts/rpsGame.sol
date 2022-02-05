@@ -84,23 +84,29 @@ contract rpsGame  {
 //FUNCTIONS FOR USERS
 
     //MSG.value = deal + totalFEE%
-    function playUno( uint _value) public payable returns(bool results){
+    function playCuatro( uint _value) public payable returns(bool results){
         uint fee = calculateFee(_value);
         require(msg.value <= (maxDeal + fee));
         require( (_value+fee) == msg.value);
-        uint rand = getRandom(msg.sender,0,100);
+        uint rand = getRandomRangeLink(msg.sender,1,100);
         if(rand >= 50){
             payable(msg.sender).transfer(_value * 2);
             results = true;
+            totalWins++;
+            winLosesPerUser[msg.sender][1]++;            
         }else {
             results = false;
+            totalLoses++;
+            winLosesPerUser[msg.sender][0]++;            
         }
         payable(NFTHolders).transfer(_value * feeForNFTHolders / 10000);
         payable(devWalletFees).transfer(_value * feeForDevs  / 10000);
+        stakingContrac.newPlay(_value * feeForDevs  / 10000);
         emit Play(msg.sender,_value,results,rand);
         //leaderBoard(result)
 
     }
+   
 //other functions
     function calculateFee(uint _value)public view returns(uint){
         uint txFee = _value * totalFee / 10000;
@@ -162,98 +168,4 @@ contract rpsGame  {
         require(msg.value > 10);
         return true;
     }
-
-    function playdos( uint _value) public payable returns(bool results){
-        uint fee = calculateFee(_value);
-        require(msg.value <= (maxDeal + fee));
-        require( (_value+fee) == msg.value);
-        uint rand = getRandom(msg.sender,0,100);
-        if(rand >= 50){
-            payable(msg.sender).transfer(_value * 2);
-            results = true;
-            totalWins++;
-            winLosesPerUser[msg.sender][1]++;
-            if(winLosesRache[msg.sender][0] == 1){
-                winLosesRache[msg.sender][1]++;
-            }else{
-                winLosesRache[msg.sender][0] = 1;
-                winLosesRache[msg.sender][1] = 1;
-            }
-        }else {
-            results = false;
-            totalLoses++;
-            winLosesPerUser[msg.sender][0]++;
-            if(winLosesRache[msg.sender][0] == 0){
-                winLosesRache[msg.sender][1]++;
-            }else{
-                delete winLosesRache[msg.sender][0];
-                winLosesRache[msg.sender][1] = 1;
-            }
-        }
-        payable(NFTHolders).transfer(_value * feeForNFTHolders / 10000);
-        payable(devWalletFees).transfer(_value * feeForDevs  / 10000);
-        emit Play(msg.sender,_value,results,rand);
-        //leaderBoard(result)
-
-    }
-
-    function playTres( uint _value) public payable returns(bool results){
-
-        uint fee = calculateFee(_value);
-        require(msg.value <= (maxDeal + fee));
-        require( (_value+fee) == msg.value);
-        uint rand = getRandom(msg.sender,0,100);
-        if(rand >= 50){
-            payable(msg.sender).transfer(_value * 2);
-            results = true;
-            totalWins++;
-            winLosesPerUser[msg.sender][1]++;
-            if(winLosesRache[msg.sender][0] == 1){
-                winLosesRache[msg.sender][1]++;
-            }else{
-                winLosesRache[msg.sender][0] = 1;
-                winLosesRache[msg.sender][1] = 1;
-            }
-        }else {
-            results = false;
-            totalLoses++;
-            winLosesPerUser[msg.sender][0]++;
-            if(winLosesRache[msg.sender][0] == 0){
-                winLosesRache[msg.sender][1]++;
-            }else{
-                delete winLosesRache[msg.sender][0];
-                winLosesRache[msg.sender][1] = 1;
-            }
-        }
-        payable(NFTHolders).transfer(_value * feeForNFTHolders / 10000);
-        payable(devWalletFees).transfer(_value * feeForDevs  / 10000);
-        emit Play(msg.sender,_value,results,rand);
-        stakingContrac.newPlay(fee);
-        //leaderBoard(result)
-
-    }
-
-    function playCuatro( uint _value) public payable returns(bool results){
-        uint fee = calculateFee(_value);
-        require(msg.value <= (maxDeal + fee));
-        require( (_value+fee) == msg.value);
-        uint rand = getRandomRangeLink(msg.sender,1,100);
-        if(rand >= 50){
-            payable(msg.sender).transfer(_value * 2);
-            results = true;
-            totalWins++;
-            winLosesPerUser[msg.sender][1]++;            
-        }else {
-            results = false;
-            totalLoses++;
-            winLosesPerUser[msg.sender][0]++;            
-        }
-        payable(NFTHolders).transfer(_value * feeForNFTHolders / 10000);
-        payable(devWalletFees).transfer(_value * feeForDevs  / 10000);
-        stakingContrac.newPlay(fee);// cambiar fee por (_value * feeForDevs  / 10000)
-        emit Play(msg.sender,_value,results,rand);
-        //leaderBoard(result)
-
-    }
-
 }
