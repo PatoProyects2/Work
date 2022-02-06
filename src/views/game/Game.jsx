@@ -56,75 +56,71 @@ export default function Game() {
   }, []);
 
   async function loadWeb3() {
-    try {
-      const provider = await detectEthereumProvider();
-      if (provider) {
+    const provider = await detectEthereumProvider();
+    if (provider) {
 
-      } else {
-        window.alert('Please install MetaMask!')
-        return false
+    } else {
+      window.alert('Please install MetaMask!')
+      return false
+    }
+    if (provider !== window.ethereum) {
+      window.alert('Do you have multiple wallets installed?')
+    }
+    const web3 = new Web3(new Web3(window.ethereum), provider)
+    setWeb3(web3)
+    const chainId = await ethereum.request({ method: 'eth_chainId' })
+    handleChainChanged(chainId)
+    ethereum.on('chainChanged', handleChainChanged)
+    const accounts = await ethereum.request({ method: 'eth_accounts' })
+    handleAccountsChanged(accounts)
+    ethereum.on('accountsChanged', handleAccountsChanged)
+    if (chainId === '0x89') {
+      setNetwork('POLYGON')
+    }
+    if (chainId === '0x13881') {
+      setNetwork('MUMBAI')
+      const rpsgame = new web3.eth.Contract(RpsGame.abi, rpsGameContract)
+      setRpsgame(rpsgame)
+      const quickswap = new web3.eth.Contract(RouterSwap.abi, polygonSwapContract)
+      setQuickswap(quickswap)
+      try {
+        let walletBalance = await web3.eth.getBalance(accounts[0])
+        setWalletbalances(walletBalance)
+      } catch (e) {
+        console.log('Cant read balance!')
       }
-      if (provider !== window.ethereum) {
-        window.alert('Do you have multiple wallets installed?')
+      try {
+        let totalLoses = await rpsgame.methods.totalLoses().call()
+        setLoss(parseInt(totalLoses))
+        let totalWins = await rpsgame.methods.totalWins().call()
+        setWon(parseInt(totalWins))
+        // let userLoses = await rpsgame.methods.winLosesPerUser(accounts[0], 0).call()
+        // setUserloses(userLoses)
+        // let userWins = await rpsgame.methods.winLosesPerUser(accounts[0], 1).call()
+        // setUserwins(userWins)
+      } catch (e) {
+        console.log('RPSGAME CONTRACT NOT DEPLOYED TO DETECTED NETWORK')
       }
-      const web3 = new Web3(new Web3(window.ethereum), provider)
-      setWeb3(web3)
-      const chainId = await ethereum.request({ method: 'eth_chainId' })
-      handleChainChanged(chainId)
-      ethereum.on('chainChanged', handleChainChanged)
-      const accounts = await ethereum.request({ method: 'eth_accounts' })
-      handleAccountsChanged(accounts)
-      ethereum.on('accountsChanged', handleAccountsChanged)
-      if (chainId === '0x89') {
-        setNetwork('POLYGON')
+      try {
+        let maticPrice = await quickswap.methods.getAmountsOut(1000000000000000, [maticContract, usdcContract]).call()
+        setMaticprice(maticPrice[1])
+      } catch (e) {
+        console.log('SWAP CONTRACT NOT DEPLOYED TO DETECTED NETWORK')
       }
-      if (chainId === '0x13881') {
-        setNetwork('MUMBAI')
-        const rpsgame = new web3.eth.Contract(RpsGame.abi, rpsGameContract)
-        setRpsgame(rpsgame)
-        const quickswap = new web3.eth.Contract(RouterSwap.abi, polygonSwapContract)
-        setQuickswap(quickswap)
-        try {
-          let walletBalance = await web3.eth.getBalance(accounts[0])
-          setWalletbalances(walletBalance)
-        } catch (e) {
-          console.log('Cant read balance!')
+      try {
+        const query = doc(db, "users", accounts[0])
+        const document = await getDoc(query)
+        const userData = document.data()
+        if (userData) {
+          setUserdata(userData)
+        } else {
+          setDoc(doc(db, "users", accounts[0]), userdata)
         }
-        try {
-          let totalLoses = await rpsgame.methods.totalLoses().call()
-          setLoss(parseInt(totalLoses))
-          let totalWins = await rpsgame.methods.totalWins().call()
-          setWon(parseInt(totalWins))
-          // let userLoses = await rpsgame.methods.winLosesPerUser(accounts[0], 0).call()
-          // setUserloses(userLoses)
-          // let userWins = await rpsgame.methods.winLosesPerUser(accounts[0], 1).call()
-          // setUserwins(userWins)
-        } catch (e) {
-          console.log('RPSGAME CONTRACT NOT DEPLOYED TO DETECTED NETWORK')
-        }
-        try {
-          let maticPrice = await quickswap.methods.getAmountsOut(1000000000000000, [maticContract, usdcContract]).call()
-          setMaticprice(maticPrice[1])
-        } catch (e) {
-          console.log('SWAP CONTRACT NOT DEPLOYED TO DETECTED NETWORK')
-        }
-        try {
-          const query = doc(db, "users", accounts[0])
-          const document = await getDoc(query)
-          const userData = document.data()
-          if (userData) {
-            setUserdata(userData)
-          } else {
-            setDoc(doc(db, "users", accounts[0]), userdata)
-          }
-        } catch (e) {
-          console.log("Cant read profile")
-        }
-      } else {
-        console.log('Please connect to mumbai network!')
+      } catch (e) {
+        console.log("Cant read profile")
       }
-    } catch (e) {
-      console.log("Cant read blockchain")
+    } else {
+      console.log('Please connect to mumbai network!')
     }
   }
 
@@ -179,7 +175,7 @@ export default function Game() {
           value: calculateValue,
         })
         .on('receipt', (hash) => {
-          setTimeout(readUserGame, 1000)
+          readAccountEvent()
         })
         .on('error', function (error) {
           setPlaying(false)
@@ -187,35 +183,18 @@ export default function Game() {
     }
   }
 
-  async function readUserGame() {
-    web3.eth.getBlockNumber()
-      .then(n => {
-        n = n - 10
-        rpsgame.getPastEvents(
-          'Play',
-          {
-            filter: { _to: account },
-            fromBlock: n,
-            toBlock: 'latest'
-          }
-        )
-          .then(events => {
-            setGameresult0(events[0].returnValues[2])
-            setGameresult(true)
-          })
-          .catch(error => {
-            console.log("USER GAME NOT FOUND!")
-          })
-      })
-      .catch(error => {
-        console.log("BLOCK NOT FOUND!")
-      })
+  async function readAccountEvent() {
+    let actuallBlock = await web3.eth.getBlockNumber()
+    let lastMinuteBlock = actuallBlock - 10
+    let myEvents = await rpsgame.getPastEvents('Play', { filter: { _to: account }, fromBlock: lastMinuteBlock, toBlock: 'latest' })
+    setGameresult0(myEvents[0].returnValues[2])
+    setGameresult(true)
   }
 
   async function backGame() {
     setPlaying(false)
-    setGameresult(undefined)
     setGameresult0(undefined)
+    setGameresult(undefined)
   }
 
   return (
@@ -228,7 +207,7 @@ export default function Game() {
         {active === true && chain === '0x13881' ?
           <div className="game-container bg-secondary">
             <h1>Rock Paper Scissors Game</h1>
-            <HistoryGames />
+            <HistoryGames web3={web3} />
             <div className="row">
               <div className="col fs-4">{`Total Games: ${won + loss}`}</div>
             </div>

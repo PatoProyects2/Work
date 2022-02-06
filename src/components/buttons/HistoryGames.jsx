@@ -1,43 +1,42 @@
 import React, { useState, useEffect } from 'react'
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap'
+import RpsGame from '../../abis/RpsGame/rpsGame.json'
+import { rpsGameContract } from '../../components/blockchain/Contracts'
 import { doc, getDoc } from "firebase/firestore";
 import db from '../../firebase/firesbaseConfig'
 
-export default function HistoryGames() {
+export default function HistoryGames(props) {
+    const [rpsgame, setRpsgame] = useState({});
     const [dropdown, setDropdown] = useState(false);
     const [decimal, setDecimal] = useState(1000000000000000000);
     const [blockchain, setBlockchain] = useState(0);
     const [events, setEvents] = useState({});
-    const [userdata0, setUserdata0] = useState({});
-    const [userdata1, setUserdata1] = useState({});
-    const [userdata2, setUserdata2] = useState({});
-    const [userdata3, setUserdata3] = useState({});
-    const [userdata4, setUserdata4] = useState({});
-    const [userdata5, setUserdata5] = useState({});
-    const [userdata6, setUserdata6] = useState({});
-    const [userdata7, setUserdata7] = useState({});
+    const [userdata0, setUserdata0] = useState({ name1: '' });
+    const [userdata1, setUserdata1] = useState({ name1: '' });
+    const [userdata2, setUserdata2] = useState({ name1: '' });
+    const [userdata3, setUserdata3] = useState({ name1: '' });
+    const [userdata4, setUserdata4] = useState({ name1: '' });
+    const [userdata5, setUserdata5] = useState({ name1: '' });
+    const [userdata6, setUserdata6] = useState({ name1: '' });
+    const [userdata7, setUserdata7] = useState({ name1: '' });
 
     useEffect(() => {
-        readUserName()
-    }, []);
+        readEvents(props.web3)
+    }, [props.web3]);
 
-    async function readUserName(events) {
+    async function readEvents(web3) {
+        const rpsgame = new web3.eth.Contract(RpsGame.abi, rpsGameContract)
+        setRpsgame(rpsgame)
         const sleep = (milliseconds) => {
             return new Promise(resolve => setTimeout(resolve, milliseconds))
         }
         for (let i = 0; i < 2000; i++) {
+            let actuallBlock = await web3.eth.getBlockNumber()
+            setBlockchain(actuallBlock)
+            let lastMinuteBlock = actuallBlock - 28
             try {
-                const actuallBlock = await web3.eth.getBlockNumber()
-                setBlockchain(actuallBlock)
-                const lastMinuteBlock = actuallBlock - 28
-                const events = await rpsgame.getPastEvents('Play',
-                    {
-                        // filter: { _to: account.toString() },
-                        fromBlock: lastMinuteBlock,
-                        toBlock: 'latest'
-                    })
+                let events = await rpsgame.getPastEvents('Play', { fromBlock: lastMinuteBlock, toBlock: 'latest' })
                 setEvents(events)
-                console.log(events)
                 const userData0 = await getDoc(doc(db, "users", events[0].returnValues[0].toLowerCase()))
                 setUserdata0(userData0.data())
                 const userData1 = await getDoc(doc(db, "users", events[1].returnValues[0].toLowerCase()))
@@ -55,9 +54,8 @@ export default function HistoryGames() {
                 const userData7 = await getDoc(doc(db, "users", events[7].returnValues[0].toLowerCase()))
                 setUserdata7(userData7.data())
             } catch (e) {
-                console.log("Event not found!")
+
             }
-            console.log(i)
             await sleep(2000)
         }
     }
