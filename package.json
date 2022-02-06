@@ -4,6 +4,11 @@
     "description": "Rock, Papper and Scissors",
     "author": "RPS",
     "license": "MIT",
+    "homepage": "http://PatoProyects2.github.io/Work",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/PatoProyects2/Work.git"
+    },
     "dependencies": {
         "@metamask/detect-provider": "^1.2.0",
         "@walletconnect/web3-provider": "1.7.1",
