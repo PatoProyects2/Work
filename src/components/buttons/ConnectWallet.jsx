@@ -8,22 +8,36 @@ export default function ConnectWalletButton(props) {
     name1: '',
     pic1: ''
   });
+  const [friend, setFriend] = useState({
+    account1: '',
+    amount1: 0,
+  });
+  const [decimal, setDecimal] = useState(1000000000000000000);
   const [log1, setLog1] = useState('Photo');
   const [log2, setLog2] = useState('Username');
+  const [log3, setLog3] = useState('Wallet Address');
+  const [log4, setLog4] = useState('Amount');
   const [edit, setEdit] = useState(false);
+  const [send, setSend] = useState(false);
   const [dropdown, setDropdown] = useState(false);
 
   function connect() {
-    ethereum
-      .request({ method: 'eth_requestAccounts' })
-      .then(handleAccountsChanged)
-      .catch((err) => {
-        if (err.code === 4001) {
-          console.log('User denied connection');
-        } else {
-          console.error(err);
-        }
-      });
+    try {
+      ethereum
+        .request({ method: 'eth_requestAccounts' })
+        .then(handleAccountsChanged)
+        .catch((err) => {
+          if (err.code === 4001) {
+            console.log('User denied login');
+          } else {
+            console.error(err);
+          }
+        });
+    } catch (err) {
+      window.open('https://metamask.app.link/dapp/patoproyects2.github.io/Work', '_blank')
+      window.location.reload()
+    }
+
   }
 
   function handleAccountsChanged() {
@@ -33,6 +47,10 @@ export default function ConnectWalletButton(props) {
   const handleInputChange = (event) => {
     setUserinfo({
       ...userinfo,
+      [event.target.name]: event.target.value
+    })
+    setFriend({
+      ...friend,
       [event.target.name]: event.target.value
     })
   }
@@ -46,6 +64,14 @@ export default function ConnectWalletButton(props) {
       setEdit(true);
     } else {
       setEdit(false);
+    }
+  }
+
+  async function sendMatic() {
+    if (send === false) {
+      setSend(true);
+    } else {
+      setSend(false);
     }
   }
 
@@ -70,19 +96,52 @@ export default function ConnectWalletButton(props) {
     setDoc(doc(db, "users", props.account), userinfo).then(r => window.location.reload())
   }
 
+  async function sendToFriend() {
+    if (friend.account1.length === 42) {
+      setLog3('Wallet Address');
+    } else {
+      setLog3('Invalid wallet address');
+      return false
+    }
+    if (friend.amount1 > 0) {
+      setLog4('Amount');
+    } else {
+      setLog4('Invalid amount');
+      return false
+    }
+    setFriend({
+      ...friend,
+      account1: '',
+      amount: 0,
+    })
+    ethereum
+      .request({
+        method: 'eth_sendTransaction',
+        params: [
+          {
+            from: props.account,
+            to: friend.account1,
+            value: props.web3.utils.numberToHex((friend.amount1 * decimal).toString()),
+          },
+        ],
+      })
+      .then((txHash) => setSend(false))
+      .catch((error) => console.error);
+  }
+
   return (
     <>
       {props.account !== '' ?
         <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="sm">
           <DropdownToggle caret color='warning'>
-            WALLET
+            <img width="100" height="100" src={`https://ipfs.io/ipfs/${props.data.pic1}`} alt="" />
           </DropdownToggle>
           <DropdownMenu>
-            <DropdownItem header><img width="150" height="150" src={`https://ipfs.io/ipfs/${props.data.pic1}`} alt="" /></DropdownItem>
             <DropdownItem header>{props.data.name1}</DropdownItem>
-            <DropdownItem header>{props.account.substring(0, 5) + "..." + props.account.substring(12, 16)}<button onClick={() => navigator.clipboard.writeText(props.account)}>[C]</button></DropdownItem>
+            <DropdownItem header>{props.account.substring(0, 5) + "..." + props.account.substring(12, 16)}<button onClick={() => navigator.clipboard.writeText(props.account)}>[Copy]</button></DropdownItem>
             <DropdownItem divider />
             <DropdownItem onClick={editProfile}>Edit Profile</DropdownItem>
+            <DropdownItem onClick={sendMatic}>Send Matic</DropdownItem>
             <DropdownItem >Disconnect</DropdownItem>
           </DropdownMenu>
         </Dropdown>
@@ -113,6 +172,26 @@ export default function ConnectWalletButton(props) {
         <ModalFooter>
           <Button color="primary" type="submit" onClick={updateProfile}>Save</Button>
           <Button color="secondary" onClick={editProfile}>Close</Button>
+        </ModalFooter>
+      </Modal>
+
+      <Modal isOpen={send}>
+        <ModalHeader>
+          Send Matic
+        </ModalHeader>
+        <ModalBody>
+          <FormGroup>
+            <Label>{log3}</Label>
+            <Input name="account1" placeholder="0x00..." onChange={handleInputChange} type="text" />
+          </FormGroup>
+          <FormGroup>
+            <Label>{log4}</Label>
+            <Input name="amount1" placeholder="1" onChange={handleInputChange} type="number" />
+          </FormGroup>
+        </ModalBody>
+        <ModalFooter>
+          <Button color="primary" type="submit" onClick={sendToFriend}>Send</Button>
+          <Button color="secondary" onClick={sendMatic}>Close</Button>
         </ModalFooter>
       </Modal>
     </>

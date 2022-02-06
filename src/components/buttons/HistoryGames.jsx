@@ -77,7 +77,7 @@ export default function HistoryGames(props) {
                             <>
                                 {userdata7.name1 + " played " + (events[7].returnValues[1] / decimal) + " MATIC and"}
                                 {events[7].returnValues[2] === false ? " lost all " : ""}{events[7].returnValues[2] === true ? " doubled " : ""}
-                                {((blockchain - events[7].blockNumber) * 2) + " seconds ago"}
+                                {((blockchain - events[7].blockNumber) * 2) < 0 || ((blockchain - events[7].blockNumber) * 2) === 0 ? "now" : ((blockchain - events[7].blockNumber) * 2) + " seconds ago"}
                             </>
                             :
                             ""
@@ -89,7 +89,7 @@ export default function HistoryGames(props) {
                             <>
                                 {userdata6.name1 + " played " + (events[6].returnValues[1] / decimal) + " MATIC and"}
                                 {events[6].returnValues[2] === false ? " lost all " : ""}{events[6].returnValues[2] === true ? " doubled " : ""}
-                                {((blockchain - events[6].blockNumber) * 2) + " seconds ago"}
+                                {((blockchain - events[6].blockNumber) * 2) < 0 || ((blockchain - events[6].blockNumber) * 2) === 0 ? "now" : ((blockchain - events[6].blockNumber) * 2) + " seconds ago"}
                             </>
                             :
                             ""
@@ -101,7 +101,7 @@ export default function HistoryGames(props) {
                             <>
                                 {userdata5.name1 + " played " + (events[5].returnValues[1] / decimal) + " MATIC and"}
                                 {events[5].returnValues[2] === false ? " lost all " : ""}{events[5].returnValues[2] === true ? " doubled " : ""}
-                                {((blockchain - events[5].blockNumber) * 2) + " seconds ago"}
+                                {((blockchain - events[5].blockNumber) * 2) < 0 || ((blockchain - events[5].blockNumber) * 2) === 0 ? "now" : ((blockchain - events[5].blockNumber) * 2) + " seconds ago"}
                             </>
                             :
                             ""
@@ -113,7 +113,7 @@ export default function HistoryGames(props) {
                             <>
                                 {userdata4.name1 + " played " + (events[4].returnValues[1] / decimal) + " MATIC and"}
                                 {events[4].returnValues[2] === false ? " lost all " : ""}{events[4].returnValues[2] === true ? " doubled " : ""}
-                                {((blockchain - events[4].blockNumber) * 2) + " seconds ago"}
+                                {((blockchain - events[4].blockNumber) * 2) < 0 || ((blockchain - events[4].blockNumber) * 2) === 0 ? "now" : ((blockchain - events[4].blockNumber) * 2) + " seconds ago"}
                             </>
                             :
                             ""
@@ -125,7 +125,7 @@ export default function HistoryGames(props) {
                             <>
                                 {userdata3.name1 + " played " + (events[3].returnValues[1] / decimal) + " MATIC and"}
                                 {events[3].returnValues[2] === false ? " lost all " : ""}{events[3].returnValues[2] === true ? " doubled " : ""}
-                                {((blockchain - events[3].blockNumber) * 2) + " seconds ago"}
+                                {((blockchain - events[3].blockNumber) * 2) < 0 || ((blockchain - events[3].blockNumber) * 2) === 0 ? "now" : ((blockchain - events[3].blockNumber) * 2) + " seconds ago"}
                             </>
                             :
                             ""
@@ -137,7 +137,7 @@ export default function HistoryGames(props) {
                             <>
                                 {userdata2.name1 + " played " + (events[2].returnValues[1] / decimal) + " MATIC and"}
                                 {events[2].returnValues[2] === false ? " lost all " : ""}{events[2].returnValues[2] === true ? " doubled " : ""}
-                                {((blockchain - events[2].blockNumber) * 2) + " seconds ago"}
+                                {((blockchain - events[2].blockNumber) * 2) < 0 || ((blockchain - events[2].blockNumber) * 2) === 0 ? "now" : ((blockchain - events[2].blockNumber) * 2) + " seconds ago"}
                             </>
                             :
                             ""
@@ -149,7 +149,7 @@ export default function HistoryGames(props) {
                             <>
                                 {userdata1.name1 + " played " + (events[1].returnValues[1] / decimal) + " MATIC and"}
                                 {events[1].returnValues[2] === false ? " lost all " : ""}{events[1].returnValues[2] === true ? " doubled " : ""}
-                                {((blockchain - events[1].blockNumber) * 2) + " seconds ago"}
+                                {((blockchain - events[1].blockNumber) * 2) < 0 || ((blockchain - events[1].blockNumber) * 2) === 0 ? "now" : ((blockchain - events[1].blockNumber) * 2) + " seconds ago"}
                             </>
                             :
                             ""
@@ -161,7 +161,7 @@ export default function HistoryGames(props) {
                             <>
                                 {userdata0.name1 + " played " + (events[0].returnValues[1] / decimal) + " MATIC and"}
                                 {events[0].returnValues[2] === false ? " lost all " : ""}{events[0].returnValues[2] === true ? " doubled " : ""}
-                                {((blockchain - events[0].blockNumber) * 2) + " seconds ago"}
+                                {((blockchain - events[0].blockNumber) * 2) < 0 || ((blockchain - events[0].blockNumber) * 2) === 0 ? "now" : ((blockchain - events[0].blockNumber) * 2) + " seconds ago"}
                             </>
                             :
                             ""

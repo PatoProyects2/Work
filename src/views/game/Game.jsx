@@ -29,7 +29,7 @@ export default function Game() {
   });
   const [userdata, setUserdata] = useState({
     name1: 'guest',
-    pic1: 'QmQ1cjPaQr8oCRvQk5KDDWfTRuoBgNnZVhQo1VzTF7S6c8?filename=nft%20bored%20ape.jpg'
+    pic1: 'QmST1mqXdzhrn7HcsyXhKoJyKCydyoTC3CGJ4mS16Qoyzh?filename=avatar.png'
   });
   const [account, setAccount] = useState('');
   const [chain, setChain] = useState('');
@@ -50,78 +50,78 @@ export default function Game() {
   const [gameresult0, setGameresult0] = useState(undefined);
   const [gameresult, setGameresult] = useState(undefined);
 
-
   useEffect(() => {
     loadWeb3()
   }, []);
 
   async function loadWeb3() {
-    const provider = await detectEthereumProvider();
-    if (provider) {
+    try {
+      const provider = await detectEthereumProvider();
+      if (provider) {
 
-    } else {
-      window.alert('Please install MetaMask!')
-      return false
-    }
-    if (provider !== window.ethereum) {
-      window.alert('Do you have multiple wallets installed?')
-    }
-    const web3 = new Web3(new Web3(window.ethereum), provider)
-    setWeb3(web3)
-    const chainId = await ethereum.request({ method: 'eth_chainId' })
-    handleChainChanged(chainId)
-    ethereum.on('chainChanged', handleChainChanged)
-    const accounts = await ethereum.request({ method: 'eth_accounts' })
-    handleAccountsChanged(accounts)
-    ethereum.on('accountsChanged', handleAccountsChanged)
-    if (chainId === '0x89') {
-      setNetwork('POLYGON')
-    }
-    if (chainId === '0x13881') {
-      setNetwork('MUMBAI')
-      const rpsgame = new web3.eth.Contract(RpsGame.abi, rpsGameContract)
-      setRpsgame(rpsgame)
-      const quickswap = new web3.eth.Contract(RouterSwap.abi, polygonSwapContract)
-      setQuickswap(quickswap)
-      try {
-        let walletBalance = await web3.eth.getBalance(accounts[0])
-        setWalletbalances(walletBalance)
-      } catch (e) {
-        console.log('Cant read balance!')
+      } else {
+        window.alert('Please install Metamask!')
       }
-      try {
-        let totalLoses = await rpsgame.methods.totalLoses().call()
-        setLoss(parseInt(totalLoses))
-        let totalWins = await rpsgame.methods.totalWins().call()
-        setWon(parseInt(totalWins))
-        // let userLoses = await rpsgame.methods.winLosesPerUser(accounts[0], 0).call()
-        // setUserloses(userLoses)
-        // let userWins = await rpsgame.methods.winLosesPerUser(accounts[0], 1).call()
-        // setUserwins(userWins)
-      } catch (e) {
-        console.log('RPSGAME CONTRACT NOT DEPLOYED TO DETECTED NETWORK')
+      const web3 = new Web3(new Web3(window.ethereum), provider)
+      setWeb3(web3)
+      const chainId = await ethereum.request({ method: 'eth_chainId' })
+      handleChainChanged(chainId)
+      ethereum.on('chainChanged', handleChainChanged)
+      const accounts = await ethereum.request({ method: 'eth_accounts' })
+      handleAccountsChanged(accounts)
+      ethereum.on('accountsChanged', handleAccountsChanged)
+      if (chainId === '0x89') {
+        setNetwork('POLYGON')
       }
-      try {
-        let maticPrice = await quickswap.methods.getAmountsOut(1000000000000000, [maticContract, usdcContract]).call()
-        setMaticprice(maticPrice[1])
-      } catch (e) {
-        console.log('SWAP CONTRACT NOT DEPLOYED TO DETECTED NETWORK')
-      }
-      try {
-        const query = doc(db, "users", accounts[0])
-        const document = await getDoc(query)
-        const userData = document.data()
-        if (userData) {
-          setUserdata(userData)
-        } else {
-          setDoc(doc(db, "users", accounts[0]), userdata)
+      if (chainId === '0x13881') {
+        setNetwork('MUMBAI')
+        const rpsgame = new web3.eth.Contract(RpsGame.abi, rpsGameContract)
+        setRpsgame(rpsgame)
+        const quickswap = new web3.eth.Contract(RouterSwap.abi, polygonSwapContract)
+        setQuickswap(quickswap)
+        try {
+          let walletBalance = await web3.eth.getBalance(accounts[0])
+          setWalletbalances(walletBalance)
+        } catch (e) {
+
         }
-      } catch (e) {
-        console.log("Cant read profile")
+        try {
+          let totalLoses = await rpsgame.methods.totalLoses().call()
+          setLoss(parseInt(totalLoses))
+          let totalWins = await rpsgame.methods.totalWins().call()
+          setWon(parseInt(totalWins))
+          // let userLoses = await rpsgame.methods.winLosesPerUser(accounts[0], 0).call()
+          // setUserloses(userLoses)
+          // let userWins = await rpsgame.methods.winLosesPerUser(accounts[0], 1).call()
+          // setUserwins(userWins)
+        } catch (e) {
+          
+        }
+        try {
+          let maticPrice = await quickswap.methods.getAmountsOut(1000000000000000, [maticContract, usdcContract]).call()
+          setMaticprice(maticPrice[1])
+        } catch (e) {
+         
+        }
+        try {
+          const query = doc(db, "users", accounts[0])
+          const document = await getDoc(query)
+          const userData = document.data()
+          if (userData) {
+            setUserdata(userData)
+          } else {
+            setDoc(doc(db, "users", accounts[0]), userdata)
+          }
+        } catch (e) {
+
+        }
+      } else {
+        window.alert('Please connect to mumbai network!')
       }
-    } else {
-      console.log('Please connect to mumbai network!')
+    } catch (err) {
+      console.log("Blockchain not detected!")
     }
+
   }
 
   function handleChainChanged(_chainId) {
@@ -201,7 +201,7 @@ export default function Game() {
     <>
       <img className="my-3 rounded-circle" src="https://random.imagecdn.app/256/256" alt="" width="256" height="256" />
       <ConnectChain network={network} />
-      <ConnectWallet account={account} data={userdata} />
+      <ConnectWallet account={account} data={userdata} web3={web3} />
       <article>
         <img src={MaticLogo} width="25" height="25" alt="" />{(maticprice / 1000).toFixed(2) + "$"}
         {active === true && chain === '0x13881' ?
@@ -225,47 +225,100 @@ export default function Game() {
               <div className="mt-3">
                 <h3>Playing... {pause}</h3>
                 <br></br>
-                {userhand + " | Amount: " + useramount + " MATIC"}
-                <br></br>
+                {userhand === 'Rock'
+                  ?
+                  <div>
+                    <img width="120" height="120" src={Rock} alt="" />
+                    <br></br>
+                    {"Amount: " + useramount + " MATIC"}
+                  </div>
+                  :
+                  ""
+                }
+                {userhand === 'Papper'
+                  ?
+                  <div>
+                    <img width="120" height="120" src={Papper} alt="" />
+                    <br></br>
+                    {"Amount: " + useramount + " MATIC"}
+                  </div>
+                  :
+                  ""
+                }
+                {userhand === 'Scissors'
+                  ?
+                  <div>
+                    <img width="120" height="120" src={Scissors} alt="" />
+                    <br></br>
+                    {"Amount: " + useramount + " MATIC"}
+                  </div>
+                  :
+                  ""
+                }
                 {gameresult === true
                   ?
                   <>
                     {userhand === 'Rock' && gameresult0 === true
                       ?
-                      "Scissors | You Won: " + (useramount * 2) + " MATIC"
+                      <div>
+                        <img width="120" height="120" src={Scissors} alt="" />
+                        <br></br>
+                        {"You won: " + (useramount * 2) + " MATIC"}
+                      </div>
                       :
                       ""
                     }
                     {userhand === 'Papper' && gameresult0 === true
                       ?
-                      "Rock | You Won: " + (useramount * 2) + " MATIC"
+                      <div>
+                        <img width="120" height="120" src={Rock} alt="" />
+                        <br></br>
+                        {"You won: " + (useramount * 2) + " MATIC"}
+                      </div>
                       :
                       ""
                     }
                     {userhand === 'Scissors' && gameresult0 === true
                       ?
-                      "Papper | You Won: " + (useramount * 2) + " MATIC"
+                      <div>
+                        <img width="120" height="120" src={Papper} alt="" />
+                        <br></br>
+                        {"You won: " + (useramount * 2) + " MATIC"}
+                      </div>
                       :
                       ""
                     }
                     {userhand === 'Rock' && gameresult0 === false
                       ?
-                      "Papper | You Loss: " + useramount + " MATIC"
+                      <div>
+                        <img width="120" height="120" src={Papper} alt="" />
+                        <br></br>
+                        {"You loss: " + (useramount * 2) + " MATIC"}
+                      </div>
                       :
                       ""
                     }
                     {userhand === 'Papper' && gameresult0 === false
                       ?
-                      "Scissors | You Loss: " + useramount + " MATIC"
+                      <div>
+                        <img width="120" height="120" src={Scissors} alt="" />
+                        <br></br>
+                        {"You loss: " + (useramount * 2) + " MATIC"}
+                      </div>
                       :
                       ""
                     }
                     {userhand === 'Scissors' && gameresult0 === false
                       ?
-                      "Rock | You Loss: " + useramount + " MATIC"
+                      <div>
+                        <img width="120" height="120" src={Rock} alt="" />
+                        <br></br>
+                        {"You loss: " + (useramount * 2) + " MATIC"}
+                      </div>
                       :
                       ""
                     }
+
                     <br></br>
                     <button onClick={backGame}>BACK</button>
                   </>
