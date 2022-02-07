@@ -58,8 +58,8 @@ export default function ConnectChain(props) {
                 {props.network}
             </DropdownToggle>
             <DropdownMenu >
-                <DropdownItem disabled={props.network === 'Polygon'} onClick={addPolygon}>Polygon</DropdownItem>
-                <DropdownItem disabled={props.network === 'Mumbai'} onClick={addMumbai}>Mumbai</DropdownItem>
+                <DropdownItem disabled={props.network === 'POLYGON'} onClick={addPolygon}>Polygon</DropdownItem>
+                <DropdownItem disabled={props.network === 'MUMBAI'} onClick={addMumbai}>Mumbai</DropdownItem>
             </DropdownMenu>
         </Dropdown>
     )

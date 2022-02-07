@@ -1,16 +1,13 @@
-import React, { Component } from 'react'
+import React from 'react'
 import Chat from './components/Chat/Chat'
 import './Footer.css'
 
-class Footer extends Component {
-
-  render() {
-    return (
-      <>
-        <Chat />
-      </>
-    );
-  }
+const Footer = ({theme}) => {
+  return (
+    <>
+      <Chat theme={theme} />
+    </>
+  )
 }
 
 export default Footer;

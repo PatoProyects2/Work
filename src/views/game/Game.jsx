@@ -16,6 +16,7 @@ import Rock from '../../assets/imgs/rock.gif'
 import Papper from '../../assets/imgs/papper.gif'
 import Scissors from '../../assets/imgs/scissors.gif'
 import MaticLogo from '../../assets/imgs/maticLogo.png'
+import HistoryGamesModal from './components/HistoryGamesModal'
 
 export default function Game() {
   const [web3, setWeb3] = useState({});
@@ -42,6 +43,7 @@ export default function Game() {
   const [playing, setPlaying] = useState(false);
   const [gameresult0, setGameresult0] = useState(undefined);
   const [gameresult, setGameresult] = useState(undefined);
+  const [showgame, setShowgame] = useState(undefined);
 
   useEffect(() => {
     loadWeb3()
@@ -51,7 +53,7 @@ export default function Game() {
     try {
       const provider = await detectEthereumProvider();
       if (provider) {
-  
+
       } else {
         window.alert('Please install Metamask!')
       }
@@ -105,10 +107,10 @@ export default function Game() {
   async function handleChainChanged(_chainId) {
     setChain(_chainId)
     if (_chainId === '0x89') {
-      setNetwork('Polygon')
+      setNetwork('POLYGON')
     }
     if (_chainId === '0x13881') {
-      setNetwork('Mumbai')
+      setNetwork('MUMBAI')
     }
   }
 
@@ -170,7 +172,7 @@ export default function Game() {
     let lastMinuteBlock = actuallBlock - 10
     let myEvents = await rpsgame.getPastEvents('Play', { filter: { _to: account }, fromBlock: lastMinuteBlock, toBlock: 'latest' })
     setGameresult0(myEvents[0].returnValues[2])
-    setGameresult(true)
+    setShowgame(true)
     loadWeb3()
   }
 
@@ -180,64 +182,28 @@ export default function Game() {
     setGameresult(undefined)
   }
 
+  async function show() {
+    setGameresult(true)
+    setShowgame(false)
+  }
   return (
     <>
       <img className="my-3 rounded-circle" src="https://random.imagecdn.app/256/256" alt="" width="256" height="256" />
+      <HistoryGames web3={web3} rpsgame={rpsgame} />
       <ConnectChain network={network} />
       <ConnectWallet web3={web3} account={account} />
+      <h3 className="my-2">MATIC {(walletbalance / decimal).toFixed(4)}</h3>
       <article>
-        <img src={MaticLogo} width="25" height="25" alt="" />{(maticprice / 1000).toFixed(2) + "$"}
+        {/* <img src={MaticLogo} width="25" height="25" alt="" />{(maticprice / 1000).toFixed(2) + "$"} */}
         {active === true && chain === '0x13881' ?
           <div className="game-container bg-secondary">
-            <h1>Rock Paper Scissors Game</h1>
-            <HistoryGames web3={web3} />
-            <div className="row">
-              <div className="col fs-4">{`Total Games: ${won + loss}`}</div>
-            </div>
-            <div className="row">
-              <div className="col">{`Total Won: ${won}`}</div>
-              <div className="col">{`Your Won: ${userwins}`}</div>
-            </div>
-            <div className="row">
-              <div className="col">{`Total Loss: ${loss}`}</div>
-              <div className="col">{`Your Loss: ${userloses}`}</div>
-            </div>
-            <h3 className="my-2">Balance: {(walletbalance / decimal).toFixed(4) + " MATIC"}</h3>
             {log && (<span className="alert alert-danger mx-5">{log}</span>)}
             {playing === true ?
               <div className="mt-3">
-                <h3>Playing... {pause}</h3>
-                <br></br>
-                {userhand === 'Rock'
-                  ?
-                  <div>
-                    <img width="120" height="120" src={Rock} alt="" />
-                    <br></br>
-                    {"Amount: " + useramount + " MATIC"}
-                  </div>
-                  :
-                  ""
-                }
-                {userhand === 'Papper'
-                  ?
-                  <div>
-                    <img width="120" height="120" src={Papper} alt="" />
-                    <br></br>
-                    {"Amount: " + useramount + " MATIC"}
-                  </div>
-                  :
-                  ""
-                }
-                {userhand === 'Scissors'
-                  ?
-                  <div>
-                    <img width="120" height="120" src={Scissors} alt="" />
-                    <br></br>
-                    {"Amount: " + useramount + " MATIC"}
-                  </div>
-                  :
-                  ""
-                }
+                {userhand === 'Rock' ? <img width="120" height="120" src={Rock} alt="" /> : ""}
+                {userhand === 'Papper' ? <img width="120" height="120" src={Papper} alt="" /> : ""}
+                {userhand === 'Scissors' ? <img width="120" height="120" src={Scissors} alt="" /> : ""}
+                {showgame === true ? <button onClick={show}>SHOW RESULT</button> : ""}
                 {gameresult === true
                   ?
                   <>
@@ -301,9 +267,8 @@ export default function Game() {
                       :
                       ""
                     }
-
                     <br></br>
-                    <button onClick={backGame}>BACK</button>
+                    {gameresult0 === true ? <button onClick={backGame}>CLAIM REWARD</button> : <button onClick={backGame}>BACK</button>}
                   </>
                   :
                   ""
@@ -380,8 +345,10 @@ export default function Game() {
               :
               ""
             }
+            <HistoryGamesModal web3={web3} rpsgame={rpsgame} />
           </div>
         }
+
       </article >
     </>
   );

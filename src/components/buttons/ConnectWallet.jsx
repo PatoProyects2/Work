@@ -182,7 +182,7 @@ export default function ConnectWalletButton(props) {
     <>
       {props.account !== '' ?
         <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="md">
-          <DropdownToggle caret color='warning'>
+          <DropdownToggle caret color='danger'>
             Wallet
           </DropdownToggle>
           <DropdownMenu>
@@ -198,7 +198,7 @@ export default function ConnectWalletButton(props) {
         </Dropdown>
         :
         <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="md">
-          <DropdownToggle color='warning' onClick={connect} disabled={log0 === 'Connecting...'}>
+          <DropdownToggle color='danger' onClick={connect} disabled={log0 === 'Connecting...'}>
             {log0}
           </DropdownToggle>
         </Dropdown>

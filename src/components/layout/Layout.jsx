@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import Footer from '../footer/Footer'
 import { Navbar } from '../ui/navbar/Navbar'
+import MEIcon from  '../../assets/imgs/me-icon.png'
 
 const currentTheme = () => {
   return localStorage.getItem("theme") || "light";
@@ -17,20 +18,31 @@ export function Layout() {
   }, [theme]);
 
   return (
-    <div className={theme}>
+    <div className={`wrapper ${theme}`}>
       <header>
         <Navbar theme={theme} setTheme={setTheme} />
       </header>
       <main className='container pt-3'>
         <section className="text-center">          
-          <Outlet />
+          <Outlet context={[theme]} />
         </section>
         <aside>
 
         </aside>
+        <div className={`social-icons d-flex flex-row justify-content-center py-4 ${theme}`}>
+          <a href="https://www.google.com" target="_blank" rel="noopener noreferrer">
+            <img className="rounded mt-1 me-2" src={MEIcon} style={{ width: '36px', heigh: '36px' }} alt="Magic Eden Marketplace" />
+          </a>
+          <a href="https://www.google.com" className="twitter-icon me-2" target="_blank" rel="noopener noreferrer">
+            <i className="fab fa-2x fa-twitter"></i>
+          </a>
+          <a href="https://www.google.com" className="discord-icon" target="_blank" rel="noopener noreferrer">
+            <i className="fab fa-2x fa-discord"></i>
+          </a>
+        </div>
       </main>
       <footer>
-        <Footer />
+        <Footer theme={theme} />
       </footer>
     </div>
 

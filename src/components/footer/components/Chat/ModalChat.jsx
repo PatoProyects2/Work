@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ScrollToBottom from "react-scroll-to-bottom";
 
-function Chat({ socket, username, room }) {
+function Chat({ socket, username, room, handleDisplay }) {
   const [currentMessage, setCurrentMessage] = useState("");
   const [messageList, setMessageList] = useState([]);
 
@@ -32,7 +32,8 @@ function Chat({ socket, username, room }) {
   return (
     <div className="chat-window">
       <div className="chat-header">
-        <p>Global Chat</p>
+        <p>Game Chat</p>
+        <button className="btn-close-chat" onClick={handleDisplay}>&#10006;</button>
       </div>
       <div className="chat-body">
         <ScrollToBottom className="message-container">

@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap'
-import RpsGame from '../../abis/RpsGame/rpsGame.json'
-import { rpsGameContract } from '../../components/blockchain/Contracts'
 import { doc, getDoc } from "firebase/firestore";
 import db from '../../firebase/firesbaseConfig'
 
 export default function HistoryGames(props) {
-    const [rpsgame, setRpsgame] = useState({});
     const [dropdown, setDropdown] = useState(false);
     const [decimal, setDecimal] = useState(1000000000000000000);
     const [blockchain, setBlockchain] = useState(0);
@@ -19,44 +16,58 @@ export default function HistoryGames(props) {
     const [userdata5, setUserdata5] = useState({ name1: '' });
     const [userdata6, setUserdata6] = useState({ name1: '' });
     const [userdata7, setUserdata7] = useState({ name1: '' });
+    const [userdata8, setUserdata8] = useState({ name1: '' });
+    const [userdata9, setUserdata9] = useState({ name1: '' });
+    const [userdata10, setUserdata10] = useState({ name1: '' });
+    const [userdata11, setUserdata11] = useState({ name1: '' });
 
     useEffect(() => {
-        readEvents(props.web3)
-    }, [props.web3]);
+        readEvents(props.web3, props.rpsgame)
+    }, [props.web3, props.rpsgame]);
 
-    async function readEvents(web3) {
-        const rpsgame = new web3.eth.Contract(RpsGame.abi, rpsGameContract)
-        setRpsgame(rpsgame)
+    async function readEvents(web3, rpsgame) {
         const sleep = (milliseconds) => {
             return new Promise(resolve => setTimeout(resolve, milliseconds))
         }
-        for (let i = 0; i < 2000; i++) {
-            let actuallBlock = await web3.eth.getBlockNumber()
-            setBlockchain(actuallBlock)
-            let lastMinuteBlock = actuallBlock - 28
-            try {
-                let events = await rpsgame.getPastEvents('Play', { fromBlock: lastMinuteBlock, toBlock: 'latest' })
-                setEvents(events)
-                const userData0 = await getDoc(doc(db, "users", events[0].returnValues[0].toLowerCase()))
-                setUserdata0(userData0.data())
-                const userData1 = await getDoc(doc(db, "users", events[1].returnValues[0].toLowerCase()))
-                setUserdata1(userData1.data())
-                const userData2 = await getDoc(doc(db, "users", events[2].returnValues[0].toLowerCase()))
-                setUserdata2(userData2.data())
-                const userData3 = await getDoc(doc(db, "users", events[3].returnValues[0].toLowerCase()))
-                setUserdata3(userData3.data())
-                const userData4 = await getDoc(doc(db, "users", events[4].returnValues[0].toLowerCase()))
-                setUserdata4(userData4.data())
-                const userData5 = await getDoc(doc(db, "users", events[5].returnValues[0].toLowerCase()))
-                setUserdata5(userData5.data())
-                const userData6 = await getDoc(doc(db, "users", events[6].returnValues[0].toLowerCase()))
-                setUserdata6(userData6.data())
-                const userData7 = await getDoc(doc(db, "users", events[7].returnValues[0].toLowerCase()))
-                setUserdata7(userData7.data())
-            } catch (e) {
+        try {
+            for (let i = 0; i < 2000; i++) {
+                let actuallBlock = await web3.eth.getBlockNumber()
+                setBlockchain(actuallBlock)
+                let lastMinuteBlock = actuallBlock - 28
+                try {
+                    let events = await rpsgame.getPastEvents('Play', { fromBlock: lastMinuteBlock, toBlock: 'latest' })
+                    setEvents(events)
+                    const userData0 = await getDoc(doc(db, "users", events[0].returnValues[0].toLowerCase()))
+                    setUserdata0(userData0.data())
+                    const userData1 = await getDoc(doc(db, "users", events[1].returnValues[0].toLowerCase()))
+                    setUserdata1(userData1.data())
+                    const userData2 = await getDoc(doc(db, "users", events[2].returnValues[0].toLowerCase()))
+                    setUserdata2(userData2.data())
+                    const userData3 = await getDoc(doc(db, "users", events[3].returnValues[0].toLowerCase()))
+                    setUserdata3(userData3.data())
+                    const userData4 = await getDoc(doc(db, "users", events[4].returnValues[0].toLowerCase()))
+                    setUserdata4(userData4.data())
+                    const userData5 = await getDoc(doc(db, "users", events[5].returnValues[0].toLowerCase()))
+                    setUserdata5(userData5.data())
+                    const userData6 = await getDoc(doc(db, "users", events[6].returnValues[0].toLowerCase()))
+                    setUserdata6(userData6.data())
+                    const userData7 = await getDoc(doc(db, "users", events[7].returnValues[0].toLowerCase()))
+                    setUserdata7(userData7.data())
+                    const userData8 = await getDoc(doc(db, "users", events[8].returnValues[0].toLowerCase()))
+                    setUserdata8(userData8.data())
+                    const userData9 = await getDoc(doc(db, "users", events[9].returnValues[0].toLowerCase()))
+                    setUserdata9(userData9.data())
+                    const userData10 = await getDoc(doc(db, "users", events[10].returnValues[0].toLowerCase()))
+                    setUserdata10(userData10.data())
+                    const userData11 = await getDoc(doc(db, "users", events[11].returnValues[0].toLowerCase()))
+                    setUserdata11(userData11.data())
+                } catch (e) {
 
+                }
+                await sleep(2000)
             }
-            await sleep(2000)
+        } catch (e) {
+
         }
     }
 
@@ -66,11 +77,59 @@ export default function HistoryGames(props) {
 
     return (
         <>
-            <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="sm">
-                <DropdownToggle caret>
+            <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="md">
+                <DropdownToggle caret color='danger'>
                     LIVEPLAYS
                 </DropdownToggle>
                 <DropdownMenu>
+                <DropdownItem header>
+                        {events[11] !== undefined
+                            ?
+                            <>
+                                {userdata11.name1 + " played " + (events[11].returnValues[1] / decimal) + " MATIC and"}
+                                {events[11].returnValues[2] === false ? " lost all " : ""}{events[11].returnValues[2] === true ? " doubled " : ""}
+                                {((blockchain - events[11].blockNumber) * 2) < 0 || ((blockchain - events[11].blockNumber) * 2) === 0 ? "now" : ((blockchain - events[11].blockNumber) * 2) + " seconds ago"}
+                            </>
+                            :
+                            ""
+                        }
+                    </DropdownItem>
+                <DropdownItem header>
+                        {events[10] !== undefined
+                            ?
+                            <>
+                                {userdata10.name1 + " played " + (events[10].returnValues[1] / decimal) + " MATIC and"}
+                                {events[10].returnValues[2] === false ? " lost all " : ""}{events[10].returnValues[2] === true ? " doubled " : ""}
+                                {((blockchain - events[10].blockNumber) * 2) < 0 || ((blockchain - events[10].blockNumber) * 2) === 0 ? "now" : ((blockchain - events[10].blockNumber) * 2) + " seconds ago"}
+                            </>
+                            :
+                            ""
+                        }
+                    </DropdownItem>
+                <DropdownItem header>
+                        {events[9] !== undefined
+                            ?
+                            <>
+                                {userdata9.name1 + " played " + (events[9].returnValues[1] / decimal) + " MATIC and"}
+                                {events[9].returnValues[2] === false ? " lost all " : ""}{events[9].returnValues[2] === true ? " doubled " : ""}
+                                {((blockchain - events[9].blockNumber) * 2) < 0 || ((blockchain - events[9].blockNumber) * 2) === 0 ? "now" : ((blockchain - events[9].blockNumber) * 2) + " seconds ago"}
+                            </>
+                            :
+                            ""
+                        }
+                    </DropdownItem>
+                <DropdownItem header>
+                        {events[8] !== undefined
+                            ?
+                            <>
+                                {userdata8.name1 + " played " + (events[8].returnValues[1] / decimal) + " MATIC and"}
+                                {events[8].returnValues[2] === false ? " lost all " : ""}{events[8].returnValues[2] === true ? " doubled " : ""}
+                                {((blockchain - events[8].blockNumber) * 2) < 0 || ((blockchain - events[8].blockNumber) * 2) === 0 ? "now" : ((blockchain - events[8].blockNumber) * 2) + " seconds ago"}
+                            </>
+                            :
+                            ""
+                        }
+                    </DropdownItem>
                     <DropdownItem header>
                         {events[7] !== undefined
                             ?

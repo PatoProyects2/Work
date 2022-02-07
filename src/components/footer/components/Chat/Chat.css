@@ -66,11 +66,14 @@ body {
     border-radius: 6px 6px 0 0;
     background: #263238;
     position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
     cursor: pointer;
 }
 
 .chat-window .chat-header p {
-    display: block;
+    /* display: block; */
     padding: 0 1em 0 2em;
     color: #fff;
     font-weight: 700;
@@ -181,7 +184,7 @@ body {
     cursor: pointer;
     flex: 15%;
     height: 100%;
-    background: transparent;
+    background-color: #263238;
     outline: none;
     font-size: 25px;
     color: lightgray;
@@ -193,4 +196,27 @@ body {
 
 .hide {
     opacity: 0 !important;
+}
+
+.btn-chat {
+    background-color: #212529;
+    border-radius: 25px;
+    border: 0;
+    padding: 15px;
+}
+
+.btn-chat:hover {
+    background-color: #555a5e;
+}
+
+.btn-close-chat {
+    background-color: transparent;
+    color: white;
+    cursor: pointer;
+    border: 0;
+    font-size: 1.2rem;
+}
+
+.btn-close-chat:hover {
+    color: #dc3545;
 }

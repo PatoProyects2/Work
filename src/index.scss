@@ -1,3 +1,12 @@
+body {
+    margin: 0;
+}
+
+a {
+    text-decoration: none;
+    color: gray;
+}
+
 [type=radio] {
     position: absolute;
     opacity: 0;
@@ -9,25 +18,24 @@
     cursor: pointer;
 }
 
-// [type=radio]:checked+img {
-//     outline: 2px solid #f00;
-// }
 [type=radio]+span {
     cursor: pointer;
 }
 
-// [type=radio]:checked+span {
-//     outline: 2px solid #f00;
-// }
-body {
-    margin: 0;
-    padding-top: 45px;
-    height: 100%;
+input[type=radio][name=pic1]:checked+img {
+    border: 2px solid gray;
 }
 
-a {
-    text-decoration: none;
-    color: gray;
+.dropdown-item-dark {
+    color: #fff;
+}
+
+.dropdown-item-dark:hover {
+    background-color: gray !important;
+}
+
+.wrapper {
+    min-height: 100vh;
 }
 
 .play-list {
@@ -152,7 +160,7 @@ a {
 .game-container {
     max-width: 550px;
     max-height: 745px;
-    margin: 50px auto;
+    margin: 50px auto 0 auto;
     // background-color: #ffb74d;
     background-color: #292b2c;
     display: flex;
@@ -210,5 +218,23 @@ a {
     }
 }
 
+table {
+    border: 2px solid #ff0000;
+    width: 400px;
+    height: 600px;
+}
+
 
 /* End Game styles */
+
+
+/* Mobile and tablets */
+
+@media (min-width: 992px) {
+    body {
+        padding-top: 45px;
+    }
+    .wrapper {
+        min-height: calc(100vh - 45px);
+    }
+}
