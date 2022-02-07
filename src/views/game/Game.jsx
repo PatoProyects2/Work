@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Web3 from 'web3'
 import detectEthereumProvider from '@metamask/detect-provider'
-import { doc, setDoc, getDoc } from "firebase/firestore";
 import RpsGame from '../../abis/RpsGame/rpsGame.json'
 import RouterSwap from '../../abis/Swap/PancakeRouter.json'
 import {
@@ -17,34 +16,28 @@ import Rock from '../../assets/imgs/rock.gif'
 import Papper from '../../assets/imgs/papper.gif'
 import Scissors from '../../assets/imgs/scissors.gif'
 import MaticLogo from '../../assets/imgs/maticLogo.png'
-import db from '../../firebase/firesbaseConfig'
 
 export default function Game() {
-  const [rpsgame, setRpsgame] = useState({});
-  const [quickswap, setQuickswap] = useState({});
   const [web3, setWeb3] = useState({});
+  const [rpsgame, setRpsgame] = useState({});
   const [usergame, setUsergame] = useState({
     hand: '',
     amount: 0
-  });
-  const [userdata, setUserdata] = useState({
-    name1: 'guest',
-    pic1: 'QmST1mqXdzhrn7HcsyXhKoJyKCydyoTC3CGJ4mS16Qoyzh?filename=avatar.png'
   });
   const [account, setAccount] = useState('');
   const [chain, setChain] = useState('');
   const [network, setNetwork] = useState('');
   const [log, setLog] = useState('');
+  const [pause, setPause] = useState('Waiting Metamask');
   const [decimal, setDecimal] = useState(1000000000000000000);
   const [maticprice, setMaticprice] = useState(0);
-  const [walletBalances, setWalletbalances] = useState(0);
+  const [walletbalance, setWalletbalance] = useState(0);
   const [userhand, setUserhand] = useState(0);
   const [useramount, setUseramount] = useState(0);
   const [loss, setLoss] = useState(0);
   const [won, setWon] = useState(0);
   const [userloses, setUserloses] = useState(0);
   const [userwins, setUserwins] = useState(0);
-  const [pause, setPause] = useState('Waiting Metamask');
   const [active, setActive] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [gameresult0, setGameresult0] = useState(undefined);
@@ -58,7 +51,7 @@ export default function Game() {
     try {
       const provider = await detectEthereumProvider();
       if (provider) {
-
+  
       } else {
         window.alert('Please install Metamask!')
       }
@@ -70,18 +63,12 @@ export default function Game() {
       const accounts = await ethereum.request({ method: 'eth_accounts' })
       handleAccountsChanged(accounts)
       ethereum.on('accountsChanged', handleAccountsChanged)
-      if (chainId === '0x89') {
-        setNetwork('POLYGON')
-      }
       if (chainId === '0x13881') {
-        setNetwork('MUMBAI')
         const rpsgame = new web3.eth.Contract(RpsGame.abi, rpsGameContract)
         setRpsgame(rpsgame)
-        const quickswap = new web3.eth.Contract(RouterSwap.abi, polygonSwapContract)
-        setQuickswap(quickswap)
         try {
           let walletBalance = await web3.eth.getBalance(accounts[0])
-          setWalletbalances(walletBalance)
+          setWalletbalance(walletBalance)
         } catch (e) {
 
         }
@@ -95,28 +82,19 @@ export default function Game() {
           // let userWins = await rpsgame.methods.winLosesPerUser(accounts[0], 1).call()
           // setUserwins(userWins)
         } catch (e) {
-          
-        }
-        try {
-          let maticPrice = await quickswap.methods.getAmountsOut(1000000000000000, [maticContract, usdcContract]).call()
-          setMaticprice(maticPrice[1])
-        } catch (e) {
-         
-        }
-        try {
-          const query = doc(db, "users", accounts[0])
-          const document = await getDoc(query)
-          const userData = document.data()
-          if (userData) {
-            setUserdata(userData)
-          } else {
-            setDoc(doc(db, "users", accounts[0]), userdata)
-          }
-        } catch (e) {
 
         }
       } else {
         window.alert('Please connect to mumbai network!')
+      }
+      if (chainId === '0x89') {
+        try {
+          const quickswap = new web3.eth.Contract(RouterSwap.abi, polygonSwapContract)
+          let maticPrice = await quickswap.methods.getAmountsOut(1000000000000000, [maticContract, usdcContract]).call()
+          setMaticprice(maticPrice[1])
+        } catch (e) {
+
+        }
       }
     } catch (err) {
       console.log("Blockchain not detected!")
@@ -124,15 +102,19 @@ export default function Game() {
 
   }
 
-  function handleChainChanged(_chainId) {
+  async function handleChainChanged(_chainId) {
     setChain(_chainId)
-    console.log("Chain loaded!")
+    if (_chainId === '0x89') {
+      setNetwork('Polygon')
+    }
+    if (_chainId === '0x13881') {
+      setNetwork('Mumbai')
+    }
   }
 
   function handleAccountsChanged(accounts) {
-    console.log("Account loaded!")
     if (accounts.length === 0) {
-      console.log('Please connect to MetaMask.');
+
     } else if (accounts[0] !== null) {
       setAccount(accounts[0])
     }
@@ -189,6 +171,7 @@ export default function Game() {
     let myEvents = await rpsgame.getPastEvents('Play', { filter: { _to: account }, fromBlock: lastMinuteBlock, toBlock: 'latest' })
     setGameresult0(myEvents[0].returnValues[2])
     setGameresult(true)
+    loadWeb3()
   }
 
   async function backGame() {
@@ -201,7 +184,7 @@ export default function Game() {
     <>
       <img className="my-3 rounded-circle" src="https://random.imagecdn.app/256/256" alt="" width="256" height="256" />
       <ConnectChain network={network} />
-      <ConnectWallet account={account} data={userdata} web3={web3} />
+      <ConnectWallet web3={web3} account={account} />
       <article>
         <img src={MaticLogo} width="25" height="25" alt="" />{(maticprice / 1000).toFixed(2) + "$"}
         {active === true && chain === '0x13881' ?
@@ -219,7 +202,7 @@ export default function Game() {
               <div className="col">{`Total Loss: ${loss}`}</div>
               <div className="col">{`Your Loss: ${userloses}`}</div>
             </div>
-            <h3 className="my-2">Balance: {(walletBalances / decimal).toFixed(4) + " MATIC"}</h3>
+            <h3 className="my-2">Balance: {(walletbalance / decimal).toFixed(4) + " MATIC"}</h3>
             {log && (<span className="alert alert-danger mx-5">{log}</span>)}
             {playing === true ?
               <div className="mt-3">

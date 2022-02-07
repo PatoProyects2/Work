@@ -32,7 +32,7 @@ function Chat({ socket, username, room }) {
   return (
     <div className="chat-window">
       <div className="chat-header">
-        <p>Game Chat</p>
+        <p>Global Chat</p>
       </div>
       <div className="chat-body">
         <ScrollToBottom className="message-container">
@@ -40,7 +40,7 @@ function Chat({ socket, username, room }) {
             return (
               <div
                 className="message"
-                id={username === messageContent.author ? "you" : "other"}
+                id={username === messageContent.author ? "other" : "you"}
               >
                 <div>
                   <div className="message-content">

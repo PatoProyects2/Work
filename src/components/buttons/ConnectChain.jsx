@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap'
 
 export default function ConnectChain(props) {
@@ -8,14 +8,9 @@ export default function ConnectChain(props) {
         setDropdown(!dropdown);
     }
 
-    useEffect(() => {
-
-    }, []);
-
     async function addPolygon() {
         try {
-            const provider = window.web3.currentProvider
-            await provider.sendAsync({
+            await ethereum.sendAsync({
                 method: 'wallet_addEthereumChain',
                 params: [{
                     chainId: "0x89",
@@ -35,13 +30,21 @@ export default function ConnectChain(props) {
         }
     }
 
-    async function switchPolygon() {
+    async function addMumbai() {
         try {
-            const provider = window.web3.currentProvider
-            await provider.sendAsync({
-                method: 'wallet_switchEthereumChain',
+            await ethereum.sendAsync({
+                method: 'wallet_addEthereumChain',
                 params: [{
-                    chainId: "0x89",
+                    chainId: "0x13881",
+                    chainName: "Mumbai Testnet",
+                    rpcUrls: ["https://rpc-mumbai.maticvigil.com"],
+                    iconUrls: ["https://queesunbitcoin.com/wp-content/uploads/2021/05/curso-sobre-binance-online.png"],
+                    nativeCurrency: {
+                        name: "MATIC",
+                        symbol: "MATIC",
+                        decimals: 18,
+                    },
+                    blockExplorerUrls: ["https://mumbai.polygonscan.com/"],
                 }],
             });
         } catch (error) {
@@ -50,12 +53,13 @@ export default function ConnectChain(props) {
     }
 
     return (
-        <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="sm" className="my-2">
+        <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="md" className="my-2">
             <DropdownToggle caret color='danger'>
                 {props.network}
             </DropdownToggle>
             <DropdownMenu >
-                <DropdownItem onClick={addPolygon}>POLYGON</DropdownItem>
+                <DropdownItem disabled={props.network === 'Polygon'} onClick={addPolygon}>Polygon</DropdownItem>
+                <DropdownItem disabled={props.network === 'Mumbai'} onClick={addMumbai}>Mumbai</DropdownItem>
             </DropdownMenu>
         </Dropdown>
     )
