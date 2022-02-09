@@ -1,37 +1,28 @@
 //SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0 <0.9.0;
 
-
 interface IRandomNumberVRF{
     function getRandomNumber() external returns (bytes32 requestId);
     function getRandomRangeNumber(address _user, uint a, uint b) external returns(uint256);
 }
 interface IstakingNFT{
-    function newPlay(uint _amount) external;
+    function newPlay() external payable;
 }
-interface Iliquidity{
-    function win(address,uint) external;
-}
-contract rpsGame  {
-    
-    bool public onOff; //funcion para pausar el juego;
+contract rpsGame  {    
     address owner; // Dueño del contrato, maximo rango de acceso (mover fondos de la pool)
-    address admin; // Funciones para editar parametros de nivel medio (editar precios, fees)
     IRandomNumberVRF randomLinkContract; //Direccion de VRF random contract
-    //Iliquidity liquidity; // direccion de liquides
-
-
-    //address NFTHolders; //Direccion del contrato que repartira la recompenza a los holders
+    address payable addressStaking;
     IstakingNFT NFTHolders; //Direccion de contrato staking
-    uint public feeForNFTHolders = 250; //% del fee para nftHolders (100 = 1%)
-
     address devWalletFees;  //Direccion del fee para los devs
+
+    uint public feeForNFTHolders = 250; //% del fee para nftHolders (100 = 1%)
     uint public feeForDevs = 100; //Fee para los el equipo de desarrollo
 
+    bool public onOff = true; // to pause play function
     uint totalFee = feeForNFTHolders + feeForDevs;
-    uint maxDeal; //Puja maxima en un mismo juego 
+    uint maxDeal; //Max Value in Play fuction
     uint minBalanceToPay; // balance minimo que tiene que tener el contrato, para poder pagar.
-    mapping (address => uint) debtPerUser; //Usado para pagar las deudas.
+    mapping (address => uint) public debtPerUser; //Usado para pagar las deudas.
     
     string[3] RPSop = ['rock','paper', 'scissors']; // 0 = Rock, 1 = paper, 2=scissors
     //for testin gass
@@ -52,22 +43,23 @@ contract rpsGame  {
     event C_setFeeForNFTHolders(address,uint);// Change feeForNFTHolders(msg.sender, newValue)
     event C_setFeeForDevs(address,uint);// Change feeFordevs(msg.sender, newValue)
     event C_setMaxDeal(address,uint);// change max value in Play fuction (msg.sender, newMaxValue)
-    event FoundIn(address, uint);
+    event FoundsIn(address, uint);//
     event FoundsOut(address,uint,address); // withdraw found of this contract(msg.sender, total, address founds)
      event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
     constructor (
         address _owner,         
         address _devWallet, 
-        IRandomNumberVRF _randomLinkContract,
-        IstakingNFT _NFTholders
+        address payable _NFTholders,
+        IRandomNumberVRF _randomLinkContract
     ){
         owner = _owner;
-        admin = _owner;
-        NFTHolders = _NFTholders;
+        addressStaking = _NFTholders;
+        NFTHolders = IstakingNFT(_NFTholders);
         devWalletFees = _devWallet;
         randomLinkContract = _randomLinkContract;
         maxDeal = 1 ether;
+        minBalanceToPay = 2 ether; 
     }
 
 //FUNCTIONS FOR USERS
@@ -79,11 +71,11 @@ contract rpsGame  {
         require(msg.value <= (maxDeal + fee));
         require( (_value+fee) == msg.value);
 
-        payable(address(NFTHolders)).transfer(_value * feeForNFTHolders / 10000);
         payable(devWalletFees).transfer(_value * feeForDevs  / 10000);
-        NFTHolders.newPlay(_value * feeForDevs  / 10000);
-
+        NFTHolders.newPlay{value:(_value * feeForNFTHolders / 10000)}();
+        //getRandom is public!
         uint rand = getRandomRangeLink(msg.sender,1,100);
+        
         if(rand >= 50){
             if(checkBalance(_value * 2)){
                 payable(msg.sender).transfer(_value * 2);
@@ -126,8 +118,8 @@ contract rpsGame  {
         uint totalValue = calculateFee(_value) + _value;
         return totalValue;
     }
-    function getRache() public view returns(uint){
-        return winLosesRache[msg.sender][1];
+    function getRache(address _user) public view returns(uint){
+        return winLosesRache[_user][1];
     }
 
 //internal
@@ -147,9 +139,9 @@ contract rpsGame  {
 //SETTERS
     
     //Cambiar direccion del contrato a donde va el 2% para los que posen nfts
-    function setNFTHoldersAddress(IstakingNFT _newNFTHolders) public onlyOwner{
-        NFTHolders = _newNFTHolders;
-        emit C_setNFTHoldersAddress(msg.sender, _newNFTHolders);
+    function setNFTHoldersAddress(address payable _newNFTholders) public onlyOwner{
+        NFTHolders = IstakingNFT(_newNFTholders);
+        emit C_setNFTHoldersAddress(msg.sender, IstakingNFT(_newNFTholders));
     }
     //Cambiar la direccion donde va el 1.5%(devFee)
     function setDevAddress(address _newDevWalletFees) public onlyOwner {
@@ -185,7 +177,6 @@ contract rpsGame  {
          onOff = _bool;
     }
     function trasnferFoundsOUT(uint _amount, address _to) public payable onlyOwner(){
-        require(msg.sender == admin, "no eres el admin");
         payable(_to).transfer(_amount);
         onOff = false;
         emit FoundsOut(msg.sender, _amount,_to);
@@ -193,7 +184,7 @@ contract rpsGame  {
     //trasnfiere valor, usao para testeo
     function trasnferFoundsIN()public payable returns(bool){
         require(msg.value > 10);
-        emit FoundIn(msg.sender,msg.value);
+        emit FoundsIn(msg.sender,msg.value);
         return true;
     }
     function renounceOwnership() public virtual onlyOwner {

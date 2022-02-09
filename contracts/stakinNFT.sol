@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-import "./nfts/rpsNFTRock.sol"; 
+import "./nfts/rpsNFT.sol"; 
 /*
 Dev @PatoVerde : 
  * Se crea un vector, en cada posicion guardara cuanto(value) debe repartirse a cada id EN STAKE. (newPlayFunction)
@@ -100,9 +100,9 @@ contract Staking is Ownable {
 
 
     uint testValueUsers = 10;
-    function newPlay(uint _amount) public {  
+    function newPlay() public payable {  
         uint cant = ROCK.balanceOf(address(this));      
-        earningPerPlay.push(_amount / cant);
+        earningPerPlay.push(msg.value / cant);
     }
     function setTestValueUsers(uint _cantUsers) public {
         testValueUsers = _cantUsers;
