@@ -4,6 +4,8 @@ import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Button, Modal, Mo
 import db from '../../firebase/firesbaseConfig'
 import Nft1 from '../../assets/imgs/profile/nft1.png'
 import Nft2 from '../../assets/imgs/profile/nft2.png'
+import CopyLogo from '../../assets/imgs/copyLogo.png'
+import MetamaskLogo from '../../assets/imgs/MetaMask_Fox.png'
 
 export default function ConnectWalletButton(props) {
   const [userinfo, setUserinfo] = useState({
@@ -21,7 +23,6 @@ export default function ConnectWalletButton(props) {
   const [log2, setLog2] = useState('Username');
   const [log3, setLog3] = useState('Wallet Address');
   const [log4, setLog4] = useState('Amount');
-  const [decimal, setDecimal] = useState(1000000000000000000);
   const [balance, setBalance] = useState(0);
   const [edit, setEdit] = useState(false);
   const [send, setSend] = useState(false);
@@ -160,7 +161,7 @@ export default function ConnectWalletButton(props) {
           {
             from: props.account,
             to: friend.account1,
-            value: props.web3.utils.numberToHex((friend.amount1 * decimal).toString()),
+            value: props.web3.utils.numberToHex((friend.amount1 * props.decimal).toString()),
           },
         ],
       })
@@ -186,22 +187,28 @@ export default function ConnectWalletButton(props) {
           </DropdownToggle>
           <DropdownMenu className={props.theme === 'dark' ? 'bg-dark' : 'bg-light'}>
             <DropdownItem header>{username}</DropdownItem>
-            <DropdownItem header>{props.account.substring(0, 5) + "..." + props.account.substring(12, 16)}<button onClick={() => navigator.clipboard.writeText(props.account)}>[Copy]</button></DropdownItem>
-            <DropdownItem header>{(balance / decimal).toFixed(4) + " MATIC"}</DropdownItem>
+            <DropdownItem header>{props.account.substring(0, 5) + "..." + props.account.substring(12, 16)}
+              <button className={`btn-sm ms-2 ${props.theme === 'dark' ? 'btn-secondary' : 'btn-dark'}`}
+                onClick={() => navigator.clipboard.writeText(props.account)}>
+                <i className="fa-regular fa-clone white"></i>
+              </button>
+            </DropdownItem>
+            <DropdownItem header>{(balance / props.decimal).toFixed(4) + " MATIC"}</DropdownItem>
             <DropdownItem divider />
-            <DropdownItem onClick={editProfile}>Edit profile</DropdownItem>
-            <DropdownItem onClick={sendMatic}>Send matic</DropdownItem>
-            <DropdownItem onClick={manageWallets}>Accounts</DropdownItem>
+            <DropdownItem className={props.theme === 'dark' ? 'dropdown-item-dark' : ''} onClick={editProfile}>Edit profile</DropdownItem>
+            <DropdownItem className={props.theme === 'dark' ? 'dropdown-item-dark' : ''} onClick={sendMatic}>Send matic</DropdownItem>
+            <DropdownItem className={props.theme === 'dark' ? 'dropdown-item-dark' : ''} onClick={manageWallets}>Accounts</DropdownItem>
           </DropdownMenu>
         </Dropdown>
         :
         <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="md">
           <DropdownToggle color='danger' onClick={connect} disabled={log0 === 'Connecting...'}>
-            {log0}
+            {log0 === ' Connecting' ? <img width="25" height="25" alt="" src={MetamaskLogo} /> : ""}
+            {" " + log0}
           </DropdownToggle>
         </Dropdown>
       }
-      <Modal isOpen={edit}>
+      <Modal isOpen={edit} contentClassName={props.theme === 'dark' ? 'dark dark-border' : ''}>
         <ModalHeader>
           Profile
         </ModalHeader>
@@ -223,12 +230,12 @@ export default function ConnectWalletButton(props) {
           </FormGroup>
         </ModalBody>
         <ModalFooter>
-          <Button color="primary" type="submit" onClick={updateProfile}>Save</Button>
+          <Button color="warning" type="submit" onClick={updateProfile}>Save</Button>
           <Button color="secondary" onClick={editProfile}>Close</Button>
         </ModalFooter>
       </Modal>
 
-      <Modal isOpen={send}>
+      <Modal isOpen={send} contentClassName={props.theme === 'dark' ? 'dark dark-border' : ''}>
         <ModalHeader>
           Send matic
         </ModalHeader>
@@ -243,7 +250,7 @@ export default function ConnectWalletButton(props) {
           </FormGroup>
         </ModalBody>
         <ModalFooter>
-          <Button color="primary" type="submit" onClick={sendToFriend}>Send</Button>
+          <Button color="warning" type="submit" onClick={sendToFriend}>Send</Button>
           <Button color="secondary" onClick={sendMatic}>Close</Button>
         </ModalFooter>
       </Modal>

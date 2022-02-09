@@ -33,6 +33,7 @@ export default function Game() {
   const [network, setNetwork] = useState('');
   const [log, setLog] = useState('');
   const [decimal, setDecimal] = useState(1000000000000000000);
+  const [userGameStreak, setUserGameStreak] = useState(0);
   const [maticprice, setMaticprice] = useState(0);
   const [walletbalance, setWalletbalance] = useState(0);
   const [userhand, setUserhand] = useState(0);
@@ -43,9 +44,10 @@ export default function Game() {
   const [userwins, setUserwins] = useState(0);
   const [active, setActive] = useState(false);
   const [playing, setPlaying] = useState(false);
+  const [animation, setAnimation] = useState(false);
   const [userGameResult, setUserGameResult] = useState(undefined);
   const [gameResult, setGameResult] = useState(undefined);
-  const [showGameResult, setShowGameResult] = useState(undefined);
+  const [showGameResult, setShowGameResult] = useState(false);
   const [eventsmodal, setEventsmodal] = useState({});
   const [userdata0, setUserdata0] = useState({ name1: '' });
   const [userdata1, setUserdata1] = useState({ name1: '' });
@@ -257,6 +259,7 @@ export default function Game() {
     if (usergame.hand !== '' && usergame.amount !== 0) {
       let calculateValue = await rpsgame.methods.calculateValue((web3.utils.toWei((usergame.amount).toString(), "ether"))).call()
       setPlaying(true)
+      setAnimation(true)
       rpsgame.methods
         .play(web3.utils.toWei((usergame.amount).toString(), "ether"))
         .send({
@@ -278,6 +281,7 @@ export default function Game() {
     let myEvents = await rpsgame.getPastEvents('Play', { filter: { _to: account }, fromBlock: lastMinuteBlock, toBlock: 'latest' })
     setShowGameResult(true)
     setUserGameResult(myEvents[0].returnValues[3])
+    setUserGameStreak(myEvents[0].returnValues[2])
     if (myEvents[0].returnValues[3] === true) {
       const amount = (myEvents[0].returnValues[1] / decimal).toString()
       const block = (myEvents[0].blockNumber).toString()
@@ -297,14 +301,15 @@ export default function Game() {
   }
 
   async function showResult() {
-    setGameResult(true)
     setShowGameResult(false)
+    setAnimation(false)
+    setGameResult(true)
     loadWeb3()
   }
 
   async function backGame() {
     setPlaying(false)
-    setGameresult0(undefined)
+    setUserGameStreak(0)
     setGameResult(undefined)
   }
 
@@ -326,6 +331,7 @@ export default function Game() {
 
       <div className="d-flex flex-row justify-content-center align-items-center gap-3">
         <HistoryGames
+          theme={theme}
           blockchain={blockchain}
           eventsmodal={eventsmodal}
           userdata0={userdata0}
@@ -354,85 +360,31 @@ export default function Game() {
           userpic11={userpic11}
           decimal={decimal}
         />
-        <ConnectChain network={network} />
-        <ConnectWallet web3={web3} account={account} theme={theme} />
+        <ConnectWallet decimal={decimal} web3={web3} account={account} theme={theme} />
       </div>
-
-      <h3 className="my-2">MATIC {(walletbalance / decimal).toFixed(4)}</h3>
       <article>
-        {/* <img src={MaticLogo} width="25" height="25" alt="" />{(maticprice / 1000).toFixed(2) + "$"} */}
         {active === true && chain === '0x13881' ?
           <div className="game-container">
+            <h5 className="my-2">MATIC {(walletbalance / decimal).toFixed(4)}</h5>
             {log && (<span className="alert alert-danger mx-5">{log}</span>)}
             {playing === true ?
               <div className="mt-3">
-                {userhand === 'Rock' ? <img width="120" height="120" src={Rock} alt="" /> : ""}
-                {userhand === 'Papper' ? <img width="120" height="120" src={Papper} alt="" /> : ""}
-                {userhand === 'Scissors' ? <img width="120" height="120" src={Scissors} alt="" /> : ""}
+                {animation === true ? <h3>Animacion...</h3> : ""}
                 {showGameResult === true ? <button onClick={showResult}>SHOW RESULT</button> : ""}
                 {gameResult === true
                   ?
                   <>
-                    {userhand === 'Rock' && userGameResult === true
-                      ?
-                      <div>
-                        <img width="120" height="120" src={Scissors} alt="" />
-                        <br></br>
-                        {"You won: " + (useramount * 2) + " MATIC"}
-                      </div>
-                      :
-                      ""
-                    }
-                    {userhand === 'Papper' && userGameResult === true
-                      ?
-                      <div>
-                        <img width="120" height="120" src={Rock} alt="" />
-                        <br></br>
-                        {"You won: " + (useramount * 2) + " MATIC"}
-                      </div>
-                      :
-                      ""
-                    }
-                    {userhand === 'Scissors' && userGameResult === true
-                      ?
-                      <div>
-                        <img width="120" height="120" src={Papper} alt="" />
-                        <br></br>
-                        {"You won: " + (useramount * 2) + " MATIC"}
-                      </div>
-                      :
-                      ""
-                    }
-                    {userhand === 'Rock' && userGameResult === false
-                      ?
-                      <div>
-                        <img width="120" height="120" src={Papper} alt="" />
-                        <br></br>
-                        {"You loss: " + useramount + " MATIC"}
-                      </div>
-                      :
-                      ""
-                    }
-                    {userhand === 'Papper' && userGameResult === false
-                      ?
-                      <div>
-                        <img width="120" height="120" src={Scissors} alt="" />
-                        <br></br>
-                        {"You loss: " + useramount + " MATIC"}
-                      </div>
-                      :
-                      ""
-                    }
-                    {userhand === 'Scissors' && userGameResult === false
-                      ?
-                      <div>
-                        <img width="120" height="120" src={Rock} alt="" />
-                        <br></br>
-                        {"You loss: " + useramount + " MATIC"}
-                      </div>
-                      :
-                      ""
-                    }
+                    <h3>
+                      {userGameResult === true ? "You won " + (useramount * 2) : ""}
+                      {userGameStreak > 1 ? " " + userGameStreak + " times" : ""}
+                      {userGameResult === false ? "You lost " + useramount : ""}
+                    </h3>
+                    {userhand === 'Rock' && userGameResult === true ? <img width="120" height="120" src={Scissors} alt="" /> : ""}
+                    {userhand === 'Papper' && userGameResult === true ? <img width="120" height="120" src={Rock} alt="" /> : ""}
+                    {userhand === 'Scissors' && userGameResult === true ? <img width="120" height="120" src={Papper} alt="" /> : ""}
+                    {userhand === 'Rock' && userGameResult === false ? <img width="120" height="120" src={Papper} alt="" /> : ""}
+                    {userhand === 'Papper' && userGameResult === false ? <img width="120" height="120" src={Scissors} alt="" /> : ""}
+                    {userhand === 'Scissors' && userGameResult === false ? <img width="120" height="120" src={Rock} alt="" /> : ""}
                     <br></br>
                     {userGameResult === true ? <button onClick={backGame}>CLAIM REWARD</button> : <button onClick={backGame}>BACK</button>}
                   </>
