@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { NavLink, Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { Navbar, Offcanvas, Nav, NavbarBrand, OffcanvasHeader, OffcanvasBody, Button } from 'reactstrap';
-import MEIcon from '../../../assets/imgs/me-icon.png';
 
 export const NavbarMobile = ({ theme, handleThemeChange, handleFaqModal, handleHtpModal }) => {
 
@@ -87,10 +86,7 @@ export const NavbarMobile = ({ theme, handleThemeChange, handleFaqModal, handleH
                             </Button>
                         </li>
                     </Nav>
-                    <div className="d-flex flex-row gap-2 justify-content-center mt-3">
-                        <a href="https://www.google.com" target="_blank" rel="noopener noreferrer">
-                            <img className="rounded mt-1" src={MEIcon} style={{ width: '36px', heigh: '36px' }} alt="Magic Eden Marketplace" />
-                        </a>
+                    <div className="d-flex flex-row gap-2 justify-content-center mt-3">                       
                         <a href="https://www.google.com" className="twitter-icon" target="_blank" rel="noopener noreferrer">
                             <i className="fab fa-2x fa-twitter"></i>
                         </a>

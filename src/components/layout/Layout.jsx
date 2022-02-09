@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import Footer from '../footer/Footer'
 import { Navbar } from '../ui/navbar/Navbar'
-import MEIcon from  '../../assets/imgs/me-icon.png'
 
 const currentTheme = () => {
   return localStorage.getItem("theme") || "light";
@@ -29,10 +28,7 @@ export function Layout() {
         <aside>
 
         </aside>
-        <div className={`social-icons d-flex flex-row justify-content-center py-4 ${theme}`}>
-          <a href="https://www.google.com" target="_blank" rel="noopener noreferrer">
-            <img className="rounded mt-1 me-2" src={MEIcon} style={{ width: '36px', heigh: '36px' }} alt="Magic Eden Marketplace" />
-          </a>
+        <div className={`social-icons d-flex flex-row justify-content-center py-4 ${theme}`}>          
           <a href="https://www.google.com" className="twitter-icon me-2" target="_blank" rel="noopener noreferrer">
             <i className="fab fa-2x fa-twitter"></i>
           </a>

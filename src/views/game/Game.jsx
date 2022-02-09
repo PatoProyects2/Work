@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
+import { useOutletContext } from 'react-router-dom'
 import Web3 from 'web3'
 import detectEthereumProvider from '@metamask/detect-provider'
+import { doc, getDoc, arrayUnion, updateDoc } from "firebase/firestore";
 import RpsGame from '../../abis/RpsGame/rpsGame.json'
 import RouterSwap from '../../abis/Swap/PancakeRouter.json'
 import {
@@ -15,10 +17,11 @@ import ConnectWallet from '../../components/buttons/ConnectWallet'
 import Rock from '../../assets/imgs/rock.gif'
 import Papper from '../../assets/imgs/papper.gif'
 import Scissors from '../../assets/imgs/scissors.gif'
-import MaticLogo from '../../assets/imgs/maticLogo.png'
 import HistoryGamesModal from './components/HistoryGamesModal'
+import db from '../../firebase/firesbaseConfig'
 
 export default function Game() {
+  const [theme] = useOutletContext();
   const [web3, setWeb3] = useState({});
   const [rpsgame, setRpsgame] = useState({});
   const [usergame, setUsergame] = useState({
@@ -29,7 +32,6 @@ export default function Game() {
   const [chain, setChain] = useState('');
   const [network, setNetwork] = useState('');
   const [log, setLog] = useState('');
-  const [pause, setPause] = useState('Waiting Metamask');
   const [decimal, setDecimal] = useState(1000000000000000000);
   const [maticprice, setMaticprice] = useState(0);
   const [walletbalance, setWalletbalance] = useState(0);
@@ -41,12 +43,39 @@ export default function Game() {
   const [userwins, setUserwins] = useState(0);
   const [active, setActive] = useState(false);
   const [playing, setPlaying] = useState(false);
-  const [gameresult0, setGameresult0] = useState(undefined);
-  const [gameresult, setGameresult] = useState(undefined);
-  const [showgame, setShowgame] = useState(undefined);
+  const [userGameResult, setUserGameResult] = useState(undefined);
+  const [gameResult, setGameResult] = useState(undefined);
+  const [showGameResult, setShowGameResult] = useState(undefined);
+  const [eventsmodal, setEventsmodal] = useState({});
+  const [userdata0, setUserdata0] = useState({ name1: '' });
+  const [userdata1, setUserdata1] = useState({ name1: '' });
+  const [userdata2, setUserdata2] = useState({ name1: '' });
+  const [userdata3, setUserdata3] = useState({ name1: '' });
+  const [userdata4, setUserdata4] = useState({ name1: '' });
+  const [userdata5, setUserdata5] = useState({ name1: '' });
+  const [userdata6, setUserdata6] = useState({ name1: '' });
+  const [userdata7, setUserdata7] = useState({ name1: '' });
+  const [userdata8, setUserdata8] = useState({ name1: '' });
+  const [userdata9, setUserdata9] = useState({ name1: '' });
+  const [userdata10, setUserdata10] = useState({ name1: '' });
+  const [userdata11, setUserdata11] = useState({ name1: '' });
+  const [userpic0, setUserpic0] = useState('');
+  const [userpic1, setUserpic1] = useState('');
+  const [userpic2, setUserpic2] = useState('');
+  const [userpic3, setUserpic3] = useState('');
+  const [userpic4, setUserpic4] = useState('');
+  const [userpic5, setUserpic5] = useState('');
+  const [userpic6, setUserpic6] = useState('');
+  const [userpic7, setUserpic7] = useState('');
+  const [userpic8, setUserpic8] = useState('');
+  const [userpic9, setUserpic9] = useState('');
+  const [userpic10, setUserpic10] = useState('');
+  const [userpic11, setUserpic11] = useState('');
+  const [blockchain, setBlockchain] = useState(0);
 
   useEffect(() => {
     loadWeb3()
+    readEvents()
   }, []);
 
   async function loadWeb3() {
@@ -104,6 +133,82 @@ export default function Game() {
 
   }
 
+  async function readEvents() {
+    try {
+      const provider = await detectEthereumProvider();
+      const web3 = new Web3(new Web3(window.ethereum), provider)
+      const rpsgame = new web3.eth.Contract(RpsGame.abi, rpsGameContract)
+      const actuallBlock = await web3.eth.getBlockNumber()
+      setBlockchain(actuallBlock)
+      const lastMinuteBlock = actuallBlock - 26
+      const eventsmodal = await rpsgame.getPastEvents('Play', { fromBlock: lastMinuteBlock, toBlock: 'latest' })
+      setEventsmodal(eventsmodal)
+      const userData0 = await getDoc(doc(db, "users", eventsmodal[0].returnValues[0].toLowerCase()))
+      const picPath0 = userData0.data().pic1
+      const profilePhoto0 = await import(`../../assets/imgs/profile/${picPath0}`)
+      setUserdata0(userData0.data())
+      setUserpic0(profilePhoto0.default)
+      const userData1 = await getDoc(doc(db, "users", eventsmodal[1].returnValues[0].toLowerCase()))
+      const picPath1 = userData1.data().pic1
+      const profilePhoto1 = await import(`../../assets/imgs/profile/${picPath1}`)
+      setUserdata1(userData1.data())
+      setUserpic1(profilePhoto1.default)
+      const userData2 = await getDoc(doc(db, "users", eventsmodal[2].returnValues[0].toLowerCase()))
+      const picPath2 = userData2.data().pic1
+      const profilePhoto2 = await import(`../../assets/imgs/profile/${picPath2}`)
+      setUserdata2(userData2.data())
+      setUserpic2(profilePhoto2.default)
+      const userData3 = await getDoc(doc(db, "users", eventsmodal[3].returnValues[0].toLowerCase()))
+      const picPath3 = userData3.data().pic1
+      const profilePhoto3 = await import(`../../assets/imgs/profile/${picPath3}`)
+      setUserdata3(userData3.data())
+      setUserpic3(profilePhoto3.default)
+      const userData4 = await getDoc(doc(db, "users", eventsmodal[4].returnValues[0].toLowerCase()))
+      const picPath4 = userData4.data().pic1
+      const profilePhoto4 = await import(`../../assets/imgs/profile/${picPath4}`)
+      setUserdata4(userData4.data())
+      setUserpic4(profilePhoto4.default)
+      const userData5 = await getDoc(doc(db, "users", eventsmodal[5].returnValues[0].toLowerCase()))
+      const picPath5 = userData5.data().pic1
+      const profilePhoto5 = await import(`../../assets/imgs/profile/${picPath5}`)
+      setUserdata5(userData5.data())
+      setUserpic5(profilePhoto5.default)
+      const userData6 = await getDoc(doc(db, "users", eventsmodal[6].returnValues[0].toLowerCase()))
+      const picPath6 = userData6.data().pic1
+      const profilePhoto6 = await import(`../../assets/imgs/profile/${picPath6}`)
+      setUserdata6(userData6.data())
+      setUserpic6(profilePhoto6.default)
+      const userData7 = await getDoc(doc(db, "users", eventsmodal[7].returnValues[0].toLowerCase()))
+      const picPath7 = userData7.data().pic1
+      const profilePhoto7 = await import(`../../assets/imgs/profile/${picPath7}`)
+      setUserdata7(userData7.data())
+      setUserpic7(profilePhoto7.default)
+      const userData8 = await getDoc(doc(db, "users", eventsmodal[8].returnValues[0].toLowerCase()))
+      const picPath8 = userData8.data().pic1
+      const profilePhoto8 = await import(`../../assets/imgs/profile/${picPath8}`)
+      setUserdata8(userData8.data())
+      setUserpic8(profilePhoto8.default)
+      const userData9 = await getDoc(doc(db, "users", eventsmodal[9].returnValues[0].toLowerCase()))
+      const picPath9 = userData9.data().pic1
+      const profilePhoto9 = await import(`../../assets/imgs/profile/${picPath9}`)
+      setUserdata9(userData9.data())
+      setUserpic9(profilePhoto9.default)
+      const userData10 = await getDoc(doc(db, "users", eventsmodal[10].returnValues[0].toLowerCase()))
+      const picPath10 = userData10.data().pic1
+      const profilePhoto10 = await import(`../../assets/imgs/profile/${picPath10}`)
+      setUserdata10(userData10.data())
+      setUserpic10(profilePhoto10.default)
+      const userData11 = await getDoc(doc(db, "users", eventsmodal[11].returnValues[0].toLowerCase()))
+      const picPath11 = userData11.data().pic1
+      const profilePhoto11 = await import(`../../assets/imgs/profile/${picPath11}`)
+      setUserdata11(userData11.data())
+      setUserpic11(profilePhoto11.default)
+    } catch (e) {
+
+    }
+    setTimeout(readEvents, 2000)
+  }
+
   async function handleChainChanged(_chainId) {
     setChain(_chainId)
     if (_chainId === '0x89') {
@@ -122,10 +227,6 @@ export default function Game() {
     }
   }
 
-  async function openGame() {
-    setActive(true);
-  }
-
   const handleInputChange = (event) => {
     setUsergame({
       ...usergame,
@@ -133,7 +234,11 @@ export default function Game() {
     })
   }
 
-  async function startGame() {
+  async function openGame() {
+    setActive(true);
+  }
+
+  async function doubleOrNothing() {
     if (document.getElementById('rock').checked || document.getElementById('papper').checked || document.getElementById('scissors').checked) {
       setUserhand(usergame.hand)
       setLog('')
@@ -153,7 +258,7 @@ export default function Game() {
       let calculateValue = await rpsgame.methods.calculateValue((web3.utils.toWei((usergame.amount).toString(), "ether"))).call()
       setPlaying(true)
       rpsgame.methods
-        .playCuatro(web3.utils.toWei((usergame.amount).toString(), "ether"))
+        .play(web3.utils.toWei((usergame.amount).toString(), "ether"))
         .send({
           from: account,
           value: calculateValue,
@@ -169,45 +274,106 @@ export default function Game() {
 
   async function readAccountEvent() {
     let actuallBlock = await web3.eth.getBlockNumber()
-    let lastMinuteBlock = actuallBlock - 10
+    let lastMinuteBlock = actuallBlock - 7
     let myEvents = await rpsgame.getPastEvents('Play', { filter: { _to: account }, fromBlock: lastMinuteBlock, toBlock: 'latest' })
-    setGameresult0(myEvents[0].returnValues[2])
-    setShowgame(true)
+    setShowGameResult(true)
+    setUserGameResult(myEvents[0].returnValues[3])
+    if (myEvents[0].returnValues[3] === true) {
+      const amount = (myEvents[0].returnValues[1] / decimal).toString()
+      const block = (myEvents[0].blockNumber).toString()
+      const query = doc(db, "users", account)
+      const document = await getDoc(query)
+      const userData = document.data()
+      updateDoc(doc(db, "users", account), {
+        winAmount: arrayUnion(block + " " + amount),
+        winStreak: userData.winStreak + 1
+      })
+    }
+    if (myEvents[0].returnValues[3] === false) {
+      updateDoc(doc(db, "users", account), {
+        winStreak: 0
+      })
+    }
+  }
+
+  async function showResult() {
+    setGameResult(true)
+    setShowGameResult(false)
     loadWeb3()
   }
 
   async function backGame() {
     setPlaying(false)
     setGameresult0(undefined)
-    setGameresult(undefined)
+    setGameResult(undefined)
   }
 
-  async function show() {
-    setGameresult(true)
-    setShowgame(false)
-  }
   return (
     <>
-      <img className="my-3 rounded-circle" src="https://random.imagecdn.app/256/256" alt="" width="256" height="256" />
-      <HistoryGames web3={web3} rpsgame={rpsgame} />
-      <ConnectChain network={network} />
-      <ConnectWallet web3={web3} account={account} />
+      {!active &&
+        <div className="row justify-content-center">
+          <div className="col-4 col-md-3">
+            <img className="my-3 img-fluid" src={Rock} alt="Rock" />
+          </div>
+          <div className="col-4 col-md-3">
+            <img className="my-3 img-fluid" src={Papper} alt="Paper" />
+          </div>
+          <div className="col-4 col-md-3">
+            <img className="my-3 img-fluid" src={Scissors} alt="Scissors" />
+          </div>
+        </div>
+      }
+
+      <div className="d-flex flex-row justify-content-center align-items-center gap-3">
+        <HistoryGames
+          blockchain={blockchain}
+          eventsmodal={eventsmodal}
+          userdata0={userdata0}
+          userdata1={userdata1}
+          userdata2={userdata2}
+          userdata3={userdata3}
+          userdata4={userdata4}
+          userdata5={userdata5}
+          userdata6={userdata6}
+          userdata7={userdata7}
+          userdata8={userdata8}
+          userdata9={userdata9}
+          userdata10={userdata10}
+          userdata11={userdata11}
+          userpic0={userpic0}
+          userpic1={userpic1}
+          userpic2={userpic2}
+          userpic3={userpic3}
+          userpic4={userpic4}
+          userpic5={userpic5}
+          userpic6={userpic6}
+          userpic7={userpic7}
+          userpic8={userpic8}
+          userpic9={userpic9}
+          userpic10={userpic10}
+          userpic11={userpic11}
+          decimal={decimal}
+        />
+        <ConnectChain network={network} />
+        <ConnectWallet web3={web3} account={account} theme={theme} />
+      </div>
+
       <h3 className="my-2">MATIC {(walletbalance / decimal).toFixed(4)}</h3>
       <article>
         {/* <img src={MaticLogo} width="25" height="25" alt="" />{(maticprice / 1000).toFixed(2) + "$"} */}
         {active === true && chain === '0x13881' ?
-          <div className="game-container bg-secondary">
+          <div className="game-container">
             {log && (<span className="alert alert-danger mx-5">{log}</span>)}
             {playing === true ?
               <div className="mt-3">
                 {userhand === 'Rock' ? <img width="120" height="120" src={Rock} alt="" /> : ""}
                 {userhand === 'Papper' ? <img width="120" height="120" src={Papper} alt="" /> : ""}
                 {userhand === 'Scissors' ? <img width="120" height="120" src={Scissors} alt="" /> : ""}
-                {showgame === true ? <button onClick={show}>SHOW RESULT</button> : ""}
-                {gameresult === true
+                {showGameResult === true ? <button onClick={showResult}>SHOW RESULT</button> : ""}
+                {gameResult === true
                   ?
                   <>
-                    {userhand === 'Rock' && gameresult0 === true
+                    {userhand === 'Rock' && userGameResult === true
                       ?
                       <div>
                         <img width="120" height="120" src={Scissors} alt="" />
@@ -217,7 +383,7 @@ export default function Game() {
                       :
                       ""
                     }
-                    {userhand === 'Papper' && gameresult0 === true
+                    {userhand === 'Papper' && userGameResult === true
                       ?
                       <div>
                         <img width="120" height="120" src={Rock} alt="" />
@@ -227,7 +393,7 @@ export default function Game() {
                       :
                       ""
                     }
-                    {userhand === 'Scissors' && gameresult0 === true
+                    {userhand === 'Scissors' && userGameResult === true
                       ?
                       <div>
                         <img width="120" height="120" src={Papper} alt="" />
@@ -237,38 +403,38 @@ export default function Game() {
                       :
                       ""
                     }
-                    {userhand === 'Rock' && gameresult0 === false
+                    {userhand === 'Rock' && userGameResult === false
                       ?
                       <div>
                         <img width="120" height="120" src={Papper} alt="" />
                         <br></br>
-                        {"You loss: " + (useramount * 2) + " MATIC"}
+                        {"You loss: " + useramount + " MATIC"}
                       </div>
                       :
                       ""
                     }
-                    {userhand === 'Papper' && gameresult0 === false
+                    {userhand === 'Papper' && userGameResult === false
                       ?
                       <div>
                         <img width="120" height="120" src={Scissors} alt="" />
                         <br></br>
-                        {"You loss: " + (useramount * 2) + " MATIC"}
+                        {"You loss: " + useramount + " MATIC"}
                       </div>
                       :
                       ""
                     }
-                    {userhand === 'Scissors' && gameresult0 === false
+                    {userhand === 'Scissors' && userGameResult === false
                       ?
                       <div>
                         <img width="120" height="120" src={Rock} alt="" />
                         <br></br>
-                        {"You loss: " + (useramount * 2) + " MATIC"}
+                        {"You loss: " + useramount + " MATIC"}
                       </div>
                       :
                       ""
                     }
                     <br></br>
-                    {gameresult0 === true ? <button onClick={backGame}>CLAIM REWARD</button> : <button onClick={backGame}>BACK</button>}
+                    {userGameResult === true ? <button onClick={backGame}>CLAIM REWARD</button> : <button onClick={backGame}>BACK</button>}
                   </>
                   :
                   ""
@@ -277,17 +443,20 @@ export default function Game() {
               :
               <div>
                 <h6 className="mt-2">I choose</h6>
-                <label className="hand">
+                <label>
                   <input type="radio" name="hand" id="rock" onChange={handleInputChange} value="Rock"></input>
-                  <img width="120" height="120" src={Rock} alt="" />
+                  <div className="rps-img rock-img"></div>
+                  {/* <img width="120" height="120" src={RockStatic} alt="" /> */}
                 </label>
-                <label className="hand">
+                <label>
                   <input type="radio" name="hand" id="papper" onChange={handleInputChange} value="Papper"></input>
-                  <img width="120" height="120" src={Papper} alt="" />
+                  <div className="rps-img paper-img"></div>
+                  {/* <img width="120" height="120" src={PapperStatic} alt="" /> */}
                 </label>
-                <label className="hand">
+                <label>
                   <input type="radio" name="hand" id="scissors" onChange={handleInputChange} value="Scissors"></input>
-                  <img width="120" height="120" src={Scissors} alt="" />
+                  <div className="rps-img scissors-img"></div>
+                  {/* <img width="120" height="120" src={ScissorsStatic} alt="" /> */}
                 </label>
                 <br></br>
                 <br></br>
@@ -333,7 +502,7 @@ export default function Game() {
                   </div>
                 </div>
                 <br></br>
-                <button onClick={startGame} className="btn-hover btn-green">DOUBLE OR NOTHING</button>
+                <button onClick={doubleOrNothing} className="btn-hover btn-green">DOUBLE OR NOTHING</button>
               </div>
             }
           </div>
@@ -345,7 +514,36 @@ export default function Game() {
               :
               ""
             }
-            <HistoryGamesModal web3={web3} rpsgame={rpsgame} />
+            <HistoryGamesModal
+              theme={theme}
+              blockchain={blockchain}
+              eventsmodal={eventsmodal}
+              userdata0={userdata0}
+              userdata1={userdata1}
+              userdata2={userdata2}
+              userdata3={userdata3}
+              userdata4={userdata4}
+              userdata5={userdata5}
+              userdata6={userdata6}
+              userdata7={userdata7}
+              userdata8={userdata8}
+              userdata9={userdata9}
+              userdata10={userdata10}
+              userdata11={userdata11}
+              userpic0={userpic0}
+              userpic1={userpic1}
+              userpic2={userpic2}
+              userpic3={userpic3}
+              userpic4={userpic4}
+              userpic5={userpic5}
+              userpic6={userpic6}
+              userpic7={userpic7}
+              userpic8={userpic8}
+              userpic9={userpic9}
+              userpic10={userpic10}
+              userpic11={userpic11}
+              decimal={decimal}
+            />
           </div>
         }
 

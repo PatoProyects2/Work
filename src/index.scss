@@ -7,6 +7,10 @@ a {
     color: gray;
 }
 
+ul {
+    list-style: none;
+}
+
 [type=radio] {
     position: absolute;
     opacity: 0;
@@ -60,7 +64,7 @@ input[type=radio][name=pic1]:checked+img {
     border-radius: 50% !important;
 }
 
-.time-in.row {
+.time-in-row {
     position: absolute;
     right: 10px;
     bottom: 0;
@@ -158,31 +162,67 @@ input[type=radio][name=pic1]:checked+img {
 /* Game styles */
 
 .game-container {
-    max-width: 550px;
+    max-width: 60%;
     max-height: 745px;
     margin: 50px auto 0 auto;
-    // background-color: #ffb74d;
-    background-color: #292b2c;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    border: 2px solid white;
-    border-radius: 25px;
-    box-shadow: 5px 5px 5px rgba(255, 255, 255, 0.568);
+    //background-color: #292b2c;
+    // background-color: #ffb74d;
+    //border: 2px solid white;
+    //border-radius: 25px;
+    //box-shadow: 5px 5px 5px rgba(255, 255, 255, 0.568);
     h1 {
         font-size: 35px;
         text-align: center;
         padding: 20px;
     }
-    label.hand {
-        background-color: #cecece;
-        border: 4px solid black;
+    .rps-img {
+        width: 180px;
+        height: 180px;
         margin: 5px;
         cursor: pointer;
+    }
+    .rock-img {        
+        background-image: url('./assets/imgs/rock.png');
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        
         &:hover {
-            background-color: #f8f9fa;
+            background-image: url('./assets/imgs/rock.gif');
         }
     }
+    .paper-img {       
+        background-image: url('./assets/imgs/paper.png');
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        
+        &:hover {
+            background-image: url('./assets/imgs/papper.gif');
+        }
+    }
+    .scissors-img {        
+        background-image: url('./assets/imgs/scissors.png');
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        
+        &:hover {
+            background-image: url('./assets/imgs/scissors.gif');
+        }
+    }
+    // label.hand {
+    //     background-color: #cecece;
+    //     border: 4px solid black;
+    //     margin: 5px;
+    //     cursor: pointer;
+    //     &:hover {
+    //         background-color: #f8f9fa;
+    //     }
+    // }
     label.amount {
         margin: 12px;
     }
@@ -210,9 +250,20 @@ input[type=radio][name=pic1]:checked+img {
             transition: all .4s ease-in-out;
         }
     }
-    input[type=radio][name=hand]:checked+img {
-        background-color: #f8f9fa;
+    // input[type=radio][name=hand]:checked+img {
+    //     background-color: #f8f9fa;
+    // }
+  
+    input[type=radio][name=hand]:checked+.rock-img {
+        background-image: url('./assets/imgs/rock.gif');
     }
+    input[type=radio][name=hand]:checked+.paper-img {
+        background-image: url('./assets/imgs/papper.gif');
+    }
+    input[type=radio][name=hand]:checked+.scissors-img {
+        background-image: url('./assets/imgs/scissors.gif');
+    }
+
     input[type=radio][name=amount]:checked+span {
         border: 3px solid white;
     }
@@ -223,12 +274,10 @@ table {
     width: 400px;
     height: 600px;
 }
-
-
 /* End Game styles */
 
 
-/* Mobile and tablets */
+/* Desktop  and large screens */
 
 @media (min-width: 992px) {
     body {

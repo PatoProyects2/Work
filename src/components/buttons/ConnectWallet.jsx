@@ -87,9 +87,8 @@ export default function ConnectWalletButton(props) {
         setDoc(doc(db, "users", account), {
           name1: 'Guest',
           pic1: 'avatar.png',
-          year: year.toString(),
-          month: month.toString(),
-          day: day.toString()
+          register: year.toString() + "-" + month.toString() + "-" + day.toString(),
+          winStreak: 0
         })
       }
       let walletBalance = await web3.eth.getBalance(account)
@@ -183,10 +182,9 @@ export default function ConnectWalletButton(props) {
       {props.account !== '' ?
         <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="md">
           <DropdownToggle caret color='danger'>
-            Wallet
+            {userpic && <img width="50" height="50" alt="" src={userpic} />}
           </DropdownToggle>
-          <DropdownMenu>
-            <DropdownItem header>{userpic && <img width="100" height="100" alt="" src={userpic} />}</DropdownItem>
+          <DropdownMenu className={props.theme === 'dark' ? 'bg-dark' : 'bg-light'}>
             <DropdownItem header>{username}</DropdownItem>
             <DropdownItem header>{props.account.substring(0, 5) + "..." + props.account.substring(12, 16)}<button onClick={() => navigator.clipboard.writeText(props.account)}>[Copy]</button></DropdownItem>
             <DropdownItem header>{(balance / decimal).toFixed(4) + " MATIC"}</DropdownItem>
