@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useOutletContext } from 'react-router-dom'
 import Web3 from 'web3'
 import detectEthereumProvider from '@metamask/detect-provider'
-import { doc, getDoc, arrayUnion, updateDoc } from "firebase/firestore";
+import { doc, getDoc, getDocs, collection, query, where, updateDoc } from "firebase/firestore";
 import RpsGame from '../../abis/RpsGame/rpsGame.json'
 import RouterSwap from '../../abis/Swap/PancakeRouter.json'
 import {
@@ -14,6 +14,7 @@ import {
 import HistoryGames from '../../components/buttons/HistoryGames'
 import ConnectChain from '../../components/buttons/ConnectChain'
 import ConnectWallet from '../../components/buttons/ConnectWallet'
+import WinStreakLeaderboard from '../../components/buttons/WinStreakLeaderboard'
 import Rock from '../../assets/imgs/rock.gif'
 import Papper from '../../assets/imgs/papper.gif'
 import Scissors from '../../assets/imgs/scissors.gif'
@@ -28,6 +29,9 @@ export default function Game() {
     hand: '',
     amount: 0
   });
+  const [queryStreak, setQueryStreak] = useState({})
+  const [nameStreak0, setNameStreak0] = useState('')
+  const [streak0, setStreak0] = useState(0)
   const [account, setAccount] = useState('');
   const [chain, setChain] = useState('');
   const [network, setNetwork] = useState('');
@@ -78,6 +82,7 @@ export default function Game() {
   useEffect(() => {
     loadWeb3()
     readEvents()
+    readLeaderboard()
   }, []);
 
   async function loadWeb3() {
@@ -211,6 +216,28 @@ export default function Game() {
     setTimeout(readEvents, 2000)
   }
 
+  async function readLeaderboard() {
+    try {
+      const provider = await detectEthereumProvider();
+      const web3 = new Web3(new Web3(window.ethereum), provider)
+      const actuallBlock = await web3.eth.getBlockNumber()
+      const dayBlock = actuallBlock - 43200
+      const userCollection = collection(db, "users")
+      const queryStreakBlock = query(userCollection, where("winStreakBlock", ">", dayBlock))
+      const queryDocuments = await getDocs(queryStreakBlock)
+      const queryStreak = queryDocuments._snapshot.docChanges
+      setQueryStreak(queryStreak)
+      if (queryStreak !== undefined) {
+        setNameStreak0(queryStreak[0].doc.data.value.mapValue.fields.name1.stringValue)
+        setStreak0(queryStreak[0].doc.data.value.mapValue.fields.winStreak.integerValue)
+      }
+
+    } catch (e) {
+
+    }
+    setTimeout(readLeaderboard, 2000)
+  }
+
   async function handleChainChanged(_chainId) {
     setChain(_chainId)
     if (_chainId === '0x89') {
@@ -282,20 +309,13 @@ export default function Game() {
     setShowGameResult(true)
     setUserGameResult(myEvents[0].returnValues[3])
     setUserGameStreak(myEvents[0].returnValues[2])
-    if (myEvents[0].returnValues[3] === true) {
-      const amount = (myEvents[0].returnValues[1] / decimal).toString()
-      const block = (myEvents[0].blockNumber).toString()
-      const query = doc(db, "users", account)
-      const document = await getDoc(query)
-      const userData = document.data()
+    const query = doc(db, "users", account)
+    const document = await getDoc(query)
+    const userData = document.data()
+    if (myEvents[0].returnValues[2] > userData.winStreak) {
       updateDoc(doc(db, "users", account), {
-        winAmount: arrayUnion(block + " " + amount),
-        winStreak: userData.winStreak + 1
-      })
-    }
-    if (myEvents[0].returnValues[3] === false) {
-      updateDoc(doc(db, "users", account), {
-        winStreak: 0
+        winStreak: parseInt(myEvents[0].returnValues[2]),
+        winStreakBlock: myEvents[0].blockNumber
       })
     }
   }
@@ -315,20 +335,6 @@ export default function Game() {
 
   return (
     <>
-      {!active &&
-        <div className="row justify-content-center">
-          <div className="col-4 col-md-3">
-            <img className="my-3 img-fluid" src={Rock} alt="Rock" />
-          </div>
-          <div className="col-4 col-md-3">
-            <img className="my-3 img-fluid" src={Papper} alt="Paper" />
-          </div>
-          <div className="col-4 col-md-3">
-            <img className="my-3 img-fluid" src={Scissors} alt="Scissors" />
-          </div>
-        </div>
-      }
-
       <div className="d-flex flex-row justify-content-center align-items-center gap-3">
         <HistoryGames
           theme={theme}
@@ -360,7 +366,14 @@ export default function Game() {
           userpic11={userpic11}
           decimal={decimal}
         />
-        <ConnectWallet decimal={decimal} web3={web3} account={account} theme={theme} />
+        <WinStreakLeaderboard
+          theme={theme}
+          blockchain={blockchain}
+          queryStreak={queryStreak}
+          nameStreak0={nameStreak0}
+          streak0={streak0}
+        />
+        {account !== '' ? <ConnectWallet decimal={decimal} web3={web3} account={account} theme={theme} /> : ""}
       </div>
       <article>
         {active === true && chain === '0x13881' ?
@@ -376,8 +389,8 @@ export default function Game() {
                   <>
                     <h3>
                       {userGameResult === true ? "You won " + (useramount * 2) : ""}
-                      {userGameStreak > 1 ? " " + userGameStreak + " times" : ""}
                       {userGameResult === false ? "You lost " + useramount : ""}
+                      {userGameStreak > 1 ? " MATIC " + userGameStreak + " times" : ""}
                     </h3>
                     {userhand === 'Rock' && userGameResult === true ? <img width="120" height="120" src={Scissors} alt="" /> : ""}
                     {userhand === 'Papper' && userGameResult === true ? <img width="120" height="120" src={Rock} alt="" /> : ""}
@@ -394,25 +407,21 @@ export default function Game() {
               </div>
               :
               <div>
-                <h6 className="mt-2">I choose</h6>
+                <h5 className="mt-2">I choose</h5>
                 <label>
                   <input type="radio" name="hand" id="rock" onChange={handleInputChange} value="Rock"></input>
                   <div className="rps-img rock-img"></div>
-                  {/* <img width="120" height="120" src={RockStatic} alt="" /> */}
                 </label>
                 <label>
                   <input type="radio" name="hand" id="papper" onChange={handleInputChange} value="Papper"></input>
                   <div className="rps-img paper-img"></div>
-                  {/* <img width="120" height="120" src={PapperStatic} alt="" /> */}
                 </label>
                 <label>
                   <input type="radio" name="hand" id="scissors" onChange={handleInputChange} value="Scissors"></input>
                   <div className="rps-img scissors-img"></div>
-                  {/* <img width="120" height="120" src={ScissorsStatic} alt="" /> */}
                 </label>
                 <br></br>
-                <br></br>
-                <h6>For</h6>
+                <h5>For</h5>
                 <div className="row mb-3">
                   <div className="col">
                     <label className="amount">
@@ -460,12 +469,19 @@ export default function Game() {
           </div>
           :
           <div>
-            {account !== ''
-              ?
-              <button className="btn-hover btn-start" onClick={openGame}>START</button>
-              :
-              ""
-            }
+            <div className="row justify-content-center">
+              <div className="col-4 col-md-3">
+                <img className="my-3 img-fluid" src={Rock} alt="Rock" />
+              </div>
+              <div className="col-4 col-md-3">
+                <img className="my-3 img-fluid" src={Papper} alt="Paper" />
+              </div>
+              <div className="col-4 col-md-3">
+                <img className="my-3 img-fluid" src={Scissors} alt="Scissors" />
+              </div>
+            </div>
+            {account === '' ? <ConnectWallet decimal={decimal} web3={web3} account={account} theme={theme} /> : ""}
+            {account !== '' ? <button className="btn-hover btn-start" onClick={openGame}>START</button> : ""}
             <HistoryGamesModal
               theme={theme}
               blockchain={blockchain}

@@ -89,7 +89,8 @@ export default function ConnectWalletButton(props) {
           name1: 'Guest',
           pic1: 'avatar.png',
           register: year.toString() + "-" + month.toString() + "-" + day.toString(),
-          winStreak: 0
+          winStreak: 0,
+          winStreakBlock: 0
         })
       }
       let walletBalance = await web3.eth.getBalance(account)
@@ -203,7 +204,7 @@ export default function ConnectWalletButton(props) {
         :
         <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="md">
           <DropdownToggle color='danger' onClick={connect} disabled={log0 === 'Connecting...'}>
-            {log0 === ' Connecting' ? <img width="25" height="25" alt="" src={MetamaskLogo} /> : ""}
+            {log0 === 'Connecting...' ? <img width="25" height="25" alt="" src={MetamaskLogo} /> : ""}
             {" " + log0}
           </DropdownToggle>
         </Dropdown>
