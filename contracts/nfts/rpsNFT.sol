@@ -5,22 +5,22 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
+interface IRadom{
+    function rand(address _user) external view returns(uint256);
+    function randrange(uint a, uint b,address _user) external view returns(uint);
+}
 
 contract rpsNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
-    using Counters for Counters.Counter;
-    Counters.Counter private _tokenIdCounter;
-    mapping(uint256 => string) private _hashIPFS;
-   /* struct typeNft{
-        uint id;
-        uint hand;
-    }*/
-
-    string[3] hand = ["Rock", "Papper", "Siccors"];
-    uint public maxSupply = 333; 
-    uint maxMintAmount = 20;
-    uint priceMint;
-    string baseURI;
+    mapping(uint256 => string) private _hashIPFS;// hashes de las imagenes [id => hash]
+    mapping(uint => uint) public rarity; // [id => rarity (value 0 to 14)] 
+    string[3] hand = ["Rock", "Papper", "Siccors"]; // Hands 
+    IRadom random;
+    uint32[15]  cantOfRarity;//0-4(rock)5-9(papper)10-14(Siccors)
+    uint public maxSupply = 333; //Initial max supply
+    uint maxMintAmount = 20; //max mint in constructor, or owners
+    uint priceMint; //precio por minteo
+    string baseURI; //URL basica de acceso, convinar con _hashIPFS
+    address foundsDevs; // address a donde se dirigiran los fondos.
     /*
      - 150 comunes, 100 no comunes, 51 raros, 21 epicos, 11 legendarios
         333 de suply 
@@ -29,30 +29,65 @@ contract rpsNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
      - 15 fotos. 999 nfts
     */
 
-    
-
-
     constructor(uint _priceMint, uint _initialMint) ERC721("rpsNFTRock", "ROCK") {
         priceMint = _priceMint * 1 ether;
         baseURI = "https://ipfs.io/ipfs";
-        safeMint(msg.sender, _initialMint);
+        //safeMint(msg.sender, _initialMint);
     }
-    function safeMint(address to, uint256 _mintAmount) public payable {
-        uint256 supply = totalSupply();
+
+    function safeMint(address to, uint256 _mintAmount) internal {
+        uint256 supply = totalSupply()+1;
         require(_mintAmount > 0);
         require(_mintAmount < maxMintAmount);
         require(supply + _mintAmount <= maxSupply);
         
         if(msg.sender !=owner()){
-            require(msg.value >= priceMint * _mintAmount, "Not Founds");
             require(_mintAmount == 1);
-        }
+        }        
+        _safeMint(to, supply);        
+    }
 
-        for(uint256 i = 1; i<= _mintAmount; i++ ){
-            _safeMint(to, supply + i);
-            
+    function buyNFT() public payable {
+        if(msg.sender !=owner()){            
+            require(msg.value >= priceMint, "Not Founds");
         }
-        
+        uint rare = serRarity();
+        safeMint(msg.sender, 1);
+        rarity[totalSupply()] = rare;
+    }
+
+    function serRarity() internal view returns(uint){        
+        require(totalSupply()+1 <= maxSupply);
+        uint rare = random.randrange(0,4,msg.sender);
+        if( maxSupply/333 == 2){
+            rare +=5;
+        } 
+        if( maxSupply/333 == 3){
+            rare +=10;
+        }  
+        //el while solo esta para 0-4, cuidado con valores 5-14    
+        while(cantOfRarity[rare] > maxRarity(rare)){
+            rare++;
+        }
+        return rare;
+    }
+    // modificar para valores 5-14
+    function maxRarity(uint _pos)internal pure returns(uint){
+        if(_pos == 0 ){
+            return 150;
+        }
+        if(_pos == 1){
+            return 100;
+        }
+        if(_pos == 2){
+            return 51;
+        }
+        if(_pos == 3){
+            return 21;
+        }
+        if(_pos == 4){
+            return 11;
+        }
     }
 
     //return an array of all ids 
@@ -89,7 +124,9 @@ contract rpsNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         }
         
     }
-
+    function setFoundsDevs(address _newFoundAddres) public onlyOwner{
+        foundsDevs = _newFoundAddres;
+    }
 
 
 
