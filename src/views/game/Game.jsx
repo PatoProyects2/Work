@@ -4,17 +4,10 @@ import Web3 from 'web3'
 import detectEthereumProvider from '@metamask/detect-provider'
 import { doc, getDoc, getDocs, collection, query, where, updateDoc, orderBy, limit } from "firebase/firestore";
 import RpsGame from '../../abis/RpsGame/rpsGame.json'
-import RouterSwap from '../../abis/Swap/PancakeRouter.json'
-import {
-  rpsGameContract,
-  polygonSwapContract,
-  maticContract,
-  usdcContract
-} from '../../components/blockchain/Contracts'
-import HistoryGames from '../../components/buttons/HistoryGames'
-import ConnectChain from '../../components/buttons/ConnectChain'
-import ConnectWallet from '../../components/buttons/ConnectWallet'
-import WinStreakLeaderboard from '../../components/buttons/WinStreakLeaderboard'
+import { rpsGameContract } from '../../components/blockchain/Contracts'
+import HistoryGames from './components/buttons/HistoryGames'
+import ConnectWallet from './components/buttons/ConnectWallet'
+import WinStreakLeaderboard from './components/buttons/WinStreakLeaderboard'
 import Rock from '../../assets/imgs/rock.gif'
 import Papper from '../../assets/imgs/papper.gif'
 import Scissors from '../../assets/imgs/scissors.gif'
@@ -25,19 +18,39 @@ export default function Game() {
   const [theme] = useOutletContext();
   const [web3, setWeb3] = useState({});
   const [rpsgame, setRpsgame] = useState({});
+  const [eventsmodal, setEventsmodal] = useState({});
   const [usergame, setUsergame] = useState({
     hand: '',
     amount: 0
   });
-  const [dayBlock, setDayBlock] = useState(0)
-  const [blockStreak0, setBlockStreak0] = useState(0)
-  const [blockStreak1, setBlockStreak1] = useState(0)
-  const [blockStreak2, setBlockStreak2] = useState(0)
-  const [blockStreak3, setBlockStreak3] = useState(0)
-  const [blockStreak4, setBlockStreak4] = useState(0)
-  const [blockStreak5, setBlockStreak5] = useState(0)
-  const [blockStreak6, setBlockStreak6] = useState(0)
-  const [blockStreak7, setBlockStreak7] = useState(0)
+  const [userdata0, setUserdata0] = useState({ name1: '' });
+  const [userdata1, setUserdata1] = useState({ name1: '' });
+  const [userdata2, setUserdata2] = useState({ name1: '' });
+  const [userdata3, setUserdata3] = useState({ name1: '' });
+  const [userdata4, setUserdata4] = useState({ name1: '' });
+  const [userdata5, setUserdata5] = useState({ name1: '' });
+  const [userdata6, setUserdata6] = useState({ name1: '' });
+  const [userdata7, setUserdata7] = useState({ name1: '' });
+  const [userdata8, setUserdata8] = useState({ name1: '' });
+  const [userdata9, setUserdata9] = useState({ name1: '' });
+  const [userdata10, setUserdata10] = useState({ name1: '' });
+  const [userdata11, setUserdata11] = useState({ name1: '' });
+  const [account, setAccount] = useState('');
+  const [chain, setChain] = useState('');
+  const [network, setNetwork] = useState('');
+  const [log, setLog] = useState('');
+  const [userpic0, setUserpic0] = useState('');
+  const [userpic1, setUserpic1] = useState('');
+  const [userpic2, setUserpic2] = useState('');
+  const [userpic3, setUserpic3] = useState('');
+  const [userpic4, setUserpic4] = useState('');
+  const [userpic5, setUserpic5] = useState('');
+  const [userpic6, setUserpic6] = useState('');
+  const [userpic7, setUserpic7] = useState('');
+  const [userpic8, setUserpic8] = useState('');
+  const [userpic9, setUserpic9] = useState('');
+  const [userpic10, setUserpic10] = useState('');
+  const [userpic11, setUserpic11] = useState('');
   const [picStreak0, setPicStreak0] = useState('')
   const [picStreak1, setPicStreak1] = useState('')
   const [picStreak2, setPicStreak2] = useState('')
@@ -54,6 +67,16 @@ export default function Game() {
   const [nameStreak5, setNameStreak5] = useState('')
   const [nameStreak6, setNameStreak6] = useState('')
   const [nameStreak7, setNameStreak7] = useState('')
+  const [blockchain, setBlockchain] = useState(0);
+  const [dayBlock, setDayBlock] = useState(0)
+  const [blockStreak0, setBlockStreak0] = useState(0)
+  const [blockStreak1, setBlockStreak1] = useState(0)
+  const [blockStreak2, setBlockStreak2] = useState(0)
+  const [blockStreak3, setBlockStreak3] = useState(0)
+  const [blockStreak4, setBlockStreak4] = useState(0)
+  const [blockStreak5, setBlockStreak5] = useState(0)
+  const [blockStreak6, setBlockStreak6] = useState(0)
+  const [blockStreak7, setBlockStreak7] = useState(0)
   const [winStreak0, setWinStreak0] = useState(0)
   const [winStreak1, setWinStreak1] = useState(0)
   const [winStreak2, setWinStreak2] = useState(0)
@@ -62,53 +85,17 @@ export default function Game() {
   const [winStreak5, setWinStreak5] = useState(0)
   const [winStreak6, setWinStreak6] = useState(0)
   const [winStreak7, setWinStreak7] = useState(0)
-  const [streak0, setStreak0] = useState(0)
-  const [account, setAccount] = useState('');
-  const [chain, setChain] = useState('');
-  const [network, setNetwork] = useState('');
-  const [log, setLog] = useState('');
   const [decimal, setDecimal] = useState(1000000000000000000);
   const [userGameStreak, setUserGameStreak] = useState(0);
-  const [maticprice, setMaticprice] = useState(0);
   const [walletbalance, setWalletbalance] = useState(0);
   const [userhand, setUserhand] = useState(0);
   const [useramount, setUseramount] = useState(0);
-  const [loss, setLoss] = useState(0);
-  const [won, setWon] = useState(0);
-  const [userloses, setUserloses] = useState(0);
-  const [userwins, setUserwins] = useState(0);
   const [active, setActive] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [animation, setAnimation] = useState(false);
   const [userGameResult, setUserGameResult] = useState(undefined);
   const [gameResult, setGameResult] = useState(undefined);
   const [showGameResult, setShowGameResult] = useState(false);
-  const [eventsmodal, setEventsmodal] = useState({});
-  const [userdata0, setUserdata0] = useState({ name1: '' });
-  const [userdata1, setUserdata1] = useState({ name1: '' });
-  const [userdata2, setUserdata2] = useState({ name1: '' });
-  const [userdata3, setUserdata3] = useState({ name1: '' });
-  const [userdata4, setUserdata4] = useState({ name1: '' });
-  const [userdata5, setUserdata5] = useState({ name1: '' });
-  const [userdata6, setUserdata6] = useState({ name1: '' });
-  const [userdata7, setUserdata7] = useState({ name1: '' });
-  const [userdata8, setUserdata8] = useState({ name1: '' });
-  const [userdata9, setUserdata9] = useState({ name1: '' });
-  const [userdata10, setUserdata10] = useState({ name1: '' });
-  const [userdata11, setUserdata11] = useState({ name1: '' });
-  const [userpic0, setUserpic0] = useState('');
-  const [userpic1, setUserpic1] = useState('');
-  const [userpic2, setUserpic2] = useState('');
-  const [userpic3, setUserpic3] = useState('');
-  const [userpic4, setUserpic4] = useState('');
-  const [userpic5, setUserpic5] = useState('');
-  const [userpic6, setUserpic6] = useState('');
-  const [userpic7, setUserpic7] = useState('');
-  const [userpic8, setUserpic8] = useState('');
-  const [userpic9, setUserpic9] = useState('');
-  const [userpic10, setUserpic10] = useState('');
-  const [userpic11, setUserpic11] = useState('');
-  const [blockchain, setBlockchain] = useState(0);
 
   useEffect(() => {
     loadWeb3()
@@ -141,34 +128,12 @@ export default function Game() {
         } catch (e) {
 
         }
-        try {
-          let totalLoses = await rpsgame.methods.totalLoses().call()
-          setLoss(parseInt(totalLoses))
-          let totalWins = await rpsgame.methods.totalWins().call()
-          setWon(parseInt(totalWins))
-          // let userLoses = await rpsgame.methods.winLosesPerUser(accounts[0], 0).call()
-          // setUserloses(userLoses)
-          // let userWins = await rpsgame.methods.winLosesPerUser(accounts[0], 1).call()
-          // setUserwins(userWins)
-        } catch (e) {
-
-        }
       } else {
         window.alert('Please connect to mumbai network!')
-      }
-      if (chainId === '0x89') {
-        try {
-          const quickswap = new web3.eth.Contract(RouterSwap.abi, polygonSwapContract)
-          let maticPrice = await quickswap.methods.getAmountsOut(1000000000000000, [maticContract, usdcContract]).call()
-          setMaticprice(maticPrice[1])
-        } catch (e) {
-
-        }
       }
     } catch (err) {
       console.log("Blockchain not detected!")
     }
-
   }
 
   async function readEvents() {
@@ -364,7 +329,6 @@ export default function Game() {
       setLog('Select amount')
       return false
     }
-
     if (usergame.hand !== '' && usergame.amount !== 0) {
       let calculateValue = await rpsgame.methods.calculateValue((web3.utils.toWei((usergame.amount).toString(), "ether"))).call()
       setPlaying(true)
@@ -386,7 +350,7 @@ export default function Game() {
 
   async function readAccountEvent() {
     let actuallBlock = await web3.eth.getBlockNumber()
-    let lastMinuteBlock = actuallBlock - 7
+    let lastMinuteBlock = actuallBlock - 10
     let myEvents = await rpsgame.getPastEvents('Play', { filter: { _to: account }, fromBlock: lastMinuteBlock, toBlock: 'latest' })
     setShowGameResult(true)
     setUserGameResult(myEvents[0].returnValues[3])
@@ -502,7 +466,7 @@ export default function Game() {
                     <h3>
                       {userGameResult === true ? "You won " + (useramount * 2) : ""}
                       {userGameResult === false ? "You lost " + useramount : ""}
-                      {userGameStreak > 1 ? " MATIC " + " you are in a " + userGameStreak + " streak" : ""}
+                      {userGameStreak > 1 ? " MATIC " + " and you are in a " + userGameStreak + " win streak" : ""}
                     </h3>
                     {userhand === 'Rock' && userGameResult === true ? <img width="120" height="120" src={Scissors} alt="" /> : ""}
                     {userhand === 'Papper' && userGameResult === true ? <img width="120" height="120" src={Rock} alt="" /> : ""}
@@ -511,7 +475,7 @@ export default function Game() {
                     {userhand === 'Papper' && userGameResult === false ? <img width="120" height="120" src={Scissors} alt="" /> : ""}
                     {userhand === 'Scissors' && userGameResult === false ? <img width="120" height="120" src={Rock} alt="" /> : ""}
                     <br></br>
-                    {userGameResult === true ? <button onClick={backGame}>CLAIM REWARD</button> : <button onClick={backGame}>BACK</button>}
+                    {userGameResult === true ? <button onClick={backGame}>CLAIM REWARD</button> : <button onClick={backGame}>TRY AGAIN</button>}
                   </>
                   :
                   ""
@@ -538,39 +502,39 @@ export default function Game() {
                   <div className="col">
                     <label className="amount">
                       <input type="radio" name="amount" id="amount1" onChange={handleInputChange} value="0.1" />
-                      <span>1 MATIC</span>
-                    </label>
-                  </div>
-                  <div className="col">
-                    <label className="amount">
-                      <input type="radio" name="amount" id="amount2" onChange={handleInputChange} value="0.2" />
                       <span>2 MATIC</span>
                     </label>
                   </div>
                   <div className="col">
                     <label className="amount">
-                      <input type="radio" name="amount" id="amount3" onChange={handleInputChange} value="0.4" />
+                      <input type="radio" name="amount" id="amount2" onChange={handleInputChange} value="0.2" />
                       <span>4 MATIC</span>
+                    </label>
+                  </div>
+                  <div className="col">
+                    <label className="amount">
+                      <input type="radio" name="amount" id="amount3" onChange={handleInputChange} value="0.3" />
+                      <span>10 MATIC</span>
                     </label>
                   </div>
                 </div>
                 <div className="row mt-3">
                   <div className="col">
                     <label className="amount">
-                      <input type="radio" name="amount" id="amount4" onChange={handleInputChange} value="0.8" />
-                      <span>8 MATIC</span>
+                      <input type="radio" name="amount" id="amount4" onChange={handleInputChange} value="0.4" />
+                      <span>20 MATIC</span>
                     </label>
                   </div>
                   <div className="col">
                     <label className="amount">
-                      <input type="radio" name="amount" id="amount5" onChange={handleInputChange} value="1.6" />
-                      <span>16 MATIC</span>
+                      <input type="radio" name="amount" id="amount5" onChange={handleInputChange} value="0.5" />
+                      <span>50 MATIC</span>
                     </label>
                   </div>
                   <div className="col">
                     <label className="amount">
-                      <input type="radio" name="amount" id="amount6" onChange={handleInputChange} value="3.2" />
-                      <span>32 MATIC</span>
+                      <input type="radio" name="amount" id="amount6" onChange={handleInputChange} value="0.6" />
+                      <span>100 MATIC</span>
                     </label>
                   </div>
                 </div>
@@ -626,7 +590,6 @@ export default function Game() {
             />
           </div>
         }
-
       </article >
     </>
   );

@@ -1,23 +1,23 @@
 import React, { useState, useEffect } from 'react'
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Input, Label } from 'reactstrap'
-import db from '../../firebase/firesbaseConfig'
-import Nft1 from '../../assets/imgs/profile/nft1.png'
-import Nft2 from '../../assets/imgs/profile/nft2.png'
-import CopyLogo from '../../assets/imgs/copyLogo.png'
-import MetamaskLogo from '../../assets/imgs/MetaMask_Fox.png'
+import db from '../../../../firebase/firesbaseConfig'
+import Nft1 from '../../../../assets/imgs/profile/nft1.png'
+import Nft2 from '../../../../assets/imgs/profile/nft2.png'
+import MetamaskLogo from '../../../../assets/imgs/MetaMask_Fox.png'
 
 export default function ConnectWalletButton(props) {
   const [userinfo, setUserinfo] = useState({
     name1: '',
-    pic1: ''
+    pic1: '',
   });
   const [friend, setFriend] = useState({
     account1: '',
     amount1: 0,
   });
-  const [username, setUsername] = useState('');
   const [userpic, setUserpic] = useState('');
+  const [username, setUsername] = useState('');
+  const [userphoto, setUserphoto] = useState('');
   const [log0, setLog0] = useState('Connect');
   const [log1, setLog1] = useState('Photo');
   const [log2, setLog2] = useState('Username');
@@ -73,12 +73,13 @@ export default function ConnectWalletButton(props) {
   async function loadProfile(account, web3) {
     try {
       const query = doc(db, "users", account)
-      const document = await getDoc(query)
-      const userData = document.data()
+      const userDocument = await getDoc(query)
+      const userData = userDocument.data()
       if (userData) {
         setUsername(userData.name1)
+        setUserphoto(userData.pic1)
         const picPath = userData.pic1
-        const profilePhoto = await import(`../../assets/imgs/profile/${picPath}`)
+        const profilePhoto = await import(`../../../../assets/imgs/profile/${picPath}`)
         setUserpic(profilePhoto.default)
       } else {
         const globalDate = new Date();
@@ -134,7 +135,10 @@ export default function ConnectWalletButton(props) {
       name1: '',
       pic1: ''
     })
-    setDoc(doc(db, "users", props.account), userinfo).then(r => window.location.reload())
+    const query = doc(db, "users", props.account)
+    const userDocument = await getDoc(query)
+    const userData = userDocument.data()
+    setDoc(doc(db, "users", props.account), { name1: userinfo.name1, pic1: userinfo.pic1, winStreak: userData.winStreak, winStreakBlock: userData.winStreakBlock }).then(r => window.location.reload())
   }
 
   async function sendToFriend() {
@@ -227,7 +231,7 @@ export default function ConnectWalletButton(props) {
           </FormGroup>
           <FormGroup>
             <Label>{log2}</Label>
-            <Input name="name1" onChange={handleInputChange} type="text" />
+            <Input name="name1" onChange={handleInputChange} type="text" defaultValue={username} />
           </FormGroup>
         </ModalBody>
         <ModalFooter>
@@ -235,7 +239,6 @@ export default function ConnectWalletButton(props) {
           <Button color="secondary" onClick={editProfile}>Close</Button>
         </ModalFooter>
       </Modal>
-
       <Modal isOpen={send} contentClassName={props.theme === 'dark' ? 'dark dark-border' : ''}>
         <ModalHeader>
           Send matic
