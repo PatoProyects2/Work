@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useOutletContext } from 'react-router-dom'
 import Web3 from 'web3'
 import detectEthereumProvider from '@metamask/detect-provider'
-import { doc, getDoc, getDocs, collection, query, where, updateDoc } from "firebase/firestore";
+import { doc, getDoc, getDocs, collection, query, where, updateDoc, orderBy, limit } from "firebase/firestore";
 import RpsGame from '../../abis/RpsGame/rpsGame.json'
 import RouterSwap from '../../abis/Swap/PancakeRouter.json'
 import {
@@ -29,8 +29,39 @@ export default function Game() {
     hand: '',
     amount: 0
   });
-  const [queryStreak, setQueryStreak] = useState({})
+  const [dayBlock, setDayBlock] = useState(0)
+  const [blockStreak0, setBlockStreak0] = useState(0)
+  const [blockStreak1, setBlockStreak1] = useState(0)
+  const [blockStreak2, setBlockStreak2] = useState(0)
+  const [blockStreak3, setBlockStreak3] = useState(0)
+  const [blockStreak4, setBlockStreak4] = useState(0)
+  const [blockStreak5, setBlockStreak5] = useState(0)
+  const [blockStreak6, setBlockStreak6] = useState(0)
+  const [blockStreak7, setBlockStreak7] = useState(0)
+  const [picStreak0, setPicStreak0] = useState('')
+  const [picStreak1, setPicStreak1] = useState('')
+  const [picStreak2, setPicStreak2] = useState('')
+  const [picStreak3, setPicStreak3] = useState('')
+  const [picStreak4, setPicStreak4] = useState('')
+  const [picStreak5, setPicStreak5] = useState('')
+  const [picStreak6, setPicStreak6] = useState('')
+  const [picStreak7, setPicStreak7] = useState('')
   const [nameStreak0, setNameStreak0] = useState('')
+  const [nameStreak1, setNameStreak1] = useState('')
+  const [nameStreak2, setNameStreak2] = useState('')
+  const [nameStreak3, setNameStreak3] = useState('')
+  const [nameStreak4, setNameStreak4] = useState('')
+  const [nameStreak5, setNameStreak5] = useState('')
+  const [nameStreak6, setNameStreak6] = useState('')
+  const [nameStreak7, setNameStreak7] = useState('')
+  const [winStreak0, setWinStreak0] = useState(0)
+  const [winStreak1, setWinStreak1] = useState(0)
+  const [winStreak2, setWinStreak2] = useState(0)
+  const [winStreak3, setWinStreak3] = useState(0)
+  const [winStreak4, setWinStreak4] = useState(0)
+  const [winStreak5, setWinStreak5] = useState(0)
+  const [winStreak6, setWinStreak6] = useState(0)
+  const [winStreak7, setWinStreak7] = useState(0)
   const [streak0, setStreak0] = useState(0)
   const [account, setAccount] = useState('');
   const [chain, setChain] = useState('');
@@ -222,16 +253,67 @@ export default function Game() {
       const web3 = new Web3(new Web3(window.ethereum), provider)
       const actuallBlock = await web3.eth.getBlockNumber()
       const dayBlock = actuallBlock - 43200
+      setDayBlock(dayBlock)
       const userCollection = collection(db, "users")
-      const queryStreakBlock = query(userCollection, where("winStreakBlock", ">", dayBlock))
+      const queryStreakBlock = query(userCollection, where("winStreak", ">", 0), orderBy("winStreak"), limit(8))
       const queryDocuments = await getDocs(queryStreakBlock)
       const queryStreak = queryDocuments._snapshot.docChanges
-      setQueryStreak(queryStreak)
-      if (queryStreak !== undefined) {
-        setNameStreak0(queryStreak[0].doc.data.value.mapValue.fields.name1.stringValue)
-        setStreak0(queryStreak[0].doc.data.value.mapValue.fields.winStreak.integerValue)
-      }
-
+      const dataStreak0 = queryStreak[0].doc.data.value.mapValue.fields
+      const pic0 = dataStreak0.pic1.stringValue
+      const picStreak0 = await import(`../../assets/imgs/profile/${pic0}`)
+      setPicStreak0(picStreak0.default)
+      setNameStreak0(dataStreak0.name1.stringValue)
+      setWinStreak0(dataStreak0.winStreak.integerValue)
+      setBlockStreak0(dataStreak0.winStreakBlock.integerValue)
+      const dataStreak1 = queryStreak[1].doc.data.value.mapValue.fields
+      const pic1 = dataStreak1.pic1.stringValue
+      const picStreak1 = await import(`../../assets/imgs/profile/${pic1}`)
+      setPicStreak1(picStreak1.default)
+      setNameStreak1(dataStreak1.name1.stringValue)
+      setWinStreak1(dataStreak1.winStreak.integerValue)
+      setBlockStreak1(dataStreak1.winStreakBlock.integerValue)
+      const dataStreak2 = queryStreak[2].doc.data.value.mapValue.fields
+      const pic2 = dataStreak2.pic1.stringValue
+      const picStreak2 = await import(`../../assets/imgs/profile/${pic2}`)
+      setPicStreak2(picStreak2.default)
+      setNameStreak2(dataStreak2.name1.stringValue)
+      setWinStreak2(dataStreak2.winStreak.integerValue)
+      setBlockStreak2(dataStreak2.winStreakBlock.integerValue)
+      const dataStreak3 = queryStreak[3].doc.data.value.mapValue.fields
+      const pic3 = dataStreak3.pic1.stringValue
+      const picStreak3 = await import(`../../assets/imgs/profile/${pic3}`)
+      setPicStreak3(picStreak3.default)
+      setNameStreak3(dataStreak3.name1.stringValue)
+      setWinStreak3(dataStreak3.winStreak.integerValue)
+      setBlockStreak3(dataStreak3.winStreakBlock.integerValue)
+      const dataStreak4 = queryStreak[4].doc.data.value.mapValue.fields
+      const pic4 = dataStreak4.pic1.stringValue
+      const picStreak4 = await import(`../../assets/imgs/profile/${pic4}`)
+      setPicStreak4(picStreak4.default)
+      setNameStreak4(dataStreak4.name1.stringValue)
+      setWinStreak4(dataStreak4.winStreak.integerValue)
+      setBlockStreak4(dataStreak4.winStreakBlock.integerValue)
+      const dataStreak5 = queryStreak[5].doc.data.value.mapValue.fields
+      const pic5 = dataStreak5.pic1.stringValue
+      const picStreak5 = await import(`../../assets/imgs/profile/${pic5}`)
+      setPicStreak5(picStreak5.default)
+      setNameStreak5(dataStreak5.name1.stringValue)
+      setWinStreak5(dataStreak5.winStreak.integerValue)
+      setBlockStreak5(dataStreak5.winStreakBlock.integerValue)
+      const dataStreak6 = queryStreak[6].doc.data.value.mapValue.fields
+      const pic6 = dataStreak6.pic1.stringValue
+      const picStreak6 = await import(`../../assets/imgs/profile/${pic6}`)
+      setPicStreak6(picStreak6.default)
+      setNameStreak6(dataStreak6.name1.stringValue)
+      setWinStreak6(dataStreak6.winStreak.integerValue)
+      setBlockStreak6(dataStreak6.winStreakBlock.integerValue)
+      const dataStreak7 = queryStreak[7].doc.data.value.mapValue.fields
+      const pic7 = dataStreak7.pic1.stringValue
+      const picStreak7 = await import(`../../assets/imgs/profile/${pic7}`)
+      setPicStreak7(picStreak7.default)
+      setNameStreak7(dataStreak7.name1.stringValue)
+      setWinStreak7(dataStreak7.winStreak.integerValue)
+      setBlockStreak7(dataStreak7.winStreakBlock.integerValue)
     } catch (e) {
 
     }
@@ -369,9 +451,39 @@ export default function Game() {
         <WinStreakLeaderboard
           theme={theme}
           blockchain={blockchain}
-          queryStreak={queryStreak}
+          dayBlock={dayBlock}
+          blockStreak0={blockStreak0}
+          blockStreak1={blockStreak1}
+          blockStreak2={blockStreak2}
+          blockStreak3={blockStreak3}
+          blockStreak4={blockStreak4}
+          blockStreak5={blockStreak5}
+          blockStreak6={blockStreak6}
+          blockStreak7={blockStreak7}
+          picStreak0={picStreak0}
+          picStreak1={picStreak1}
+          picStreak2={picStreak2}
+          picStreak3={picStreak3}
+          picStreak4={picStreak4}
+          picStreak5={picStreak5}
+          picStreak6={picStreak6}
+          picStreak7={picStreak7}
           nameStreak0={nameStreak0}
-          streak0={streak0}
+          nameStreak1={nameStreak1}
+          nameStreak2={nameStreak2}
+          nameStreak3={nameStreak3}
+          nameStreak4={nameStreak4}
+          nameStreak5={nameStreak5}
+          nameStreak6={nameStreak6}
+          nameStreak7={nameStreak7}
+          winStreak0={winStreak0}
+          winStreak1={winStreak1}
+          winStreak2={winStreak2}
+          winStreak3={winStreak3}
+          winStreak4={winStreak4}
+          winStreak5={winStreak5}
+          winStreak6={winStreak6}
+          winStreak7={winStreak7}
         />
         {account !== '' ? <ConnectWallet decimal={decimal} web3={web3} account={account} theme={theme} /> : ""}
       </div>
@@ -390,7 +502,7 @@ export default function Game() {
                     <h3>
                       {userGameResult === true ? "You won " + (useramount * 2) : ""}
                       {userGameResult === false ? "You lost " + useramount : ""}
-                      {userGameStreak > 1 ? " MATIC " + userGameStreak + " times" : ""}
+                      {userGameStreak > 1 ? " MATIC " + " you are in a " + userGameStreak + " streak" : ""}
                     </h3>
                     {userhand === 'Rock' && userGameResult === true ? <img width="120" height="120" src={Scissors} alt="" /> : ""}
                     {userhand === 'Papper' && userGameResult === true ? <img width="120" height="120" src={Rock} alt="" /> : ""}
