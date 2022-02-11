@@ -21,7 +21,6 @@ export default function ConnectWalletButton(props) {
   const [userphoto, setUserphoto] = useState('');
   const [log0, setLog0] = useState('Connect');
   const [log1, setLog1] = useState('');
-  const [log2, setLog2] = useState('');
   const [balance, setBalance] = useState(0);
   const [edit, setEdit] = useState(false);
   const [send, setSend] = useState(false);
@@ -102,6 +101,7 @@ export default function ConnectWalletButton(props) {
   }
 
   async function editProfile() {
+    setLog1('')
     if (edit === false) {
       setEdit(true);
     } else {
@@ -121,7 +121,7 @@ export default function ConnectWalletButton(props) {
     if (document.getElementById('nft1').checked || document.getElementById('nft2').checked) {
       setLog1('');
     } else {
-      setLog1('Select a profile picture');
+      setLog1('Select NFT picture');
       return false
     }
     if (userinfo.name1.length >= 4 && userinfo.name1.length <= 12) {
@@ -143,15 +143,15 @@ export default function ConnectWalletButton(props) {
 
   async function sendToFriend() {
     if (friend.account1.length === 42) {
-      setLog2('');
+      setLog1('');
     } else {
-      setLog2('Invalid wallet address');
+      setLog1('Invalid address');
       return false
     }
     if (friend.amount1 > 0) {
-      setLog2('');
+      setLog1('');
     } else {
-      setLog2('Invalid amount');
+      setLog1('Invalid amount');
       return false
     }
     setFriend({
@@ -217,8 +217,8 @@ export default function ConnectWalletButton(props) {
         <ModalHeader>
           USER PROFILE
         </ModalHeader>
+        {log1 && (<span className="alert alert-danger mx-5">{log1}</span>)}
         <ModalBody>
-          {log1}
           <FormGroup>
             <Label>
               <Input name="pic1" id="nft1" onChange={handleInputChange} type="radio" value="nft1.png" />
@@ -245,8 +245,8 @@ export default function ConnectWalletButton(props) {
         <ModalHeader>
           SEND MATIC
         </ModalHeader>
+        {log1 && (<span className="alert alert-danger mx-5">{log1}</span>)}
         <ModalBody>
-          {log2}
           <FormGroup>
             <Label>Address</Label>
             <Input name="account1" placeholder="0x00..." onChange={handleInputChange} type="text" />
