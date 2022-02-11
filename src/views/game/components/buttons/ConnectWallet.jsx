@@ -15,14 +15,13 @@ export default function ConnectWalletButton(props) {
     account1: '',
     amount1: 0,
   });
+  const [register, setRegister] = useState('');
   const [userpic, setUserpic] = useState('');
   const [username, setUsername] = useState('');
   const [userphoto, setUserphoto] = useState('');
   const [log0, setLog0] = useState('Connect');
-  const [log1, setLog1] = useState('Photo');
-  const [log2, setLog2] = useState('Username');
-  const [log3, setLog3] = useState('Wallet Address');
-  const [log4, setLog4] = useState('Amount');
+  const [log1, setLog1] = useState('');
+  const [log2, setLog2] = useState('');
   const [balance, setBalance] = useState(0);
   const [edit, setEdit] = useState(false);
   const [send, setSend] = useState(false);
@@ -78,6 +77,7 @@ export default function ConnectWalletButton(props) {
       if (userData) {
         setUsername(userData.name1)
         setUserphoto(userData.pic1)
+        setRegister(userData.register)
         const picPath = userData.pic1
         const profilePhoto = await import(`../../../../assets/imgs/profile/${picPath}`)
         setUserpic(profilePhoto.default)
@@ -89,7 +89,7 @@ export default function ConnectWalletButton(props) {
         setDoc(doc(db, "users", account), {
           name1: 'Guest',
           pic1: 'avatar.png',
-          register: year.toString() + "-" + month.toString() + "-" + day.toString(),
+          register: day.toString() + "/" + month.toString() + "/" + year.toString(),
           winStreak: 0,
           winStreakBlock: 0
         })
@@ -119,15 +119,15 @@ export default function ConnectWalletButton(props) {
 
   async function updateProfile() {
     if (document.getElementById('nft1').checked || document.getElementById('nft2').checked) {
-      setLog1('Photo');
+      setLog1('');
     } else {
       setLog1('Select a profile picture');
       return false
     }
     if (userinfo.name1.length >= 4 && userinfo.name1.length <= 12) {
-      setLog2('Username');
+      setLog1('');
     } else {
-      setLog2('The name must be between 4 and 12 characters');
+      setLog1('The name must be between 4 and 12 characters');
       return false
     }
     setUserinfo({
@@ -138,20 +138,20 @@ export default function ConnectWalletButton(props) {
     const query = doc(db, "users", props.account)
     const userDocument = await getDoc(query)
     const userData = userDocument.data()
-    setDoc(doc(db, "users", props.account), { name1: userinfo.name1, pic1: userinfo.pic1, winStreak: userData.winStreak, winStreakBlock: userData.winStreakBlock }).then(r => window.location.reload())
+    setDoc(doc(db, "users", props.account), { name1: userinfo.name1, pic1: userinfo.pic1, register: userData.register, winStreak: userData.winStreak, winStreakBlock: userData.winStreakBlock }).then(r => window.location.reload())
   }
 
   async function sendToFriend() {
     if (friend.account1.length === 42) {
-      setLog3('Wallet Address');
+      setLog2('');
     } else {
-      setLog3('Invalid wallet address');
+      setLog2('Invalid wallet address');
       return false
     }
     if (friend.amount1 > 0) {
-      setLog4('Amount');
+      setLog2('');
     } else {
-      setLog4('Invalid amount');
+      setLog2('Invalid amount');
       return false
     }
     setFriend({
@@ -215,11 +215,11 @@ export default function ConnectWalletButton(props) {
       }
       <Modal isOpen={edit} contentClassName={props.theme === 'dark' ? 'dark dark-border' : ''}>
         <ModalHeader>
-          Profile
+          USER PROFILE
         </ModalHeader>
         <ModalBody>
+          {log1}
           <FormGroup>
-            <Label>{log1}</Label>
             <Label>
               <Input name="pic1" id="nft1" onChange={handleInputChange} type="radio" value="nft1.png" />
               <img width="50" height="50" src={Nft1} alt="" />
@@ -230,32 +230,35 @@ export default function ConnectWalletButton(props) {
             </Label>
           </FormGroup>
           <FormGroup>
-            <Label>{log2}</Label>
+            <Label>{"User since " + register}</Label>
+          </FormGroup>
+          <FormGroup>
             <Input name="name1" onChange={handleInputChange} type="text" defaultValue={username} />
           </FormGroup>
         </ModalBody>
         <ModalFooter>
-          <Button color="warning" type="submit" onClick={updateProfile}>Save</Button>
-          <Button color="secondary" onClick={editProfile}>Close</Button>
+          <Button color="warning" type="submit" onClick={updateProfile}>SAVE</Button>
+          <Button color="secondary" onClick={editProfile}>CLOSE</Button>
         </ModalFooter>
       </Modal>
       <Modal isOpen={send} contentClassName={props.theme === 'dark' ? 'dark dark-border' : ''}>
         <ModalHeader>
-          Send matic
+          SEND MATIC
         </ModalHeader>
         <ModalBody>
+          {log2}
           <FormGroup>
-            <Label>{log3}</Label>
+            <Label>Address</Label>
             <Input name="account1" placeholder="0x00..." onChange={handleInputChange} type="text" />
           </FormGroup>
           <FormGroup>
-            <Label>{log4}</Label>
+            <Label>Amount</Label>
             <Input name="amount1" placeholder="1" onChange={handleInputChange} type="number" />
           </FormGroup>
         </ModalBody>
         <ModalFooter>
-          <Button color="warning" type="submit" onClick={sendToFriend}>Send</Button>
-          <Button color="secondary" onClick={sendMatic}>Close</Button>
+          <Button color="warning" type="submit" onClick={sendToFriend}>SEND</Button>
+          <Button color="secondary" onClick={sendMatic}>CLOSE</Button>
         </ModalFooter>
       </Modal>
     </>

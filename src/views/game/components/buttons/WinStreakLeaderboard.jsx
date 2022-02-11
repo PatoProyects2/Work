@@ -128,7 +128,7 @@ export default function WinStreakLeaderboard(props) {
         <>
             <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="md">
                 <DropdownToggle caret color='danger'>
-                    WIN STREAK
+                    WINSTREAKS
                 </DropdownToggle>
                 <DropdownMenu className={props.theme === 'dark' ? 'bg-dark' : 'bg-light'}>
                     {props.winStreak7 > 0 && props.blockStreak7 > props.dayBlock ?

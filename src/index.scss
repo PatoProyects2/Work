@@ -107,7 +107,7 @@ input[type=radio][name=pic1]:checked+img {
 
 .btn-hover {
     width: 180px;
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 600;
     color: #fff;
     cursor: pointer;
@@ -179,37 +179,34 @@ input[type=radio][name=pic1]:checked+img {
         padding: 20px;
     }
     .rps-img {
-        width: 180px;
-        height: 180px;
+        width: 90px;
+        height: 90px;
         margin: 5px;
         cursor: pointer;
     }
-    .rock-img {        
+    .rock-img {
         background-image: url('./assets/imgs/rock.png');
         background-repeat: no-repeat;
         background-size: cover;
         background-position: center;
-        
         &:hover {
             background-image: url('./assets/imgs/rock.gif');
         }
     }
-    .paper-img {       
+    .paper-img {
         background-image: url('./assets/imgs/paper.png');
         background-repeat: no-repeat;
         background-size: cover;
         background-position: center;
-        
         &:hover {
             background-image: url('./assets/imgs/papper.gif');
         }
     }
-    .scissors-img {        
+    .scissors-img {
         background-image: url('./assets/imgs/scissors.png');
         background-repeat: no-repeat;
         background-size: cover;
         background-position: center;
-        
         &:hover {
             background-image: url('./assets/imgs/scissors.gif');
         }
@@ -224,14 +221,14 @@ input[type=radio][name=pic1]:checked+img {
     //     }
     // }
     label.amount {
-        margin: 12px;
+        margin: 7px;
     }
     label.amount span {
-        font-size: 16px;
+        font-size: 13px;
         font-weight: 600;
         color: #fff;
         cursor: pointer;
-        padding: 11px;
+        padding: 6px;
         text-align: center;
         border: none;
         background-size: 300% 100%;
@@ -253,7 +250,6 @@ input[type=radio][name=pic1]:checked+img {
     // input[type=radio][name=hand]:checked+img {
     //     background-color: #f8f9fa;
     // }
-  
     input[type=radio][name=hand]:checked+.rock-img {
         background-image: url('./assets/imgs/rock.gif');
     }
@@ -263,9 +259,38 @@ input[type=radio][name=pic1]:checked+img {
     input[type=radio][name=hand]:checked+.scissors-img {
         background-image: url('./assets/imgs/scissors.gif');
     }
-
     input[type=radio][name=amount]:checked+span {
         border: 3px solid white;
+    }
+    @media (min-width: 992px) {
+        .rps-img {
+            width: 180px;
+            height: 180px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        label.amount {
+            margin: 12px;
+        }
+        label.amount span {
+            font-size: 16px;
+            padding: 11px;
+        }
+    }
+    @media (min-width: 768px) {
+        .rps-img {
+            width: 120px;
+            height: 120px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        label.amount {
+            margin: 8px;
+        }
+        label.amount span {
+            font-size: 14px;
+            padding: 8px;
+        }
     }
 }
 
@@ -274,6 +299,8 @@ table {
     width: 400px;
     height: 600px;
 }
+
+
 /* End Game styles */
 
 
@@ -285,5 +312,7 @@ table {
     }
     .wrapper {
         min-height: calc(100vh - 45px);
+        display: flex;
+        align-items: center;
     }
 }
