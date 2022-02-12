@@ -306,7 +306,7 @@ export default function Game() {
   }
 
   async function doubleOrNothing() {
-    if (document.getElementById('rock').checked || document.getElementById('papper').checked || document.getElementById('scissors').checked) {
+    if (document.getElementById('rock').checked || document.getElementById('paper').checked || document.getElementById('scissors').checked) {
       setUserhand(usergame.hand)
       setLog0('')
     } else {
@@ -553,10 +553,10 @@ export default function Game() {
                         {userGameStreak > 1 ? "on a " + userGameStreak + " win streak!" : ""}
                       </h3>
                       {userhand === 'Rock' && userGameResult === true ? <img width="120" height="120" src={Scissors} alt="" /> : ""}
-                      {userhand === 'Papper' && userGameResult === true ? <img width="120" height="120" src={Rock} alt="" /> : ""}
-                      {userhand === 'Scissors' && userGameResult === true ? <img width="120" height="120" src={Papper} alt="" /> : ""}
-                      {userhand === 'Rock' && userGameResult === false ? <img width="120" height="120" src={Papper} alt="" /> : ""}
-                      {userhand === 'Papper' && userGameResult === false ? <img width="120" height="120" src={Scissors} alt="" /> : ""}
+                      {userhand === 'Paper' && userGameResult === true ? <img width="120" height="120" src={Rock} alt="" /> : ""}
+                      {userhand === 'Scissors' && userGameResult === true ? <img width="120" height="120" src={Paper} alt="" /> : ""}
+                      {userhand === 'Rock' && userGameResult === false ? <img width="120" height="120" src={Paper} alt="" /> : ""}
+                      {userhand === 'Paper' && userGameResult === false ? <img width="120" height="120" src={Scissors} alt="" /> : ""}
                       {userhand === 'Scissors' && userGameResult === false ? <img width="120" height="120" src={Rock} alt="" /> : ""}
                       <br></br>
                       {userGameResult === true ? <button className="btn-hover btn-green" onClick={backGame}>CLAIM REWARD</button> : <button className="btn btn-success" onClick={backGame}>BACK</button>}
@@ -575,7 +575,7 @@ export default function Game() {
                       <div className="rps-img rock-img"></div>
                     </label>
                     <label>
-                      <input type="radio" name="hand" id="papper" onChange={handleInputChange} value="Papper"></input>
+                      <input type="radio" name="hand" id="paper" onChange={handleInputChange} value="Paper"></input>
                       <div className="rps-img paper-img"></div>
                     </label>
                     <label>

@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react'
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Button, Modal, ModalBody, ModalFooter, FormGroup, Input, Label } from 'reactstrap'
 import db from '../../../../firebase/firesbaseConfig'
-import Nft1 from '../../../../assets/imgs/profile/nft1.png'
-import Nft2 from '../../../../assets/imgs/profile/nft2.png'
 import MetamaskLogo from '../../../../assets/imgs/MetaMask_Fox.png'
 
 export default function ConnectWalletButton(props) {
@@ -25,15 +23,15 @@ export default function ConnectWalletButton(props) {
   const [dropdown, setDropdown] = useState(false);
 
   useEffect(() => {
-    loadProfile(props.account, props.web3)
-  }, [props.account, props.web3]);
+    loadProfile(props.account)
+  }, [props.account]);
 
   function connect() {
     setLog0('Connecting...')
     try {
       ethereum
         .request({ method: 'eth_requestAccounts' })
-        .then(handleAccountsChanged)
+        .then()
         .catch((err) => {
           if (err.code === 4001) {
             setLog0('Connect')
@@ -45,10 +43,6 @@ export default function ConnectWalletButton(props) {
       window.open('https://metamask.app.link/dapp/patoproyects2.github.io/Work', '_blank')
       window.location.reload()
     }
-  }
-
-  function handleAccountsChanged() {
-    console.log("Wallet connected!")
   }
 
   const handleInputChange = (event) => {
@@ -66,7 +60,7 @@ export default function ConnectWalletButton(props) {
     setDropdown(!dropdown);
   }
 
-  async function loadProfile(account, web3) {
+  async function loadProfile(account) {
     try {
       const query = doc(db, "users", account)
       const userDocument = await getDoc(query)
@@ -84,11 +78,12 @@ export default function ConnectWalletButton(props) {
         const day = globalDate.getUTCDate()
         setDoc(doc(db, "users", account), {
           name1: 'Guest',
-          pic1: 'avatar.png',
+          pic1: 'guest.jpg',
           register: day.toString() + "/" + month.toString() + "/" + year.toString(),
           winStreak: 0,
           winStreakBlock: 0
         })
+        loadProfile()
       }
     } catch (e) {
 
@@ -183,7 +178,7 @@ export default function ConnectWalletButton(props) {
       {props.account !== '' ?
         <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="md">
           <DropdownToggle color='transparent' className='p-0'>
-            {userpic ? <img width="35" height="35" alt="" src={userpic} /> : <img width="35" height="35" className="rounded-circle" alt="" src="https://i.imgur.com/E3aJ7TP.jpg" />}
+            {userpic ? <img width="35" height="35" className="rounded-circle" alt="" src={userpic} /> : <img width="35" height="35" className="rounded-circle" alt="" src="https://i.imgur.com/E3aJ7TP.jpg" />}
           </DropdownToggle>
           <DropdownMenu className={props.theme === 'dark' ? 'bg-dark' : 'bg-light'}>
             <DropdownItem header>{username}</DropdownItem>
@@ -212,14 +207,15 @@ export default function ConnectWalletButton(props) {
         <ModalBody>
           <h4 className="text-center">USER PROFILE</h4>
           <FormGroup className="pt-3 text-center">
-            <Label className="me-2">
+            {userpic && <img width="105" height="105" className="rounded-circle" alt="" src={userpic} />}
+            {/* <Label className="me-2">
               <Input name="pic1" id="nft1" className={props.theme === 'dark' ? 'dark-input' : ''} onChange={handleInputChange} type="radio" value="nft1.png" />
               <img width="65" height="65" src={Nft1} alt="" />
             </Label>
             <Label>
               <Input name="pic1" id="nft2" className={props.theme === 'dark' ? 'dark-input' : ''} onChange={handleInputChange} type="radio" value="nft2.png" />
               <img width="65" height="65" src={Nft2} alt="" />
-            </Label>
+            </Label> */}
           </FormGroup>
           <FormGroup className="text-center">
             <Label>{"User since " + register}</Label>
