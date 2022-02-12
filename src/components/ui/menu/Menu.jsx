@@ -10,7 +10,7 @@ export const Menu = ({theme}) => {
 
     return (
         <>
-            <nav className='d-flex flex-row justify-content-center'>
+            <nav className='menu'>
                 <NavLink className={({ isActive }) => `${ theme === "dark" ? "text-white" : "" } btn btn-transparent ${isActive ? 'active' : ''}`} to="/" >HOME</NavLink>
                 <NavLink className={({ isActive }) => `${ theme === "dark" ? "text-white" : "" } btn btn-transparent ${isActive ? 'active' : ''}`} to="/about" >ABOUT</NavLink>
                 <button onClick={()=> setHtpModalShow(true) } className={`btn btn-transparent ${ theme === "dark" ? "text-white" : ""}`}>HOW TO PLAY</button>
@@ -19,7 +19,6 @@ export const Menu = ({theme}) => {
 
             <FAQ theme={theme} show={faqModalShow} onHide={() => setFaqModalShow(false)} />
             <HowToPlay theme={theme} show={htpModalShow} onHide={() => setHtpModalShow(false)} />
-
         </>
     );
 };

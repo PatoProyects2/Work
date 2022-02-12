@@ -39,6 +39,9 @@ export default function Game() {
   const [account, setAccount] = useState('');
   const [chain, setChain] = useState('');
   const [log0, setLog0] = useState('');
+  const [register, setRegister] = useState('');
+  const [userpic, setUserpic] = useState('');
+  const [username, setUsername] = useState('');
   const [userpic0, setUserpic0] = useState('');
   const [userpic1, setUserpic1] = useState('');
   const [userpic2, setUserpic2] = useState('');
@@ -97,9 +100,6 @@ export default function Game() {
   const [gameResult, setGameResult] = useState(undefined);
   const [showGameResult, setShowGameResult] = useState(false);
   const isMobileResolution = useMatchMedia('(max-width:650px)', false);
-  const [register, setRegister] = useState('');
-  const [userpic, setUserpic] = useState('');
-  const [username, setUsername] = useState('');
 
   const handleThemeChange = () => {
     setTheme(theme === 'light' ? 'dark' : 'light');
@@ -111,7 +111,6 @@ export default function Game() {
         const provider = await detectEthereumProvider();
         if (!provider) {
           window.alert('Please install Metamask!')
-          return false
         }
         const web3 = new Web3(new Web3(window.ethereum), provider)
         web3.eth.maxListenersWarningThreshold = 0
@@ -119,11 +118,12 @@ export default function Game() {
         const chainId = await ethereum.request({ method: 'eth_chainId' })
         if (chainId !== '0x13881') {
           window.alert('Please install Metamask!')
-          return false
         }
         setChain(chainId)
         const accounts = await ethereum.request({ method: 'eth_accounts' })
-        setAccount(accounts[0])
+        if (accounts[0].length === 42) {
+          setAccount(accounts[0])
+        }
         const rpsgame = new web3.eth.Contract(RpsGame.abi, rpsGameContract)
         setRpsgame(rpsgame)
         const walletBalance = await web3.eth.getBalance(accounts[0])
@@ -598,7 +598,7 @@ export default function Game() {
                       <div className="rps-img scissors-img"></div>
                     </label>
                   </div>
-                  <h5 className="mt-2">FOR</h5>
+                  <h5 className="mt-5">FOR</h5>
                   <div className="d-flex justify-content-center my-4">
                     <label className="amount">
                       <input type="radio" name="amount" id="amount1" onChange={handleInputChange} value="0.1" />

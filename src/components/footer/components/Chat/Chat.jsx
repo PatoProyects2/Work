@@ -14,37 +14,36 @@ function App() {
   const [room, setRoom] = useState("1");
 
   useEffect(() => {
-    joinRoom()
-  }, []);
+    const joinRoom = async () => {
+      try {
+        const accounts = await ethereum.request({ method: 'eth_accounts' })
+        const query = doc(db, "users", accounts[0])
+        const document = await getDoc(query)
+        const userData = document.data()
+        if (userData) {
+          setUsername(userData.name1)
+          socket.emit("join_room", room);
+        } else {
 
-  async function joinRoom() {
-    try {
-      const accounts = await ethereum.request({ method: 'eth_accounts' })
-      const query = doc(db, "users", accounts[0])
-      const document = await getDoc(query) 
-      const userData = document.data()
-      if (userData) {
-        setUsername(userData.name1)
-        socket.emit("join_room", room);
-      } else {
+        }
+      } catch (e) {
 
       }
-    } catch (e) {
-
-    }
-  };
+    };
+    joinRoom()
+  }, [username]);
 
   return (
     <>
       {
         displayModal ? (
           <div className="Apssp">
-            <ModalChat socket={socket} username={username} room={room} handleDisplay={() => setDisplayModal(false)}/>
+            <ModalChat socket={socket} username={username} room={room} handleDisplay={() => setDisplayModal(false)} />
           </div>
         )
-        :           
+          :
           <button className="btn-chat" type="button" onClick={() => setDisplayModal(true)}>
-            <img src={ ChatIcon } alt="Chat" height="36px"/>
+            <img src={ChatIcon} alt="Chat" height="36px" />
           </button>
       }
     </>

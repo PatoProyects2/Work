@@ -19,11 +19,10 @@ export default function ConnectWallet(props) {
   const [dropdown, setDropdown] = useState(false);
 
   const connect = () => {
-    setLog0('Connecting...')
     try {
       ethereum
         .request({ method: 'eth_requestAccounts' })
-        .then()
+        .then(setLog0('Connecting...'))
         .catch((err) => {
           if (err.code === 4001) {
             setLog0('Connect')
