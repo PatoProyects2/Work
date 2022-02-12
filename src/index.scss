@@ -41,7 +41,7 @@ input[type=radio][name=pic1]:checked+img {
 
 .wrapper {
     min-height: 100vh;
-    padding-left: 10px;    
+    padding-left: 10px;
 }
 
 .play-list {
@@ -192,32 +192,29 @@ input[type=radio][name=pic1]:checked+img {
         margin: 5px;
         cursor: pointer;
     }
-    .rock-img {        
+    .rock-img {
         background-image: url('./assets/imgs/rock.png');
         background-repeat: no-repeat;
         background-size: cover;
         background-position: center;
-        
         &:hover {
             background-image: url('./assets/imgs/rock.gif');
         }
     }
-    .paper-img {       
+    .paper-img {
         background-image: url('./assets/imgs/paper.png');
         background-repeat: no-repeat;
         background-size: cover;
         background-position: center;
-        
         &:hover {
             background-image: url('./assets/imgs/papper.gif');
         }
     }
-    .scissors-img {        
+    .scissors-img {
         background-image: url('./assets/imgs/scissors.png');
         background-repeat: no-repeat;
         background-size: cover;
         background-position: center;
-        
         &:hover {
             background-image: url('./assets/imgs/scissors.gif');
         }
@@ -239,7 +236,7 @@ input[type=radio][name=pic1]:checked+img {
         font-weight: 600;
         color: #fff;
         cursor: pointer;
-        padding: 6px;
+        padding: 9px;
         text-align: center;
         border: none;
         background-size: 300% 100%;
@@ -261,7 +258,6 @@ input[type=radio][name=pic1]:checked+img {
     // input[type=radio][name=hand]:checked+img {
     //     background-color: #f8f9fa;
     // }
-  
     input[type=radio][name=hand]:checked+.rock-img {
         background-image: url('./assets/imgs/rock.gif');
     }
@@ -271,23 +267,20 @@ input[type=radio][name=pic1]:checked+img {
     input[type=radio][name=hand]:checked+.scissors-img {
         background-image: url('./assets/imgs/scissors.gif');
     }
-
     input[type=radio][name=amount]:checked+span {
         border: 3px solid white;
     }
-    
-    @media (min-width: 992px){  
-        max-width: 60%;    
-        label.amount {
-            margin: 12px;
-        }
-        label.amount span {
-            font-size: 16px;
-            padding: 11px;
-        }
+    @media (min-width: 992px) {
+        max-width: 60%;
+        // label.amount {
+        //     margin: 12px;
+        // }
+        // label.amount span {
+        //     font-size: 16px;
+        //     padding: 11px;
+        // }
     }
-
-    @media (min-width: 768px){
+    @media (min-width: 768px) {
         .rps-img {
             width: 240px;
             height: 240px;
@@ -299,7 +292,7 @@ input[type=radio][name=pic1]:checked+img {
         }
         label.amount span {
             font-size: 18px;
-            padding: 12px;
+            padding: 20px;
         }
     }
 }
@@ -309,9 +302,11 @@ table {
     width: 400px;
     height: 600px;
 }
+
+
 /* End Game styles */
 
-@media (min-width: 992px){
+@media (min-width: 992px) {
     .wrapper {
         padding-left: 20px;
         padding-right: 20px;

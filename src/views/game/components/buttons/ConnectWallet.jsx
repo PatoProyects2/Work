@@ -188,7 +188,7 @@ export default function ConnectWalletButton(props) {
       {props.account !== '' ?
         <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="md">
           <DropdownToggle color='transparent' className='p-0'>
-            {userpic ? <img width="35" height="35" alt="" src={userpic} /> : <img width="35" height="35" className="rounded-circle" alt="" src="https://i.imgur.com/E3aJ7TP.jpg" /> }
+            {userpic ? <img width="35" height="35" alt="" src={userpic} /> : <img width="35" height="35" className="rounded-circle" alt="" src="https://i.imgur.com/E3aJ7TP.jpg" />}
           </DropdownToggle>
           <DropdownMenu className={props.theme === 'dark' ? 'bg-dark' : 'bg-light'}>
             <DropdownItem header>{username}</DropdownItem>
@@ -213,7 +213,7 @@ export default function ConnectWalletButton(props) {
           </DropdownToggle>
         </Dropdown>
       }
-      <Modal isOpen={edit} contentClassName={props.theme === 'dark' ? 'dark dark-border' : ''}>   
+      <Modal isOpen={edit} contentClassName={props.theme === 'dark' ? 'dark dark-border' : ''} size="sm">
         {log1 && (<span className="alert alert-danger mx-5">{log1}</span>)}
         <ModalBody>
           <h4 className="text-center">USER PROFILE</h4>
@@ -239,7 +239,7 @@ export default function ConnectWalletButton(props) {
           <Button color="secondary" onClick={editProfile}>CLOSE</Button>
         </ModalFooter>
       </Modal>
-      <Modal isOpen={send} contentClassName={props.theme === 'dark' ? 'dark dark-border' : ''}>      
+      <Modal isOpen={send} contentClassName={props.theme === 'dark' ? 'dark dark-border' : ''} size="sm">
         {log1 && (<span className="alert alert-danger mx-5">{log1}</span>)}
         <ModalBody>
           <h4 className="text-center">SEND MATIC</h4>

@@ -340,7 +340,7 @@ export default function Game() {
   }
 
   async function readAccountEvent() {
-    let userGameBlock = blockchain - 5
+    let userGameBlock = blockchain - 3
     let myEvents = await rpsgame.getPastEvents('Play', { filter: { _to: account }, fromBlock: userGameBlock, toBlock: 'latest' })
     setShowGameResult(true)
     setAnimation(false)
@@ -536,102 +536,88 @@ export default function Game() {
       }
       <article>
         {active === true && chain === '0x13881' ?
-          <div className="game-container">
-            <h5 className="my-2">MATIC {(walletbalance / decimal).toFixed(4)}</h5>
-            {log0 && (<span className="alert alert-danger mx-5">{log0}</span>)}
-            {playing === true ?
-              <div className="mt-3">
-                {animation === true ? <img src={RPSAnimated} width="160" height="160" alt="Rock-Paper-Scissors" /> : ""}
-                {showGameResult === true ? <button className="btn-hover btn-green" onClick={showResult}>SHOW RESULT</button> : ""}
-                {gameResult === true
-                  ?
-                  <>
-                    <h3>
-                      {userGameResult === true ? "You won " + (useramount * 2) : ""}
-                      {userGameResult === false ? "You lost " + useramount : ""}
-                      {userGameStreak > 1 ? " MATIC " + " on a " + userGameStreak + " win streak!" : ""}
-                    </h3>
-                    {userhand === 'Rock' && userGameResult === true ? <img width="120" height="120" src={Scissors} alt="" /> : ""}
-                    {userhand === 'Papper' && userGameResult === true ? <img width="120" height="120" src={Rock} alt="" /> : ""}
-                    {userhand === 'Scissors' && userGameResult === true ? <img width="120" height="120" src={Papper} alt="" /> : ""}
-                    {userhand === 'Rock' && userGameResult === false ? <img width="120" height="120" src={Papper} alt="" /> : ""}
-                    {userhand === 'Papper' && userGameResult === false ? <img width="120" height="120" src={Scissors} alt="" /> : ""}
-                    {userhand === 'Scissors' && userGameResult === false ? <img width="120" height="120" src={Rock} alt="" /> : ""}
-                    <br></br>
-                    {userGameResult === true ? <button className="btn-hover btn-green" onClick={backGame}>CLAIM REWARD</button> : <button className="btn btn-success" onClick={backGame}>BACK</button>}
+          <>
+            <h5 className="my-4 text-end me-3 me-lg-0">MATIC {(walletbalance / decimal).toFixed(4)}</h5>
+            <div className="game-container">
+              {log0 && (<span className="alert alert-danger mx-5">{log0}</span>)}
+              {playing === true ?
+                <div className="mt-3">
+                  {animation === true ? <img src={RPSAnimated} width="160" height="160" alt="Rock-Paper-Scissors" /> : ""}
+                  {showGameResult === true ? <button className="btn-hover btn-green" onClick={showResult}>SHOW RESULT</button> : ""}
+                  {gameResult === true
+                    ?
+                    <>
+                      <h3>
+                        {userGameResult === true ? "You won " + (useramount * 2) + " MATIC " : ""}
+                        {userGameResult === false ? "You lost " + useramount + " MATIC " : ""}
+                        {userGameStreak > 1 ? "on a " + userGameStreak + " win streak!" : ""}
+                      </h3>
+                      {userhand === 'Rock' && userGameResult === true ? <img width="120" height="120" src={Scissors} alt="" /> : ""}
+                      {userhand === 'Papper' && userGameResult === true ? <img width="120" height="120" src={Rock} alt="" /> : ""}
+                      {userhand === 'Scissors' && userGameResult === true ? <img width="120" height="120" src={Papper} alt="" /> : ""}
+                      {userhand === 'Rock' && userGameResult === false ? <img width="120" height="120" src={Papper} alt="" /> : ""}
+                      {userhand === 'Papper' && userGameResult === false ? <img width="120" height="120" src={Scissors} alt="" /> : ""}
+                      {userhand === 'Scissors' && userGameResult === false ? <img width="120" height="120" src={Rock} alt="" /> : ""}
+                      <br></br>
+                      {userGameResult === true ? <button className="btn-hover btn-green" onClick={backGame}>CLAIM REWARD</button> : <button className="btn btn-success" onClick={backGame}>BACK</button>}
 
-                  </>
-                  :
-                  ""
-                }
-              </div>
-              :
-              <div>
-                <h5 className="mt-2">I LIKE</h5>
-                <div className="d-flex justify-content-center">
-                  <label>
-                    <input type="radio" name="hand" id="rock" onChange={handleInputChange} value="Rock"></input>
-                    <div className="rps-img rock-img"></div>
-                  </label>
-                  <label>
-                    <input type="radio" name="hand" id="papper" onChange={handleInputChange} value="Papper"></input>
-                    <div className="rps-img paper-img"></div>
-                  </label>
-                  <label>
-                    <input type="radio" name="hand" id="scissors" onChange={handleInputChange} value="Scissors"></input>
-                    <div className="rps-img scissors-img"></div>
-                  </label>
+                    </>
+                    :
+                    ""
+                  }
                 </div>
-                <h5 className="mt-2">FOR</h5>
-                <div className='row g-0'>
-                  <div className="col-12 col-xl-9 offset-xl-2">
-                    <div className="row w-md-70 my-3 mx-auto">
-                      <div className="col-4">
-                        <label className="amount">
-                          <input type="radio" name="amount" id="amount1" onChange={handleInputChange} value="0.1" />
-                          <span>2 MATIC</span>
-                        </label>
-                      </div>
-                      <div className="col-4">
-                        <label className="amount">
-                          <input type="radio" name="amount" id="amount2" onChange={handleInputChange} value="4" />
-                          <span>4 MATIC</span>
-                        </label>
-                      </div>
-                      <div className="col-4">
-                        <label className="amount">
-                          <input type="radio" name="amount" id="amount3" onChange={handleInputChange} value="10" />
-                          <span>10 MATIC</span>
-                        </label>
-                      </div>
-                    </div>
-                    <div className="row w-md-70 my-3 mx-auto">
-                      <div className="col-4">
-                        <label className="amount">
-                          <input type="radio" name="amount" id="amount4" onChange={handleInputChange} value="20" />
-                          <span>20 MATIC</span>
-                        </label>
-                      </div>
-                      <div className="col-4">
-                        <label className="amount">
-                          <input type="radio" name="amount" id="amount5" onChange={handleInputChange} value="50" />
-                          <span>50 MATIC</span>
-                        </label>
-                      </div>
-                      <div className="col-4">
-                        <label className="amount">
-                          <input type="radio" name="amount" id="amount6" onChange={handleInputChange} value="100" />
-                          <span>100 MATIC</span>
-                        </label>
-                      </div>
-                    </div>
+                :
+                <div>
+                  <h5 className="mt-2">I LIKE</h5>
+                  <div className="d-flex justify-content-center">
+                    <label>
+                      <input type="radio" name="hand" id="rock" onChange={handleInputChange} value="Rock"></input>
+                      <div className="rps-img rock-img"></div>
+                    </label>
+                    <label>
+                      <input type="radio" name="hand" id="papper" onChange={handleInputChange} value="Papper"></input>
+                      <div className="rps-img paper-img"></div>
+                    </label>
+                    <label>
+                      <input type="radio" name="hand" id="scissors" onChange={handleInputChange} value="Scissors"></input>
+                      <div className="rps-img scissors-img"></div>
+                    </label>
                   </div>
-                </div>
+                  <h5 className="mt-2">FOR</h5>
+                  <div className="d-flex justify-content-center my-4">
+                    <label className="amount">
+                      <input type="radio" name="amount" id="amount1" onChange={handleInputChange} value="0.1" />
+                      <span>2 MATIC</span>
+                    </label>
+                    <label className="amount">
+                      <input type="radio" name="amount" id="amount2" onChange={handleInputChange} value="0.2" />
+                      <span>4 MATIC</span>
+                    </label>
+                    <label className="amount">
+                      <input type="radio" name="amount" id="amount3" onChange={handleInputChange} value="0.3" />
+                      <span>10 MATIC</span>
+                    </label>
+                  </div>
+                  <div className="d-flex justify-content-center mb-4">
+                    <label className="amount">
+                      <input type="radio" name="amount" id="amount4" onChange={handleInputChange} value="0.4" />
+                      <span>20 MATIC</span>
+                    </label>
+                    <label className="amount">
+                      <input type="radio" name="amount" id="amount5" onChange={handleInputChange} value="0.5" />
+                      <span>50 MATIC</span>
+                    </label>
+                    <label className="amount">
+                      <input type="radio" name="amount" id="amount6" onChange={handleInputChange} value="0.6" />
+                      <span>100 MATIC</span>
+                    </label>
+                  </div>
 
-                <button onClick={doubleOrNothing} className="btn-hover btn-green">DOUBLE OR NOTHING</button>
-              </div>
-            }
-          </div>
+                  <button onClick={doubleOrNothing} className="btn-hover btn-green">DOUBLE OR NOTHING</button>
+                </div>
+              }
+            </div>
+          </>
           :
           <div>
             {log0 && (<span className="alert alert-danger mx-5">{log0}</span>)}
@@ -649,8 +635,8 @@ export default function Game() {
             {account !== '' ?
               <>
                 <p>
-                  <input id="age" type="checkbox"></input>
-                  <label htmlFor="age">I confirm that I am at least 18 years old</label>
+                  <input id="age" type="checkbox"></input>&nbsp;
+                  <label htmlFor="age"> I confirm that I am at least 18 years old</label>
                 </p>
                 <button className="btn-hover btn-start" onClick={openGame}>DOUBLE OR NOTHING</button>
                 <p>CLICK TO SEE OPTIONS</p>
