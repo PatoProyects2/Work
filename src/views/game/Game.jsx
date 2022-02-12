@@ -9,7 +9,7 @@ import HistoryGames from './components/buttons/HistoryGames'
 import ConnectWallet from './components/buttons/ConnectWallet'
 import WinStreakLeaderboard from './components/buttons/WinStreakLeaderboard'
 import Rock from '../../assets/imgs/rock.gif'
-import Papper from '../../assets/imgs/papper.gif'
+import Paper from '../../assets/imgs/paper.gif'
 import Scissors from '../../assets/imgs/scissors.gif'
 import RPSAnimated from '../../assets/imgs/RPS.gif'
 import HistoryGamesModal from './components/HistoryGamesModal'
@@ -300,7 +300,7 @@ export default function Game() {
       loadWeb3()
       setLog0('')
     } else {
-      setLog0('Confirm that you are at least 18 years old')
+      setLog0('CONFIRM THAT YOU ARE AT LEAST 18 YEARS OLD')
       return false
     }
   }
@@ -310,14 +310,14 @@ export default function Game() {
       setUserhand(usergame.hand)
       setLog0('')
     } else {
-      setLog0('Select your bet hand')
+      setLog0('SELECT THE BETTING HAND')
       return false
     }
     if (document.getElementById('amount1').checked || document.getElementById('amount2').checked || document.getElementById('amount3').checked || document.getElementById('amount4').checked || document.getElementById('amount5').checked || document.getElementById('amount6').checked) {
       setUseramount(usergame.amount)
       setLog0('')
     } else {
-      setLog0('Select your bet amount')
+      setLog0('SELECT THE BETTING AMOUNT')
       return false
     }
     if (usergame.hand !== '' && usergame.amount !== 0) {
@@ -622,13 +622,13 @@ export default function Game() {
           <div>
             {log0 && (<span className="alert alert-danger mx-5">{log0}</span>)}
             <div className="row g-0 my-5 justify-content-center">
-              <div className="col-4 col-md-3">
+              <div className="col-3 col-md-2">
                 <img className="my-3 img-fluid" src={Rock} alt="Rock" />
               </div>
-              <div className="col-4 col-md-3">
-                <img className="my-3 img-fluid" src={Papper} alt="Paper" />
+              <div className="col-3 col-md-2">
+                <img className="my-3 img-fluid" src={Paper} alt="Paper" />
               </div>
-              <div className="col-4 col-md-3">
+              <div className="col-3 col-md-2">
                 <img className="my-3 img-fluid" src={Scissors} alt="Scissors" />
               </div>
             </div>
@@ -636,7 +636,7 @@ export default function Game() {
               <>
                 <p>
                   <input id="age" type="checkbox"></input>&nbsp;
-                  <label htmlFor="age"> I confirm that I am at least 18 years old</label>
+                  <label htmlFor="age">I confirm that I am at least 18 years old</label>
                 </p>
                 <button className="btn-hover btn-start" onClick={openGame}>DOUBLE OR NOTHING</button>
                 <p>CLICK TO SEE OPTIONS</p>

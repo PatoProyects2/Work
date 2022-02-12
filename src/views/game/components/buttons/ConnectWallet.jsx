@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { doc, setDoc, getDoc } from "firebase/firestore";
-import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Input, Label } from 'reactstrap'
+import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Button, Modal, ModalBody, ModalFooter, FormGroup, Input, Label } from 'reactstrap'
 import db from '../../../../firebase/firesbaseConfig'
 import Nft1 from '../../../../assets/imgs/profile/nft1.png'
 import Nft2 from '../../../../assets/imgs/profile/nft2.png'
@@ -18,10 +18,8 @@ export default function ConnectWalletButton(props) {
   const [register, setRegister] = useState('');
   const [userpic, setUserpic] = useState('');
   const [username, setUsername] = useState('');
-  const [userphoto, setUserphoto] = useState('');
   const [log0, setLog0] = useState('Connect');
   const [log1, setLog1] = useState('');
-  const [balance, setBalance] = useState(0);
   const [edit, setEdit] = useState(false);
   const [send, setSend] = useState(false);
   const [dropdown, setDropdown] = useState(false);
@@ -75,7 +73,6 @@ export default function ConnectWalletButton(props) {
       const userData = userDocument.data()
       if (userData) {
         setUsername(userData.name1)
-        setUserphoto(userData.pic1)
         setRegister(userData.register)
         const picPath = userData.pic1
         const profilePhoto = await import(`../../../../assets/imgs/profile/${picPath}`)
@@ -93,8 +90,6 @@ export default function ConnectWalletButton(props) {
           winStreakBlock: 0
         })
       }
-      let walletBalance = await web3.eth.getBalance(account)
-      setBalance(walletBalance)
     } catch (e) {
 
     }
@@ -121,13 +116,13 @@ export default function ConnectWalletButton(props) {
     if (document.getElementById('nft1').checked || document.getElementById('nft2').checked) {
       setLog1('');
     } else {
-      setLog1('Select NFT picture');
+      setLog1('SELECT A NFT PICTURE');
       return false
     }
     if (userinfo.name1.length >= 4 && userinfo.name1.length <= 12) {
       setLog1('');
     } else {
-      setLog1('The name must be between 4 and 12 characters');
+      setLog1('THE NAME MUST BE BETWEEN 4 AND 12 CHARACTERS');
       return false
     }
     setUserinfo({
@@ -145,13 +140,13 @@ export default function ConnectWalletButton(props) {
     if (friend.account1.length === 42) {
       setLog1('');
     } else {
-      setLog1('Invalid address');
+      setLog1('INVALID ADDRESS');
       return false
     }
     if (friend.amount1 > 0) {
       setLog1('');
     } else {
-      setLog1('Invalid amount');
+      setLog1('INVALID AMOUNT');
       return false
     }
     setFriend({
@@ -198,7 +193,6 @@ export default function ConnectWalletButton(props) {
                 <i className="fa-regular fa-clone white"></i>
               </button>
             </DropdownItem>
-            <DropdownItem header>{(balance / props.decimal).toFixed(4) + " MATIC"}</DropdownItem>
             <DropdownItem divider />
             <DropdownItem className={props.theme === 'dark' ? 'dropdown-item-dark' : ''} onClick={editProfile}>Edit profile</DropdownItem>
             <DropdownItem className={props.theme === 'dark' ? 'dropdown-item-dark' : ''} onClick={sendMatic}>Send matic</DropdownItem>
@@ -214,7 +208,7 @@ export default function ConnectWalletButton(props) {
         </Dropdown>
       }
       <Modal isOpen={edit} contentClassName={props.theme === 'dark' ? 'dark dark-border' : ''} size="sm">
-        {log1 && (<span className="alert alert-danger mx-5">{log1}</span>)}
+        {log1 && (<span className="alert alert-danger mx-5 row justify-content-center mt-2">{log1}</span>)}
         <ModalBody>
           <h4 className="text-center">USER PROFILE</h4>
           <FormGroup className="pt-3 text-center">
@@ -240,15 +234,15 @@ export default function ConnectWalletButton(props) {
         </ModalFooter>
       </Modal>
       <Modal isOpen={send} contentClassName={props.theme === 'dark' ? 'dark dark-border' : ''} size="sm">
-        {log1 && (<span className="alert alert-danger mx-5">{log1}</span>)}
+        {log1 && (<span className="alert alert-danger mx-5 row justify-content-center mt-2">{log1}</span>)}
         <ModalBody>
           <h4 className="text-center">SEND MATIC</h4>
           <FormGroup>
-            <Label>Address</Label>
+            <Label>ADDRESS</Label>
             <Input name="account1" className={props.theme === 'dark' ? 'dark-input' : ''} placeholder="0x00..." onChange={handleInputChange} type="text" />
           </FormGroup>
           <FormGroup>
-            <Label>Amount</Label>
+            <Label>AMOUNT</Label>
             <Input name="amount1" className={props.theme === 'dark' ? 'dark-input' : ''} placeholder="1" onChange={handleInputChange} type="number" />
           </FormGroup>
         </ModalBody>

@@ -207,7 +207,7 @@ input[type=radio][name=pic1]:checked+img {
         background-size: cover;
         background-position: center;
         &:hover {
-            background-image: url('./assets/imgs/papper.gif');
+            background-image: url('./assets/imgs/paper.gif');
         }
     }
     .scissors-img {
@@ -262,7 +262,7 @@ input[type=radio][name=pic1]:checked+img {
         background-image: url('./assets/imgs/rock.gif');
     }
     input[type=radio][name=hand]:checked+.paper-img {
-        background-image: url('./assets/imgs/papper.gif');
+        background-image: url('./assets/imgs/paper.gif');
     }
     input[type=radio][name=hand]:checked+.scissors-img {
         background-image: url('./assets/imgs/scissors.gif');
