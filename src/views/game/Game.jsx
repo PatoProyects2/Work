@@ -347,7 +347,6 @@ export default function Game() {
   }
 
   const readAccountEvent = async () => {
-    setAnimation(false)
     setShowGameResult(true)
     let userGameBlock = blockchain - 1
     let myEvents = await rpsgame.getPastEvents('Play', { filter: { _to: account }, fromBlock: userGameBlock, toBlock: 'latest' })
@@ -365,6 +364,7 @@ export default function Game() {
   }
 
   const showResult = () => {
+    setAnimation(false)
     setShowGameResult(false)
     setGameResult(true)
   }
@@ -545,25 +545,38 @@ export default function Game() {
               {log0 && (<span className="alert alert-danger mx-5">{log0}</span>)}
               {playing === true ?
                 <div className="mt-3">
-                  {animation === true ? <img src={RPSAnimated} width="240" height="240" alt="Rock-Paper-Scissors" /> : ""}
-                  {showGameResult === true ? <button className="btn-hover btn-green" onClick={showResult}>SHOW RESULT</button> : ""}
+                  {animation === true ?
+                    <>
+                      <img src={RPSAnimated} width="240" height="240" alt="Rock-Paper-Scissors" />
+                      <h3>PLAYING</h3>
+                      <h3>{userhand + " FOR " + useramount + " MATIC"}</h3>
+                    </> : ""}
+                  {showGameResult === true ? <button className="btn-hover btn-green" onClick={showResult}>SEE RESULT</button> : ""}
                   {gameResult === true
                     ?
                     <>
-                      <h3>
-                        {userGameResult === true ? "You won " + (useramount * 2) + " MATIC " : ""}
-                        {userGameResult === false ? "You lost " + useramount + " MATIC " : ""}
-                        {userGameStreak > 1 ? "on a " + userGameStreak + " win streak!" : ""}
-                      </h3>
-                      {userhand === 'Rock' && userGameResult === true ? <img width="120" height="120" src={Scissors} alt="" /> : ""}
-                      {userhand === 'Paper' && userGameResult === true ? <img width="120" height="120" src={Rock} alt="" /> : ""}
-                      {userhand === 'Scissors' && userGameResult === true ? <img width="120" height="120" src={Paper} alt="" /> : ""}
-                      {userhand === 'Rock' && userGameResult === false ? <img width="120" height="120" src={Paper} alt="" /> : ""}
-                      {userhand === 'Paper' && userGameResult === false ? <img width="120" height="120" src={Scissors} alt="" /> : ""}
-                      {userhand === 'Scissors' && userGameResult === false ? <img width="120" height="120" src={Rock} alt="" /> : ""}
+                      {userGameStreak > 1 ?
+                        <>
+                          <h3>Congrats!</h3>
+                          <br></br>
+                          <h3>{"You're on a " + userGameStreak + " win streak"}</h3>
+                          <br></br>
+                        </>
+                        :
+                        ""
+                      }
+                      {userhand === 'ROCK' && userGameResult === true ? <img width="240" height="240" src={Scissors} alt="" /> : ""}
+                      {userhand === 'PAPER' && userGameResult === true ? <img width="240" height="240" src={Rock} alt="" /> : ""}
+                      {userhand === 'SCISSORS' && userGameResult === true ? <img width="240" height="240" src={Paper} alt="" /> : ""}
+                      {userhand === 'ROCK' && userGameResult === false ? <img width="240" height="240" src={Paper} alt="" /> : ""}
+                      {userhand === 'PAPER' && userGameResult === false ? <img width="240" height="240" src={Scissors} alt="" /> : ""}
+                      {userhand === 'SCISSORS' && userGameResult === false ? <img width="240" height="240" src={Rock} alt="" /> : ""}
                       <br></br>
-                      {userGameResult === true ? <button className="btn-hover btn-green" onClick={backGame}>CLAIM REWARD</button> : <button className="btn btn-success" onClick={backGame}>BACK</button>}
-
+                      <br></br>
+                      <h3>{userGameResult === true ? " YOU WON " : ""}{userGameResult === false ? " YOU LOST " : ""}</h3>
+                      <h3 style={{ color: userGameResult ? "mediumseagreen" : "crimson" }}>{userGameResult === true ? useramount : ""}{userGameResult === false ? useramount : ""}{" MATIC"}</h3>
+                      <br></br>
+                      <h3>{userGameResult === true ? <button className="btn-hover btn-green" onClick={backGame}>CLAIM REWARD</button> : <button className="btn btn-success" onClick={backGame}>BACK</button>}</h3>
                     </>
                     :
                     ""
@@ -571,18 +584,17 @@ export default function Game() {
                 </div>
                 :
                 <div>
-                  <h5 className="mt-2">I LIKE</h5>
                   <div className="d-flex justify-content-center">
                     <label>
-                      <input type="radio" name="hand" id="rock" onChange={handleInputChange} value="Rock"></input>
+                      <input type="radio" name="hand" id="rock" onChange={handleInputChange} value="ROCK"></input>
                       <div className="rps-img rock-img"></div>
                     </label>
                     <label>
-                      <input type="radio" name="hand" id="paper" onChange={handleInputChange} value="Paper"></input>
+                      <input type="radio" name="hand" id="paper" onChange={handleInputChange} value="PAPER"></input>
                       <div className="rps-img paper-img"></div>
                     </label>
                     <label>
-                      <input type="radio" name="hand" id="scissors" onChange={handleInputChange} value="Scissors"></input>
+                      <input type="radio" name="hand" id="scissors" onChange={handleInputChange} value="SCISSORS"></input>
                       <div className="rps-img scissors-img"></div>
                     </label>
                   </div>
