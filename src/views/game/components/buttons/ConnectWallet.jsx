@@ -187,8 +187,8 @@ export default function ConnectWalletButton(props) {
     <>
       {props.account !== '' ?
         <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="md">
-          <DropdownToggle caret color='danger'>
-            {userpic && <img width="50" height="50" alt="" src={userpic} />}
+          <DropdownToggle color='transparent' className='p-0'>
+            {userpic ? <img width="35" height="35" alt="" src={userpic} /> : <img width="35" height="35" className="rounded-circle" alt="" src="https://i.imgur.com/E3aJ7TP.jpg" /> }
           </DropdownToggle>
           <DropdownMenu className={props.theme === 'dark' ? 'bg-dark' : 'bg-light'}>
             <DropdownItem header>{username}</DropdownItem>
@@ -213,27 +213,25 @@ export default function ConnectWalletButton(props) {
           </DropdownToggle>
         </Dropdown>
       }
-      <Modal isOpen={edit} contentClassName={props.theme === 'dark' ? 'dark dark-border' : ''}>
-        <ModalHeader>
-          USER PROFILE
-        </ModalHeader>
+      <Modal isOpen={edit} contentClassName={props.theme === 'dark' ? 'dark dark-border' : ''}>   
         {log1 && (<span className="alert alert-danger mx-5">{log1}</span>)}
         <ModalBody>
-          <FormGroup>
-            <Label>
-              <Input name="pic1" id="nft1" onChange={handleInputChange} type="radio" value="nft1.png" />
-              <img width="50" height="50" src={Nft1} alt="" />
+          <h4 className="text-center">USER PROFILE</h4>
+          <FormGroup className="pt-3 text-center">
+            <Label className="me-2">
+              <Input name="pic1" id="nft1" className={props.theme === 'dark' ? 'dark-input' : ''} onChange={handleInputChange} type="radio" value="nft1.png" />
+              <img width="65" height="65" src={Nft1} alt="" />
             </Label>
             <Label>
-              <Input name="pic1" id="nft2" onChange={handleInputChange} type="radio" value="nft2.png" />
-              <img width="50" height="50" src={Nft2} alt="" />
+              <Input name="pic1" id="nft2" className={props.theme === 'dark' ? 'dark-input' : ''} onChange={handleInputChange} type="radio" value="nft2.png" />
+              <img width="65" height="65" src={Nft2} alt="" />
             </Label>
           </FormGroup>
-          <FormGroup>
+          <FormGroup className="text-center">
             <Label>{"User since " + register}</Label>
           </FormGroup>
           <FormGroup>
-            <Input name="name1" onChange={handleInputChange} type="text" defaultValue={username} />
+            <Input name="name1" placeholder="Nickname" className={props.theme === 'dark' ? 'dark-input' : ''} onChange={handleInputChange} type="text" defaultValue={username} />
           </FormGroup>
         </ModalBody>
         <ModalFooter>
@@ -241,19 +239,17 @@ export default function ConnectWalletButton(props) {
           <Button color="secondary" onClick={editProfile}>CLOSE</Button>
         </ModalFooter>
       </Modal>
-      <Modal isOpen={send} contentClassName={props.theme === 'dark' ? 'dark dark-border' : ''}>
-        <ModalHeader>
-          SEND MATIC
-        </ModalHeader>
+      <Modal isOpen={send} contentClassName={props.theme === 'dark' ? 'dark dark-border' : ''}>      
         {log1 && (<span className="alert alert-danger mx-5">{log1}</span>)}
         <ModalBody>
+          <h4 className="text-center">SEND MATIC</h4>
           <FormGroup>
             <Label>Address</Label>
-            <Input name="account1" placeholder="0x00..." onChange={handleInputChange} type="text" />
+            <Input name="account1" className={props.theme === 'dark' ? 'dark-input' : ''} placeholder="0x00..." onChange={handleInputChange} type="text" />
           </FormGroup>
           <FormGroup>
             <Label>Amount</Label>
-            <Input name="amount1" placeholder="1" onChange={handleInputChange} type="number" />
+            <Input name="amount1" className={props.theme === 'dark' ? 'dark-input' : ''} placeholder="1" onChange={handleInputChange} type="number" />
           </FormGroup>
         </ModalBody>
         <ModalFooter>

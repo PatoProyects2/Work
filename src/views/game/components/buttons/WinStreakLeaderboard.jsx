@@ -127,9 +127,16 @@ export default function WinStreakLeaderboard(props) {
     return (
         <>
             <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="md">
-                <DropdownToggle caret color='danger'>
-                    WINSTREAKS
-                </DropdownToggle>
+                {
+                    props.isMobileVersion ?
+                        <DropdownToggle color='danger'>
+                            STREAKS
+                        </DropdownToggle>
+                        :
+                        <DropdownToggle color='danger'>
+                            <span>WINSTREAKS <i className="fa-solid fa-trophy fa-xs"></i></span>
+                        </DropdownToggle>
+                }
                 <DropdownMenu className={props.theme === 'dark' ? 'bg-dark' : 'bg-light'}>
                     {props.winStreak7 > 0 && props.blockStreak7 > props.dayBlock ?
                         <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
@@ -181,11 +188,11 @@ export default function WinStreakLeaderboard(props) {
                             {props.picStreak4 && <img width="25" height="25" alt="" src={props.picStreak4} />}
                             {props.nameStreak4 + " is on a " + props.winStreak4 + " win streak"}
                             <small className="d-flex justify-content-end">
-                                {second4< 0 || second4=== 0 ? "now" : ""}
-                                {second4< 60 ? second4+ " seconds ago" : ""}
-                                {second4> 60 && second4< 3600 ? minute4 + " minutes ago" : ""}
-                                {second4> 3600 && second4< 7200 ? hour4+ " hour ago" : ""}
-                                {second4> 7200 ? hour4+ " hours ago" : ""}
+                                {second4 < 0 || second4 === 0 ? "now" : ""}
+                                {second4 < 60 ? second4 + " seconds ago" : ""}
+                                {second4 > 60 && second4 < 3600 ? minute4 + " minutes ago" : ""}
+                                {second4 > 3600 && second4 < 7200 ? hour4 + " hour ago" : ""}
+                                {second4 > 7200 ? hour4 + " hours ago" : ""}
                             </small>
                         </DropdownItem>
                         :
