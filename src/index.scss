@@ -161,9 +161,9 @@ input[type=radio][name=pic1]:checked+img {
 }
 
 .social-icons {
-    bottom: 0;
-    position: relative;
-    width: 100%;
+    position: fixed;
+    bottom: 25px;
+    right: 20px;
 }
 
 

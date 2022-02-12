@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react'
 import { NavLink, useOutletContext } from 'react-router-dom'
 import Web3 from 'web3'
 import detectEthereumProvider from '@metamask/detect-provider'
-import { doc, getDoc, getDocs, collection, query, where, updateDoc, orderBy, limit } from "firebase/firestore";
+import { doc, getDoc, setDoc, getDocs, collection, query, where, updateDoc, orderBy, limit } from "firebase/firestore";
 import RpsGame from '../../abis/RpsGame/rpsGame.json'
 import { rpsGameContract } from '../../components/blockchain/Contracts'
+import HistoryGamesModal from './components/HistoryGamesModal'
 import HistoryGames from './components/buttons/HistoryGames'
 import ConnectWallet from './components/buttons/ConnectWallet'
 import WinStreakLeaderboard from './components/buttons/WinStreakLeaderboard'
@@ -12,10 +13,8 @@ import Rock from '../../assets/imgs/rock.gif'
 import Paper from '../../assets/imgs/paper.gif'
 import Scissors from '../../assets/imgs/scissors.gif'
 import RPSAnimated from '../../assets/imgs/RPS.gif'
-import HistoryGamesModal from './components/HistoryGamesModal'
 import db from '../../firebase/firesbaseConfig'
 import { useMatchMedia } from '../../hooks/useMatchMedia'
-
 export default function Game() {
   const [theme, setTheme] = useOutletContext();
   const [web3, setWeb3] = useState({});
@@ -39,7 +38,6 @@ export default function Game() {
   const [userdata11, setUserdata11] = useState({ name1: '' });
   const [account, setAccount] = useState('');
   const [chain, setChain] = useState('');
-  const [network, setNetwork] = useState('');
   const [log0, setLog0] = useState('');
   const [userpic0, setUserpic0] = useState('');
   const [userpic1, setUserpic1] = useState('');
@@ -99,28 +97,33 @@ export default function Game() {
   const [gameResult, setGameResult] = useState(undefined);
   const [showGameResult, setShowGameResult] = useState(false);
   const isMobileResolution = useMatchMedia('(max-width:650px)', false);
+  const [register, setRegister] = useState('');
+  const [userpic, setUserpic] = useState('');
+  const [username, setUsername] = useState('');
+
+  const handleThemeChange = () => {
+    setTheme(theme === 'light' ? 'dark' : 'light');
+  };
 
   useEffect(() => {
-    loadWeb3()
-  }, []);
-
-  async function loadWeb3() {
-    try {
-      const provider = await detectEthereumProvider();
-      if (provider) {
-
-      } else {
-        window.alert('Please install Metamask!')
-      }
-      const web3 = new Web3(new Web3(window.ethereum), provider)
-      setWeb3(web3)
-      const chainId = await ethereum.request({ method: 'eth_chainId' })
-      handleChainChanged(chainId)
-      ethereum.on('chainChanged', handleChainChanged)
-      const accounts = await ethereum.request({ method: 'eth_accounts' })
-      handleAccountsChanged(accounts)
-      ethereum.on('accountsChanged', handleAccountsChanged)
-      if (chainId === '0x13881') {
+    const loadBlockchain = async () => {
+      try {
+        const provider = await detectEthereumProvider();
+        if (!provider) {
+          window.alert('Please install Metamask!')
+          return false
+        }
+        const web3 = new Web3(new Web3(window.ethereum), provider)
+        web3.eth.maxListenersWarningThreshold = 0
+        setWeb3(web3)
+        const chainId = await ethereum.request({ method: 'eth_chainId' })
+        if (chainId !== '0x13881') {
+          window.alert('Please install Metamask!')
+          return false
+        }
+        setChain(chainId)
+        const accounts = await ethereum.request({ method: 'eth_accounts' })
+        setAccount(accounts[0])
         const rpsgame = new web3.eth.Contract(RpsGame.abi, rpsGameContract)
         setRpsgame(rpsgame)
         const walletBalance = await web3.eth.getBalance(accounts[0])
@@ -128,7 +131,33 @@ export default function Game() {
         const actuallBlock = await web3.eth.getBlockNumber()
         setBlockchain(actuallBlock)
         try {
-          const lastMinuteBlock = actuallBlock - 26
+          const query = doc(db, "users", accounts[0])
+          const userDocument = await getDoc(query)
+          const userData = userDocument.data()
+          if (userData) {
+            setUsername(userData.name1)
+            setRegister(userData.register)
+            const picPath = userData.pic1
+            const profilePhoto = await import(`../../assets/imgs/profile/${picPath}`)
+            setUserpic(profilePhoto.default)
+          } else {
+            const globalDate = new Date();
+            const year = globalDate.getUTCFullYear()
+            const month = globalDate.getUTCMonth() + 1
+            const day = globalDate.getUTCDate()
+            setDoc(doc(db, "users", accounts[0]), {
+              name1: 'Guest',
+              pic1: 'guest.jpg',
+              register: day.toString() + "/" + month.toString() + "/" + year.toString(),
+              winStreak: 0,
+              winStreakBlock: 0
+            })
+          }
+        } catch (e) {
+
+        }
+        try {
+          const lastMinuteBlock = actuallBlock - 25
           const eventsmodal = await rpsgame.getPastEvents('Play', { fromBlock: lastMinuteBlock, toBlock: 'latest' })
           setEventsmodal(eventsmodal)
           const userData0 = await getDoc(doc(db, "users", eventsmodal[0].returnValues[0].toLowerCase()))
@@ -260,30 +289,21 @@ export default function Game() {
         } catch (e) {
 
         }
-      } else {
-        window.alert('Please connect to mumbai network!')
+      } catch (e) {
+
       }
-    } catch (err) {
-
+      setTimeout(loadBlockchain, 1000)
     }
-    setTimeout(loadWeb3, 2000)
-  }
+    loadBlockchain()
+  }, []);
 
-  async function handleChainChanged(_chainId) {
-    setChain(_chainId)
-    if (_chainId === '0x89') {
-      setNetwork('POLYGON')
-    }
-    if (_chainId === '0x13881') {
-      setNetwork('MUMBAI')
-    }
-  }
-
-  function handleAccountsChanged(accounts) {
-    if (accounts.length === 0) {
-
-    } else if (accounts[0] !== null) {
-      setAccount(accounts[0])
+  const openGame = () => {
+    if (document.getElementById('age').checked) {
+      setActive(true)
+      setLog0('')
+    } else {
+      setLog0('CONFIRM THAT YOU ARE AT LEAST 18 YEARS OLD')
+      return false
     }
   }
 
@@ -294,18 +314,7 @@ export default function Game() {
     })
   }
 
-  async function openGame() {
-    if (document.getElementById('age').checked) {
-      setActive(true)
-      loadWeb3()
-      setLog0('')
-    } else {
-      setLog0('CONFIRM THAT YOU ARE AT LEAST 18 YEARS OLD')
-      return false
-    }
-  }
-
-  async function doubleOrNothing() {
+  const doubleOrNothing = async () => {
     if (document.getElementById('rock').checked || document.getElementById('paper').checked || document.getElementById('scissors').checked) {
       setUserhand(usergame.hand)
       setLog0('')
@@ -320,30 +329,28 @@ export default function Game() {
       setLog0('SELECT THE BETTING AMOUNT')
       return false
     }
-    if (usergame.hand !== '' && usergame.amount !== 0) {
-      let calculateValue = await rpsgame.methods.calculateValue((web3.utils.toWei((usergame.amount).toString(), "ether"))).call()
-      setPlaying(true)
-      setAnimation(true)
-      rpsgame.methods
-        .play(web3.utils.toWei((usergame.amount).toString(), "ether"))
-        .send({
-          from: account,
-          value: calculateValue,
-        })
-        .on('receipt', (hash) => {
-          readAccountEvent()
-        })
-        .on('error', function (error) {
-          setPlaying(false)
-        });
-    }
+    setPlaying(true)
+    setAnimation(true)
+    let calculateValue = await rpsgame.methods.calculateValue((web3.utils.toWei((usergame.amount).toString(), "ether"))).call()
+    rpsgame.methods
+      .play(web3.utils.toWei((usergame.amount).toString(), "ether"))
+      .send({
+        from: account,
+        value: calculateValue,
+      })
+      .on('receipt', (hash) => {
+        readAccountEvent()
+      })
+      .on('error', function (error) {
+        setPlaying(false)
+      });
   }
 
-  async function readAccountEvent() {
-    let userGameBlock = blockchain - 3
-    let myEvents = await rpsgame.getPastEvents('Play', { filter: { _to: account }, fromBlock: userGameBlock, toBlock: 'latest' })
-    setShowGameResult(true)
+  const readAccountEvent = async () => {
     setAnimation(false)
+    setShowGameResult(true)
+    let userGameBlock = blockchain - 1
+    let myEvents = await rpsgame.getPastEvents('Play', { filter: { _to: account }, fromBlock: userGameBlock, toBlock: 'latest' })
     setUserGameResult(myEvents[0].returnValues[3])
     setUserGameStreak(myEvents[0].returnValues[2])
     const query = doc(db, "users", account)
@@ -357,27 +364,23 @@ export default function Game() {
     }
   }
 
-  async function showResult() {
+  const showResult = () => {
     setShowGameResult(false)
     setGameResult(true)
   }
 
-  async function backGame() {
+  const backGame = () => {
     setPlaying(false)
     setUserGameStreak(0)
     setUserGameResult(undefined)
     setGameResult(undefined)
   }
 
-  const handleThemeChange = () => {
-    setTheme(theme === 'light' ? 'dark' : 'light');
-  };
-
   return (
     <>
       {isMobileResolution
         ?
-        <div className="d-flex flex-row gap-1">
+        <div className="d-flex flex-row justify-content-around gap-1">
           <HistoryGames
             theme={theme}
             isMobileVersion={true}
@@ -448,7 +451,7 @@ export default function Game() {
             winStreak7={winStreak7}
           />
           <NavLink className="btn btn-danger" to="/leaderboard">LEADERBOARD</NavLink>
-          {account !== '' ? <ConnectWallet decimal={decimal} web3={web3} account={account} theme={theme} /> : ""}
+          {account !== '' ? <ConnectWallet decimal={decimal} web3={web3} account={account} theme={theme} register={register} username={username} userpic={userpic} /> : ""}
         </div>
         :
         <div className="d-flex flex-row justify-content-between align-items-center">
@@ -530,7 +533,7 @@ export default function Game() {
               winStreak7={winStreak7}
             />
             <NavLink className="btn btn-outline-danger" to="/leaderboard">LEADERBOARD <i className="fa-solid fa-up-right-from-square fa-xs"></i></NavLink>
-            {account !== '' ? <ConnectWallet decimal={decimal} web3={web3} account={account} theme={theme} /> : ""}
+            {account !== '' ? <ConnectWallet decimal={decimal} web3={web3} account={account} theme={theme} register={register} username={username} userpic={userpic} /> : ""}
           </div>
         </div>
       }
@@ -542,7 +545,7 @@ export default function Game() {
               {log0 && (<span className="alert alert-danger mx-5">{log0}</span>)}
               {playing === true ?
                 <div className="mt-3">
-                  {animation === true ? <img src={RPSAnimated} width="160" height="160" alt="Rock-Paper-Scissors" /> : ""}
+                  {animation === true ? <img src={RPSAnimated} width="240" height="240" alt="Rock-Paper-Scissors" /> : ""}
                   {showGameResult === true ? <button className="btn-hover btn-green" onClick={showResult}>SHOW RESULT</button> : ""}
                   {gameResult === true
                     ?

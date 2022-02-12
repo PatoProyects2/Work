@@ -8,7 +8,7 @@ import ChatIcon from '../../../../assets/imgs/speech-bubble.png';
 
 const socket = io.connect("http://192.168.1.54:3001");
 
-function App({ theme }) {
+function App() {
   const [displayModal, setDisplayModal] = useState(false);
   const [username, setUsername] = useState("");
   const [room, setRoom] = useState("1");

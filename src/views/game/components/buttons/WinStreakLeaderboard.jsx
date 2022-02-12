@@ -34,7 +34,7 @@ export default function WinStreakLeaderboard(props) {
         blockTime(props.blockchain, props.blockStreak0, props.blockStreak1, props.blockStreak2, props.blockStreak3, props.blockStreak4, props.blockStreak5, props.blockStreak6, props.blockStreak7)
     }, [props.blockchain, props.blockStreak0, props.blockStreak1, props.blockStreak2, props.blockStreak3, props.blockStreak4, props.blockStreak5, props.blockStreak6, props.blockStreak7]);
 
-    async function blockTime(blockchain, blockStreak0, blockStreak1, blockStreak2, blockStreak3, blockStreak4, blockStreak5, blockStreak6, blockStreak7) {
+    const blockTime = (blockchain, blockStreak0, blockStreak1, blockStreak2, blockStreak3, blockStreak4, blockStreak5, blockStreak6, blockStreak7) => {
         try {
             var seg = (blockchain - blockStreak0) * 2;
             var day = Math.floor(seg / (24 * 3600));
@@ -145,9 +145,9 @@ export default function WinStreakLeaderboard(props) {
                             <small className="d-flex justify-content-end">
                                 {second7 < 0 || second7 === 0 ? "now" : ""}
                                 {second7 < 60 ? second7 + " seconds ago" : ""}
-                                {second7 > 60 && second7 < 3600 ? minute7 + " minutes ago" : ""}
-                                {second7 > 3600 && second7 < 7200 ? hour7 + " hour ago" : ""}
-                                {second7 > 7200 ? hour7 + " hours ago" : ""}
+                                {second7 > 59 && second7 < 3600 ? minute7 + " minutes ago" : ""}
+                                {second7 > 3599 && second7 < 7200 ? hour7 + " hour ago" : ""}
+                                {second7 > 7199 ? hour7 + " hours ago" : ""}
                             </small>
                         </DropdownItem>
                         :
@@ -160,9 +160,9 @@ export default function WinStreakLeaderboard(props) {
                             <small className="d-flex justify-content-end">
                                 {second6 < 0 || second6 === 0 ? "now" : ""}
                                 {second6 < 60 ? second6 + " seconds ago" : ""}
-                                {second6 > 60 && second6 < 3600 ? minute6 + " minutes ago" : ""}
-                                {second6 > 3600 && second6 < 7200 ? hour6 + " hour ago" : ""}
-                                {second6 > 7200 ? hour6 + " hours ago" : ""}
+                                {second6 > 59 && second6 < 3600 ? minute6 + " minutes ago" : ""}
+                                {second6 > 3599 && second6 < 7200 ? hour6 + " hour ago" : ""}
+                                {second6 > 7199 ? hour6 + " hours ago" : ""}
                             </small>
                         </DropdownItem>
                         :
@@ -175,9 +175,9 @@ export default function WinStreakLeaderboard(props) {
                             <small className="d-flex justify-content-end">
                                 {second5 < 0 || second5 === 0 ? "now" : ""}
                                 {second5 < 60 ? second5 + " seconds ago" : ""}
-                                {second5 > 60 && second5 < 3600 ? minute5 + " minutes ago" : ""}
-                                {second5 > 3600 && second5 < 7200 ? hour5 + " hour ago" : ""}
-                                {second5 > 7200 ? hour5 + " hours ago" : ""}
+                                {second5 > 59 && second5 < 3600 ? minute5 + " minutes ago" : ""}
+                                {second5 > 3599 && second5 < 7200 ? hour5 + " hour ago" : ""}
+                                {second5 > 7199 ? hour5 + " hours ago" : ""}
                             </small>
                         </DropdownItem>
                         :
@@ -190,9 +190,9 @@ export default function WinStreakLeaderboard(props) {
                             <small className="d-flex justify-content-end">
                                 {second4 < 0 || second4 === 0 ? "now" : ""}
                                 {second4 < 60 ? second4 + " seconds ago" : ""}
-                                {second4 > 60 && second4 < 3600 ? minute4 + " minutes ago" : ""}
-                                {second4 > 3600 && second4 < 7200 ? hour4 + " hour ago" : ""}
-                                {second4 > 7200 ? hour4 + " hours ago" : ""}
+                                {second4 > 59 && second4 < 3600 ? minute4 + " minutes ago" : ""}
+                                {second4 > 3599 && second4 < 7200 ? hour4 + " hour ago" : ""}
+                                {second4 > 7199 ? hour4 + " hours ago" : ""}
                             </small>
                         </DropdownItem>
                         :
@@ -205,9 +205,9 @@ export default function WinStreakLeaderboard(props) {
                             <small className="d-flex justify-content-end">
                                 {second3 < 0 || second3 === 0 ? "now" : ""}
                                 {second3 < 60 ? second3 + " seconds ago" : ""}
-                                {second3 > 60 && second3 < 3600 ? minute3 + " minutes ago" : ""}
-                                {second3 > 3600 && second3 < 7200 ? hour3 + " hour ago" : ""}
-                                {second3 > 7200 ? hour3 + " hours ago" : ""}
+                                {second3 > 59 && second3 < 3600 ? minute3 + " minutes ago" : ""}
+                                {second3 > 3599 && second3 < 7200 ? hour3 + " hour ago" : ""}
+                                {second3 > 7199 ? hour3 + " hours ago" : ""}
                             </small>
                         </DropdownItem>
                         :
@@ -220,9 +220,9 @@ export default function WinStreakLeaderboard(props) {
                             <small className="d-flex justify-content-end">
                                 {second2 < 0 || second2 === 0 ? "now" : ""}
                                 {second2 < 60 ? second2 + " seconds ago" : ""}
-                                {second2 > 60 && second2 < 3600 ? minute2 + " minutes ago" : ""}
-                                {second2 > 3600 && second2 < 7200 ? hour2 + " hour ago" : ""}
-                                {second2 > 7200 ? hour2 + " hours ago" : ""}
+                                {second2 > 59 && second2 < 3600 ? minute2 + " minutes ago" : ""}
+                                {second2 > 3599 && second2 < 7200 ? hour2 + " hour ago" : ""}
+                                {second2 > 7199 ? hour2 + " hours ago" : ""}
                             </small>
                         </DropdownItem>
                         :
@@ -235,9 +235,9 @@ export default function WinStreakLeaderboard(props) {
                             <small className="d-flex justify-content-end">
                                 {second1 < 0 || second1 === 0 ? "now" : ""}
                                 {second1 < 60 ? second1 + " seconds ago" : ""}
-                                {second1 > 60 && second1 < 3600 ? minute1 + " minutes ago" : ""}
-                                {second1 > 3600 && second1 < 7200 ? hour1 + " hour ago" : ""}
-                                {second1 > 7200 ? hour1 + " hours ago" : ""}
+                                {second1 > 59 && second1 < 3600 ? minute1 + " minutes ago" : ""}
+                                {second1 > 3599 && second1 < 7200 ? hour1 + " hour ago" : ""}
+                                {second1 > 7199 ? hour1 + " hours ago" : ""}
                             </small>
                         </DropdownItem>
                         :
@@ -250,9 +250,9 @@ export default function WinStreakLeaderboard(props) {
                             <small className="d-flex justify-content-end">
                                 {second0 < 0 || second0 === 0 ? "now" : ""}
                                 {second0 < 60 ? second0 + " seconds ago" : ""}
-                                {second0 > 60 && second0 < 3600 ? minute0 + " minutes ago" : ""}
-                                {second0 > 3600 && second0 < 7200 ? hour0 + " hour ago" : ""}
-                                {second0 > 7200 ? hour0 + " hours ago" : ""}
+                                {second0 > 59 && second0 < 3600 ? minute0 + " minutes ago" : ""}
+                                {second0 > 3599 && second0 < 7200 ? hour0 + " hour ago" : ""}
+                                {second0 > 7199 ? hour0 + " hours ago" : ""}
                             </small>
                         </DropdownItem>
                         :

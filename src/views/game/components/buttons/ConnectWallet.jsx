@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Button, Modal, ModalBody, ModalFooter, FormGroup, Input, Label } from 'reactstrap'
 import db from '../../../../firebase/firesbaseConfig'
 import MetamaskLogo from '../../../../assets/imgs/MetaMask_Fox.png'
-
-export default function ConnectWalletButton(props) {
+export default function ConnectWallet(props) {
   const [userinfo, setUserinfo] = useState({
     name1: '',
     pic1: '',
@@ -13,20 +12,13 @@ export default function ConnectWalletButton(props) {
     account1: '',
     amount1: 0,
   });
-  const [register, setRegister] = useState('');
-  const [userpic, setUserpic] = useState('');
-  const [username, setUsername] = useState('');
   const [log0, setLog0] = useState('Connect');
   const [log1, setLog1] = useState('');
   const [edit, setEdit] = useState(false);
   const [send, setSend] = useState(false);
   const [dropdown, setDropdown] = useState(false);
 
-  useEffect(() => {
-    loadProfile(props.account)
-  }, [props.account]);
-
-  function connect() {
+  const connect = () => {
     setLog0('Connecting...')
     try {
       ethereum
@@ -60,37 +52,7 @@ export default function ConnectWalletButton(props) {
     setDropdown(!dropdown);
   }
 
-  async function loadProfile(account) {
-    try {
-      const query = doc(db, "users", account)
-      const userDocument = await getDoc(query)
-      const userData = userDocument.data()
-      if (userData) {
-        setUsername(userData.name1)
-        setRegister(userData.register)
-        const picPath = userData.pic1
-        const profilePhoto = await import(`../../../../assets/imgs/profile/${picPath}`)
-        setUserpic(profilePhoto.default)
-      } else {
-        const globalDate = new Date();
-        const year = globalDate.getUTCFullYear()
-        const month = globalDate.getUTCMonth() + 1
-        const day = globalDate.getUTCDate()
-        setDoc(doc(db, "users", account), {
-          name1: 'Guest',
-          pic1: 'guest.jpg',
-          register: day.toString() + "/" + month.toString() + "/" + year.toString(),
-          winStreak: 0,
-          winStreakBlock: 0
-        })
-        loadProfile()
-      }
-    } catch (e) {
-
-    }
-  }
-
-  async function editProfile() {
+  const editProfile = () => {
     setLog1('')
     if (edit === false) {
       setEdit(true);
@@ -99,7 +61,7 @@ export default function ConnectWalletButton(props) {
     }
   }
 
-  async function sendMatic() {
+  const sendMatic = () => {
     if (send === false) {
       setSend(true);
     } else {
@@ -107,13 +69,13 @@ export default function ConnectWalletButton(props) {
     }
   }
 
-  async function updateProfile() {
-    if (document.getElementById('nft1').checked || document.getElementById('nft2').checked) {
-      setLog1('');
-    } else {
-      setLog1('SELECT A NFT PICTURE');
-      return false
-    }
+  const updateProfile = async () => {
+    // if (document.getElementById('nft1').checked || document.getElementById('nft2').checked) {
+    //   setLog1('');
+    // } else {
+    //   setLog1('SELECT A NFT PICTURE');
+    //   return false
+    // }
     if (userinfo.name1.length >= 4 && userinfo.name1.length <= 12) {
       setLog1('');
     } else {
@@ -125,13 +87,13 @@ export default function ConnectWalletButton(props) {
       name1: '',
       pic1: ''
     })
-    const query = doc(db, "users", props.account)
-    const userDocument = await getDoc(query)
-    const userData = userDocument.data()
-    setDoc(doc(db, "users", props.account), { name1: userinfo.name1, pic1: userinfo.pic1, register: userData.register, winStreak: userData.winStreak, winStreakBlock: userData.winStreakBlock }).then(r => window.location.reload())
+    updateDoc(doc(db, "users", props.account), {
+      name1: userinfo.name1
+    })
+    setEdit(false)
   }
 
-  async function sendToFriend() {
+  const sendToFriend = () => {
     if (friend.account1.length === 42) {
       setLog1('');
     } else {
@@ -164,7 +126,7 @@ export default function ConnectWalletButton(props) {
       .catch((error) => console.error);
   }
 
-  async function manageWallets() {
+  const manageWallets = async () => {
     ethereum.request({
       method: 'wallet_requestPermissions',
       params: [{
@@ -178,10 +140,10 @@ export default function ConnectWalletButton(props) {
       {props.account !== '' ?
         <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="md">
           <DropdownToggle color='transparent' className='p-0'>
-            {userpic ? <img width="35" height="35" className="rounded-circle" alt="" src={userpic} /> : <img width="35" height="35" className="rounded-circle" alt="" src="https://i.imgur.com/E3aJ7TP.jpg" />}
+            {props.userpic ? <img width="35" height="35" className="rounded-circle" alt="" src={props.userpic} /> : <img width="35" height="35" className="rounded-circle" alt="" src="https://i.imgur.com/E3aJ7TP.jpg" />}
           </DropdownToggle>
           <DropdownMenu className={props.theme === 'dark' ? 'bg-dark' : 'bg-light'}>
-            <DropdownItem header>{username}</DropdownItem>
+            <DropdownItem header>{props.username}</DropdownItem>
             <DropdownItem header>{props.account.substring(0, 5) + "..." + props.account.substring(12, 16)}
               <button className={`btn-sm ms-2 ${props.theme === 'dark' ? 'btn-secondary' : 'btn-dark'}`}
                 onClick={() => navigator.clipboard.writeText(props.account)}>
@@ -207,7 +169,7 @@ export default function ConnectWalletButton(props) {
         <ModalBody>
           <h4 className="text-center">USER PROFILE</h4>
           <FormGroup className="pt-3 text-center">
-            {userpic && <img width="105" height="105" className="rounded-circle" alt="" src={userpic} />}
+            {props.userpic && <img width="105" height="105" className="rounded-circle" alt="" src={props.userpic} />}
             {/* <Label className="me-2">
               <Input name="pic1" id="nft1" className={props.theme === 'dark' ? 'dark-input' : ''} onChange={handleInputChange} type="radio" value="nft1.png" />
               <img width="65" height="65" src={Nft1} alt="" />
@@ -218,10 +180,10 @@ export default function ConnectWalletButton(props) {
             </Label> */}
           </FormGroup>
           <FormGroup className="text-center">
-            <Label>{"User since " + register}</Label>
+            <Label>{"User since " + props.register}</Label>
           </FormGroup>
           <FormGroup>
-            <Input name="name1" placeholder="Nickname" className={props.theme === 'dark' ? 'dark-input' : ''} onChange={handleInputChange} type="text" defaultValue={username} />
+            <Input name="name1" placeholder="Nickname" className={props.theme === 'dark' ? 'dark-input' : ''} onChange={handleInputChange} type="text" defaultValue={props.username} />
           </FormGroup>
         </ModalBody>
         <ModalFooter>
