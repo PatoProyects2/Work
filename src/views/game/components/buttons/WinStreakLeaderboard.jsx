@@ -138,92 +138,16 @@ export default function WinStreakLeaderboard(props) {
                         </DropdownToggle>
                 }
                 <DropdownMenu className={props.theme === 'dark' ? 'bg-dark' : 'bg-light'}>
-                    {props.winStreak0 > 0 && props.blockStreak0 > props.dayBlock ?
+                    {props.winStreak7 > 0 && props.blockStreak7 > props.dayBlock ?
                         <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
-                            {props.picStreak0 && <img width="35" height="35" className="rounded-circle" alt="" src={props.picStreak0} />}
-                            {" " + props.nameStreak0 + " is on a " + props.winStreak0 + " win streak"}
+                            {props.picStreak7 && <img width="35" height="35" className="rounded-circle" alt="" src={props.picStreak7} />}
+                            {" " + props.nameStreak7 + " is on a " + props.winStreak7 + " win streak"}
                             <small className="d-flex justify-content-end">
-                                {second0 < 0 || second0 === 0 ? "now" : ""}
-                                {second0 < 60 ? second0 + " seconds ago" : ""}
-                                {second0 > 59 && second0 < 3600 ? minute0 + " minutes ago" : ""}
-                                {second0 > 3599 && second0 < 7200 ? hour0 + " hour ago" : ""}
-                                {second0 > 7199 ? hour0 + " hours ago" : ""}
-                            </small>
-                        </DropdownItem>
-                        :
-                        ""
-                    }
-                    {props.winStreak1 > 0 && props.blockStreak1 > props.dayBlock ?
-                        <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
-                            {props.picStreak1 && <img width="35" height="35" className="rounded-circle" alt="" src={props.picStreak1} />}
-                            {" " + props.nameStreak1 + " is on a " + props.winStreak1 + " win streak"}
-                            <small className="d-flex justify-content-end">
-                                {second1 < 0 || second1 === 0 ? "now" : ""}
-                                {second1 < 60 ? second1 + " seconds ago" : ""}
-                                {second1 > 59 && second1 < 3600 ? minute1 + " minutes ago" : ""}
-                                {second1 > 3599 && second1 < 7200 ? hour1 + " hour ago" : ""}
-                                {second1 > 7199 ? hour1 + " hours ago" : ""}
-                            </small>
-                        </DropdownItem>
-                        :
-                        ""
-                    }
-                    {props.winStreak2 > 0 && props.blockStreak2 > props.dayBlock ?
-                        <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
-                            {props.picStreak2 && <img width="35" height="35" className="rounded-circle" alt="" src={props.picStreak2} />}
-                            {" " + props.nameStreak2 + " is on a " + props.winStreak2 + " win streak"}
-                            <small className="d-flex justify-content-end">
-                                {second2 < 0 || second2 === 0 ? "now" : ""}
-                                {second2 < 60 ? second2 + " seconds ago" : ""}
-                                {second2 > 59 && second2 < 3600 ? minute2 + " minutes ago" : ""}
-                                {second2 > 3599 && second2 < 7200 ? hour2 + " hour ago" : ""}
-                                {second2 > 7199 ? hour2 + " hours ago" : ""}
-                            </small>
-                        </DropdownItem>
-                        :
-                        ""
-                    }
-                    {props.winStreak3 > 0 && props.blockStreak3 > props.dayBlock ?
-                        <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
-                            {props.picStreak3 && <img width="35" height="35" className="rounded-circle" alt="" src={props.picStreak3} />}
-                            {" " + props.nameStreak3 + " is on a " + props.winStreak3 + " win streak"}
-                            <small className="d-flex justify-content-end">
-                                {second3 < 0 || second3 === 0 ? "now" : ""}
-                                {second3 < 60 ? second3 + " seconds ago" : ""}
-                                {second3 > 59 && second3 < 3600 ? minute3 + " minutes ago" : ""}
-                                {second3 > 3599 && second3 < 7200 ? hour3 + " hour ago" : ""}
-                                {second3 > 7199 ? hour3 + " hours ago" : ""}
-                            </small>
-                        </DropdownItem>
-                        :
-                        ""
-                    }
-
-                    {props.winStreak4 > 0 && props.blockStreak4 > props.dayBlock ?
-                        <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
-                            {props.picStreak4 && <img width="35" height="35" className="rounded-circle" alt="" src={props.picStreak4} />}
-                            {" " + props.nameStreak4 + " is on a " + props.winStreak4 + " win streak"}
-                            <small className="d-flex justify-content-end">
-                                {second4 < 0 || second4 === 0 ? "now" : ""}
-                                {second4 < 60 ? second4 + " seconds ago" : ""}
-                                {second4 > 59 && second4 < 3600 ? minute4 + " minutes ago" : ""}
-                                {second4 > 3599 && second4 < 7200 ? hour4 + " hour ago" : ""}
-                                {second4 > 7199 ? hour4 + " hours ago" : ""}
-                            </small>
-                        </DropdownItem>
-                        :
-                        ""
-                    }
-                    {props.winStreak5 > 0 && props.blockStreak5 > props.dayBlock ?
-                        <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
-                            {props.picStreak5 && <img width="35" height="35" className="rounded-circle" alt="" src={props.picStreak5} />}
-                            {" " + props.nameStreak5 + " is on a " + props.winStreak5 + " win streak"}
-                            <small className="d-flex justify-content-end">
-                                {second5 < 0 || second5 === 0 ? "now" : ""}
-                                {second5 < 60 ? second5 + " seconds ago" : ""}
-                                {second5 > 59 && second5 < 3600 ? minute5 + " minutes ago" : ""}
-                                {second5 > 3599 && second5 < 7200 ? hour5 + " hour ago" : ""}
-                                {second5 > 7199 ? hour5 + " hours ago" : ""}
+                                {second7 < 0 || second7 === 0 ? "now" : ""}
+                                {second7 < 60 ? second7 + " seconds ago" : ""}
+                                {second7 > 59 && second7 < 3600 ? minute7 + " minutes ago" : ""}
+                                {second7 > 3599 && second7 < 7200 ? hour7 + " hour ago" : ""}
+                                {second7 > 7199 ? hour7 + " hours ago" : ""}
                             </small>
                         </DropdownItem>
                         :
@@ -244,16 +168,91 @@ export default function WinStreakLeaderboard(props) {
                         :
                         ""
                     }
-                    {props.winStreak7 > 0 && props.blockStreak7 > props.dayBlock ?
+                    {props.winStreak5 > 0 && props.blockStreak5 > props.dayBlock ?
                         <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
-                            {props.picStreak7 && <img width="35" height="35" className="rounded-circle" alt="" src={props.picStreak7} />}
-                            {" " + props.nameStreak7 + " is on a " + props.winStreak7 + " win streak"}
+                            {props.picStreak5 && <img width="35" height="35" className="rounded-circle" alt="" src={props.picStreak5} />}
+                            {" " + props.nameStreak5 + " is on a " + props.winStreak5 + " win streak"}
                             <small className="d-flex justify-content-end">
-                                {second7 < 0 || second7 === 0 ? "now" : ""}
-                                {second7 < 60 ? second7 + " seconds ago" : ""}
-                                {second7 > 59 && second7 < 3600 ? minute7 + " minutes ago" : ""}
-                                {second7 > 3599 && second7 < 7200 ? hour7 + " hour ago" : ""}
-                                {second7 > 7199 ? hour7 + " hours ago" : ""}
+                                {second5 < 0 || second5 === 0 ? "now" : ""}
+                                {second5 < 60 ? second5 + " seconds ago" : ""}
+                                {second5 > 59 && second5 < 3600 ? minute5 + " minutes ago" : ""}
+                                {second5 > 3599 && second5 < 7200 ? hour5 + " hour ago" : ""}
+                                {second5 > 7199 ? hour5 + " hours ago" : ""}
+                            </small>
+                        </DropdownItem>
+                        :
+                        ""
+                    }
+                    {props.winStreak4 > 0 && props.blockStreak4 > props.dayBlock ?
+                        <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
+                            {props.picStreak4 && <img width="35" height="35" className="rounded-circle" alt="" src={props.picStreak4} />}
+                            {" " + props.nameStreak4 + " is on a " + props.winStreak4 + " win streak"}
+                            <small className="d-flex justify-content-end">
+                                {second4 < 0 || second4 === 0 ? "now" : ""}
+                                {second4 < 60 ? second4 + " seconds ago" : ""}
+                                {second4 > 59 && second4 < 3600 ? minute4 + " minutes ago" : ""}
+                                {second4 > 3599 && second4 < 7200 ? hour4 + " hour ago" : ""}
+                                {second4 > 7199 ? hour4 + " hours ago" : ""}
+                            </small>
+                        </DropdownItem>
+                        :
+                        ""
+                    }
+                    {props.winStreak3 > 0 && props.blockStreak3 > props.dayBlock ?
+                        <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
+                            {props.picStreak3 && <img width="35" height="35" className="rounded-circle" alt="" src={props.picStreak3} />}
+                            {" " + props.nameStreak3 + " is on a " + props.winStreak3 + " win streak"}
+                            <small className="d-flex justify-content-end">
+                                {second3 < 0 || second3 === 0 ? "now" : ""}
+                                {second3 < 60 ? second3 + " seconds ago" : ""}
+                                {second3 > 59 && second3 < 3600 ? minute3 + " minutes ago" : ""}
+                                {second3 > 3599 && second3 < 7200 ? hour3 + " hour ago" : ""}
+                                {second3 > 7199 ? hour3 + " hours ago" : ""}
+                            </small>
+                        </DropdownItem>
+                        :
+                        ""
+                    }
+                    {props.winStreak2 > 0 && props.blockStreak2 > props.dayBlock ?
+                        <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
+                            {props.picStreak2 && <img width="35" height="35" className="rounded-circle" alt="" src={props.picStreak2} />}
+                            {" " + props.nameStreak2 + " is on a " + props.winStreak2 + " win streak"}
+                            <small className="d-flex justify-content-end">
+                                {second2 < 0 || second2 === 0 ? "now" : ""}
+                                {second2 < 60 ? second2 + " seconds ago" : ""}
+                                {second2 > 59 && second2 < 3600 ? minute2 + " minutes ago" : ""}
+                                {second2 > 3599 && second2 < 7200 ? hour2 + " hour ago" : ""}
+                                {second2 > 7199 ? hour2 + " hours ago" : ""}
+                            </small>
+                        </DropdownItem>
+                        :
+                        ""
+                    }
+                    {props.winStreak1 > 0 && props.blockStreak1 > props.dayBlock ?
+                        <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
+                            {props.picStreak1 && <img width="35" height="35" className="rounded-circle" alt="" src={props.picStreak1} />}
+                            {" " + props.nameStreak1 + " is on a " + props.winStreak1 + " win streak"}
+                            <small className="d-flex justify-content-end">
+                                {second1 < 0 || second1 === 0 ? "now" : ""}
+                                {second1 < 60 ? second1 + " seconds ago" : ""}
+                                {second1 > 59 && second1 < 3600 ? minute1 + " minutes ago" : ""}
+                                {second1 > 3599 && second1 < 7200 ? hour1 + " hour ago" : ""}
+                                {second1 > 7199 ? hour1 + " hours ago" : ""}
+                            </small>
+                        </DropdownItem>
+                        :
+                        ""
+                    }
+                    {props.winStreak0 > 0 && props.blockStreak0 > props.dayBlock ?
+                        <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
+                            {props.picStreak0 && <img width="35" height="35" className="rounded-circle" alt="" src={props.picStreak0} />}
+                            {" " + props.nameStreak0 + " is on a " + props.winStreak0 + " win streak"}
+                            <small className="d-flex justify-content-end">
+                                {second0 < 0 || second0 === 0 ? "now" : ""}
+                                {second0 < 60 ? second0 + " seconds ago" : ""}
+                                {second0 > 59 && second0 < 3600 ? minute0 + " minutes ago" : ""}
+                                {second0 > 3599 && second0 < 7200 ? hour0 + " hour ago" : ""}
+                                {second0 > 7199 ? hour0 + " hours ago" : ""}
                             </small>
                         </DropdownItem>
                         :
