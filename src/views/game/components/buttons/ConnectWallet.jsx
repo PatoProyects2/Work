@@ -131,7 +131,7 @@ export default function ConnectWallet(props) {
   return (
     <>
       {props.account !== '0x000000000000000000000000000000000000dEaD' ?
-        <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="md">
+        <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="bg">
           <DropdownToggle color='transparent' className='p-0'>
             {props.userpic ? <img width="35" height="35" className="rounded-circle" alt="" src={props.userpic} /> : <img width="35" height="35" className="rounded-circle" alt="" src="https://i.imgur.com/E3aJ7TP.jpg" />}
           </DropdownToggle>
