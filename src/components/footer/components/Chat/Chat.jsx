@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import io from "socket.io-client";
 import ModalChat from "./ModalChat";
-import "./Chat.css";
 import db from '../../../../firebase/firesbaseConfig'
 import ChatIcon from '../../../../assets/imgs/speech-bubble.png';
+import "./Chat.css";
 
 const socket = io.connect("http://192.168.1.54:3001");
 

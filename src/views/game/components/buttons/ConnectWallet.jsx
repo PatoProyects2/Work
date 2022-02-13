@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { doc, updateDoc } from "firebase/firestore";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Button, Modal, ModalBody, ModalFooter, FormGroup, Input, Label } from 'reactstrap'
 import db from '../../../../firebase/firesbaseConfig'
@@ -12,7 +12,7 @@ export default function ConnectWallet(props) {
     account1: '',
     amount1: 0,
   });
-  const [log0, setLog0] = useState('Connect');
+  const [log0, setLog0] = useState('Select Wallet');
   const [log1, setLog1] = useState('');
   const [edit, setEdit] = useState(false);
   const [send, setSend] = useState(false);
@@ -25,9 +25,9 @@ export default function ConnectWallet(props) {
         .then(setLog0('Connecting...'))
         .catch((err) => {
           if (err.code === 4001) {
-            setLog0('Connect')
+            setLog0('Select Wallet')
           } else {
-            setLog0('Connect')
+            setLog0('Select Wallet')
           }
         });
     } catch (err) {

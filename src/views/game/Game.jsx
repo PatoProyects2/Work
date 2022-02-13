@@ -106,28 +106,36 @@ export default function Game() {
   };
 
   useEffect(() => {
-    const loadBlockchain = async () => {
-      try {
-        const provider = await detectEthereumProvider();
-        if (!provider) {
-          window.alert('Please install Metamask!')
-        }
-        const web3 = new Web3(new Web3(window.ethereum), provider)
-        web3.eth.maxListenersWarningThreshold = 0
-        setWeb3(web3)
-        const chainId = await ethereum.request({ method: 'eth_chainId' })
-        if (chainId !== '0x13881') {
-          window.alert('Please install Metamask!')
-        }
-        setChain(chainId)
-        const accounts = await ethereum.request({ method: 'eth_accounts' })
-        if (accounts[0].length === 42) {
-          setAccount(accounts[0])
-        }
-        const rpsgame = new web3.eth.Contract(RpsGame.abi, rpsGameContract)
-        setRpsgame(rpsgame)
+    loadBlockchain()
+  }, []);
+
+  const loadBlockchain = async () => {
+    try {
+      const provider = await detectEthereumProvider();
+      if (!provider) {
+        setLog0('PLEASE INSTALL METAMASK WALLET')
+      } else {
+
+      }
+      const web3 = new Web3(new Web3(window.ethereum), provider)
+      web3.eth.maxListenersWarningThreshold = 0
+      setWeb3(web3)
+      const accounts = await ethereum.request({ method: 'eth_accounts' })
+      if (accounts[0] === undefined) {
+
+      } else {
+        setAccount(accounts[0])
         const walletBalance = await web3.eth.getBalance(accounts[0])
         setWalletbalance(walletBalance)
+      }
+      const chainId = await ethereum.request({ method: 'eth_chainId' })
+      if (chainId !== '0x13881') {
+        setLog0('PLEASE CONNECT TO MUMBAI NETWORK')
+      } else {
+        setLog0('')
+        setChain(chainId)
+        const rpsgame = new web3.eth.Contract(RpsGame.abi, rpsGameContract)
+        setRpsgame(rpsgame)
         const actuallBlock = await web3.eth.getBlockNumber()
         setBlockchain(actuallBlock)
         try {
@@ -289,18 +297,17 @@ export default function Game() {
         } catch (e) {
 
         }
-      } catch (e) {
-
       }
-      setTimeout(loadBlockchain, 1000)
+    } catch (e) {
+
     }
-    loadBlockchain()
-  }, []);
+    setTimeout(loadBlockchain, 1000)
+  }
 
   const openGame = () => {
     if (document.getElementById('age').checked) {
-      setActive(true)
       setLog0('')
+      setActive(true)
     } else {
       setLog0('CONFIRM THAT YOU ARE AT LEAST 18 YEARS OLD')
       return false
@@ -538,7 +545,7 @@ export default function Game() {
         </div>
       }
       <article>
-        {active === true && chain === '0x13881' ?
+        {active === true && log0 === '' && chain === '0x13881' ?
           <>
             <h5 className="my-4 text-end me-3 me-lg-0">MATIC {(walletbalance / decimal).toFixed(4)}</h5>
             <div className="game-container">
