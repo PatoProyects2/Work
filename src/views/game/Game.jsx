@@ -36,8 +36,9 @@ export default function Game() {
   const [userdata9, setUserdata9] = useState({ name1: '' });
   const [userdata10, setUserdata10] = useState({ name1: '' });
   const [userdata11, setUserdata11] = useState({ name1: '' });
-  const [account, setAccount] = useState('');
+  const [account, setAccount] = useState('0x000000000000000000000000000000000000dEaD');
   const [chain, setChain] = useState('');
+  const [log, setLog] = useState('');
   const [log0, setLog0] = useState('');
   const [register, setRegister] = useState('');
   const [userpic, setUserpic] = useState('');
@@ -113,26 +114,36 @@ export default function Game() {
     try {
       const provider = await detectEthereumProvider();
       if (!provider) {
-        setLog0('PLEASE INSTALL METAMASK WALLET')
-      } else {
-
+        setLog('PLEASE INSTALL METAMASK WALLET')
       }
       const web3 = new Web3(new Web3(window.ethereum), provider)
       web3.eth.maxListenersWarningThreshold = 0
       setWeb3(web3)
       const accounts = await ethereum.request({ method: 'eth_accounts' })
-      if (accounts[0] === undefined) {
-
-      } else {
+      const chainId = await ethereum.request({ method: 'eth_chainId' })
+      if (chainId !== '0x13881' && accounts[0] === undefined) {
+        setLog('PLEASE CONNECT METAMASK WALLET')
+        setLog0('')
+        setActive(false)
+        setAccount('0x000000000000000000000000000000000000dEaD')
+      }
+      if (chainId === '0x13881' && accounts[0] === undefined) {
+        setLog('PLEASE CONNECT METAMASK WALLET')
+        setLog0('')
+        setActive(false)
+        setAccount('0x000000000000000000000000000000000000dEaD')
+      }
+      if (chainId !== '0x13881' && accounts[0] !== undefined) {
+        setLog('PLEASE CONNECT TO MUMBAI NETWORK')
+        setLog0('')
+        setActive(false)
+        setAccount(accounts[0])
+      }
+      if (chainId === '0x13881' && accounts[0] !== undefined) {
+        setLog('')
         setAccount(accounts[0])
         const walletBalance = await web3.eth.getBalance(accounts[0])
         setWalletbalance(walletBalance)
-      }
-      const chainId = await ethereum.request({ method: 'eth_chainId' })
-      if (chainId !== '0x13881') {
-        setLog0('PLEASE CONNECT TO MUMBAI NETWORK')
-      } else {
-        setLog0('')
         setChain(chainId)
         const rpsgame = new web3.eth.Contract(RpsGame.abi, rpsGameContract)
         setRpsgame(rpsgame)
@@ -305,12 +316,12 @@ export default function Game() {
   }
 
   const openGame = () => {
-    if (document.getElementById('age').checked) {
-      setLog0('')
-      setActive(true)
-    } else {
+    if (document.getElementById('age').checked === false && log === '') {
       setLog0('CONFIRM THAT YOU ARE AT LEAST 18 YEARS OLD')
-      return false
+    }
+    if (document.getElementById('age').checked === true && log === '') {
+      setActive(true)
+      setLog0('')
     }
   }
 
@@ -458,7 +469,7 @@ export default function Game() {
             winStreak7={winStreak7}
           />
           <NavLink className="btn btn-danger" to="/leaderboard">LEADERBOARD</NavLink>
-          {account !== '' ? <ConnectWallet decimal={decimal} web3={web3} account={account} theme={theme} register={register} username={username} userpic={userpic} /> : ""}
+          {account !== '0x000000000000000000000000000000000000dEaD' ? <ConnectWallet decimal={decimal} web3={web3} account={account} theme={theme} register={register} username={username} userpic={userpic} /> : ""}
         </div>
         :
         <div className="d-flex flex-row justify-content-between align-items-center">
@@ -540,16 +551,17 @@ export default function Game() {
               winStreak7={winStreak7}
             />
             <NavLink className="btn btn-outline-danger" to="/leaderboard">LEADERBOARD <i className="fa-solid fa-up-right-from-square fa-xs"></i></NavLink>
-            {account !== '' ? <ConnectWallet decimal={decimal} web3={web3} account={account} theme={theme} register={register} username={username} userpic={userpic} /> : ""}
+            {account !== '0x000000000000000000000000000000000000dEaD' ? <ConnectWallet decimal={decimal} web3={web3} account={account} theme={theme} register={register} username={username} userpic={userpic} /> : ""}
           </div>
         </div>
       }
       <article>
-        {active === true && log0 === '' && chain === '0x13881' ?
+        {log && (<span className="alert alert-danger mx-5">{log}</span>)}
+        {active === true && log === '' ?
           <>
+            {log0 && (<span className="alert alert-danger mx-5">{log0}</span>)}
             <h5 className="my-4 text-end me-3 me-lg-0">MATIC {(walletbalance / decimal).toFixed(4)}</h5>
             <div className="game-container">
-              {log0 && (<span className="alert alert-danger mx-5">{log0}</span>)}
               {playing === true ?
                 <div className="mt-3">
                   {animation === true ?
@@ -654,7 +666,7 @@ export default function Game() {
                 <img className="my-3 img-fluid" src={Scissors} alt="Scissors" />
               </div>
             </div>
-            {account !== '' ?
+            {account !== '0x000000000000000000000000000000000000dEaD' ?
               <>
                 <p>
                   <input id="age" type="checkbox"></input>&nbsp;
