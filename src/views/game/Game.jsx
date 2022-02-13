@@ -355,6 +355,7 @@ export default function Game() {
       .send({
         from: account,
         value: calculateValue,
+        gasLimit: 400000
       })
       .on('receipt', (hash) => {
         readAccountEvent()
