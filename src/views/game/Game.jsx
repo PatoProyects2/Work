@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { NavLink, useOutletContext } from 'react-router-dom'
+import WalletConnectProvider from "@walletconnect/web3-provider";
 import Web3 from 'web3'
+import Web3Modal from "web3modal";
 import detectEthereumProvider from '@metamask/detect-provider'
-import { doc, getDoc, setDoc, getDocs, collection, query, where, updateDoc, orderBy, limit } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import RpsGame from '../../abis/RpsGame/rpsGame.json'
 import { rpsGameContract } from '../../components/blockchain/Contracts'
 import HistoryGamesModal from './components/HistoryGamesModal'
@@ -19,79 +21,21 @@ export default function Game() {
   const [theme, setTheme] = useOutletContext();
   const [web3, setWeb3] = useState({});
   const [rpsgame, setRpsgame] = useState({});
-  const [eventsmodal, setEventsmodal] = useState({});
   const [usergame, setUsergame] = useState({
     hand: '',
     amount: 0
   });
-  const [userdata0, setUserdata0] = useState({ name1: '' });
-  const [userdata1, setUserdata1] = useState({ name1: '' });
-  const [userdata2, setUserdata2] = useState({ name1: '' });
-  const [userdata3, setUserdata3] = useState({ name1: '' });
-  const [userdata4, setUserdata4] = useState({ name1: '' });
-  const [userdata5, setUserdata5] = useState({ name1: '' });
-  const [userdata6, setUserdata6] = useState({ name1: '' });
-  const [userdata7, setUserdata7] = useState({ name1: '' });
-  const [userdata8, setUserdata8] = useState({ name1: '' });
-  const [userdata9, setUserdata9] = useState({ name1: '' });
-  const [userdata10, setUserdata10] = useState({ name1: '' });
-  const [userdata11, setUserdata11] = useState({ name1: '' });
+  const [register, setRegister] = useState('');
+  const [userpic, setUserpic] = useState('');
+  const [username, setUsername] = useState('');
   const [account, setAccount] = useState('0x000000000000000000000000000000000000dEaD');
   const [chain, setChain] = useState('');
   const [log, setLog] = useState('');
   const [log0, setLog0] = useState('');
-  const [register, setRegister] = useState('');
-  const [userpic, setUserpic] = useState('');
-  const [username, setUsername] = useState('');
-  const [userpic0, setUserpic0] = useState('');
-  const [userpic1, setUserpic1] = useState('');
-  const [userpic2, setUserpic2] = useState('');
-  const [userpic3, setUserpic3] = useState('');
-  const [userpic4, setUserpic4] = useState('');
-  const [userpic5, setUserpic5] = useState('');
-  const [userpic6, setUserpic6] = useState('');
-  const [userpic7, setUserpic7] = useState('');
-  const [userpic8, setUserpic8] = useState('');
-  const [userpic9, setUserpic9] = useState('');
-  const [userpic10, setUserpic10] = useState('');
-  const [userpic11, setUserpic11] = useState('');
-  const [picStreak0, setPicStreak0] = useState('')
-  const [picStreak1, setPicStreak1] = useState('')
-  const [picStreak2, setPicStreak2] = useState('')
-  const [picStreak3, setPicStreak3] = useState('')
-  const [picStreak4, setPicStreak4] = useState('')
-  const [picStreak5, setPicStreak5] = useState('')
-  const [picStreak6, setPicStreak6] = useState('')
-  const [picStreak7, setPicStreak7] = useState('')
-  const [nameStreak0, setNameStreak0] = useState('')
-  const [nameStreak1, setNameStreak1] = useState('')
-  const [nameStreak2, setNameStreak2] = useState('')
-  const [nameStreak3, setNameStreak3] = useState('')
-  const [nameStreak4, setNameStreak4] = useState('')
-  const [nameStreak5, setNameStreak5] = useState('')
-  const [nameStreak6, setNameStreak6] = useState('')
-  const [nameStreak7, setNameStreak7] = useState('')
-  const [blockchain, setBlockchain] = useState(0);
-  const [dayBlock, setDayBlock] = useState(0)
-  const [blockStreak0, setBlockStreak0] = useState(0)
-  const [blockStreak1, setBlockStreak1] = useState(0)
-  const [blockStreak2, setBlockStreak2] = useState(0)
-  const [blockStreak3, setBlockStreak3] = useState(0)
-  const [blockStreak4, setBlockStreak4] = useState(0)
-  const [blockStreak5, setBlockStreak5] = useState(0)
-  const [blockStreak6, setBlockStreak6] = useState(0)
-  const [blockStreak7, setBlockStreak7] = useState(0)
-  const [winStreak0, setWinStreak0] = useState(0)
-  const [winStreak1, setWinStreak1] = useState(0)
-  const [winStreak2, setWinStreak2] = useState(0)
-  const [winStreak3, setWinStreak3] = useState(0)
-  const [winStreak4, setWinStreak4] = useState(0)
-  const [winStreak5, setWinStreak5] = useState(0)
-  const [winStreak6, setWinStreak6] = useState(0)
-  const [winStreak7, setWinStreak7] = useState(0)
+  const [walletLog, setWalletLog] = useState('Select Wallet');
+  const [walletBalance, setWalletBalance] = useState(0);
   const [decimal, setDecimal] = useState(1000000000000000000);
   const [userGameStreak, setUserGameStreak] = useState(0);
-  const [walletbalance, setWalletbalance] = useState(0);
   const [userhand, setUserhand] = useState(0);
   const [useramount, setUseramount] = useState(0);
   const [active, setActive] = useState(false);
@@ -102,218 +46,68 @@ export default function Game() {
   const [showGameResult, setShowGameResult] = useState(false);
   const isMobileResolution = useMatchMedia('(max-width:650px)', false);
 
-  const handleThemeChange = () => {
-    setTheme(theme === 'light' ? 'dark' : 'light');
-  };
-
-  useEffect(() => {
-    loadBlockchain()
-  }, []);
-
-  const loadBlockchain = async () => {
+  const connectWeb3Modal = async () => {
+    const providerOptions = {
+      walletconnect: {
+        package: WalletConnectProvider,
+        options: {
+          rpc: {
+            80001: "https://polygon-mumbai.infura.io/v3/270caadf97b048ec8823dff39e612c46",
+          },
+        }
+      }
+    };
+    const web3Modal = new Web3Modal({
+      cacheProvider: true,
+      providerOptions
+    });
     try {
-      const provider = await detectEthereumProvider();
-      if (!provider) {
-        setLog('PLEASE INSTALL METAMASK WALLET')
-      }
-      const web3 = new Web3(new Web3(window.ethereum), provider)
-      web3.eth.maxListenersWarningThreshold = 0
+      const provider = await web3Modal.connect();
+      const web3 = new Web3(provider);
       setWeb3(web3)
-      const accounts = await ethereum.request({ method: 'eth_accounts' })
-      const chainId = await ethereum.request({ method: 'eth_chainId' })
-      if (chainId !== '0x13881' && accounts[0] === undefined) {
-        setLog('PLEASE CONNECT METAMASK WALLET')
-        setLog0('')
-        setActive(false)
-        setAccount('0x000000000000000000000000000000000000dEaD')
+      const rpsgame = new web3.eth.Contract(RpsGame.abi, rpsGameContract)
+      setRpsgame(rpsgame)
+      const accounts = await web3.eth.getAccounts();
+      setAccount(accounts[0].toLowerCase())
+      ethereum.on('accountsChanged', (accounts) => {
+        window.location.reload()
+      });
+      const chainId = await web3.eth.getChainId();
+      setChain(chainId)
+      const balance = await web3.eth.getBalance(accounts[0])
+      setWalletBalance(balance)
+      const query = doc(db, "users", accounts[0].toLowerCase())
+      const userDocument = await getDoc(query)
+      const userData = userDocument.data()
+      if (userData) {
+        setUsername(userData.name1)
+        setRegister(userData.register)
+        const picPath = userData.pic1
+        const profilePhoto = await import(`../../assets/imgs/profile/${picPath}`)
+        setUserpic(profilePhoto.default)
+      } else {
+        const globalDate = new Date();
+        const year = globalDate.getUTCFullYear()
+        const month = globalDate.getUTCMonth() + 1
+        const day = globalDate.getUTCDate()
+        setDoc(doc(db, "users", accounts[0].toLowerCase()), {
+          name1: 'Guest',
+          pic1: 'guest.jpg',
+          register: day.toString() + "/" + month.toString() + "/" + year.toString(),
+          winStreak: 0,
+          winStreakBlock: 0
+        })
       }
-      if (chainId === '0x13881' && accounts[0] === undefined) {
-        setLog('PLEASE CONNECT METAMASK WALLET')
-        setLog0('')
-        setActive(false)
-        setAccount('0x000000000000000000000000000000000000dEaD')
-      }
-      if (chainId !== '0x13881' && accounts[0] !== undefined) {
-        setLog('PLEASE CONNECT TO MUMBAI NETWORK')
-        setLog0('')
-        setActive(false)
-        setAccount(accounts[0])
-      }
-      if (chainId === '0x13881' && accounts[0] !== undefined) {
-        setLog('')
-        setAccount(accounts[0])
-        const walletBalance = await web3.eth.getBalance(accounts[0])
-        setWalletbalance(walletBalance)
-        setChain(chainId)
-        const rpsgame = new web3.eth.Contract(RpsGame.abi, rpsGameContract)
-        setRpsgame(rpsgame)
-        const actuallBlock = await web3.eth.getBlockNumber()
-        setBlockchain(actuallBlock)
-        try {
-          const query = doc(db, "users", accounts[0])
-          const userDocument = await getDoc(query)
-          const userData = userDocument.data()
-          if (userData) {
-            setUsername(userData.name1)
-            setRegister(userData.register)
-            const picPath = userData.pic1
-            const profilePhoto = await import(`../../assets/imgs/profile/${picPath}`)
-            setUserpic(profilePhoto.default)
-          } else {
-            const globalDate = new Date();
-            const year = globalDate.getUTCFullYear()
-            const month = globalDate.getUTCMonth() + 1
-            const day = globalDate.getUTCDate()
-            setDoc(doc(db, "users", accounts[0]), {
-              name1: 'Guest',
-              pic1: 'guest.jpg',
-              register: day.toString() + "/" + month.toString() + "/" + year.toString(),
-              winStreak: 0,
-              winStreakBlock: 0
-            })
-          }
-        } catch (e) {
 
-        }
-        try {
-          const lastMinuteBlock = actuallBlock - 25
-          const eventsmodal = await rpsgame.getPastEvents('Play', { fromBlock: lastMinuteBlock, toBlock: 'latest' })
-          setEventsmodal(eventsmodal)
-          const userData0 = await getDoc(doc(db, "users", eventsmodal[0].returnValues[0].toLowerCase()))
-          const picPath0 = userData0.data().pic1
-          const profilePhoto0 = await import(`../../assets/imgs/profile/${picPath0}`)
-          setUserdata0(userData0.data())
-          setUserpic0(profilePhoto0.default)
-          const userData1 = await getDoc(doc(db, "users", eventsmodal[1].returnValues[0].toLowerCase()))
-          const picPath1 = userData1.data().pic1
-          const profilePhoto1 = await import(`../../assets/imgs/profile/${picPath1}`)
-          setUserdata1(userData1.data())
-          setUserpic1(profilePhoto1.default)
-          const userData2 = await getDoc(doc(db, "users", eventsmodal[2].returnValues[0].toLowerCase()))
-          const picPath2 = userData2.data().pic1
-          const profilePhoto2 = await import(`../../assets/imgs/profile/${picPath2}`)
-          setUserdata2(userData2.data())
-          setUserpic2(profilePhoto2.default)
-          const userData3 = await getDoc(doc(db, "users", eventsmodal[3].returnValues[0].toLowerCase()))
-          const picPath3 = userData3.data().pic1
-          const profilePhoto3 = await import(`../../assets/imgs/profile/${picPath3}`)
-          setUserdata3(userData3.data())
-          setUserpic3(profilePhoto3.default)
-          const userData4 = await getDoc(doc(db, "users", eventsmodal[4].returnValues[0].toLowerCase()))
-          const picPath4 = userData4.data().pic1
-          const profilePhoto4 = await import(`../../assets/imgs/profile/${picPath4}`)
-          setUserdata4(userData4.data())
-          setUserpic4(profilePhoto4.default)
-          const userData5 = await getDoc(doc(db, "users", eventsmodal[5].returnValues[0].toLowerCase()))
-          const picPath5 = userData5.data().pic1
-          const profilePhoto5 = await import(`../../assets/imgs/profile/${picPath5}`)
-          setUserdata5(userData5.data())
-          setUserpic5(profilePhoto5.default)
-          const userData6 = await getDoc(doc(db, "users", eventsmodal[6].returnValues[0].toLowerCase()))
-          const picPath6 = userData6.data().pic1
-          const profilePhoto6 = await import(`../../assets/imgs/profile/${picPath6}`)
-          setUserdata6(userData6.data())
-          setUserpic6(profilePhoto6.default)
-          const userData7 = await getDoc(doc(db, "users", eventsmodal[7].returnValues[0].toLowerCase()))
-          const picPath7 = userData7.data().pic1
-          const profilePhoto7 = await import(`../../assets/imgs/profile/${picPath7}`)
-          setUserdata7(userData7.data())
-          setUserpic7(profilePhoto7.default)
-          const userData8 = await getDoc(doc(db, "users", eventsmodal[8].returnValues[0].toLowerCase()))
-          const picPath8 = userData8.data().pic1
-          const profilePhoto8 = await import(`../../assets/imgs/profile/${picPath8}`)
-          setUserdata8(userData8.data())
-          setUserpic8(profilePhoto8.default)
-          const userData9 = await getDoc(doc(db, "users", eventsmodal[9].returnValues[0].toLowerCase()))
-          const picPath9 = userData9.data().pic1
-          const profilePhoto9 = await import(`../../assets/imgs/profile/${picPath9}`)
-          setUserdata9(userData9.data())
-          setUserpic9(profilePhoto9.default)
-          const userData10 = await getDoc(doc(db, "users", eventsmodal[10].returnValues[0].toLowerCase()))
-          const picPath10 = userData10.data().pic1
-          const profilePhoto10 = await import(`../../assets/imgs/profile/${picPath10}`)
-          setUserdata10(userData10.data())
-          setUserpic10(profilePhoto10.default)
-          const userData11 = await getDoc(doc(db, "users", eventsmodal[11].returnValues[0].toLowerCase()))
-          const picPath11 = userData11.data().pic1
-          const profilePhoto11 = await import(`../../assets/imgs/profile/${picPath11}`)
-          setUserdata11(userData11.data())
-          setUserpic11(profilePhoto11.default)
-        } catch (e) {
-
-        }
-        try {
-          const dayBlock = actuallBlock - 43200
-          setDayBlock(dayBlock)
-          const userCollection = collection(db, "users")
-          const queryStreakBlock = query(userCollection, where("winStreak", ">", 0), orderBy("winStreak"), limit(8))
-          const queryDocuments = await getDocs(queryStreakBlock)
-          const queryStreak = queryDocuments._snapshot.docChanges
-          const dataStreak0 = queryStreak[0].doc.data.value.mapValue.fields
-          const pic0 = dataStreak0.pic1.stringValue
-          const picStreak0 = await import(`../../assets/imgs/profile/${pic0}`)
-          setPicStreak0(picStreak0.default)
-          setNameStreak0(dataStreak0.name1.stringValue)
-          setWinStreak0(dataStreak0.winStreak.integerValue)
-          setBlockStreak0(dataStreak0.winStreakBlock.integerValue)
-          const dataStreak1 = queryStreak[1].doc.data.value.mapValue.fields
-          const pic1 = dataStreak1.pic1.stringValue
-          const picStreak1 = await import(`../../assets/imgs/profile/${pic1}`)
-          setPicStreak1(picStreak1.default)
-          setNameStreak1(dataStreak1.name1.stringValue)
-          setWinStreak1(dataStreak1.winStreak.integerValue)
-          setBlockStreak1(dataStreak1.winStreakBlock.integerValue)
-          const dataStreak2 = queryStreak[2].doc.data.value.mapValue.fields
-          const pic2 = dataStreak2.pic1.stringValue
-          const picStreak2 = await import(`../../assets/imgs/profile/${pic2}`)
-          setPicStreak2(picStreak2.default)
-          setNameStreak2(dataStreak2.name1.stringValue)
-          setWinStreak2(dataStreak2.winStreak.integerValue)
-          setBlockStreak2(dataStreak2.winStreakBlock.integerValue)
-          const dataStreak3 = queryStreak[3].doc.data.value.mapValue.fields
-          const pic3 = dataStreak3.pic1.stringValue
-          const picStreak3 = await import(`../../assets/imgs/profile/${pic3}`)
-          setPicStreak3(picStreak3.default)
-          setNameStreak3(dataStreak3.name1.stringValue)
-          setWinStreak3(dataStreak3.winStreak.integerValue)
-          setBlockStreak3(dataStreak3.winStreakBlock.integerValue)
-          const dataStreak4 = queryStreak[4].doc.data.value.mapValue.fields
-          const pic4 = dataStreak4.pic1.stringValue
-          const picStreak4 = await import(`../../assets/imgs/profile/${pic4}`)
-          setPicStreak4(picStreak4.default)
-          setNameStreak4(dataStreak4.name1.stringValue)
-          setWinStreak4(dataStreak4.winStreak.integerValue)
-          setBlockStreak4(dataStreak4.winStreakBlock.integerValue)
-          const dataStreak5 = queryStreak[5].doc.data.value.mapValue.fields
-          const pic5 = dataStreak5.pic1.stringValue
-          const picStreak5 = await import(`../../assets/imgs/profile/${pic5}`)
-          setPicStreak5(picStreak5.default)
-          setNameStreak5(dataStreak5.name1.stringValue)
-          setWinStreak5(dataStreak5.winStreak.integerValue)
-          setBlockStreak5(dataStreak5.winStreakBlock.integerValue)
-          const dataStreak6 = queryStreak[6].doc.data.value.mapValue.fields
-          const pic6 = dataStreak6.pic1.stringValue
-          const picStreak6 = await import(`../../assets/imgs/profile/${pic6}`)
-          setPicStreak6(picStreak6.default)
-          setNameStreak6(dataStreak6.name1.stringValue)
-          setWinStreak6(dataStreak6.winStreak.integerValue)
-          setBlockStreak6(dataStreak6.winStreakBlock.integerValue)
-          const dataStreak7 = queryStreak[7].doc.data.value.mapValue.fields
-          const pic7 = dataStreak7.pic1.stringValue
-          const picStreak7 = await import(`../../assets/imgs/profile/${pic7}`)
-          setPicStreak7(picStreak7.default)
-          setNameStreak7(dataStreak7.name1.stringValue)
-          setWinStreak7(dataStreak7.winStreak.integerValue)
-          setBlockStreak7(dataStreak7.winStreakBlock.integerValue)
-        } catch (e) {
-
-        }
-      }
     } catch (e) {
 
     }
-    setTimeout(loadBlockchain, 1000)
+
   }
+
+  const handleThemeChange = () => {
+    setTheme(theme === 'light' ? 'dark' : 'light');
+  };
 
   const openGame = () => {
     if (document.getElementById('age').checked === false && log === '') {
@@ -366,26 +160,35 @@ export default function Game() {
   }
 
   const readAccountEvent = async () => {
-    setShowGameResult(true)
-    let userGameBlock = blockchain - 1
-    let myEvents = await rpsgame.getPastEvents('Play', { filter: { _to: account }, fromBlock: userGameBlock, toBlock: 'latest' })
-    setUserGameResult(myEvents[0].returnValues[3])
-    setUserGameStreak(myEvents[0].returnValues[2])
-    const query = doc(db, "users", account)
-    const document = await getDoc(query)
-    const userData = document.data()
-    if (myEvents[0].returnValues[2] > userData.winStreak) {
-      updateDoc(doc(db, "users", account), {
-        winStreak: parseInt(myEvents[0].returnValues[2]),
-        winStreakBlock: myEvents[0].blockNumber
-      })
+    try {
+      setShowGameResult(true)
+      const actuallBlock = await web3.eth.getBlockNumber()
+      let userGameBlock = actuallBlock - 10
+      let myEvents = await rpsgame.getPastEvents('Play', { filter: { _to: account }, fromBlock: userGameBlock, toBlock: 'latest' })
+      setUserGameResult(myEvents[0].returnValues[3])
+      setUserGameStreak(myEvents[0].returnValues[2])
+      const dayBlock = actuallBlock - 43200
+      const query = doc(db, "users", account)
+      const document = await getDoc(query)
+      const userData = document.data()
+      if (myEvents[0].returnValues[2] > userData.winStreak || dayBlock > userData.winStreakBlock) {
+        updateDoc(doc(db, "users", account), {
+          winStreak: parseInt(myEvents[0].returnValues[2]),
+          winStreakBlock: myEvents[0].blockNumber
+        })
+      }
+    } catch (e) {
+      console.log(e)
     }
+
   }
 
-  const showResult = () => {
+  const showResult = async () => {
     setAnimation(false)
     setShowGameResult(false)
     setGameResult(true)
+    const balance = await web3.eth.getBalance(account)
+    setWalletBalance(balance)
   }
 
   const backGame = () => {
@@ -403,74 +206,17 @@ export default function Game() {
           <HistoryGames
             theme={theme}
             isMobileVersion={true}
-            blockchain={blockchain}
-            eventsmodal={eventsmodal}
-            userdata0={userdata0}
-            userdata1={userdata1}
-            userdata2={userdata2}
-            userdata3={userdata3}
-            userdata4={userdata4}
-            userdata5={userdata5}
-            userdata6={userdata6}
-            userdata7={userdata7}
-            userdata8={userdata8}
-            userdata9={userdata9}
-            userdata10={userdata10}
-            userdata11={userdata11}
-            userpic0={userpic0}
-            userpic1={userpic1}
-            userpic2={userpic2}
-            userpic3={userpic3}
-            userpic4={userpic4}
-            userpic5={userpic5}
-            userpic6={userpic6}
-            userpic7={userpic7}
-            userpic8={userpic8}
-            userpic9={userpic9}
-            userpic10={userpic10}
-            userpic11={userpic11}
+            web3={web3}
+            rpsgame={rpsgame}
             decimal={decimal}
           />
           <WinStreakLeaderboard
             theme={theme}
             isMobileVersion={true}
-            blockchain={blockchain}
-            dayBlock={dayBlock}
-            blockStreak0={blockStreak0}
-            blockStreak1={blockStreak1}
-            blockStreak2={blockStreak2}
-            blockStreak3={blockStreak3}
-            blockStreak4={blockStreak4}
-            blockStreak5={blockStreak5}
-            blockStreak6={blockStreak6}
-            blockStreak7={blockStreak7}
-            picStreak0={picStreak0}
-            picStreak1={picStreak1}
-            picStreak2={picStreak2}
-            picStreak3={picStreak3}
-            picStreak4={picStreak4}
-            picStreak5={picStreak5}
-            picStreak6={picStreak6}
-            picStreak7={picStreak7}
-            nameStreak0={nameStreak0}
-            nameStreak1={nameStreak1}
-            nameStreak2={nameStreak2}
-            nameStreak3={nameStreak3}
-            nameStreak4={nameStreak4}
-            nameStreak5={nameStreak5}
-            nameStreak6={nameStreak6}
-            nameStreak7={nameStreak7}
-            winStreak0={winStreak0}
-            winStreak1={winStreak1}
-            winStreak2={winStreak2}
-            winStreak3={winStreak3}
-            winStreak4={winStreak4}
-            winStreak5={winStreak5}
-            winStreak6={winStreak6}
-            winStreak7={winStreak7}
+            web3={web3}
           />
           <NavLink className="btn btn-danger" to="/leaderboard">LEADERBOARD</NavLink>
-          {account !== '0x000000000000000000000000000000000000dEaD' ? <ConnectWallet decimal={decimal} web3={web3} account={account} theme={theme} register={register} username={username} userpic={userpic} /> : ""}
+          {account !== '0x000000000000000000000000000000000000dEaD' ? <ConnectWallet decimal={decimal} web3={web3} account={account} theme={theme} walletBalance={walletBalance} username={username} userpic={userpic} register={register} /> : ""}
         </div>
         :
         <div className="d-flex flex-row justify-content-between align-items-center">
@@ -485,74 +231,17 @@ export default function Game() {
             <HistoryGames
               theme={theme}
               isMobileVersion={false}
-              blockchain={blockchain}
-              eventsmodal={eventsmodal}
-              userdata0={userdata0}
-              userdata1={userdata1}
-              userdata2={userdata2}
-              userdata3={userdata3}
-              userdata4={userdata4}
-              userdata5={userdata5}
-              userdata6={userdata6}
-              userdata7={userdata7}
-              userdata8={userdata8}
-              userdata9={userdata9}
-              userdata10={userdata10}
-              userdata11={userdata11}
-              userpic0={userpic0}
-              userpic1={userpic1}
-              userpic2={userpic2}
-              userpic3={userpic3}
-              userpic4={userpic4}
-              userpic5={userpic5}
-              userpic6={userpic6}
-              userpic7={userpic7}
-              userpic8={userpic8}
-              userpic9={userpic9}
-              userpic10={userpic10}
-              userpic11={userpic11}
+              web3={web3}
+              rpsgame={rpsgame}
               decimal={decimal}
             />
             <WinStreakLeaderboard
               theme={theme}
               isMobileVersion={false}
-              blockchain={blockchain}
-              dayBlock={dayBlock}
-              blockStreak0={blockStreak0}
-              blockStreak1={blockStreak1}
-              blockStreak2={blockStreak2}
-              blockStreak3={blockStreak3}
-              blockStreak4={blockStreak4}
-              blockStreak5={blockStreak5}
-              blockStreak6={blockStreak6}
-              blockStreak7={blockStreak7}
-              picStreak0={picStreak0}
-              picStreak1={picStreak1}
-              picStreak2={picStreak2}
-              picStreak3={picStreak3}
-              picStreak4={picStreak4}
-              picStreak5={picStreak5}
-              picStreak6={picStreak6}
-              picStreak7={picStreak7}
-              nameStreak0={nameStreak0}
-              nameStreak1={nameStreak1}
-              nameStreak2={nameStreak2}
-              nameStreak3={nameStreak3}
-              nameStreak4={nameStreak4}
-              nameStreak5={nameStreak5}
-              nameStreak6={nameStreak6}
-              nameStreak7={nameStreak7}
-              winStreak0={winStreak0}
-              winStreak1={winStreak1}
-              winStreak2={winStreak2}
-              winStreak3={winStreak3}
-              winStreak4={winStreak4}
-              winStreak5={winStreak5}
-              winStreak6={winStreak6}
-              winStreak7={winStreak7}
+              web3={web3}
             />
             <NavLink className="btn btn-outline-danger" to="/leaderboard">LEADERBOARD <i className="fa-solid fa-up-right-from-square fa-xs"></i></NavLink>
-            {account !== '0x000000000000000000000000000000000000dEaD' ? <ConnectWallet decimal={decimal} web3={web3} account={account} theme={theme} register={register} username={username} userpic={userpic} /> : ""}
+            {account !== '0x000000000000000000000000000000000000dEaD' ? <ConnectWallet decimal={decimal} web3={web3} account={account} theme={theme} walletBalance={walletBalance} username={username} userpic={userpic} register={register} /> : ""}
           </div>
         </div>
       }
@@ -561,7 +250,7 @@ export default function Game() {
         {active === true && log === '' ?
           <>
             {log0 && (<span className="alert alert-danger mx-5">{log0}</span>)}
-            <h5 className="my-4 text-end me-3 me-lg-0">MATIC {(walletbalance / decimal).toFixed(4)}</h5>
+            <h5 className="my-4 text-end me-3 me-lg-0">MATIC {(walletBalance / decimal).toFixed(4)}</h5>
             <div className="game-container">
               {playing === true ?
                 <div className="mt-3">
@@ -677,37 +366,13 @@ export default function Game() {
                 <p>CLICK TO SEE OPTIONS</p>
               </>
               :
-              <ConnectWallet decimal={decimal} web3={web3} account={account} theme={theme} />
+              <ConnectWallet connectWeb3Modal={connectWeb3Modal} decimal={decimal} web3={web3} account={account} theme={theme} walletLog={walletLog} />
             }
             <HistoryGamesModal
               theme={theme}
-              blockchain={blockchain}
-              eventsmodal={eventsmodal}
-              userdata0={userdata0}
-              userdata1={userdata1}
-              userdata2={userdata2}
-              userdata3={userdata3}
-              userdata4={userdata4}
-              userdata5={userdata5}
-              userdata6={userdata6}
-              userdata7={userdata7}
-              userdata8={userdata8}
-              userdata9={userdata9}
-              userdata10={userdata10}
-              userdata11={userdata11}
-              userpic0={userpic0}
-              userpic1={userpic1}
-              userpic2={userpic2}
-              userpic3={userpic3}
-              userpic4={userpic4}
-              userpic5={userpic5}
-              userpic6={userpic6}
-              userpic7={userpic7}
-              userpic8={userpic8}
-              userpic9={userpic9}
-              userpic10={userpic10}
-              userpic11={userpic11}
               decimal={decimal}
+              rpsgame={rpsgame}
+              web3={web3}
             />
           </div>
         }

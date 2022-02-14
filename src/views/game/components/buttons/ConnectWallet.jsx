@@ -12,29 +12,10 @@ export default function ConnectWallet(props) {
     account1: '',
     amount1: 0,
   });
-  const [log0, setLog0] = useState('Select Wallet');
   const [log1, setLog1] = useState('');
   const [edit, setEdit] = useState(false);
   const [send, setSend] = useState(false);
   const [dropdown, setDropdown] = useState(false);
-
-  const connect = () => {
-    try {
-      ethereum
-        .request({ method: 'eth_requestAccounts' })
-        .then(setLog0('Connecting...'))
-        .catch((err) => {
-          if (err.code === 4001) {
-            setLog0('Select Wallet')
-          } else {
-            setLog0('Select Wallet')
-          }
-        });
-    } catch (err) {
-      window.open('https://metamask.app.link/dapp/patoproyects2.github.io/Work', '_blank')
-      window.location.reload()
-    }
-  }
 
   const handleInputChange = (event) => {
     setUserinfo({
@@ -84,6 +65,7 @@ export default function ConnectWallet(props) {
       name1: userinfo.name1
     })
     setEdit(false)
+    window.location.reload()
   }
 
   const sendToFriend = () => {
@@ -151,9 +133,9 @@ export default function ConnectWallet(props) {
         </Dropdown>
         :
         <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="lg">
-          <DropdownToggle color='danger' onClick={connect} disabled={log0 === 'Connecting...'}>
-            {log0 === 'Connecting...' ? <img width="25" height="25" alt="" src={MetamaskLogo} /> : ""}
-            {" " + log0}
+          <DropdownToggle color='danger' onClick={props.connectWeb3Modal} disabled={props.walletLog === 'Connecting...'}>
+            {props.walletLog === 'Connecting...' ? <img width="25" height="25" alt="" src={MetamaskLogo} /> : ""}
+            {" " + props.walletLog}
           </DropdownToggle>
         </Dropdown>
       }

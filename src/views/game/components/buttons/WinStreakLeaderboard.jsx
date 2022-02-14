@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react'
+import { getDocs, query, where, orderBy, limit, collection } from "firebase/firestore";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap'
+import db from '../../../../firebase/firesbaseConfig'
 export default function WinStreakLeaderboard(props) {
+    const [blockchain, setBlockchain] = useState(0);
+    const [dayBlock, setDayBlock] = useState(0)
     const [hour0, setHour0] = useState(0);
     const [hour1, setHour1] = useState(0);
     const [hour2, setHour2] = useState(0);
@@ -25,104 +29,206 @@ export default function WinStreakLeaderboard(props) {
     const [second5, setSecond5] = useState(0);
     const [second6, setSecond6] = useState(0);
     const [second7, setSecond7] = useState(0);
+    const [picStreak0, setPicStreak0] = useState('')
+    const [picStreak1, setPicStreak1] = useState('')
+    const [picStreak2, setPicStreak2] = useState('')
+    const [picStreak3, setPicStreak3] = useState('')
+    const [picStreak4, setPicStreak4] = useState('')
+    const [picStreak5, setPicStreak5] = useState('')
+    const [picStreak6, setPicStreak6] = useState('')
+    const [picStreak7, setPicStreak7] = useState('')
+    const [nameStreak0, setNameStreak0] = useState('')
+    const [nameStreak1, setNameStreak1] = useState('')
+    const [nameStreak2, setNameStreak2] = useState('')
+    const [nameStreak3, setNameStreak3] = useState('')
+    const [nameStreak4, setNameStreak4] = useState('')
+    const [nameStreak5, setNameStreak5] = useState('')
+    const [nameStreak6, setNameStreak6] = useState('')
+    const [nameStreak7, setNameStreak7] = useState('')
+    const [blockStreak0, setBlockStreak0] = useState(0)
+    const [blockStreak1, setBlockStreak1] = useState(0)
+    const [blockStreak2, setBlockStreak2] = useState(0)
+    const [blockStreak3, setBlockStreak3] = useState(0)
+    const [blockStreak4, setBlockStreak4] = useState(0)
+    const [blockStreak5, setBlockStreak5] = useState(0)
+    const [blockStreak6, setBlockStreak6] = useState(0)
+    const [blockStreak7, setBlockStreak7] = useState(0)
+    const [winStreak0, setWinStreak0] = useState(0)
+    const [winStreak1, setWinStreak1] = useState(0)
+    const [winStreak2, setWinStreak2] = useState(0)
+    const [winStreak3, setWinStreak3] = useState(0)
+    const [winStreak4, setWinStreak4] = useState(0)
+    const [winStreak5, setWinStreak5] = useState(0)
+    const [winStreak6, setWinStreak6] = useState(0)
+    const [winStreak7, setWinStreak7] = useState(0)
     const [dropdown, setDropdown] = useState(false);
     const toggleMenu = () => {
         setDropdown(!dropdown);
     }
 
     useEffect(() => {
-        blockTime(props.blockchain, props.blockStreak0, props.blockStreak1, props.blockStreak2, props.blockStreak3, props.blockStreak4, props.blockStreak5, props.blockStreak6, props.blockStreak7)
-    }, [props.blockchain, props.blockStreak0, props.blockStreak1, props.blockStreak2, props.blockStreak3, props.blockStreak4, props.blockStreak5, props.blockStreak6, props.blockStreak7]);
+        const timer = setInterval(() => { loadUserStreaks(props.web3) }, 2000);
+        return () => clearTimeout(timer);
+    }, [props.web3]);
 
-    const blockTime = (blockchain, blockStreak0, blockStreak1, blockStreak2, blockStreak3, blockStreak4, blockStreak5, blockStreak6, blockStreak7) => {
+    const loadUserStreaks = async (web3) => {
         try {
-            var seg = (blockchain - blockStreak0) * 2;
-            var day = Math.floor(seg / (24 * 3600));
-            var hour = Math.floor((seg - day * 24 * 3600) / 3600);
-            var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
-            setHour0(hour)
-            setMinute0(minute)
-            setSecond0(seg)
+            const actuallBlock = await web3.eth.getBlockNumber()
+            setBlockchain(actuallBlock)
+            const dayBlock = actuallBlock - 43200
+            setDayBlock(dayBlock)
+            const userCollection = collection(db, "users")
+            const queryStreakBlock = query(userCollection, where("winStreak", ">", 0), orderBy("winStreak"), limit(8))
+            const queryDocuments = await getDocs(queryStreakBlock)
+            const queryStreak = queryDocuments._snapshot.docChanges
+            try {
+                const dataStreak0 = queryStreak[0].doc.data.value.mapValue.fields
+                const pic0 = dataStreak0.pic1.stringValue
+                const picStreak0 = await import(`../../../../assets/imgs/profile/${pic0}`)
+                setPicStreak0(picStreak0.default)
+                setNameStreak0(dataStreak0.name1.stringValue)
+                setWinStreak0(dataStreak0.winStreak.integerValue)
+                setBlockStreak0(dataStreak0.winStreakBlock.integerValue)
+                var seg = (actuallBlock - dataStreak0.winStreakBlock.integerValue) * 2;
+                var day = Math.floor(seg / (24 * 3600));
+                var hour = Math.floor((seg - day * 24 * 3600) / 3600);
+                var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
+                setHour0(hour)
+                setMinute0(minute)
+                setSecond0(seg)
+            } catch (e) {
+
+            }
+            try {
+                const dataStreak1 = queryStreak[1].doc.data.value.mapValue.fields
+                const pic1 = dataStreak1.pic1.stringValue
+                const picStreak1 = await import(`../../../../assets/imgs/profile/${pic1}`)
+                setPicStreak1(picStreak1.default)
+                setNameStreak1(dataStreak1.name1.stringValue)
+                setWinStreak1(dataStreak1.winStreak.integerValue)
+                setBlockStreak1(dataStreak1.winStreakBlock.integerValue)
+                var seg = (actuallBlock - dataStreak1.winStreakBlock.integerValue) * 2;
+                var day = Math.floor(seg / (24 * 3600));
+                var hour = Math.floor((seg - day * 24 * 3600) / 3600);
+                var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
+                setHour1(hour)
+                setMinute1(minute)
+                setSecond1(seg)
+            } catch (e) {
+
+            }
+            try {
+                const dataStreak2 = queryStreak[2].doc.data.value.mapValue.fields
+                const pic2 = dataStreak2.pic1.stringValue
+                const picStreak2 = await import(`../../../../assets/imgs/profile/${pic2}`)
+                setPicStreak2(picStreak2.default)
+                setNameStreak2(dataStreak2.name1.stringValue)
+                setWinStreak2(dataStreak2.winStreak.integerValue)
+                setBlockStreak2(dataStreak2.winStreakBlock.integerValue)
+                var seg = (actuallBlock - dataStreak2.winStreakBlock.integerValue) * 2;
+                var day = Math.floor(seg / (24 * 3600));
+                var hour = Math.floor((seg - day * 24 * 3600) / 3600);
+                var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
+                setHour2(hour)
+                setMinute2(minute)
+                setSecond2(seg)
+            } catch (e) {
+
+            }
+            try {
+                const dataStreak3 = queryStreak[3].doc.data.value.mapValue.fields
+                const pic3 = dataStreak3.pic1.stringValue
+                const picStreak3 = await import(`../../../../assets/imgs/profile/${pic3}`)
+                setPicStreak3(picStreak3.default)
+                setNameStreak3(dataStreak3.name1.stringValue)
+                setWinStreak3(dataStreak3.winStreak.integerValue)
+                setBlockStreak3(dataStreak3.winStreakBlock.integerValue)
+                var seg = (actuallBlock - dataStreak3.winStreakBlock.integerValue) * 2;
+                var day = Math.floor(seg / (24 * 3600));
+                var hour = Math.floor((seg - day * 24 * 3600) / 3600);
+                var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
+                setHour3(hour)
+                setMinute3(minute)
+                setSecond3(seg)
+            } catch (e) {
+
+            }
+            try {
+                const dataStreak4 = queryStreak[4].doc.data.value.mapValue.fields
+                const pic4 = dataStreak4.pic1.stringValue
+                const picStreak4 = await import(`../../../../assets/imgs/profile/${pic4}`)
+                setPicStreak4(picStreak4.default)
+                setNameStreak4(dataStreak4.name1.stringValue)
+                setWinStreak4(dataStreak4.winStreak.integerValue)
+                setBlockStreak4(dataStreak4.winStreakBlock.integerValue)
+                var seg = (actuallBlock - dataStreak4.winStreakBlock.integerValue) * 2;
+                var day = Math.floor(seg / (24 * 3600));
+                var hour = Math.floor((seg - day * 24 * 3600) / 3600);
+                var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
+                setHour4(hour)
+                setMinute4(minute)
+                setSecond4(seg)
+            } catch (e) {
+
+            }
+            try {
+                const dataStreak5 = queryStreak[5].doc.data.value.mapValue.fields
+                const pic5 = dataStreak5.pic1.stringValue
+                const picStreak5 = await import(`../../../../assets/imgs/profile/${pic5}`)
+                setPicStreak5(picStreak5.default)
+                setNameStreak5(dataStreak5.name1.stringValue)
+                setWinStreak5(dataStreak5.winStreak.integerValue)
+                setBlockStreak5(dataStreak5.winStreakBlock.integerValue)
+                var seg = (actuallBlock - dataStreak5.winStreakBlock.integerValue) * 2;
+                var day = Math.floor(seg / (24 * 3600));
+                var hour = Math.floor((seg - day * 24 * 3600) / 3600);
+                var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
+                setHour5(hour)
+                setMinute5(minute)
+                setSecond5(seg)
+            } catch (e) {
+
+            }
+            try {
+                const dataStreak6 = queryStreak[6].doc.data.value.mapValue.fields
+                const pic6 = dataStreak6.pic1.stringValue
+                const picStreak6 = await import(`../../../../assets/imgs/profile/${pic6}`)
+                setPicStreak6(picStreak6.default)
+                setNameStreak6(dataStreak6.name1.stringValue)
+                setWinStreak6(dataStreak6.winStreak.integerValue)
+                setBlockStreak6(dataStreak6.winStreakBlock.integerValue)
+                var seg = (actuallBlock - dataStreak6.winStreakBlock.integerValue) * 2;
+                var day = Math.floor(seg / (24 * 3600));
+                var hour = Math.floor((seg - day * 24 * 3600) / 3600);
+                var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
+                setHour6(hour)
+                setMinute6(minute)
+                setSecond6(seg)
+            } catch (e) {
+
+            }
+            try {
+                const dataStreak7 = queryStreak[7].doc.data.value.mapValue.fields
+                const pic7 = dataStreak7.pic1.stringValue
+                const picStreak7 = await import(`../../../../assets/imgs/profile/${pic7}`)
+                setPicStreak7(picStreak7.default)
+                setNameStreak7(dataStreak7.name1.stringValue)
+                setWinStreak7(dataStreak7.winStreak.integerValue)
+                setBlockStreak7(dataStreak7.winStreakBlock.integerValue)
+                var seg = (actuallBlock - dataStreak7.winStreakBlock.integerValue) * 2;
+                var day = Math.floor(seg / (24 * 3600));
+                var hour = Math.floor((seg - day * 24 * 3600) / 3600);
+                var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
+                setHour7(hour)
+                setMinute7(minute)
+                setSecond7(seg)
+            } catch (e) {
+
+            }
         } catch (e) {
 
         }
-        try {
-            var seg = (blockchain - blockStreak1) * 2;
-            var day = Math.floor(seg / (24 * 3600));
-            var hour = Math.floor((seg - day * 24 * 3600) / 3600);
-            var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
-            setHour1(hour)
-            setMinute1(minute)
-            setSecond1(seg)
-        } catch (e) {
-
-        }
-        try {
-            var seg = (blockchain - blockStreak2) * 2;
-            var day = Math.floor(seg / (24 * 3600));
-            var hour = Math.floor((seg - day * 24 * 3600) / 3600);
-            var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
-            setHour2(hour)
-            setMinute2(minute)
-            setSecond2(seg)
-        } catch (e) {
-
-        }
-        try {
-            var seg = (blockchain - blockStreak3) * 2;
-            var day = Math.floor(seg / (24 * 3600));
-            var hour = Math.floor((seg - day * 24 * 3600) / 3600);
-            var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
-            setHour3(hour)
-            setMinute3(minute)
-            setSecond3(seg)
-        } catch (e) {
-
-        }
-        try {
-            var seg = (blockchain - blockStreak4) * 2;
-            var day = Math.floor(seg / (24 * 3600));
-            var hour = Math.floor((seg - day * 24 * 3600) / 3600);
-            var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
-            setHour4(hour)
-            setMinute4(minute)
-            setSecond4(seg)
-        } catch (e) {
-
-        }
-        try {
-            var seg = (blockchain - blockStreak5) * 2;
-            var day = Math.floor(seg / (24 * 3600));
-            var hour = Math.floor((seg - day * 24 * 3600) / 3600);
-            var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
-            setHour5(hour)
-            setMinute5(minute)
-            setSecond5(seg)
-        } catch (e) {
-
-        }
-        try {
-            var seg = (blockchain - blockStreak6) * 2;
-            var day = Math.floor(seg / (24 * 3600));
-            var hour = Math.floor((seg - day * 24 * 3600) / 3600);
-            var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
-            setHour6(hour)
-            setMinute6(minute)
-            setSecond6(seg)
-        } catch (e) {
-
-        }
-        try {
-            var seg = (blockchain - blockStreak7) * 2;
-            var day = Math.floor(seg / (24 * 3600));
-            var hour = Math.floor((seg - day * 24 * 3600) / 3600);
-            var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
-            setHour7(hour)
-            setMinute7(minute)
-            setSecond7(seg)
-        } catch (e) {
-
-        }
+        setTimeout(loadUserStreaks, 2000)
     }
     return (
         <>
@@ -138,14 +244,15 @@ export default function WinStreakLeaderboard(props) {
                         </DropdownToggle>
                 }
                 <DropdownMenu className={props.theme === 'dark' ? 'bg-dark' : 'bg-light'}>
-                    {props.winStreak7 > 0 && props.blockStreak7 > props.dayBlock ?
+                    {winStreak7 > 0 && blockStreak7 > dayBlock ?
                         <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
-                            {props.picStreak7 && <img width="35" height="35" className="rounded-circle" alt="" src={props.picStreak7} />}
-                            {" " + props.nameStreak7 + " is on a " + props.winStreak7 + " win streak"}
+                            {picStreak7 && <img width="35" height="35" className="rounded-circle" alt="" src={picStreak7} />}
+                            {" " + nameStreak7 + " is on a " + winStreak7 + " win streak"}
                             <small className="d-flex justify-content-end">
                                 {second7 < 0 || second7 === 0 ? "now" : ""}
                                 {second7 < 60 ? second7 + " seconds ago" : ""}
-                                {second7 > 59 && second7 < 3600 ? minute7 + " minutes ago" : ""}
+                                {second7 > 59 && second7 < 120 ? minute7 + " minute ago" : ""}
+                                {second7 > 119 && second7 < 3600 ? minute7 + " minutes ago" : ""}
                                 {second7 > 3599 && second7 < 7200 ? hour7 + " hour ago" : ""}
                                 {second7 > 7199 ? hour7 + " hours ago" : ""}
                             </small>
@@ -153,10 +260,10 @@ export default function WinStreakLeaderboard(props) {
                         :
                         ""
                     }
-                    {props.winStreak6 > 0 && props.blockStreak6 > props.dayBlock ?
+                    {winStreak6 > 0 && blockStreak6 > dayBlock ?
                         <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
-                            {props.picStreak6 && <img width="35" height="35" className="rounded-circle" alt="" src={props.picStreak6} />}
-                            {" " + props.nameStreak6 + " is on a " + props.winStreak6 + " win streak"}
+                            {picStreak6 && <img width="35" height="35" className="rounded-circle" alt="" src={picStreak6} />}
+                            {" " + nameStreak6 + " is on a " + winStreak6 + " win streak"}
                             <small className="d-flex justify-content-end">
                                 {second6 < 0 || second6 === 0 ? "now" : ""}
                                 {second6 < 60 ? second6 + " seconds ago" : ""}
@@ -168,10 +275,10 @@ export default function WinStreakLeaderboard(props) {
                         :
                         ""
                     }
-                    {props.winStreak5 > 0 && props.blockStreak5 > props.dayBlock ?
+                    {winStreak5 > 0 && blockStreak5 > dayBlock ?
                         <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
-                            {props.picStreak5 && <img width="35" height="35" className="rounded-circle" alt="" src={props.picStreak5} />}
-                            {" " + props.nameStreak5 + " is on a " + props.winStreak5 + " win streak"}
+                            {picStreak5 && <img width="35" height="35" className="rounded-circle" alt="" src={picStreak5} />}
+                            {" " + nameStreak5 + " is on a " + winStreak5 + " win streak"}
                             <small className="d-flex justify-content-end">
                                 {second5 < 0 || second5 === 0 ? "now" : ""}
                                 {second5 < 60 ? second5 + " seconds ago" : ""}
@@ -183,10 +290,10 @@ export default function WinStreakLeaderboard(props) {
                         :
                         ""
                     }
-                    {props.winStreak4 > 0 && props.blockStreak4 > props.dayBlock ?
+                    {winStreak4 > 0 && blockStreak4 > dayBlock ?
                         <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
-                            {props.picStreak4 && <img width="35" height="35" className="rounded-circle" alt="" src={props.picStreak4} />}
-                            {" " + props.nameStreak4 + " is on a " + props.winStreak4 + " win streak"}
+                            {picStreak4 && <img width="35" height="35" className="rounded-circle" alt="" src={picStreak4} />}
+                            {" " + nameStreak4 + " is on a " + winStreak4 + " win streak"}
                             <small className="d-flex justify-content-end">
                                 {second4 < 0 || second4 === 0 ? "now" : ""}
                                 {second4 < 60 ? second4 + " seconds ago" : ""}
@@ -198,10 +305,10 @@ export default function WinStreakLeaderboard(props) {
                         :
                         ""
                     }
-                    {props.winStreak3 > 0 && props.blockStreak3 > props.dayBlock ?
+                    {winStreak3 > 0 && blockStreak3 > dayBlock ?
                         <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
-                            {props.picStreak3 && <img width="35" height="35" className="rounded-circle" alt="" src={props.picStreak3} />}
-                            {" " + props.nameStreak3 + " is on a " + props.winStreak3 + " win streak"}
+                            {picStreak3 && <img width="35" height="35" className="rounded-circle" alt="" src={picStreak3} />}
+                            {" " + nameStreak3 + " is on a " + winStreak3 + " win streak"}
                             <small className="d-flex justify-content-end">
                                 {second3 < 0 || second3 === 0 ? "now" : ""}
                                 {second3 < 60 ? second3 + " seconds ago" : ""}
@@ -213,10 +320,10 @@ export default function WinStreakLeaderboard(props) {
                         :
                         ""
                     }
-                    {props.winStreak2 > 0 && props.blockStreak2 > props.dayBlock ?
+                    {winStreak2 > 0 && blockStreak2 > dayBlock ?
                         <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
-                            {props.picStreak2 && <img width="35" height="35" className="rounded-circle" alt="" src={props.picStreak2} />}
-                            {" " + props.nameStreak2 + " is on a " + props.winStreak2 + " win streak"}
+                            {picStreak2 && <img width="35" height="35" className="rounded-circle" alt="" src={picStreak2} />}
+                            {" " + nameStreak2 + " is on a " + winStreak2 + " win streak"}
                             <small className="d-flex justify-content-end">
                                 {second2 < 0 || second2 === 0 ? "now" : ""}
                                 {second2 < 60 ? second2 + " seconds ago" : ""}
@@ -228,10 +335,10 @@ export default function WinStreakLeaderboard(props) {
                         :
                         ""
                     }
-                    {props.winStreak1 > 0 && props.blockStreak1 > props.dayBlock ?
+                    {winStreak1 > 0 && blockStreak1 > dayBlock ?
                         <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
-                            {props.picStreak1 && <img width="35" height="35" className="rounded-circle" alt="" src={props.picStreak1} />}
-                            {" " + props.nameStreak1 + " is on a " + props.winStreak1 + " win streak"}
+                            {picStreak1 && <img width="35" height="35" className="rounded-circle" alt="" src={picStreak1} />}
+                            {" " + nameStreak1 + " is on a " + winStreak1 + " win streak"}
                             <small className="d-flex justify-content-end">
                                 {second1 < 0 || second1 === 0 ? "now" : ""}
                                 {second1 < 60 ? second1 + " seconds ago" : ""}
@@ -243,10 +350,10 @@ export default function WinStreakLeaderboard(props) {
                         :
                         ""
                     }
-                    {props.winStreak0 > 0 && props.blockStreak0 > props.dayBlock ?
+                    {winStreak0 > 0 && blockStreak0 > dayBlock ?
                         <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
-                            {props.picStreak0 && <img width="35" height="35" className="rounded-circle" alt="" src={props.picStreak0} />}
-                            {" " + props.nameStreak0 + " is on a " + props.winStreak0 + " win streak"}
+                            {picStreak0 && <img width="35" height="35" className="rounded-circle" alt="" src={picStreak0} />}
+                            {" " + nameStreak0 + " is on a " + winStreak0 + " win streak"}
                             <small className="d-flex justify-content-end">
                                 {second0 < 0 || second0 === 0 ? "now" : ""}
                                 {second0 < 60 ? second0 + " seconds ago" : ""}
