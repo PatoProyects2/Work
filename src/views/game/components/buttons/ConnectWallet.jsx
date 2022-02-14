@@ -129,6 +129,7 @@ export default function ConnectWallet(props) {
             <DropdownItem className={props.theme === 'dark' ? 'dropdown-item-dark' : ''} onClick={editProfile}>Edit profile</DropdownItem>
             <DropdownItem className={props.theme === 'dark' ? 'dropdown-item-dark' : ''} onClick={sendMatic}>Send matic</DropdownItem>
             <DropdownItem className={props.theme === 'dark' ? 'dropdown-item-dark' : ''} onClick={manageWallets}>Accounts</DropdownItem>
+            <DropdownItem className={props.theme === 'dark' ? 'dropdown-item-dark' : ''} onClick={props.disconnectWallet}>Disconnect</DropdownItem>
           </DropdownMenu>
         </Dropdown>
         :

@@ -31,7 +31,7 @@ export default function HistoryGamesModal(props) {
     const [userpic11, setUserpic11] = useState('');
 
     useEffect(() => {
-        const timer = setInterval(() => { loadHistoryUserPlays(props.web3, props.rpsgame) }, 2000);
+        const timer = setInterval(() => { loadHistoryUserPlays(props.web3, props.rpsgame) }, 5000);
         return () => clearTimeout(timer);
     }, [props.web3, props.rpsgame])
 

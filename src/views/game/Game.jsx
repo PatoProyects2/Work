@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { NavLink, useOutletContext } from 'react-router-dom'
-import WalletConnectProvider from "@walletconnect/web3-provider";
 import Web3 from 'web3'
 import Web3Modal from "web3modal";
-import detectEthereumProvider from '@metamask/detect-provider'
+import WalletConnectProvider from "@walletconnect/web3-provider";
+import Torus from "@toruslabs/torus-embed";
+import Portis from "@portis/web3";
+import WalletLink from "walletlink";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import RpsGame from '../../abis/RpsGame/rpsGame.json'
 import { rpsGameContract } from '../../components/blockchain/Contracts'
@@ -45,8 +47,16 @@ export default function Game() {
   const [gameResult, setGameResult] = useState(undefined);
   const [showGameResult, setShowGameResult] = useState(false);
   const isMobileResolution = useMatchMedia('(max-width:650px)', false);
+  const [disconnect, setDisconnect] = useState(false)
 
-  const connectWeb3Modal = async () => {
+  useEffect(() => {
+    connectWeb3Modal(disconnect)
+  }, [disconnect])
+  const disconnectWallet = async () => {
+    setDisconnect(true)
+  }
+
+  const connectWeb3Modal = async (disconnect) => {
     const providerOptions = {
       walletconnect: {
         package: WalletConnectProvider,
@@ -55,26 +65,66 @@ export default function Game() {
             80001: "https://polygon-mumbai.infura.io/v3/270caadf97b048ec8823dff39e612c46",
           },
         }
-      }
+      },
+      torus: {
+        package: Torus,
+        options: {
+          networkParams: {
+            host: "https://polygon-mumbai.infura.io/v3/270caadf97b048ec8823dff39e612c46",
+            chainId: 80001,
+            networkId: 80001,
+            blockExplorer: "https://mumbai.polygonscan.com/",
+            ticker: "MATIC",
+            tickerName: "MATIC",
+          },
+        }
+      },
+      portis: {
+        package: Portis,
+        options: {
+          id: "fc6fd5a9-493b-4806-858d-ff67918ea1dc",
+          network: "maticMumbai",
+        },
+      },
+      walletlink: {
+        package: WalletLink,
+        options: {
+          appName: "RPS",
+          rpc: "https://polygon-mumbai.infura.io/v3/270caadf97b048ec8823dff39e612c46",
+          chainId: 80001,
+          appLogoUrl: null,
+          darkMode: false
+        },
+      },
     };
     const web3Modal = new Web3Modal({
-      cacheProvider: true,
+      cacheProvider: false,
       providerOptions
     });
+
+    if (disconnect) {
+      web3Modal.clearCachedProvider();
+      setActive(false)
+      setAccount('0x000000000000000000000000000000000000dEaD')
+      setDisconnect(false)
+    }
     try {
       const provider = await web3Modal.connect();
+      if (provider._portis) {
+        provider._portis.showPortis();
+      }
       const web3 = new Web3(provider);
       setWeb3(web3)
       const rpsgame = new web3.eth.Contract(RpsGame.abi, rpsGameContract)
       setRpsgame(rpsgame)
       const accounts = await web3.eth.getAccounts();
       setAccount(accounts[0].toLowerCase())
-      ethereum.on('accountsChanged', (accounts) => {
+      ethereum.on('accountsChanged', () => {
         window.location.reload()
       });
       const chainId = await web3.eth.getChainId();
       setChain(chainId)
-      const balance = await web3.eth.getBalance(accounts[0])
+      const balance = await web3.eth.getBalance(accounts[0]);
       setWalletBalance(balance)
       const query = doc(db, "users", accounts[0].toLowerCase())
       const userDocument = await getDoc(query)
@@ -100,9 +150,7 @@ export default function Game() {
       }
 
     } catch (e) {
-
     }
-
   }
 
   const handleThemeChange = () => {
@@ -216,7 +264,7 @@ export default function Game() {
             web3={web3}
           />
           <NavLink className="btn btn-danger" to="/leaderboard">LEADERBOARD</NavLink>
-          {account !== '0x000000000000000000000000000000000000dEaD' ? <ConnectWallet decimal={decimal} web3={web3} account={account} theme={theme} walletBalance={walletBalance} username={username} userpic={userpic} register={register} /> : ""}
+          {account !== '0x000000000000000000000000000000000000dEaD' ? <ConnectWallet decimal={decimal} web3={web3} account={account} theme={theme} walletBalance={walletBalance} username={username} userpic={userpic} register={register} disconnectWallet={disconnectWallet} /> : ""}
         </div>
         :
         <div className="d-flex flex-row justify-content-between align-items-center">
@@ -241,7 +289,7 @@ export default function Game() {
               web3={web3}
             />
             <NavLink className="btn btn-outline-danger" to="/leaderboard">LEADERBOARD <i className="fa-solid fa-up-right-from-square fa-xs"></i></NavLink>
-            {account !== '0x000000000000000000000000000000000000dEaD' ? <ConnectWallet decimal={decimal} web3={web3} account={account} theme={theme} walletBalance={walletBalance} username={username} userpic={userpic} register={register} /> : ""}
+            {account !== '0x000000000000000000000000000000000000dEaD' ? <ConnectWallet decimal={decimal} web3={web3} account={account} theme={theme} walletBalance={walletBalance} username={username} userpic={userpic} register={register} disconnectWallet={disconnectWallet} /> : ""}
           </div>
         </div>
       }

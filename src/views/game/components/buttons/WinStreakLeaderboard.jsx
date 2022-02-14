@@ -67,7 +67,7 @@ export default function WinStreakLeaderboard(props) {
     }
 
     useEffect(() => {
-        const timer = setInterval(() => { loadUserStreaks(props.web3) }, 2000);
+        const timer = setInterval(() => { loadUserStreaks(props.web3) }, 5000);
         return () => clearTimeout(timer);
     }, [props.web3]);
 
