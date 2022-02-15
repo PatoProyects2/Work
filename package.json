@@ -10,10 +10,10 @@
         "url": "git+https://github.com/PatoProyects2/Work.git"
     },
     "dependencies": {
-        "@metamask/detect-provider": "^1.2.0",
-        "@portis/web3": "^4.0.7",
-        "@toruslabs/torus-embed": "^1.20.4",
-        "@walletconnect/web3-provider": "^1.7.1",
+        "@metamask/detect-provider": "1.2.0",
+        "@portis/web3": "4.0.7",
+        "@toruslabs/torus-embed": "1.20.4",
+        "@walletconnect/web3-provider": "1.7.1",
         "@web3-react/core": "6.1.9",
         "@web3-react/injected-connector": "6.0.7",
         "aes256": "1.1.0",
@@ -30,9 +30,9 @@
         "reactstrap": "9.0.1",
         "socket.io-client": "4.4.1",
         "styled-components": "5.3.3",
-        "walletlink": "^2.4.7",
+        "walletlink": "2.4.7",
         "web3": "1.7.0",
-        "web3modal": "^1.9.5"
+        "web3modal": "1.9.5"
     },
     "scripts": {
         "deploy": "gh-pages -d build",
@@ -42,7 +42,7 @@
         "eject": "react-scripts eject"
     },
     "devDependencies": {
-        "dotenv": "^16.0.0",
+        "dotenv": "16.0.0",
         "sass": "1.49.0"
     },
     "browserslist": {

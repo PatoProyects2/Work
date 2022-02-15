@@ -27,6 +27,7 @@ export default function Game() {
     hand: '',
     amount: 0
   });
+  const [web3ModalInfo, setWeb3ModalInfo] = useState({});
   const [register, setRegister] = useState('');
   const [userpic, setUserpic] = useState('');
   const [username, setUsername] = useState('');
@@ -34,7 +35,7 @@ export default function Game() {
   const [chain, setChain] = useState('');
   const [log, setLog] = useState('');
   const [log0, setLog0] = useState('');
-  const [walletLog, setWalletLog] = useState('Select Wallet');
+  const [walletLog, setWalletLog] = useState('Connect Wallet');
   const [walletBalance, setWalletBalance] = useState(0);
   const [decimal, setDecimal] = useState(1000000000000000000);
   const [userGameStreak, setUserGameStreak] = useState(0);
@@ -47,7 +48,6 @@ export default function Game() {
   const [gameResult, setGameResult] = useState(undefined);
   const [showGameResult, setShowGameResult] = useState(false);
   const isMobileResolution = useMatchMedia('(max-width:650px)', false);
-  const [disconnect, setDisconnect] = useState(false)
   const [blockchain, setBlockchain] = useState(0);
   const [eventsmodal, setEventsmodal] = useState({});
   const [userdata0, setUserdata0] = useState({ name1: '' });
@@ -74,13 +74,6 @@ export default function Game() {
   const [userpic9, setUserpic9] = useState('');
   const [userpic10, setUserpic10] = useState('');
   const [userpic11, setUserpic11] = useState('');
-
-  useEffect(() => {
-    connectWeb3Modal(disconnect)
-  }, [disconnect])
-  const disconnectWallet = async () => {
-    setDisconnect(true)
-  }
 
   useEffect(() => {
     const timer = setInterval(() => { loadHistoryUserPlays(web3, rpsgame) }, 3000);
@@ -159,9 +152,12 @@ export default function Game() {
     }
   }
 
-  const connectWeb3Modal = async (disconnect) => {
+  const connectWeb3Modal = async () => {
     const providerOptions = {
       walletconnect: {
+        display: {
+          description: " ",
+        },
         package: WalletConnectProvider,
         options: {
           rpc: {
@@ -170,6 +166,9 @@ export default function Game() {
         }
       },
       torus: {
+        display: {
+          description: " ",
+        },
         package: Torus,
         options: {
           networkParams: {
@@ -183,6 +182,9 @@ export default function Game() {
         }
       },
       portis: {
+        display: {
+          description: " ",
+        },
         package: Portis,
         options: {
           id: "fc6fd5a9-493b-4806-858d-ff67918ea1dc",
@@ -190,6 +192,9 @@ export default function Game() {
         },
       },
       walletlink: {
+        display: {
+          description: " ",
+        },
         package: WalletLink,
         options: {
           appName: "RPS",
@@ -202,15 +207,16 @@ export default function Game() {
     };
     const web3Modal = new Web3Modal({
       cacheProvider: false,
-      providerOptions
+      providerOptions,
+      theme: {
+        background: "rgb(39, 49, 56)",
+        main: "rgb(199, 199, 199)",
+        secondary: "rgb(136, 136, 136)",
+        border: "rgba(195, 195, 195, 0.14)",
+        hover: "rgb(16, 26, 32)"
+      }
     });
-
-    if (disconnect) {
-      web3Modal.clearCachedProvider();
-      setActive(false)
-      setAccount('0x000000000000000000000000000000000000dEaD')
-      setDisconnect(false)
-    }
+    setWeb3ModalInfo(web3Modal)
     try {
       const provider = await web3Modal.connect();
       if (provider._portis) {
@@ -275,6 +281,12 @@ export default function Game() {
 
     } catch (e) {
     }
+  }
+
+  const disconnectWallet = async () => {
+    web3ModalInfo.clearCachedProvider();
+    setActive(false)
+    setAccount('0x000000000000000000000000000000000000dEaD')
   }
 
   const handleThemeChange = () => {
@@ -397,18 +409,18 @@ export default function Game() {
                 userdata9={userdata9}
                 userdata10={userdata10}
                 userdata11={userdata11}
-                setUserpic0={setUserpic0}
-                setUserpic1={setUserpic1}
-                setUserpic2={setUserpic2}
-                setUserpic3={setUserpic3}
-                setUserpic4={setUserpic4}
-                setUserpic5={setUserpic5}
-                setUserpic6={setUserpic6}
-                setUserpic7={setUserpic7}
-                setUserpic8={setUserpic8}
-                setUserpic9={setUserpic9}
-                setUserpic10={setUserpic10}
-                setUserpic11={setUserpic11}
+                userpic0={userpic0}
+                userpic1={userpic1}
+                userpic2={userpic2}
+                userpic3={userpic3}
+                userpic4={userpic4}
+                userpic5={userpic5}
+                userpic6={userpic6}
+                userpic7={userpic7}
+                userpic8={userpic8}
+                userpic9={userpic9}
+                userpic10={userpic10}
+                userpic11={userpic11}
               />
               <WinStreakLeaderboard
                 theme={theme}
@@ -454,25 +466,25 @@ export default function Game() {
                   userdata9={userdata9}
                   userdata10={userdata10}
                   userdata11={userdata11}
-                  setUserpic0={setUserpic0}
-                  setUserpic1={setUserpic1}
-                  setUserpic2={setUserpic2}
-                  setUserpic3={setUserpic3}
-                  setUserpic4={setUserpic4}
-                  setUserpic5={setUserpic5}
-                  setUserpic6={setUserpic6}
-                  setUserpic7={setUserpic7}
-                  setUserpic8={setUserpic8}
-                  setUserpic9={setUserpic9}
-                  setUserpic10={setUserpic10}
-                  setUserpic11={setUserpic11}
+                  userpic0={userpic0}
+                  userpic1={userpic1}
+                  userpic2={userpic2}
+                  userpic3={userpic3}
+                  userpic4={userpic4}
+                  userpic5={userpic5}
+                  userpic6={userpic6}
+                  userpic7={userpic7}
+                  userpic8={userpic8}
+                  userpic9={userpic9}
+                  userpic10={userpic10}
+                  userpic11={userpic11}
                 />
                 <WinStreakLeaderboard
                   theme={theme}
                   isMobileVersion={false}
                   web3={web3}
                 />
-                <NavLink className="btn btn-danger" to="/leaderboard">LEADERBOARD</NavLink>
+                <NavLink className="btn btn-danger" to="/leaderboard">LEADERBOARD <i className="d-none d-sm-inline-flex fas fa-external-link-alt fa-xs"></i></NavLink>
                 <ConnectWallet decimal={decimal} web3={web3} account={account} theme={theme} walletBalance={walletBalance} username={username} userpic={userpic} register={register} disconnectWallet={disconnectWallet} />
               </>
               :
