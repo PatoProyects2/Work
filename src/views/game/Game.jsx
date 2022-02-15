@@ -48,12 +48,115 @@ export default function Game() {
   const [showGameResult, setShowGameResult] = useState(false);
   const isMobileResolution = useMatchMedia('(max-width:650px)', false);
   const [disconnect, setDisconnect] = useState(false)
+  const [blockchain, setBlockchain] = useState(0);
+  const [eventsmodal, setEventsmodal] = useState({});
+  const [userdata0, setUserdata0] = useState({ name1: '' });
+  const [userdata1, setUserdata1] = useState({ name1: '' });
+  const [userdata2, setUserdata2] = useState({ name1: '' });
+  const [userdata3, setUserdata3] = useState({ name1: '' });
+  const [userdata4, setUserdata4] = useState({ name1: '' });
+  const [userdata5, setUserdata5] = useState({ name1: '' });
+  const [userdata6, setUserdata6] = useState({ name1: '' });
+  const [userdata7, setUserdata7] = useState({ name1: '' });
+  const [userdata8, setUserdata8] = useState({ name1: '' });
+  const [userdata9, setUserdata9] = useState({ name1: '' });
+  const [userdata10, setUserdata10] = useState({ name1: '' });
+  const [userdata11, setUserdata11] = useState({ name1: '' });
+  const [userpic0, setUserpic0] = useState('');
+  const [userpic1, setUserpic1] = useState('');
+  const [userpic2, setUserpic2] = useState('');
+  const [userpic3, setUserpic3] = useState('');
+  const [userpic4, setUserpic4] = useState('');
+  const [userpic5, setUserpic5] = useState('');
+  const [userpic6, setUserpic6] = useState('');
+  const [userpic7, setUserpic7] = useState('');
+  const [userpic8, setUserpic8] = useState('');
+  const [userpic9, setUserpic9] = useState('');
+  const [userpic10, setUserpic10] = useState('');
+  const [userpic11, setUserpic11] = useState('');
 
   useEffect(() => {
     connectWeb3Modal(disconnect)
   }, [disconnect])
   const disconnectWallet = async () => {
     setDisconnect(true)
+  }
+
+  useEffect(() => {
+    const timer = setInterval(() => { loadHistoryUserPlays(web3, rpsgame) }, 3000);
+    return () => clearInterval(timer);
+  }, [web3, rpsgame])
+
+  const loadHistoryUserPlays = async (web3, rpsgame) => {
+    try {
+      const actuallBlock = await web3.eth.getBlockNumber()
+      setBlockchain(actuallBlock)
+      const lastMinuteBlock = actuallBlock - 25
+      const eventsmodal = await rpsgame.getPastEvents('Play', { fromBlock: lastMinuteBlock, toBlock: 'latest' })
+      setEventsmodal(eventsmodal)
+      const userData0 = await getDoc(doc(db, "users", eventsmodal[0].returnValues[0].toLowerCase()))
+      const picPath0 = userData0.data().pic1
+      const profilePhoto0 = await import(`../../assets/imgs/profile/${picPath0}`)
+      setUserdata0(userData0.data())
+      setUserpic0(profilePhoto0.default)
+      const userData1 = await getDoc(doc(db, "users", eventsmodal[1].returnValues[0].toLowerCase()))
+      const picPath1 = userData1.data().pic1
+      const profilePhoto1 = await import(`../../assets/imgs/profile/${picPath1}`)
+      setUserdata1(userData1.data())
+      setUserpic1(profilePhoto1.default)
+      const userData2 = await getDoc(doc(db, "users", eventsmodal[2].returnValues[0].toLowerCase()))
+      const picPath2 = userData2.data().pic1
+      const profilePhoto2 = await import(`../../assets/imgs/profile/${picPath2}`)
+      setUserdata2(userData2.data())
+      setUserpic2(profilePhoto2.default)
+      const userData3 = await getDoc(doc(db, "users", eventsmodal[3].returnValues[0].toLowerCase()))
+      const picPath3 = userData3.data().pic1
+      const profilePhoto3 = await import(`../../assets/imgs/profile/${picPath3}`)
+      setUserdata3(userData3.data())
+      setUserpic3(profilePhoto3.default)
+      const userData4 = await getDoc(doc(db, "users", eventsmodal[4].returnValues[0].toLowerCase()))
+      const picPath4 = userData4.data().pic1
+      const profilePhoto4 = await import(`../../assets/imgs/profile/${picPath4}`)
+      setUserdata4(userData4.data())
+      setUserpic4(profilePhoto4.default)
+      const userData5 = await getDoc(doc(db, "users", eventsmodal[5].returnValues[0].toLowerCase()))
+      const picPath5 = userData5.data().pic1
+      const profilePhoto5 = await import(`../../assets/imgs/profile/${picPath5}`)
+      setUserdata5(userData5.data())
+      setUserpic5(profilePhoto5.default)
+      const userData6 = await getDoc(doc(db, "users", eventsmodal[6].returnValues[0].toLowerCase()))
+      const picPath6 = userData6.data().pic1
+      const profilePhoto6 = await import(`../../assets/imgs/profile/${picPath6}`)
+      setUserdata6(userData6.data())
+      setUserpic6(profilePhoto6.default)
+      const userData7 = await getDoc(doc(db, "users", eventsmodal[7].returnValues[0].toLowerCase()))
+      const picPath7 = userData7.data().pic1
+      const profilePhoto7 = await import(`../../assets/imgs/profile/${picPath7}`)
+      setUserdata7(userData7.data())
+      setUserpic7(profilePhoto7.default)
+      const userData8 = await getDoc(doc(db, "users", eventsmodal[8].returnValues[0].toLowerCase()))
+      const picPath8 = userData8.data().pic1
+      const profilePhoto8 = await import(`../../assets/imgs/profile/${picPath8}`)
+      setUserdata8(userData8.data())
+      setUserpic8(profilePhoto8.default)
+      const userData9 = await getDoc(doc(db, "users", eventsmodal[9].returnValues[0].toLowerCase()))
+      const picPath9 = userData9.data().pic1
+      const profilePhoto9 = await import(`../../assets/imgs/profile/${picPath9}`)
+      setUserdata9(userData9.data())
+      setUserpic9(profilePhoto9.default)
+      const userData10 = await getDoc(doc(db, "users", eventsmodal[10].returnValues[0].toLowerCase()))
+      const picPath10 = userData10.data().pic1
+      const profilePhoto10 = await import(`../../assets/imgs/profile/${picPath10}`)
+      setUserdata10(userData10.data())
+      setUserpic10(profilePhoto10.default)
+      const userData11 = await getDoc(doc(db, "users", eventsmodal[11].returnValues[0].toLowerCase()))
+      const picPath11 = userData11.data().pic1
+      const profilePhoto11 = await import(`../../assets/imgs/profile/${picPath11}`)
+      setUserdata11(userData11.data())
+      setUserpic11(profilePhoto11.default)
+    } catch (e) {
+
+    }
   }
 
   const connectWeb3Modal = async (disconnect) => {
@@ -124,6 +227,27 @@ export default function Game() {
       });
       const chainId = await web3.eth.getChainId();
       setChain(chainId)
+      if (chainId !== '0x13881') {
+        try {
+          await ethereum.sendAsync({
+            method: 'wallet_addEthereumChain',
+            params: [{
+              chainId: "0x13881",
+              chainName: "Mumbai Testnet",
+              rpcUrls: ["https://rpc-mumbai.matic.today"],
+              iconUrls: [""],
+              nativeCurrency: {
+                name: "MATIC",
+                symbol: "MATIC",
+                decimals: 18,
+              },
+              blockExplorerUrls: ["https://mumbai.polygonscan.com/"],
+            }],
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      }
       const balance = await web3.eth.getBalance(accounts[0]);
       setWalletBalance(balance)
       const query = doc(db, "users", accounts[0].toLowerCase())
@@ -251,20 +375,52 @@ export default function Game() {
       {isMobileResolution
         ?
         <div className="d-flex flex-row justify-content-around gap-1">
-          <HistoryGames
-            theme={theme}
-            isMobileVersion={true}
-            web3={web3}
-            rpsgame={rpsgame}
-            decimal={decimal}
-          />
-          <WinStreakLeaderboard
-            theme={theme}
-            isMobileVersion={true}
-            web3={web3}
-          />
-          <NavLink className="btn btn-danger" to="/leaderboard">LEADERBOARD</NavLink>
-          {account !== '0x000000000000000000000000000000000000dEaD' ? <ConnectWallet decimal={decimal} web3={web3} account={account} theme={theme} walletBalance={walletBalance} username={username} userpic={userpic} register={register} disconnectWallet={disconnectWallet} /> : ""}
+          {account !== '0x000000000000000000000000000000000000dEaD' ?
+            <>
+              <HistoryGames
+                theme={theme}
+                isMobileVersion={true}
+                web3={web3}
+                rpsgame={rpsgame}
+                decimal={decimal}
+                eventsmodal={eventsmodal}
+                blockchain={blockchain}
+                userdata0={userdata0}
+                userdata1={userdata1}
+                userdata2={userdata2}
+                userdata3={userdata3}
+                userdata4={userdata4}
+                userdata5={userdata5}
+                userdata6={userdata6}
+                userdata7={userdata7}
+                userdata8={userdata8}
+                userdata9={userdata9}
+                userdata10={userdata10}
+                userdata11={userdata11}
+                setUserpic0={setUserpic0}
+                setUserpic1={setUserpic1}
+                setUserpic2={setUserpic2}
+                setUserpic3={setUserpic3}
+                setUserpic4={setUserpic4}
+                setUserpic5={setUserpic5}
+                setUserpic6={setUserpic6}
+                setUserpic7={setUserpic7}
+                setUserpic8={setUserpic8}
+                setUserpic9={setUserpic9}
+                setUserpic10={setUserpic10}
+                setUserpic11={setUserpic11}
+              />
+              <WinStreakLeaderboard
+                theme={theme}
+                isMobileVersion={true}
+                web3={web3}
+              />
+              <NavLink className="btn btn-danger" to="/leaderboard">LEADERBOARD</NavLink>
+              <ConnectWallet decimal={decimal} web3={web3} account={account} theme={theme} walletBalance={walletBalance} username={username} userpic={userpic} register={register} disconnectWallet={disconnectWallet} />
+            </>
+            :
+            ""
+          }
         </div>
         :
         <div className="d-flex flex-row justify-content-between align-items-center">
@@ -276,20 +432,52 @@ export default function Game() {
             {theme === "light" ? "DARK " : "LIGHT "}<i className={`${theme === "light" ? "fa-solid fa-moon" : "fa-solid fa-sun"}`}></i>
           </button>
           <div className="d-flex flex-row gap-3">
-            <HistoryGames
-              theme={theme}
-              isMobileVersion={false}
-              web3={web3}
-              rpsgame={rpsgame}
-              decimal={decimal}
-            />
-            <WinStreakLeaderboard
-              theme={theme}
-              isMobileVersion={false}
-              web3={web3}
-            />
-            <NavLink className="btn btn-outline-danger" to="/leaderboard">LEADERBOARD <i className="fa-solid fa-up-right-from-square fa-xs"></i></NavLink>
-            {account !== '0x000000000000000000000000000000000000dEaD' ? <ConnectWallet decimal={decimal} web3={web3} account={account} theme={theme} walletBalance={walletBalance} username={username} userpic={userpic} register={register} disconnectWallet={disconnectWallet} /> : ""}
+            {account !== '0x000000000000000000000000000000000000dEaD' ?
+              <>
+                <HistoryGames
+                  theme={theme}
+                  isMobileVersion={false}
+                  web3={web3}
+                  rpsgame={rpsgame}
+                  decimal={decimal}
+                  eventsmodal={eventsmodal}
+                  blockchain={blockchain}
+                  userdata0={userdata0}
+                  userdata1={userdata1}
+                  userdata2={userdata2}
+                  userdata3={userdata3}
+                  userdata4={userdata4}
+                  userdata5={userdata5}
+                  userdata6={userdata6}
+                  userdata7={userdata7}
+                  userdata8={userdata8}
+                  userdata9={userdata9}
+                  userdata10={userdata10}
+                  userdata11={userdata11}
+                  setUserpic0={setUserpic0}
+                  setUserpic1={setUserpic1}
+                  setUserpic2={setUserpic2}
+                  setUserpic3={setUserpic3}
+                  setUserpic4={setUserpic4}
+                  setUserpic5={setUserpic5}
+                  setUserpic6={setUserpic6}
+                  setUserpic7={setUserpic7}
+                  setUserpic8={setUserpic8}
+                  setUserpic9={setUserpic9}
+                  setUserpic10={setUserpic10}
+                  setUserpic11={setUserpic11}
+                />
+                <WinStreakLeaderboard
+                  theme={theme}
+                  isMobileVersion={false}
+                  web3={web3}
+                />
+                <NavLink className="btn btn-danger" to="/leaderboard">LEADERBOARD</NavLink>
+                <ConnectWallet decimal={decimal} web3={web3} account={account} theme={theme} walletBalance={walletBalance} username={username} userpic={userpic} register={register} disconnectWallet={disconnectWallet} />
+              </>
+              :
+              ""
+            }
           </div>
         </div>
       }
@@ -412,16 +600,42 @@ export default function Game() {
                 </p>
                 <button className="btn-hover btn-start" onClick={openGame}>DOUBLE OR NOTHING</button>
                 <p>CLICK TO SEE OPTIONS</p>
+                <HistoryGamesModal
+                  theme={theme}
+                  decimal={decimal}
+                  rpsgame={rpsgame}
+                  web3={web3}
+                  eventsmodal={eventsmodal}
+                  blockchain={blockchain}
+                  userdata0={userdata0}
+                  userdata1={userdata1}
+                  userdata2={userdata2}
+                  userdata3={userdata3}
+                  userdata4={userdata4}
+                  userdata5={userdata5}
+                  userdata6={userdata6}
+                  userdata7={userdata7}
+                  userdata8={userdata8}
+                  userdata9={userdata9}
+                  userdata10={userdata10}
+                  userdata11={userdata11}
+                  setUserpic0={setUserpic0}
+                  setUserpic1={setUserpic1}
+                  setUserpic2={setUserpic2}
+                  setUserpic3={setUserpic3}
+                  setUserpic4={setUserpic4}
+                  setUserpic5={setUserpic5}
+                  setUserpic6={setUserpic6}
+                  setUserpic7={setUserpic7}
+                  setUserpic8={setUserpic8}
+                  setUserpic9={setUserpic9}
+                  setUserpic10={setUserpic10}
+                  setUserpic11={setUserpic11}
+                />
               </>
               :
               <ConnectWallet connectWeb3Modal={connectWeb3Modal} decimal={decimal} web3={web3} account={account} theme={theme} walletLog={walletLog} />
             }
-            <HistoryGamesModal
-              theme={theme}
-              decimal={decimal}
-              rpsgame={rpsgame}
-              web3={web3}
-            />
           </div>
         }
       </article >

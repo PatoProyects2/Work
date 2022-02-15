@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { doc, updateDoc } from "firebase/firestore";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Button, Modal, ModalBody, ModalFooter, FormGroup, Input, Label } from 'reactstrap'
 import db from '../../../../firebase/firesbaseConfig'
-import MetamaskLogo from '../../../../assets/imgs/MetaMask_Fox.png'
 export default function ConnectWallet(props) {
   const [userinfo, setUserinfo] = useState({
     name1: '',
@@ -134,9 +133,8 @@ export default function ConnectWallet(props) {
         </Dropdown>
         :
         <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="lg">
-          <DropdownToggle color='danger' onClick={props.connectWeb3Modal} disabled={props.walletLog === 'Connecting...'}>
-            {props.walletLog === 'Connecting...' ? <img width="25" height="25" alt="" src={MetamaskLogo} /> : ""}
-            {" " + props.walletLog}
+          <DropdownToggle color='danger' onClick={props.connectWeb3Modal}>
+            {props.walletLog}
           </DropdownToggle>
         </Dropdown>
       }

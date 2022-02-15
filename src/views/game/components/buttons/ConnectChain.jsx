@@ -6,20 +6,39 @@ export default function ConnectChain(props) {
         setDropdown(!dropdown);
     }
     const addPolygon = async () => {
+        // try {
+        //     await ethereum.sendAsync({
+        //         method: 'wallet_addEthereumChain',
+        //         params: [{
+        //             chainId: "0x89",
+        //             chainName: "Polygon Mainnet",
+        //             rpcUrls: ["https://polygon-rpc.com/"],
+        //             iconUrls: ["https://queesunbitcoin.com/wp-content/uploads/2021/05/curso-sobre-binance-online.png"],
+        //             nativeCurrency: {
+        //                 name: "MATIC",
+        //                 symbol: "MATIC",
+        //                 decimals: 18,
+        //             },
+        //             blockExplorerUrls: ["https://explorer.matic.network/"],
+        //         }],
+        //     });
+        // } catch (error) {
+        //     console.log(error);
+        // }
         try {
             await ethereum.sendAsync({
                 method: 'wallet_addEthereumChain',
                 params: [{
-                    chainId: "0x89",
-                    chainName: "Polygon Mainnet",
-                    rpcUrls: ["https://polygon-rpc.com/"],
-                    iconUrls: ["https://queesunbitcoin.com/wp-content/uploads/2021/05/curso-sobre-binance-online.png"],
+                    chainId: "0x13881",
+                    chainName: "Mumbai Testnet",
+                    rpcUrls: ["https://rpc-mumbai.matic.today"],
+                    iconUrls: [""],
                     nativeCurrency: {
                         name: "MATIC",
                         symbol: "MATIC",
                         decimals: 18,
                     },
-                    blockExplorerUrls: ["https://explorer.matic.network/"],
+                    blockExplorerUrls: ["https://mumbai.polygonscan.com/"],
                 }],
             });
         } catch (error) {
