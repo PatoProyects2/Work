@@ -5,7 +5,6 @@ import db from '../../../../firebase/firesbaseConfig'
 export default function ConnectWallet(props) {
   const [userinfo, setUserinfo] = useState({
     name1: '',
-    pic1: '',
   });
   const [friend, setFriend] = useState({
     account1: '',
@@ -20,11 +19,11 @@ export default function ConnectWallet(props) {
     setUserinfo({
       ...userinfo,
       [event.target.name]: event.target.value
-    })
+    });
     setFriend({
       ...friend,
       [event.target.name]: event.target.value
-    })
+    });
   }
 
   const toggleMenu = () => {
@@ -58,13 +57,13 @@ export default function ConnectWallet(props) {
     setUserinfo({
       ...userinfo,
       name1: '',
-      pic1: ''
     })
     updateDoc(doc(db, "users", props.account), {
       name1: userinfo.name1
+    }).then(r => {
+      window.location.reload()
+      setEdit(false)
     })
-    setEdit(false)
-    window.location.reload()
   }
 
   const sendToFriend = () => {

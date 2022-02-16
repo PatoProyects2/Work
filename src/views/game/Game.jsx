@@ -24,7 +24,20 @@ export default function Game() {
     hand: '',
     amount: 0
   });
+  const [eventsmodal, setEventsmodal] = useState({});
   const [web3ModalInfo, setWeb3ModalInfo] = useState({});
+  const [userdata0, setUserdata0] = useState({ name1: '' });
+  const [userdata1, setUserdata1] = useState({ name1: '' });
+  const [userdata2, setUserdata2] = useState({ name1: '' });
+  const [userdata3, setUserdata3] = useState({ name1: '' });
+  const [userdata4, setUserdata4] = useState({ name1: '' });
+  const [userdata5, setUserdata5] = useState({ name1: '' });
+  const [userdata6, setUserdata6] = useState({ name1: '' });
+  const [userdata7, setUserdata7] = useState({ name1: '' });
+  const [userdata8, setUserdata8] = useState({ name1: '' });
+  const [userdata9, setUserdata9] = useState({ name1: '' });
+  const [userdata10, setUserdata10] = useState({ name1: '' });
+  const [userdata11, setUserdata11] = useState({ name1: '' });
   const [register, setRegister] = useState('');
   const [userpic, setUserpic] = useState('');
   const [username, setUsername] = useState('');
@@ -46,19 +59,6 @@ export default function Game() {
   const [showGameResult, setShowGameResult] = useState(false);
   const isMobileResolution = useMatchMedia('(max-width:650px)', false);
   const [blockchain, setBlockchain] = useState(0);
-  const [eventsmodal, setEventsmodal] = useState({});
-  const [userdata0, setUserdata0] = useState({ name1: '' });
-  const [userdata1, setUserdata1] = useState({ name1: '' });
-  const [userdata2, setUserdata2] = useState({ name1: '' });
-  const [userdata3, setUserdata3] = useState({ name1: '' });
-  const [userdata4, setUserdata4] = useState({ name1: '' });
-  const [userdata5, setUserdata5] = useState({ name1: '' });
-  const [userdata6, setUserdata6] = useState({ name1: '' });
-  const [userdata7, setUserdata7] = useState({ name1: '' });
-  const [userdata8, setUserdata8] = useState({ name1: '' });
-  const [userdata9, setUserdata9] = useState({ name1: '' });
-  const [userdata10, setUserdata10] = useState({ name1: '' });
-  const [userdata11, setUserdata11] = useState({ name1: '' });
 
   useEffect(() => {
     const timer = setInterval(() => { loadHistoryUserPlays(web3, rpsgame) }, 3000);
@@ -72,43 +72,30 @@ export default function Game() {
       const lastMinuteBlock = actuallBlock - 25
       const eventsmodal = await rpsgame.getPastEvents('Play', { fromBlock: lastMinuteBlock, toBlock: 'latest' })
       setEventsmodal(eventsmodal)
-
       const userData0 = await getDoc(doc(db, "users", eventsmodal[0].returnValues[0].toLowerCase()))
       setUserdata0(userData0.data())
-
       const userData1 = await getDoc(doc(db, "users", eventsmodal[1].returnValues[0].toLowerCase()))
       setUserdata1(userData1.data())
-
       const userData2 = await getDoc(doc(db, "users", eventsmodal[2].returnValues[0].toLowerCase()))
       setUserdata2(userData2.data())
-
       const userData3 = await getDoc(doc(db, "users", eventsmodal[3].returnValues[0].toLowerCase()))
       setUserdata3(userData3.data())
-
       const userData4 = await getDoc(doc(db, "users", eventsmodal[4].returnValues[0].toLowerCase()))
       setUserdata4(userData4.data())
-
       const userData5 = await getDoc(doc(db, "users", eventsmodal[5].returnValues[0].toLowerCase()))
       setUserdata5(userData5.data())
-
       const userData6 = await getDoc(doc(db, "users", eventsmodal[6].returnValues[0].toLowerCase()))
       setUserdata6(userData6.data())
-
       const userData7 = await getDoc(doc(db, "users", eventsmodal[7].returnValues[0].toLowerCase()))
       setUserdata7(userData7.data())
-
       const userData8 = await getDoc(doc(db, "users", eventsmodal[8].returnValues[0].toLowerCase()))
       setUserdata8(userData8.data())
-
       const userData9 = await getDoc(doc(db, "users", eventsmodal[9].returnValues[0].toLowerCase()))
       setUserdata9(userData9.data())
-
       const userData10 = await getDoc(doc(db, "users", eventsmodal[10].returnValues[0].toLowerCase()))
       setUserdata10(userData10.data())
-
       const userData11 = await getDoc(doc(db, "users", eventsmodal[11].returnValues[0].toLowerCase()))
       setUserdata11(userData11.data())
-
     } catch (e) {
 
     }
@@ -193,6 +180,9 @@ export default function Game() {
       ethereum.on('accountsChanged', () => {
         window.location.reload()
       });
+      ethereum.on('chainChanged', () => {
+        window.location.reload()
+      });
       const chainId = await web3.eth.getChainId();
       setChain(chainId)
       if (chainId !== '0x13881') {
@@ -236,9 +226,8 @@ export default function Game() {
           register: day.toString() + "/" + month.toString() + "/" + year.toString(),
           winStreak: 0,
           winStreakBlock: 0
-        })
+        }).then(r => window.location.reload())
       }
-
     } catch (e) {
     }
   }
