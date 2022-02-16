@@ -16,12 +16,12 @@ export const HowToPlay = ({ theme, show, onHide }) => {
                     <h2 className="text-sm text-left mb-1">How To Play</h2>
                     <br />
                     <p>
-                        1. Connect your Wallet.<br />
-                        2. Pick either rock, paper or scissors.<br />
-                        3. Select your desired amount.<br />
+                        1. Connect your MetaMask Wallet.<br />
+                        2. Choose your favorite option.<br />
+                        3. Pick the amount you want to play with.<br />
                         4. Click “Double or Nothing”.<br />
-                        5. Click approve and wait to see the the result.<br />
-                        6. Congrats, you’re now a degenerate.<br />
+                        5. Click approve and wait for the battle to end.<br />
+                        6. Claim your prize!!.<br />
                     </p>
                 </div>
             </ModalBody>

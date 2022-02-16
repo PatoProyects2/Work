@@ -114,7 +114,7 @@ export default function ConnectWallet(props) {
       {props.account !== '0x000000000000000000000000000000000000dEaD' ?
         <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="md">
           <DropdownToggle color='transparent' className='p-0'>
-            {props.userpic ? <img width="35" height="35" className="rounded-circle" alt="" src={props.userpic} /> : <img width="35" height="35" className="rounded-circle" alt="" src="https://i.imgur.com/E3aJ7TP.jpg" />}
+            <img width="35" height="35" className="rounded-circle" alt="" src={`${props.userpic}`} />
           </DropdownToggle>
           <DropdownMenu className={props.theme === 'dark' ? 'bg-dark' : 'bg-light'}>
             <DropdownItem header>{props.username}</DropdownItem>
@@ -143,7 +143,7 @@ export default function ConnectWallet(props) {
         <ModalBody>
           <h4 className="text-center">USER PROFILE</h4>
           <FormGroup className="pt-3 text-center">
-            {props.userpic && <img width="105" height="105" className="rounded-circle" alt="" src={props.userpic} />}
+            <img width="105" height="105" className="rounded-circle" alt="" src={`${props.userpic}`} />
           </FormGroup>
           <FormGroup className="text-center">
             <Label>{"User since " + props.register}</Label>

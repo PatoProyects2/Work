@@ -5,6 +5,7 @@ import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import Torus from "@toruslabs/torus-embed";
 import Portis from "@portis/web3";
+import ethProvider from "eth-provider";
 import WalletLink from "walletlink";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import RpsGame from '../../abis/RpsGame/rpsGame.json'
@@ -13,10 +14,6 @@ import HistoryGamesModal from './components/HistoryGamesModal'
 import HistoryGames from './components/buttons/HistoryGames'
 import ConnectWallet from './components/buttons/ConnectWallet'
 import WinStreakLeaderboard from './components/buttons/WinStreakLeaderboard'
-import Rock from '../../assets/imgs/rock.gif'
-import Paper from '../../assets/imgs/paper.gif'
-import Scissors from '../../assets/imgs/scissors.gif'
-import RPSAnimated from '../../assets/imgs/RPS.gif'
 import db from '../../firebase/firesbaseConfig'
 import { useMatchMedia } from '../../hooks/useMatchMedia'
 export default function Game() {
@@ -62,18 +59,6 @@ export default function Game() {
   const [userdata9, setUserdata9] = useState({ name1: '' });
   const [userdata10, setUserdata10] = useState({ name1: '' });
   const [userdata11, setUserdata11] = useState({ name1: '' });
-  const [userpic0, setUserpic0] = useState('');
-  const [userpic1, setUserpic1] = useState('');
-  const [userpic2, setUserpic2] = useState('');
-  const [userpic3, setUserpic3] = useState('');
-  const [userpic4, setUserpic4] = useState('');
-  const [userpic5, setUserpic5] = useState('');
-  const [userpic6, setUserpic6] = useState('');
-  const [userpic7, setUserpic7] = useState('');
-  const [userpic8, setUserpic8] = useState('');
-  const [userpic9, setUserpic9] = useState('');
-  const [userpic10, setUserpic10] = useState('');
-  const [userpic11, setUserpic11] = useState('');
 
   useEffect(() => {
     const timer = setInterval(() => { loadHistoryUserPlays(web3, rpsgame) }, 3000);
@@ -87,66 +72,43 @@ export default function Game() {
       const lastMinuteBlock = actuallBlock - 25
       const eventsmodal = await rpsgame.getPastEvents('Play', { fromBlock: lastMinuteBlock, toBlock: 'latest' })
       setEventsmodal(eventsmodal)
+
       const userData0 = await getDoc(doc(db, "users", eventsmodal[0].returnValues[0].toLowerCase()))
-      const picPath0 = userData0.data().pic1
-      const profilePhoto0 = await import(`../../assets/imgs/profile/${picPath0}`)
       setUserdata0(userData0.data())
-      setUserpic0(profilePhoto0.default)
+
       const userData1 = await getDoc(doc(db, "users", eventsmodal[1].returnValues[0].toLowerCase()))
-      const picPath1 = userData1.data().pic1
-      const profilePhoto1 = await import(`../../assets/imgs/profile/${picPath1}`)
       setUserdata1(userData1.data())
-      setUserpic1(profilePhoto1.default)
+
       const userData2 = await getDoc(doc(db, "users", eventsmodal[2].returnValues[0].toLowerCase()))
-      const picPath2 = userData2.data().pic1
-      const profilePhoto2 = await import(`../../assets/imgs/profile/${picPath2}`)
       setUserdata2(userData2.data())
-      setUserpic2(profilePhoto2.default)
+
       const userData3 = await getDoc(doc(db, "users", eventsmodal[3].returnValues[0].toLowerCase()))
-      const picPath3 = userData3.data().pic1
-      const profilePhoto3 = await import(`../../assets/imgs/profile/${picPath3}`)
       setUserdata3(userData3.data())
-      setUserpic3(profilePhoto3.default)
+
       const userData4 = await getDoc(doc(db, "users", eventsmodal[4].returnValues[0].toLowerCase()))
-      const picPath4 = userData4.data().pic1
-      const profilePhoto4 = await import(`../../assets/imgs/profile/${picPath4}`)
       setUserdata4(userData4.data())
-      setUserpic4(profilePhoto4.default)
+
       const userData5 = await getDoc(doc(db, "users", eventsmodal[5].returnValues[0].toLowerCase()))
-      const picPath5 = userData5.data().pic1
-      const profilePhoto5 = await import(`../../assets/imgs/profile/${picPath5}`)
       setUserdata5(userData5.data())
-      setUserpic5(profilePhoto5.default)
+
       const userData6 = await getDoc(doc(db, "users", eventsmodal[6].returnValues[0].toLowerCase()))
-      const picPath6 = userData6.data().pic1
-      const profilePhoto6 = await import(`../../assets/imgs/profile/${picPath6}`)
       setUserdata6(userData6.data())
-      setUserpic6(profilePhoto6.default)
+
       const userData7 = await getDoc(doc(db, "users", eventsmodal[7].returnValues[0].toLowerCase()))
-      const picPath7 = userData7.data().pic1
-      const profilePhoto7 = await import(`../../assets/imgs/profile/${picPath7}`)
       setUserdata7(userData7.data())
-      setUserpic7(profilePhoto7.default)
+
       const userData8 = await getDoc(doc(db, "users", eventsmodal[8].returnValues[0].toLowerCase()))
-      const picPath8 = userData8.data().pic1
-      const profilePhoto8 = await import(`../../assets/imgs/profile/${picPath8}`)
       setUserdata8(userData8.data())
-      setUserpic8(profilePhoto8.default)
+
       const userData9 = await getDoc(doc(db, "users", eventsmodal[9].returnValues[0].toLowerCase()))
-      const picPath9 = userData9.data().pic1
-      const profilePhoto9 = await import(`../../assets/imgs/profile/${picPath9}`)
       setUserdata9(userData9.data())
-      setUserpic9(profilePhoto9.default)
+
       const userData10 = await getDoc(doc(db, "users", eventsmodal[10].returnValues[0].toLowerCase()))
-      const picPath10 = userData10.data().pic1
-      const profilePhoto10 = await import(`../../assets/imgs/profile/${picPath10}`)
       setUserdata10(userData10.data())
-      setUserpic10(profilePhoto10.default)
+
       const userData11 = await getDoc(doc(db, "users", eventsmodal[11].returnValues[0].toLowerCase()))
-      const picPath11 = userData11.data().pic1
-      const profilePhoto11 = await import(`../../assets/imgs/profile/${picPath11}`)
       setUserdata11(userData11.data())
-      setUserpic11(profilePhoto11.default)
+
     } catch (e) {
 
     }
@@ -204,17 +166,17 @@ export default function Game() {
           darkMode: false
         },
       },
+      frame: {
+        display: {
+          description: " ",
+        },
+        package: ethProvider
+      },
     };
     const web3Modal = new Web3Modal({
       cacheProvider: false,
       providerOptions,
-      theme: {
-        background: "rgb(39, 49, 56)",
-        main: "rgb(199, 199, 199)",
-        secondary: "rgb(136, 136, 136)",
-        border: "rgba(195, 195, 195, 0.14)",
-        hover: "rgb(16, 26, 32)"
-      }
+      theme: theme
     });
     setWeb3ModalInfo(web3Modal)
     try {
@@ -262,9 +224,7 @@ export default function Game() {
       if (userData) {
         setUsername(userData.name1)
         setRegister(userData.register)
-        const picPath = userData.pic1
-        const profilePhoto = await import(`../../assets/imgs/profile/${picPath}`)
-        setUserpic(profilePhoto.default)
+        setUserpic(userData.pic1)
       } else {
         const globalDate = new Date();
         const year = globalDate.getUTCFullYear()
@@ -272,7 +232,7 @@ export default function Game() {
         const day = globalDate.getUTCDate()
         setDoc(doc(db, "users", accounts[0].toLowerCase()), {
           name1: 'Guest',
-          pic1: 'guest.jpg',
+          pic1: 'https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh',
           register: day.toString() + "/" + month.toString() + "/" + year.toString(),
           winStreak: 0,
           winStreakBlock: 0
@@ -409,18 +369,6 @@ export default function Game() {
                 userdata9={userdata9}
                 userdata10={userdata10}
                 userdata11={userdata11}
-                userpic0={userpic0}
-                userpic1={userpic1}
-                userpic2={userpic2}
-                userpic3={userpic3}
-                userpic4={userpic4}
-                userpic5={userpic5}
-                userpic6={userpic6}
-                userpic7={userpic7}
-                userpic8={userpic8}
-                userpic9={userpic9}
-                userpic10={userpic10}
-                userpic11={userpic11}
               />
               <WinStreakLeaderboard
                 theme={theme}
@@ -466,18 +414,6 @@ export default function Game() {
                   userdata9={userdata9}
                   userdata10={userdata10}
                   userdata11={userdata11}
-                  userpic0={userpic0}
-                  userpic1={userpic1}
-                  userpic2={userpic2}
-                  userpic3={userpic3}
-                  userpic4={userpic4}
-                  userpic5={userpic5}
-                  userpic6={userpic6}
-                  userpic7={userpic7}
-                  userpic8={userpic8}
-                  userpic9={userpic9}
-                  userpic10={userpic10}
-                  userpic11={userpic11}
                 />
                 <WinStreakLeaderboard
                   theme={theme}
@@ -504,7 +440,7 @@ export default function Game() {
                 <div className="mt-3">
                   {animation === true ?
                     <>
-                      <img src={RPSAnimated} width="240" height="240" alt="Rock-Paper-Scissors" />
+                      <img src="https://gateway.ipfs.io/ipfs/QmdBg6qrUPFNjW31deKT678RXZ2fs6fM5zncHFAWAZwFBd" width="240" height="240" alt="Rock-Paper-Scissors" />
                       <h3>PLAYING</h3>
                       <h3>{userhand + " FOR " + useramount + " MATIC"}</h3>
                     </> : ""}
@@ -522,12 +458,12 @@ export default function Game() {
                         :
                         ""
                       }
-                      {userhand === 'ROCK' && userGameResult === true ? <img width="240" height="240" src={Scissors} alt="" /> : ""}
-                      {userhand === 'PAPER' && userGameResult === true ? <img width="240" height="240" src={Rock} alt="" /> : ""}
-                      {userhand === 'SCISSORS' && userGameResult === true ? <img width="240" height="240" src={Paper} alt="" /> : ""}
-                      {userhand === 'ROCK' && userGameResult === false ? <img width="240" height="240" src={Paper} alt="" /> : ""}
-                      {userhand === 'PAPER' && userGameResult === false ? <img width="240" height="240" src={Scissors} alt="" /> : ""}
-                      {userhand === 'SCISSORS' && userGameResult === false ? <img width="240" height="240" src={Rock} alt="" /> : ""}
+                      {userhand === 'ROCK' && userGameResult === true ? <img width="240" height="240" src="https://gateway.ipfs.io/ipfs/QmfPWAiw4m5RmnZbhUUcizNDASA1kzYHuUWoZB7Y6MZdqd" alt="" /> : ""}
+                      {userhand === 'PAPER' && userGameResult === true ? <img width="240" height="240" src="https://gateway.ipfs.io/ipfs/QmRssacnda9ZsbgtrUQSLTjdzFgiiCPgZ9o2hbZ5SRvT4m" alt="" /> : ""}
+                      {userhand === 'SCISSORS' && userGameResult === true ? <img width="240" height="240" src="https://gateway.ipfs.io/ipfs/QmQDQBaCe7NcUDm2tjVsqbiKAHVkWApL7pje8wpnViQ6GR" alt="" /> : ""}
+                      {userhand === 'ROCK' && userGameResult === false ? <img width="240" height="240" src="https://gateway.ipfs.io/ipfs/QmQDQBaCe7NcUDm2tjVsqbiKAHVkWApL7pje8wpnViQ6GR" alt="" /> : ""}
+                      {userhand === 'PAPER' && userGameResult === false ? <img width="240" height="240" src="https://gateway.ipfs.io/ipfs/QmfPWAiw4m5RmnZbhUUcizNDASA1kzYHuUWoZB7Y6MZdqd" alt="" /> : ""}
+                      {userhand === 'SCISSORS' && userGameResult === false ? <img width="240" height="240" src="https://gateway.ipfs.io/ipfs/QmRssacnda9ZsbgtrUQSLTjdzFgiiCPgZ9o2hbZ5SRvT4m" alt="" /> : ""}
                       <br></br>
                       <br></br>
                       <h3>{userGameResult === true ? " YOU WON " : ""}{userGameResult === false ? " YOU LOST " : ""}</h3>
@@ -595,13 +531,13 @@ export default function Game() {
             {log0 && (<span className="alert alert-danger mx-5">{log0}</span>)}
             <div className="row g-0 my-5 justify-content-center">
               <div className="col-3 col-md-2">
-                <img className="my-3 img-fluid" src={Rock} alt="Rock" />
+                <img className="my-3 img-fluid" src="https://gateway.ipfs.io/ipfs/QmRssacnda9ZsbgtrUQSLTjdzFgiiCPgZ9o2hbZ5SRvT4m" alt="Rock" />
               </div>
               <div className="col-3 col-md-2">
-                <img className="my-3 img-fluid" src={Paper} alt="Paper" />
+                <img className="my-3 img-fluid" src="https://gateway.ipfs.io/ipfs/QmQDQBaCe7NcUDm2tjVsqbiKAHVkWApL7pje8wpnViQ6GR" alt="Paper" />
               </div>
               <div className="col-3 col-md-2">
-                <img className="my-3 img-fluid" src={Scissors} alt="Scissors" />
+                <img className="my-3 img-fluid" src="https://gateway.ipfs.io/ipfs/QmfPWAiw4m5RmnZbhUUcizNDASA1kzYHuUWoZB7Y6MZdqd" alt="Scissors" />
               </div>
             </div>
             {account !== '0x000000000000000000000000000000000000dEaD' ?
@@ -631,18 +567,6 @@ export default function Game() {
                   userdata9={userdata9}
                   userdata10={userdata10}
                   userdata11={userdata11}
-                  setUserpic0={setUserpic0}
-                  setUserpic1={setUserpic1}
-                  setUserpic2={setUserpic2}
-                  setUserpic3={setUserpic3}
-                  setUserpic4={setUserpic4}
-                  setUserpic5={setUserpic5}
-                  setUserpic6={setUserpic6}
-                  setUserpic7={setUserpic7}
-                  setUserpic8={setUserpic8}
-                  setUserpic9={setUserpic9}
-                  setUserpic10={setUserpic10}
-                  setUserpic11={setUserpic11}
                 />
               </>
               :
