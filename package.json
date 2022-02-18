@@ -10,6 +10,7 @@
         "url": "git+https://github.com/PatoProyects2/Work.git"
     },
     "dependencies": {
+        "@auth0/auth0-react": "^1.9.0",
         "@metamask/detect-provider": "1.2.0",
         "@portis/web3": "4.0.7",
         "@toruslabs/torus-embed": "1.20.4",
@@ -25,9 +26,12 @@
         "node-sass": "4.14.1",
         "react": "17.0.2",
         "react-dom": "17.0.2",
+        "react-firebase-hooks": "^5.0.2",
+        "react-json-pretty": "^2.2.0",
         "react-router-dom": "6.2.1",
         "react-scripts": "4.0.3",
         "react-scroll-to-bottom": "4.2.0",
+        "react-transition-group": "^4.4.2",
         "reactstrap": "9.0.1",
         "socket.io-client": "4.4.1",
         "styled-components": "5.3.3",

@@ -11,12 +11,13 @@ import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import RpsGame from '../../abis/RpsGame/rpsGame.json'
 import { rpsGameContract } from '../../components/blockchain/Contracts'
 import HistoryGamesModal from './components/HistoryGamesModal'
-import HistoryGames from './components/buttons/HistoryGames'
-import ConnectWallet from './components/buttons/ConnectWallet'
-import WinStreakLeaderboard from './components/buttons/WinStreakLeaderboard'
-import db from '../../firebase/firesbaseConfig'
+import HistoryGames from './components/HistoryGames'
+import ConnectWallet from './components/ConnectWallet'
+import ConnectChain from './components/ConnectChain'
+import WinStreakLeaderboard from './components/WinStreakLeaderboard'
+import { db } from '../../firebase/firesbaseConfig'
 import { useMatchMedia } from '../../hooks/useMatchMedia'
-export default function Game() {
+export default function Rps() {
   const [theme, setTheme] = useOutletContext();
   const [web3, setWeb3] = useState({});
   const [rpsgame, setRpsgame] = useState({});
@@ -42,11 +43,11 @@ export default function Game() {
   const [userpic, setUserpic] = useState('');
   const [username, setUsername] = useState('');
   const [account, setAccount] = useState('0x000000000000000000000000000000000000dEaD');
-  const [chain, setChain] = useState('');
   const [log, setLog] = useState('');
   const [log0, setLog0] = useState('');
-  const [walletLog, setWalletLog] = useState('Connect Wallet');
+  const [walletLog, setWalletLog] = useState('CONNECT WALLET');
   const [walletBalance, setWalletBalance] = useState(0);
+  const [network, setNetwork] = useState(0);
   const [decimal, setDecimal] = useState(1000000000000000000);
   const [userGameStreak, setUserGameStreak] = useState(0);
   const [userhand, setUserhand] = useState(0);
@@ -184,7 +185,7 @@ export default function Game() {
         window.location.reload()
       });
       const chainId = await web3.eth.getChainId();
-      setChain(chainId)
+      setNetwork(chainId)
       if (chainId !== '0x13881') {
         try {
           await ethereum.sendAsync({
@@ -221,7 +222,7 @@ export default function Game() {
         const month = globalDate.getUTCMonth() + 1
         const day = globalDate.getUTCDate()
         setDoc(doc(db, "users", accounts[0].toLowerCase()), {
-          name1: 'Guest',
+          name1: '',
           pic1: 'https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh',
           register: day.toString() + "/" + month.toString() + "/" + year.toString(),
           winStreak: 0,
@@ -458,7 +459,16 @@ export default function Game() {
                       <h3>{userGameResult === true ? " YOU WON " : ""}{userGameResult === false ? " YOU LOST " : ""}</h3>
                       <h3 style={{ color: userGameResult ? "mediumseagreen" : "crimson" }}>{userGameResult === true ? useramount : ""}{userGameResult === false ? useramount : ""}{" MATIC"}</h3>
                       <br></br>
-                      <h3>{userGameResult === true ? <button className="btn-hover btn-green" onClick={backGame}>CLAIM REWARD</button> : <button className="btn btn-success" onClick={backGame}>BACK</button>}</h3>
+                      <h3>
+                        {userGameResult === true ?
+                          <button className="btn-hover btn-green" onClick={backGame}>CLAIM REWARD</button>
+                          :
+                          <>
+                            <p>Try again?</p>
+                            <button className="btn-hover btn-start" onClick={backGame}>DOUBLE OR NOTHING</button>
+                          </>
+                        }
+                      </h3>
                     </>
                     :
                     ""
@@ -517,6 +527,9 @@ export default function Game() {
           </>
           :
           <div>
+            <br></br>
+            <h1>RPSGAME.CLUB</h1>
+            <br></br>
             {log0 && (<span className="alert alert-danger mx-5">{log0}</span>)}
             <div className="row g-0 my-5 justify-content-center">
               <div className="col-3 col-md-2">
@@ -531,6 +544,8 @@ export default function Game() {
             </div>
             {account !== '0x000000000000000000000000000000000000dEaD' ?
               <>
+                <ConnectChain network={network} />
+                <br></br>
                 <p>
                   <input id="age" type="checkbox"></input>&nbsp;
                   <label htmlFor="age">I confirm that I am at least 18 years old</label>
@@ -559,7 +574,9 @@ export default function Game() {
                 />
               </>
               :
-              <ConnectWallet connectWeb3Modal={connectWeb3Modal} decimal={decimal} web3={web3} account={account} theme={theme} walletLog={walletLog} />
+              <>
+                <ConnectWallet connectWeb3Modal={connectWeb3Modal} decimal={decimal} web3={web3} account={account} theme={theme} walletLog={walletLog} />
+              </>
             }
           </div>
         }

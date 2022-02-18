@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { getDocs, query, where, orderBy, limit, collection } from "firebase/firestore";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap'
-import db from '../../../../firebase/firesbaseConfig'
+import { db } from '../../../firebase/firesbaseConfig'
 export default function WinStreakLeaderboard(props) {
     const [blockchain, setBlockchain] = useState(0);
     const [dayBlock, setDayBlock] = useState(0)
@@ -231,6 +231,7 @@ export default function WinStreakLeaderboard(props) {
                     {winStreak7 > 0 && blockStreak7 > dayBlock ?
                         <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
                             <img width="35" height="35" className="rounded-circle" alt="" src={`${picStreak7}`} />
+                            
                             {" " + nameStreak7 + " is on a " + winStreak7 + " win streak"}
                             <small className="d-flex justify-content-end">
                                 {second7 < 0 || second7 === 0 ? "now" : ""}

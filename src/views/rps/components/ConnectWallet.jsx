@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { doc, updateDoc } from "firebase/firestore";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Button, Modal, ModalBody, ModalFooter, FormGroup, Input, Label } from 'reactstrap'
-import db from '../../../../firebase/firesbaseConfig'
+import { db } from '../../../firebase/firesbaseConfig'
 export default function ConnectWallet(props) {
   const [userinfo, setUserinfo] = useState({
     name1: '',
@@ -116,8 +116,9 @@ export default function ConnectWallet(props) {
             <img width="35" height="35" className="rounded-circle" alt="" src={`${props.userpic}`} />
           </DropdownToggle>
           <DropdownMenu className={props.theme === 'dark' ? 'bg-dark' : 'bg-light'}>
-            <DropdownItem header>{props.username}</DropdownItem>
-            <DropdownItem header>{props.account.substring(0, 5) + "..." + props.account.substring(12, 16)}
+            <DropdownItem header>{props.username !== '' ? props.username : "Nickname"}</DropdownItem>
+            <DropdownItem header>
+              {props.account.substring(0, 5) + "..." + props.account.substring(12, 16)}
               <button className={`btn-sm ms-2 ${props.theme === 'dark' ? 'btn-secondary' : 'btn-dark'}`}
                 onClick={() => navigator.clipboard.writeText(props.account)}>
                 <i className="fa-regular fa-clone white"></i>

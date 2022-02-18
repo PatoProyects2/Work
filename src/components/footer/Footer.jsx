@@ -1,7 +1,6 @@
 import React from 'react'
 import { useMatchMedia } from '../../hooks/useMatchMedia'
-import Chat from './components/Chat/Chat'
-
+import ChatRoom from './components/chat/ChatRoom'
 const Footer = ({ theme, setTheme }) => {
 
   const isMobileResolution = useMatchMedia('(max-width:650px)', false);
@@ -25,7 +24,7 @@ const Footer = ({ theme, setTheme }) => {
               </a>
             </div>
 
-            <Chat />
+            <ChatRoom />
             <div className="d-flex justify-content-center mb-5">
               <button
                 type="button"
@@ -39,7 +38,7 @@ const Footer = ({ theme, setTheme }) => {
           </>
           :
           <>
-            <Chat />
+            <ChatRoom />
             <div className="social-icons">
               <a href="https://twitter.com/RPSGameClub" className="twitter-icon me-2" target="_blank" rel="noopener noreferrer">
                 <i className="fab fa-2x fa-twitter"></i>
