@@ -13,8 +13,8 @@ export const RpsMenu = ({ theme }) => {
     return (
         <>
             <nav className='menu'>
-                <NavLink className={({ isActive }) => `${theme === "dark" ? "text-white" : ""} btn btn-transparent ${isActive ? 'active' : ''}`} to="/rpsgame" >HOME</NavLink>
-                <NavLink className={({ isActive }) => `${theme === "dark" ? "text-white" : ""} btn btn-transparent ${isActive ? 'active' : ''}`} to="/rpsgame/about" >ABOUT</NavLink>
+                <NavLink className={({ isActive }) => `${theme === "dark" ? "text-white" : ""} btn btn-transparent ${isActive ? 'active' : ''}`} to="/rps" >HOME</NavLink>
+                <NavLink className={({ isActive }) => `${theme === "dark" ? "text-white" : ""} btn btn-transparent ${isActive ? 'active' : ''}`} to="/rps/about" >ABOUT</NavLink>
                 <button onClick={() => setHtpModalShow(true)} className={`btn btn-transparent ${theme === "dark" ? "text-white" : ""}`}>HOW TO PLAY</button>
                 <button onClick={() => setFaqModalShow(true)} className={`btn btn-transparent ${theme === "dark" ? "text-white" : ""}`}>FAQ</button>
                 <button onClick={() => setRpsModalShow(true)} className={`btn btn-transparent ${theme === "dark" ? "text-white" : ""}`}>RPS RESPONSIBLY</button>

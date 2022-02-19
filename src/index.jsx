@@ -9,7 +9,6 @@ import {
 
 import { MainLayout } from './components/layout/MainLayout'
 import Main from './views/main/Main'
-import MainGames from './views/main/components/games/Games'
 import MainAbout from './views/main/components/about/About'
 import MainProfile from './views/main/components/profile/Profile'
 
@@ -27,14 +26,13 @@ ReactDOM.render(
       <Route path="/" element={<MainLayout />}>
         <Route index element={<Main />} />
         <Route path="profile" element={<MainProfile />} />
-        <Route path="games" element={<MainGames />} />
         <Route path="info" element={<MainAbout />} />
         <Route path="*" element={<Navigate replace to="/" />} />
       </Route>
-      <Route path="/rpsgame" element={<RpsLayout />}>
+      <Route path="/rps" element={<RpsLayout />}>
         <Route index element={<Rps />} />
         <Route path="about" element={<RpsAbout />} />
-        <Route path="*" element={<Navigate replace to="/rpsgame" />} />
+        <Route path="*" element={<Navigate replace to="/rps" />} />
       </Route>
     </Routes>
   </BrowserRouter >,

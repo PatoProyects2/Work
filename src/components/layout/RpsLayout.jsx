@@ -23,7 +23,6 @@ export function RpsLayout() {
     <div className={`wrapper ${theme}`}>
       {user ?
         <>
-          <SignOut />
           <main className='pt-3'>
             <section className="text-center">
               <Outlet context={[theme, setTheme]} />

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { NavLink, useOutletContext } from 'react-router-dom'
 import Web3 from 'web3'
 import Web3Modal from "web3modal";
+import { useAuthState } from 'react-firebase-hooks/auth'
+import { auth } from '../../firebase/firesbaseConfig'
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import Torus from "@toruslabs/torus-embed";
 import Portis from "@portis/web3";
@@ -18,8 +20,9 @@ import WinStreakLeaderboard from './components/WinStreakLeaderboard'
 import { db } from '../../firebase/firesbaseConfig'
 import { useMatchMedia } from '../../hooks/useMatchMedia'
 export default function Rps() {
+  const [user] = useAuthState(auth)
   const [theme, setTheme] = useOutletContext();
-  const [web3, setWeb3] = useState({});
+  const [web3, setWeb3] = useState({}); 
   const [rpsgame, setRpsgame] = useState({});
   const [usergame, setUsergame] = useState({
     hand: '',
@@ -27,18 +30,18 @@ export default function Rps() {
   });
   const [eventsmodal, setEventsmodal] = useState({});
   const [web3ModalInfo, setWeb3ModalInfo] = useState({});
-  const [userdata0, setUserdata0] = useState({ name1: '' });
-  const [userdata1, setUserdata1] = useState({ name1: '' });
-  const [userdata2, setUserdata2] = useState({ name1: '' });
-  const [userdata3, setUserdata3] = useState({ name1: '' });
-  const [userdata4, setUserdata4] = useState({ name1: '' });
-  const [userdata5, setUserdata5] = useState({ name1: '' });
-  const [userdata6, setUserdata6] = useState({ name1: '' });
-  const [userdata7, setUserdata7] = useState({ name1: '' });
-  const [userdata8, setUserdata8] = useState({ name1: '' });
-  const [userdata9, setUserdata9] = useState({ name1: '' });
-  const [userdata10, setUserdata10] = useState({ name1: '' });
-  const [userdata11, setUserdata11] = useState({ name1: '' });
+  const [userdata0, setUserdata0] = useState({ name0: '' });
+  const [userdata1, setUserdata1] = useState({ name0: '' });
+  const [userdata2, setUserdata2] = useState({ name0: '' });
+  const [userdata3, setUserdata3] = useState({ name0: '' });
+  const [userdata4, setUserdata4] = useState({ name0: '' });
+  const [userdata5, setUserdata5] = useState({ name0: '' });
+  const [userdata6, setUserdata6] = useState({ name0: '' });
+  const [userdata7, setUserdata7] = useState({ name0: '' });
+  const [userdata8, setUserdata8] = useState({ name0: '' });
+  const [userdata9, setUserdata9] = useState({ name0: '' });
+  const [userdata10, setUserdata10] = useState({ name0: '' });
+  const [userdata11, setUserdata11] = useState({ name0: '' });
   const [register, setRegister] = useState('');
   const [userpic, setUserpic] = useState('');
   const [username, setUsername] = useState('');
@@ -62,40 +65,66 @@ export default function Rps() {
   const [blockchain, setBlockchain] = useState(0);
 
   useEffect(() => {
-    const timer = setInterval(() => { loadHistoryUserPlays(web3, rpsgame) }, 3000);
+    const timer = setInterval(() => { loadHistoryUserPlays(web3, rpsgame, account) }, 3000);
     return () => clearInterval(timer);
-  }, [web3, rpsgame])
+  }, [web3, rpsgame, account])
 
-  const loadHistoryUserPlays = async (web3, rpsgame) => {
+  const loadHistoryUserPlays = async (web3, rpsgame, account) => {
     try {
+      const query = doc(db, "rpsUsers", account)
+      const userDocument = await getDoc(query)
+      const userData = userDocument.data()
+      if (userData) {
+        setUsername(userData.name0)
+        setRegister(userData.register)
+        setUserpic(userData.pic0)
+      } else {
+        const globalDate = new Date();
+        const year = globalDate.getUTCFullYear()
+        const month = globalDate.getUTCMonth() + 1
+        const day = globalDate.getUTCDate()
+        setDoc(doc(db, "rpsUsers", account), {
+          uid: user.uid,
+          game: 'RPS',
+          account: account,
+          level: 0,
+          name0: '',
+          pic0: 'https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh',
+          register: day.toString() + "/" + month.toString() + "/" + year.toString(),
+          winStreak: 0,
+          winStreakBlock: 0,
+          won: 0,
+          loss: 0,
+        }).then(r => window.location.reload())
+      }
       const actuallBlock = await web3.eth.getBlockNumber()
       setBlockchain(actuallBlock)
       const lastMinuteBlock = actuallBlock - 25
       const eventsmodal = await rpsgame.getPastEvents('Play', { fromBlock: lastMinuteBlock, toBlock: 'latest' })
       setEventsmodal(eventsmodal)
-      const userData0 = await getDoc(doc(db, "users", eventsmodal[0].returnValues[0].toLowerCase()))
+      const userData0 = await getDoc(doc(db, "rpsUsers", eventsmodal[0].returnValues[0].toLowerCase()))
       setUserdata0(userData0.data())
-      const userData1 = await getDoc(doc(db, "users", eventsmodal[1].returnValues[0].toLowerCase()))
+      const userData1 = await getDoc(doc(db, "rpsUsers", eventsmodal[1].returnValues[0].toLowerCase()))
       setUserdata1(userData1.data())
-      const userData2 = await getDoc(doc(db, "users", eventsmodal[2].returnValues[0].toLowerCase()))
+      const userData2 = await getDoc(doc(db, "rpsUsers", eventsmodal[2].returnValues[0].toLowerCase()))
       setUserdata2(userData2.data())
-      const userData3 = await getDoc(doc(db, "users", eventsmodal[3].returnValues[0].toLowerCase()))
+      const userData3 = await getDoc(doc(db, "rpsUsers", eventsmodal[3].returnValues[0].toLowerCase()))
       setUserdata3(userData3.data())
-      const userData4 = await getDoc(doc(db, "users", eventsmodal[4].returnValues[0].toLowerCase()))
+      const userData4 = await getDoc(doc(db, "rpsUsers", eventsmodal[4].returnValues[0].toLowerCase()))
       setUserdata4(userData4.data())
-      const userData5 = await getDoc(doc(db, "users", eventsmodal[5].returnValues[0].toLowerCase()))
+      const userData5 = await getDoc(doc(db, "rpsUsers", eventsmodal[5].returnValues[0].toLowerCase()))
       setUserdata5(userData5.data())
-      const userData6 = await getDoc(doc(db, "users", eventsmodal[6].returnValues[0].toLowerCase()))
+      const userData6 = await getDoc(doc(db, "rpsUsers", eventsmodal[6].returnValues[0].toLowerCase()))
       setUserdata6(userData6.data())
-      const userData7 = await getDoc(doc(db, "users", eventsmodal[7].returnValues[0].toLowerCase()))
+      const userData7 = await getDoc(doc(db, "rpsUsers", eventsmodal[7].returnValues[0].toLowerCase()))
       setUserdata7(userData7.data())
-      const userData8 = await getDoc(doc(db, "users", eventsmodal[8].returnValues[0].toLowerCase()))
+      const userData8 = await getDoc(doc(db, "rpsUsers", eventsmodal[8].returnValues[0].toLowerCase()))
       setUserdata8(userData8.data())
-      const userData9 = await getDoc(doc(db, "users", eventsmodal[9].returnValues[0].toLowerCase()))
+      const userData9 = await getDoc(doc(db, "rpsUsers", eventsmodal[9].returnValues[0].toLowerCase()))
       setUserdata9(userData9.data())
-      const userData10 = await getDoc(doc(db, "users", eventsmodal[10].returnValues[0].toLowerCase()))
+      const userData10 = await getDoc(doc(db, "rpsUsers", eventsmodal[10].returnValues[0].toLowerCase()))
       setUserdata10(userData10.data())
-      const userData11 = await getDoc(doc(db, "users", eventsmodal[11].returnValues[0].toLowerCase()))
+      const userData11 = await getDoc(doc(db, "rpsUsers", eventsmodal[11].returnValues[0].toLowerCase()))
       setUserdata11(userData11.data())
     } catch (e) {
 
@@ -209,26 +238,6 @@ export default function Rps() {
       }
       const balance = await web3.eth.getBalance(accounts[0]);
       setWalletBalance(balance)
-      const query = doc(db, "users", accounts[0].toLowerCase())
-      const userDocument = await getDoc(query)
-      const userData = userDocument.data()
-      if (userData) {
-        setUsername(userData.name1)
-        setRegister(userData.register)
-        setUserpic(userData.pic1)
-      } else {
-        const globalDate = new Date();
-        const year = globalDate.getUTCFullYear()
-        const month = globalDate.getUTCMonth() + 1
-        const day = globalDate.getUTCDate()
-        setDoc(doc(db, "users", accounts[0].toLowerCase()), {
-          name1: '',
-          pic1: 'https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh',
-          register: day.toString() + "/" + month.toString() + "/" + year.toString(),
-          winStreak: 0,
-          winStreakBlock: 0
-        }).then(r => window.location.reload())
-      }
     } catch (e) {
     }
   }
@@ -302,11 +311,21 @@ export default function Rps() {
       setUserGameResult(myEvents[0].returnValues[3])
       setUserGameStreak(myEvents[0].returnValues[2])
       const dayBlock = actuallBlock - 43200
-      const query = doc(db, "users", account)
+      const query = doc(db, "rpsUsers", account)
       const document = await getDoc(query)
       const userData = document.data()
+      if (myEvents[0].returnValues[3] === true) {
+        updateDoc(doc(db, "rpsUsers", account), {
+          won: userData.won + 1
+        })
+      }
+      if (myEvents[0].returnValues[3] === false) {
+        updateDoc(doc(db, "rpsUsers", account), {
+          loss: userData.loss + 1
+        })
+      }
       if (myEvents[0].returnValues[2] > userData.winStreak || dayBlock > userData.winStreakBlock) {
-        updateDoc(doc(db, "users", account), {
+        updateDoc(doc(db, "rpsUsers", account), {
           winStreak: parseInt(myEvents[0].returnValues[2]),
           winStreakBlock: myEvents[0].blockNumber
         })

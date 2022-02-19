@@ -77,14 +77,14 @@ export default function WinStreakLeaderboard(props) {
             setBlockchain(actuallBlock)
             const dayBlock = actuallBlock - 43200
             setDayBlock(dayBlock)
-            const userCollection = collection(db, "users")
-            const queryStreakBlock = query(userCollection, where("winStreak", ">", 0), orderBy("winStreak"), limit(8))
+            const userCollection = collection(db, "rpsUsers")
+            const queryStreakBlock = query(userCollection, where("winStreak", ">", 1), orderBy("winStreak"), limit(8))
             const queryDocuments = await getDocs(queryStreakBlock)
             const queryStreak = queryDocuments._snapshot.docChanges
             try {
                 const dataStreak0 = queryStreak[0].doc.data.value.mapValue.fields
-                setPicStreak0(dataStreak0.pic1.stringValue)
-                setNameStreak0(dataStreak0.name1.stringValue)
+                setPicStreak0(dataStreak0.pic0.stringValue)
+                setNameStreak0(dataStreak0.name0.stringValue)
                 setWinStreak0(dataStreak0.winStreak.integerValue)
                 setBlockStreak0(dataStreak0.winStreakBlock.integerValue)
                 var seg = (actuallBlock - dataStreak0.winStreakBlock.integerValue) * 2;
@@ -99,8 +99,8 @@ export default function WinStreakLeaderboard(props) {
             }
             try {
                 const dataStreak1 = queryStreak[1].doc.data.value.mapValue.fields
-                setPicStreak1(dataStreak1.pic1.stringValue)
-                setNameStreak1(dataStreak1.name1.stringValue)
+                setPicStreak1(dataStreak1.pic0.stringValue)
+                setNameStreak1(dataStreak1.name0.stringValue)
                 setWinStreak1(dataStreak1.winStreak.integerValue)
                 setBlockStreak1(dataStreak1.winStreakBlock.integerValue)
                 var seg = (actuallBlock - dataStreak1.winStreakBlock.integerValue) * 2;
@@ -115,8 +115,8 @@ export default function WinStreakLeaderboard(props) {
             }
             try {
                 const dataStreak2 = queryStreak[2].doc.data.value.mapValue.fields
-                setPicStreak2(dataStreak2.pic1.stringValue)
-                setNameStreak2(dataStreak2.name1.stringValue)
+                setPicStreak2(dataStreak2.pic0.stringValue)
+                setNameStreak2(dataStreak2.name0.stringValue)
                 setWinStreak2(dataStreak2.winStreak.integerValue)
                 setBlockStreak2(dataStreak2.winStreakBlock.integerValue)
                 var seg = (actuallBlock - dataStreak2.winStreakBlock.integerValue) * 2;
@@ -131,8 +131,8 @@ export default function WinStreakLeaderboard(props) {
             }
             try {
                 const dataStreak3 = queryStreak[3].doc.data.value.mapValue.fields
-                setPicStreak3(dataStreak3.pic1.stringValue)
-                setNameStreak3(dataStreak3.name1.stringValue)
+                setPicStreak3(dataStreak3.pic0.stringValue)
+                setNameStreak3(dataStreak3.name0.stringValue)
                 setWinStreak3(dataStreak3.winStreak.integerValue)
                 setBlockStreak3(dataStreak3.winStreakBlock.integerValue)
                 var seg = (actuallBlock - dataStreak3.winStreakBlock.integerValue) * 2;
@@ -147,8 +147,8 @@ export default function WinStreakLeaderboard(props) {
             }
             try {
                 const dataStreak4 = queryStreak[4].doc.data.value.mapValue.fields
-                setPicStreak4(dataStreak4.pic1.stringValue)
-                setNameStreak4(dataStreak4.name1.stringValue)
+                setPicStreak4(dataStreak4.pic0.stringValue)
+                setNameStreak4(dataStreak4.name0.stringValue)
                 setWinStreak4(dataStreak4.winStreak.integerValue)
                 setBlockStreak4(dataStreak4.winStreakBlock.integerValue)
                 var seg = (actuallBlock - dataStreak4.winStreakBlock.integerValue) * 2;
@@ -163,8 +163,8 @@ export default function WinStreakLeaderboard(props) {
             }
             try {
                 const dataStreak5 = queryStreak[5].doc.data.value.mapValue.fields
-                setPicStreak5(dataStreak5.pic1.stringValue)
-                setNameStreak5(dataStreak5.name1.stringValue)
+                setPicStreak5(dataStreak5.pic0.stringValue)
+                setNameStreak5(dataStreak5.name0.stringValue)
                 setWinStreak5(dataStreak5.winStreak.integerValue)
                 setBlockStreak5(dataStreak5.winStreakBlock.integerValue)
                 var seg = (actuallBlock - dataStreak5.winStreakBlock.integerValue) * 2;
@@ -179,8 +179,8 @@ export default function WinStreakLeaderboard(props) {
             }
             try {
                 const dataStreak6 = queryStreak[6].doc.data.value.mapValue.fields
-                setPicStreak6(dataStreak6.pic1.stringValue)
-                setNameStreak6(dataStreak6.name1.stringValue)
+                setPicStreak6(dataStreak6.pic0.stringValue)
+                setNameStreak6(dataStreak6.name0.stringValue)
                 setWinStreak6(dataStreak6.winStreak.integerValue)
                 setBlockStreak6(dataStreak6.winStreakBlock.integerValue)
                 var seg = (actuallBlock - dataStreak6.winStreakBlock.integerValue) * 2;
@@ -195,8 +195,8 @@ export default function WinStreakLeaderboard(props) {
             }
             try {
                 const dataStreak7 = queryStreak[7].doc.data.value.mapValue.fields
-                setPicStreak7(dataStreak7.pic1.stringValue)
-                setNameStreak7(dataStreak7.name1.stringValue)
+                setPicStreak7(dataStreak7.pic0.stringValue)
+                setNameStreak7(dataStreak7.name0.stringValue)
                 setWinStreak7(dataStreak7.winStreak.integerValue)
                 setBlockStreak7(dataStreak7.winStreakBlock.integerValue)
                 var seg = (actuallBlock - dataStreak7.winStreakBlock.integerValue) * 2;
@@ -231,7 +231,7 @@ export default function WinStreakLeaderboard(props) {
                     {winStreak7 > 0 && blockStreak7 > dayBlock ?
                         <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
                             <img width="35" height="35" className="rounded-circle" alt="" src={`${picStreak7}`} />
-                            
+
                             {" " + nameStreak7 + " is on a " + winStreak7 + " win streak"}
                             <small className="d-flex justify-content-end">
                                 {second7 < 0 || second7 === 0 ? "now" : ""}
@@ -252,7 +252,8 @@ export default function WinStreakLeaderboard(props) {
                             <small className="d-flex justify-content-end">
                                 {second6 < 0 || second6 === 0 ? "now" : ""}
                                 {second6 < 60 ? second6 + " seconds ago" : ""}
-                                {second6 > 59 && second6 < 3600 ? minute6 + " minutes ago" : ""}
+                                {second6 > 59 && second6 < 120 ? minute6 + " minute ago" : ""}
+                                {second6 > 119 && second6 < 3600 ? minute6 + " minutes ago" : ""}
                                 {second6 > 3599 && second6 < 7200 ? hour6 + " hour ago" : ""}
                                 {second6 > 7199 ? hour6 + " hours ago" : ""}
                             </small>
@@ -267,7 +268,8 @@ export default function WinStreakLeaderboard(props) {
                             <small className="d-flex justify-content-end">
                                 {second5 < 0 || second5 === 0 ? "now" : ""}
                                 {second5 < 60 ? second5 + " seconds ago" : ""}
-                                {second5 > 59 && second5 < 3600 ? minute5 + " minutes ago" : ""}
+                                {second5 > 59 && second5 < 120 ? minute5 + " minute ago" : ""}
+                                {second5 > 119 && second5 < 3600 ? minute5 + " minutes ago" : ""}
                                 {second5 > 3599 && second5 < 7200 ? hour5 + " hour ago" : ""}
                                 {second5 > 7199 ? hour5 + " hours ago" : ""}
                             </small>
@@ -282,7 +284,8 @@ export default function WinStreakLeaderboard(props) {
                             <small className="d-flex justify-content-end">
                                 {second4 < 0 || second4 === 0 ? "now" : ""}
                                 {second4 < 60 ? second4 + " seconds ago" : ""}
-                                {second4 > 59 && second4 < 3600 ? minute4 + " minutes ago" : ""}
+                                {second4 > 59 && second4 < 120 ? minute4 + " minute ago" : ""}
+                                {second4 > 119 && second4 < 3600 ? minute4 + " minutes ago" : ""}
                                 {second4 > 3599 && second4 < 7200 ? hour4 + " hour ago" : ""}
                                 {second4 > 7199 ? hour4 + " hours ago" : ""}
                             </small>
@@ -297,7 +300,8 @@ export default function WinStreakLeaderboard(props) {
                             <small className="d-flex justify-content-end">
                                 {second3 < 0 || second3 === 0 ? "now" : ""}
                                 {second3 < 60 ? second3 + " seconds ago" : ""}
-                                {second3 > 59 && second3 < 3600 ? minute3 + " minutes ago" : ""}
+                                {second3 > 59 && second3 < 120 ? minute3 + " minute ago" : ""}
+                                {second3 > 119 && second3 < 3600 ? minute3 + " minutes ago" : ""}
                                 {second3 > 3599 && second3 < 7200 ? hour3 + " hour ago" : ""}
                                 {second3 > 7199 ? hour3 + " hours ago" : ""}
                             </small>
@@ -312,7 +316,8 @@ export default function WinStreakLeaderboard(props) {
                             <small className="d-flex justify-content-end">
                                 {second2 < 0 || second2 === 0 ? "now" : ""}
                                 {second2 < 60 ? second2 + " seconds ago" : ""}
-                                {second2 > 59 && second2 < 3600 ? minute2 + " minutes ago" : ""}
+                                {second2 > 59 && second2 < 120 ? minute2 + " minute ago" : ""}
+                                {second2 > 119 && second2 < 3600 ? minute2 + " minutes ago" : ""}
                                 {second2 > 3599 && second2 < 7200 ? hour2 + " hour ago" : ""}
                                 {second2 > 7199 ? hour2 + " hours ago" : ""}
                             </small>
@@ -327,7 +332,8 @@ export default function WinStreakLeaderboard(props) {
                             <small className="d-flex justify-content-end">
                                 {second1 < 0 || second1 === 0 ? "now" : ""}
                                 {second1 < 60 ? second1 + " seconds ago" : ""}
-                                {second1 > 59 && second1 < 3600 ? minute1 + " minutes ago" : ""}
+                                {second1 > 59 && second1 < 120 ? minute1 + " minute ago" : ""}
+                                {second1 > 119 && second1 < 3600 ? minute1 + " minutes ago" : ""}
                                 {second1 > 3599 && second1 < 7200 ? hour1 + " hour ago" : ""}
                                 {second1 > 7199 ? hour1 + " hours ago" : ""}
                             </small>
@@ -342,7 +348,8 @@ export default function WinStreakLeaderboard(props) {
                             <small className="d-flex justify-content-end">
                                 {second0 < 0 || second0 === 0 ? "now" : ""}
                                 {second0 < 60 ? second0 + " seconds ago" : ""}
-                                {second0 > 59 && second0 < 3600 ? minute0 + " minutes ago" : ""}
+                                {second0 > 59 && second0 < 120 ? minute0 + " minute ago" : ""}
+                                {second0 > 119 && second0 < 3600 ? minute0 + " minutes ago" : ""}
                                 {second0 > 3599 && second0 < 7200 ? hour0 + " hour ago" : ""}
                                 {second0 > 7199 ? hour0 + " hours ago" : ""}
                             </small>

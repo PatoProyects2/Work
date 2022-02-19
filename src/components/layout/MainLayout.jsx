@@ -23,13 +23,15 @@ export function MainLayout() {
     <div className={`wrapper ${theme}`}>
       {user ?
         <>
-          <SignOut />
+          <header>
+            <a href="/">LOGO CLUB GAMES</a>
+            <SignOut />
+          </header>
           <main className='pt-3'>
             <section className="text-center">
               <Outlet context={[theme, setTheme]} />
             </section>
           </main>
-
           <MainMenu theme={theme} />
           <footer>
             <Footer theme={theme} setTheme={setTheme} />

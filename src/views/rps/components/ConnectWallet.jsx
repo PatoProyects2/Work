@@ -4,7 +4,7 @@ import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Button, Modal, Mo
 import { db } from '../../../firebase/firesbaseConfig'
 export default function ConnectWallet(props) {
   const [userinfo, setUserinfo] = useState({
-    name1: '',
+    name0: '',
   });
   const [friend, setFriend] = useState({
     account1: '',
@@ -48,20 +48,15 @@ export default function ConnectWallet(props) {
   }
 
   const updateProfile = async () => {
-    if (userinfo.name1.length >= 4 && userinfo.name1.length <= 12) {
+    if (userinfo.name0.length >= 4 && userinfo.name0.length <= 12) {
       setLog1('');
     } else {
       setLog1('THE NAME MUST BE BETWEEN 4 AND 12 CHARACTERS');
       return false
     }
-    setUserinfo({
-      ...userinfo,
-      name1: '',
-    })
-    updateDoc(doc(db, "users", props.account), {
-      name1: userinfo.name1
+    updateDoc(doc(db, "rpsUsers", props.account), {
+      name0: userinfo.name0
     }).then(r => {
-      window.location.reload()
       setEdit(false)
     })
   }
@@ -149,7 +144,7 @@ export default function ConnectWallet(props) {
             <Label>{"User since " + props.register}</Label>
           </FormGroup>
           <FormGroup>
-            <Input name="name1" placeholder="Nickname" className={props.theme === 'dark' ? 'dark-input' : ''} onChange={handleInputChange} type="text" defaultValue={props.username} />
+            <Input name="name0" placeholder="Nickname" className={props.theme === 'dark' ? 'dark-input' : ''} onChange={handleInputChange} type="text" defaultValue={props.username} />
           </FormGroup>
         </ModalBody>
         <ModalFooter>
