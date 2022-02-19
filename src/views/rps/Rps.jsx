@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react'
 import { NavLink, useOutletContext } from 'react-router-dom'
 import Web3 from 'web3'
 import Web3Modal from "web3modal";
-import { BigNumber } from 'bignumber.js'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import WalletConnectProvider from "@walletconnect/web3-provider";
+import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Button, Modal, ModalBody, ModalFooter, FormGroup, Input, Label } from 'reactstrap'
 import Torus from "@toruslabs/torus-embed";
 import Portis from "@portis/web3";
 import ethProvider from "eth-provider";
@@ -17,6 +17,7 @@ import HistoryGames from './components/HistoryGames'
 import ConnectWallet from './components/ConnectWallet'
 import ConnectChain from './components/ConnectChain'
 import WinStreakLeaderboard from './components/WinStreakLeaderboard'
+import SignIn, { SignOut } from '../../components/layout/Authentication';
 import { auth, db } from '../../firebase/firesbaseConfig'
 import { useMatchMedia } from '../../hooks/useMatchMedia'
 export default function Rps() {
@@ -62,15 +63,18 @@ export default function Rps() {
   const [userGameResult, setUserGameResult] = useState(undefined);
   const [gameResult, setGameResult] = useState(undefined);
   const [showGameResult, setShowGameResult] = useState(false);
+  const [login, setLogin] = useState(false);
+  const [signIn, setSignIn] = useState(undefined);
   const isMobileResolution = useMatchMedia('(max-width:650px)', false);
+
   const [blockchain, setBlockchain] = useState(0);
 
   useEffect(() => {
-    const timer = setInterval(() => { loadHistoryUserPlays(web3, rpsgame, account) }, 3000);
+    const timer = setInterval(() => { loadHistoryUserPlays(web3, rpsgame, account, user) }, 3000);
     return () => clearInterval(timer);
-  }, [web3, rpsgame, account])
+  }, [web3, rpsgame, account, user])
 
-  const loadHistoryUserPlays = async (web3, rpsgame, account) => {
+  const loadHistoryUserPlays = async (web3, rpsgame, account, user) => {
     try {
       const query = doc(db, "rpsUsers", account)
       const userDocument = await getDoc(query)
@@ -80,26 +84,52 @@ export default function Rps() {
         setRegister(userData.register)
         setUserpic(userData.pic0)
         setUserLevel(userData.level)
+        setLogin(userData.uid)
+        if (user && userData.uid === '') {
+          updateDoc(doc(db, "rpsUsers", account), {
+            uid: user.uid,
+          })
+        }
       } else {
         const globalDate = new Date();
         const year = globalDate.getUTCFullYear()
         const month = globalDate.getUTCMonth() + 1
         const day = globalDate.getUTCDate()
-        setDoc(doc(db, "rpsUsers", account), {
-          uid: user.uid,
-          game: 'RPS',
-          account: account,
-          level: 0,
-          name0: '',
-          pic0: 'https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh',
-          register: day.toString() + "/" + month.toString() + "/" + year.toString(),
-          winStreak: 0,
-          winStreakBlock: 0,
-          gameWon: 0,
-          gameLoss: 0,
-          amountWon: 0,
-          amountLoss: 0,
-        })
+        if (user) {
+          setDoc(doc(db, "rpsUsers", account), {
+            uid: user.uid,
+            game: 'RPS',
+            account: account,
+            level: 0,
+            name0: '',
+            pic0: 'https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh',
+            register: day.toString() + "/" + month.toString() + "/" + year.toString(),
+            winStreak: 0,
+            winStreakBlock: 0,
+            gameWon: 0,
+            gameLoss: 0,
+            amountWon: 0,
+            amountLoss: 0,
+          })
+        } else {
+          setDoc(doc(db, "rpsUsers", account), {
+            uid: '',
+            game: 'RPS',
+            account: account,
+            level: 0,
+            name0: '',
+            pic0: 'https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh',
+            register: day.toString() + "/" + month.toString() + "/" + year.toString(),
+            winStreak: 0,
+            winStreakBlock: 0,
+            gameWon: 0,
+            gameLoss: 0,
+            amountWon: 0,
+            amountLoss: 0,
+          })
+
+        }
+
       }
       const actuallBlock = await web3.eth.getBlockNumber()
       setBlockchain(actuallBlock)
@@ -257,12 +287,16 @@ export default function Rps() {
   };
 
   const openGame = () => {
-    if (document.getElementById('age').checked === false && log === '') {
+    if (document.getElementById('age').checked === false) {
       setLog0('CONFIRM THAT YOU ARE AT LEAST 18 YEARS OLD')
-    }
-    if (document.getElementById('age').checked === true && log === '') {
+      return false
+    } else {
       setActive(true)
       setLog0('')
+    }
+    if (!login) {
+      setSignIn(true)
+      return false
     }
   }
 
@@ -314,7 +348,6 @@ export default function Rps() {
     let userGameBlock = actuallBlock
     do {
       myEvents = await rpsgame.getPastEvents('Play', { filter: { _to: account }, fromBlock: userGameBlock, toBlock: 'latest' })
-      console.log(myEvents)
       await sleep(1000)
     } while (myEvents[0] === undefined);
     if (myEvents) {
@@ -377,10 +410,9 @@ export default function Rps() {
         }
         setShowGameResult(true)
       } catch (e) {
-        console.log(e)
+
       }
     }
-
   }
 
   const showResult = async () => {
@@ -477,7 +509,7 @@ export default function Rps() {
                   web3={web3}
                 />
                 <NavLink className="btn btn-danger" to="/leaderboard">LEADERBOARD <i className="d-none d-sm-inline-flex fas fa-external-link-alt fa-xs"></i></NavLink>
-                <ConnectWallet decimal={decimal} web3={web3} account={account} theme={theme} walletBalance={walletBalance} username={username} userpic={userpic} register={register} userLevel={userLevel}s disconnectWallet={disconnectWallet} />
+                <ConnectWallet decimal={decimal} web3={web3} account={account} theme={theme} walletBalance={walletBalance} username={username} userpic={userpic} register={register} userLevel={userLevel} s disconnectWallet={disconnectWallet} />
               </>
               :
               ""
@@ -487,7 +519,7 @@ export default function Rps() {
       }
       <article>
         {log && (<span className="alert alert-danger mx-5">{log}</span>)}
-        {active === true && log === '' ?
+        {active === true && log === '' && login !== '' ?
           <>
             {log0 && (<span className="alert alert-danger mx-5">{log0}</span>)}
             <h5 className="my-4 text-end me-3 me-lg-0">MATIC {(walletBalance / decimal).toFixed(4)}</h5>
@@ -593,7 +625,6 @@ export default function Rps() {
           :
           <div>
             <br></br>
-            <h1>RPSGAME.CLUB</h1>
             <br></br>
             {log0 && (<span className="alert alert-danger mx-5">{log0}</span>)}
             <div className="row g-0 my-5 justify-content-center">
@@ -637,6 +668,19 @@ export default function Rps() {
                   userdata10={userdata10}
                   userdata11={userdata11}
                 />
+                {!user ?
+                  <Modal isOpen={signIn} contentClassName={theme === 'dark' ? 'dark dark-border' : ''} size="sm">
+                    <ModalBody>
+                      <h4 className="text-center">SIGN IN</h4>
+                      <FormGroup>
+                        <SignIn />
+                      </FormGroup>
+                    </ModalBody>
+                  </Modal>
+                  :
+                  <SignOut />
+                }
+
               </>
               :
               <>
@@ -646,6 +690,7 @@ export default function Rps() {
           </div>
         }
       </article >
+
     </>
   );
 }

@@ -21,25 +21,19 @@ export function RpsLayout() {
 
   return (
     <div className={`wrapper ${theme}`}>
-      {user ?
-        <>
-          <main className='pt-3'>
-            <section className="text-center">
-              <Outlet context={[theme, setTheme]} />
-            </section>
-          </main>
 
-          <RpsMenu theme={theme} />
-          {/* <footer>
+
+      <main className='pt-3'>
+        <section className="text-center">
+          <Outlet context={[theme, setTheme]} />
+        </section>
+      </main>
+
+      <RpsMenu theme={theme} />
+      {/* <footer>
         <Footer theme={theme} setTheme={setTheme} />
       </footer> */}
-        </>
-        :
-        <>
-          <h2>Please Log In</h2>
-          <SignIn />
-        </>
-      }
+
     </div>
 
   );

@@ -251,7 +251,7 @@ export default function WinStreakLeaderboard(props) {
                             {" is on a " + winStreak7 + " win streak"}
                             <small className="d-flex justify-content-end">
                                 {second7 < 0 || second7 === 0 ? "now" : ""}
-                                {second7 < 60 ? second7 + " seconds ago" : ""}
+                                {second7 > 0 && second7 < 60 ? second7 + " seconds ago" : ""}
                                 {second7 > 59 && second7 < 120 ? minute7 + " minute ago" : ""}
                                 {second7 > 119 && second7 < 3600 ? minute7 + " minutes ago" : ""}
                                 {second7 > 3599 && second7 < 7200 ? hour7 + " hour ago" : ""}
@@ -268,7 +268,7 @@ export default function WinStreakLeaderboard(props) {
                             {" is on a " + winStreak6 + " win streak"}
                             <small className="d-flex justify-content-end">
                                 {second6 < 0 || second6 === 0 ? "now" : ""}
-                                {second6 < 60 ? second6 + " seconds ago" : ""}
+                                {second6 > 0 && second6 < 60 ? second6 + " seconds ago" : ""}
                                 {second6 > 59 && second6 < 120 ? minute6 + " minute ago" : ""}
                                 {second6 > 119 && second6 < 3600 ? minute6 + " minutes ago" : ""}
                                 {second6 > 3599 && second6 < 7200 ? hour6 + " hour ago" : ""}
@@ -285,7 +285,7 @@ export default function WinStreakLeaderboard(props) {
                             {" is on a " + winStreak5 + " win streak"}
                             <small className="d-flex justify-content-end">
                                 {second5 < 0 || second5 === 0 ? "now" : ""}
-                                {second5 < 60 ? second5 + " seconds ago" : ""}
+                                {second5 > 0 && second5 < 60 ? second5 + " seconds ago" : ""}
                                 {second5 > 59 && second5 < 120 ? minute5 + " minute ago" : ""}
                                 {second5 > 119 && second5 < 3600 ? minute5 + " minutes ago" : ""}
                                 {second5 > 3599 && second5 < 7200 ? hour5 + " hour ago" : ""}
@@ -302,7 +302,7 @@ export default function WinStreakLeaderboard(props) {
                             {" is on a " + winStreak4 + " win streak"}
                             <small className="d-flex justify-content-end">
                                 {second4 < 0 || second4 === 0 ? "now" : ""}
-                                {second4 < 60 ? second4 + " seconds ago" : ""}
+                                {second4 > 0 && second4 < 60 ? second4 + " seconds ago" : ""}
                                 {second4 > 59 && second4 < 120 ? minute4 + " minute ago" : ""}
                                 {second4 > 119 && second4 < 3600 ? minute4 + " minutes ago" : ""}
                                 {second4 > 3599 && second4 < 7200 ? hour4 + " hour ago" : ""}
@@ -319,7 +319,7 @@ export default function WinStreakLeaderboard(props) {
                             {" is on a " + winStreak3 + " win streak"}
                             <small className="d-flex justify-content-end">
                                 {second3 < 0 || second3 === 0 ? "now" : ""}
-                                {second3 < 60 ? second3 + " seconds ago" : ""}
+                                {second3 > 0 && second3 < 60 ? second3 + " seconds ago" : ""}
                                 {second3 > 59 && second3 < 120 ? minute3 + " minute ago" : ""}
                                 {second3 > 119 && second3 < 3600 ? minute3 + " minutes ago" : ""}
                                 {second3 > 3599 && second3 < 7200 ? hour3 + " hour ago" : ""}
@@ -336,7 +336,7 @@ export default function WinStreakLeaderboard(props) {
                             {" is on a " + winStreak2 + " win streak"}
                             <small className="d-flex justify-content-end">
                                 {second2 < 0 || second2 === 0 ? "now" : ""}
-                                {second2 < 60 ? second2 + " seconds ago" : ""}
+                                {second2 > 0 && second2 < 60 ? second2 + " seconds ago" : ""}
                                 {second2 > 59 && second2 < 120 ? minute2 + " minute ago" : ""}
                                 {second2 > 119 && second2 < 3600 ? minute2 + " minutes ago" : ""}
                                 {second2 > 3599 && second2 < 7200 ? hour2 + " hour ago" : ""}
@@ -353,7 +353,7 @@ export default function WinStreakLeaderboard(props) {
                             {" is on a " + winStreak1 + " win streak"}
                             <small className="d-flex justify-content-end">
                                 {second1 < 0 || second1 === 0 ? "now" : ""}
-                                {second1 < 60 ? second1 + " seconds ago" : ""}
+                                {second1 > 0 && second1 < 60 ? second1 + " seconds ago" : ""}
                                 {second1 > 59 && second1 < 120 ? minute1 + " minute ago" : ""}
                                 {second1 > 119 && second1 < 3600 ? minute1 + " minutes ago" : ""}
                                 {second1 > 3599 && second1 < 7200 ? hour1 + " hour ago" : ""}
@@ -370,7 +370,7 @@ export default function WinStreakLeaderboard(props) {
                             {" is on a " + winStreak0 + " win streak"}
                             <small className="d-flex justify-content-end">
                                 {second0 < 0 || second0 === 0 ? "now" : ""}
-                                {second0 < 60 ? second0 + " seconds ago" : ""}
+                                {second0 > 0 && second0 < 60 ? second0 + " seconds ago" : ""}
                                 {second0 > 59 && second0 < 120 ? minute0 + " minute ago" : ""}
                                 {second0 > 119 && second0 < 3600 ? minute0 + " minutes ago" : ""}
                                 {second0 > 3599 && second0 < 7200 ? hour0 + " hour ago" : ""}
