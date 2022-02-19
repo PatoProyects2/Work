@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { NavLink, useOutletContext } from 'react-router-dom'
 import Web3 from 'web3'
 import Web3Modal from "web3modal";
+import { BigNumber } from 'bignumber.js'
 import { useAuthState } from 'react-firebase-hooks/auth'
-import { auth } from '../../firebase/firesbaseConfig'
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import Torus from "@toruslabs/torus-embed";
 import Portis from "@portis/web3";
@@ -17,12 +17,12 @@ import HistoryGames from './components/HistoryGames'
 import ConnectWallet from './components/ConnectWallet'
 import ConnectChain from './components/ConnectChain'
 import WinStreakLeaderboard from './components/WinStreakLeaderboard'
-import { db } from '../../firebase/firesbaseConfig'
+import { auth, db } from '../../firebase/firesbaseConfig'
 import { useMatchMedia } from '../../hooks/useMatchMedia'
 export default function Rps() {
   const [user] = useAuthState(auth)
   const [theme, setTheme] = useOutletContext();
-  const [web3, setWeb3] = useState({}); 
+  const [web3, setWeb3] = useState({});
   const [rpsgame, setRpsgame] = useState({});
   const [usergame, setUsergame] = useState({
     hand: '',
@@ -45,6 +45,7 @@ export default function Rps() {
   const [register, setRegister] = useState('');
   const [userpic, setUserpic] = useState('');
   const [username, setUsername] = useState('');
+  const [userLevel, setUserLevel] = useState(0);
   const [account, setAccount] = useState('0x000000000000000000000000000000000000dEaD');
   const [log, setLog] = useState('');
   const [log0, setLog0] = useState('');
@@ -78,6 +79,7 @@ export default function Rps() {
         setUsername(userData.name0)
         setRegister(userData.register)
         setUserpic(userData.pic0)
+        setUserLevel(userData.level)
       } else {
         const globalDate = new Date();
         const year = globalDate.getUTCFullYear()
@@ -93,9 +95,11 @@ export default function Rps() {
           register: day.toString() + "/" + month.toString() + "/" + year.toString(),
           winStreak: 0,
           winStreakBlock: 0,
-          won: 0,
-          loss: 0,
-        }).then(r => window.location.reload())
+          gameWon: 0,
+          gameLoss: 0,
+          amountWon: 0,
+          amountLoss: 0,
+        })
       }
       const actuallBlock = await web3.eth.getBlockNumber()
       setBlockchain(actuallBlock)
@@ -270,6 +274,9 @@ export default function Rps() {
   }
 
   const doubleOrNothing = async () => {
+    const sleep = (milliseconds) => {
+      return new Promise(resolve => setTimeout(resolve, milliseconds))
+    }
     if (document.getElementById('rock').checked || document.getElementById('paper').checked || document.getElementById('scissors').checked) {
       setUserhand(usergame.hand)
       setLog0('')
@@ -284,6 +291,7 @@ export default function Rps() {
       setLog0('SELECT THE BETTING AMOUNT')
       return false
     }
+    let myEvents = null
     setPlaying(true)
     setAnimation(true)
     let calculateValue = await rpsgame.methods.calculateValue((web3.utils.toWei((usergame.amount).toString(), "ether"))).call()
@@ -294,44 +302,83 @@ export default function Rps() {
         value: calculateValue,
         gasLimit: 400000
       })
-      .on('receipt', (hash) => {
-        readAccountEvent()
-      })
-      .on('error', function (error) {
-        setPlaying(false)
+      .catch((err) => {
+        if (err.code === 4001) {
+          setPlaying(false)
+          myEvents[0] = true
+        } else {
+          console.error(err);
+        }
       });
-  }
-
-  const readAccountEvent = async () => {
-    try {
-      setShowGameResult(true)
-      const actuallBlock = await web3.eth.getBlockNumber()
-      let userGameBlock = actuallBlock - 10
-      let myEvents = await rpsgame.getPastEvents('Play', { filter: { _to: account }, fromBlock: userGameBlock, toBlock: 'latest' })
-      setUserGameResult(myEvents[0].returnValues[3])
-      setUserGameStreak(myEvents[0].returnValues[2])
-      const dayBlock = actuallBlock - 43200
-      const query = doc(db, "rpsUsers", account)
-      const document = await getDoc(query)
-      const userData = document.data()
-      if (myEvents[0].returnValues[3] === true) {
-        updateDoc(doc(db, "rpsUsers", account), {
-          won: userData.won + 1
-        })
+    const actuallBlock = await web3.eth.getBlockNumber()
+    let userGameBlock = actuallBlock
+    do {
+      myEvents = await rpsgame.getPastEvents('Play', { filter: { _to: account }, fromBlock: userGameBlock, toBlock: 'latest' })
+      console.log(myEvents)
+      await sleep(1000)
+    } while (myEvents[0] === undefined);
+    if (myEvents) {
+      try {
+        setUserGameResult(myEvents[0].returnValues[3])
+        setUserGameStreak(myEvents[0].returnValues[2])
+        const dayBlock = actuallBlock - 43200
+        const query = doc(db, "rpsUsers", account)
+        const document = await getDoc(query)
+        const userData = document.data()
+        const userAmount = web3.utils.fromWei(myEvents[0].returnValues[1], 'ether')
+        if (myEvents[0].returnValues[3] === true) {
+          updateDoc(doc(db, "rpsUsers", account), {
+            gameWon: userData.gameWon + 1,
+            amountWon: userData.amountWon + parseInt(userAmount)
+          })
+        }
+        if (myEvents[0].returnValues[3] === false) {
+          updateDoc(doc(db, "rpsUsers", account), {
+            gameLoss: userData.gameLoss + 1,
+            amountLoss: userData.amountLoss + parseInt(userAmount)
+          })
+        }
+        if (myEvents[0].returnValues[2] > userData.winStreak || dayBlock > userData.winStreakBlock) {
+          updateDoc(doc(db, "rpsUsers", account), {
+            winStreak: parseInt(myEvents[0].returnValues[2]),
+            winStreakBlock: myEvents[0].blockNumber
+          })
+        }
+        const totalAmount = userData.amountWon + userData.amountLoss
+        if (totalAmount > 20 && totalAmount < 40) {
+          updateDoc(doc(db, "rpsUsers", account), {
+            level: 1
+          })
+        }
+        if (totalAmount > 39 && totalAmount < 100) {
+          updateDoc(doc(db, "rpsUsers", account), {
+            level: 2
+          })
+        }
+        if (totalAmount > 99 && totalAmount < 200) {
+          updateDoc(doc(db, "rpsUsers", account), {
+            level: 3
+          })
+        }
+        if (totalAmount > 199 && totalAmount < 500) {
+          updateDoc(doc(db, "rpsUsers", account), {
+            level: 4
+          })
+        }
+        if (totalAmount > 499 && totalAmount < 1000) {
+          updateDoc(doc(db, "rpsUsers", account), {
+            level: 5
+          })
+        }
+        if (totalAmount > 999) {
+          updateDoc(doc(db, "rpsUsers", account), {
+            level: 6
+          })
+        }
+        setShowGameResult(true)
+      } catch (e) {
+        console.log(e)
       }
-      if (myEvents[0].returnValues[3] === false) {
-        updateDoc(doc(db, "rpsUsers", account), {
-          loss: userData.loss + 1
-        })
-      }
-      if (myEvents[0].returnValues[2] > userData.winStreak || dayBlock > userData.winStreakBlock) {
-        updateDoc(doc(db, "rpsUsers", account), {
-          winStreak: parseInt(myEvents[0].returnValues[2]),
-          winStreakBlock: myEvents[0].blockNumber
-        })
-      }
-    } catch (e) {
-      console.log(e)
     }
 
   }
@@ -385,7 +432,7 @@ export default function Rps() {
                 web3={web3}
               />
               <NavLink className="btn btn-danger" to="/leaderboard">LEADERBOARD</NavLink>
-              <ConnectWallet decimal={decimal} web3={web3} account={account} theme={theme} walletBalance={walletBalance} username={username} userpic={userpic} register={register} disconnectWallet={disconnectWallet} />
+              <ConnectWallet decimal={decimal} web3={web3} account={account} theme={theme} walletBalance={walletBalance} username={username} userpic={userpic} register={register} userLevel={userLevel} disconnectWallet={disconnectWallet} />
             </>
             :
             ""
@@ -430,7 +477,7 @@ export default function Rps() {
                   web3={web3}
                 />
                 <NavLink className="btn btn-danger" to="/leaderboard">LEADERBOARD <i className="d-none d-sm-inline-flex fas fa-external-link-alt fa-xs"></i></NavLink>
-                <ConnectWallet decimal={decimal} web3={web3} account={account} theme={theme} walletBalance={walletBalance} username={username} userpic={userpic} register={register} disconnectWallet={disconnectWallet} />
+                <ConnectWallet decimal={decimal} web3={web3} account={account} theme={theme} walletBalance={walletBalance} username={username} userpic={userpic} register={register} userLevel={userLevel}s disconnectWallet={disconnectWallet} />
               </>
               :
               ""
@@ -512,33 +559,32 @@ export default function Rps() {
                   <h5 className="mt-5">FOR</h5>
                   <div className="d-flex justify-content-center my-4">
                     <label className="amount">
-                      <input type="radio" name="amount" id="amount1" onChange={handleInputChange} value="0.1" />
+                      <input type="radio" name="amount" id="amount1" onChange={handleInputChange} value="1" />
                       <span>2 MATIC</span>
                     </label>
                     <label className="amount">
-                      <input type="radio" name="amount" id="amount2" onChange={handleInputChange} value="0.2" />
+                      <input type="radio" name="amount" id="amount2" onChange={handleInputChange} value="4" />
                       <span>4 MATIC</span>
                     </label>
                     <label className="amount">
-                      <input type="radio" name="amount" id="amount3" onChange={handleInputChange} value="0.3" />
+                      <input type="radio" name="amount" id="amount3" onChange={handleInputChange} value="10" />
                       <span>10 MATIC</span>
                     </label>
                   </div>
                   <div className="d-flex justify-content-center mb-4">
                     <label className="amount">
-                      <input type="radio" name="amount" id="amount4" onChange={handleInputChange} value="0.4" />
+                      <input type="radio" name="amount" id="amount4" onChange={handleInputChange} value="20" />
                       <span>20 MATIC</span>
                     </label>
                     <label className="amount">
-                      <input type="radio" name="amount" id="amount5" onChange={handleInputChange} value="0.5" />
+                      <input type="radio" name="amount" id="amount5" onChange={handleInputChange} value="50" />
                       <span>50 MATIC</span>
                     </label>
                     <label className="amount">
-                      <input type="radio" name="amount" id="amount6" onChange={handleInputChange} value="0.6" />
+                      <input type="radio" name="amount" id="amount6" onChange={handleInputChange} value="100" />
                       <span>100 MATIC</span>
                     </label>
                   </div>
-
                   <button onClick={doubleOrNothing} className="btn-hover btn-green">DOUBLE OR NOTHING</button>
                 </div>
               }

@@ -45,6 +45,14 @@ export default function WinStreakLeaderboard(props) {
     const [nameStreak5, setNameStreak5] = useState('')
     const [nameStreak6, setNameStreak6] = useState('')
     const [nameStreak7, setNameStreak7] = useState('')
+    const [accountStreak0, setAccountStreak0] = useState('')
+    const [accountStreak1, setAccountStreak1] = useState('')
+    const [accountStreak2, setAccountStreak2] = useState('')
+    const [accountStreak3, setAccountStreak3] = useState('')
+    const [accountStreak4, setAccountStreak4] = useState('')
+    const [accountStreak5, setAccountStreak5] = useState('')
+    const [accountStreak6, setAccountStreak6] = useState('')
+    const [accountStreak7, setAccountStreak7] = useState('')
     const [blockStreak0, setBlockStreak0] = useState(0)
     const [blockStreak1, setBlockStreak1] = useState(0)
     const [blockStreak2, setBlockStreak2] = useState(0)
@@ -84,6 +92,7 @@ export default function WinStreakLeaderboard(props) {
             try {
                 const dataStreak0 = queryStreak[0].doc.data.value.mapValue.fields
                 setPicStreak0(dataStreak0.pic0.stringValue)
+                setAccountStreak0(dataStreak0.account.stringValue)
                 setNameStreak0(dataStreak0.name0.stringValue)
                 setWinStreak0(dataStreak0.winStreak.integerValue)
                 setBlockStreak0(dataStreak0.winStreakBlock.integerValue)
@@ -100,6 +109,7 @@ export default function WinStreakLeaderboard(props) {
             try {
                 const dataStreak1 = queryStreak[1].doc.data.value.mapValue.fields
                 setPicStreak1(dataStreak1.pic0.stringValue)
+                setAccountStreak1(dataStreak1.account.stringValue)
                 setNameStreak1(dataStreak1.name0.stringValue)
                 setWinStreak1(dataStreak1.winStreak.integerValue)
                 setBlockStreak1(dataStreak1.winStreakBlock.integerValue)
@@ -116,6 +126,7 @@ export default function WinStreakLeaderboard(props) {
             try {
                 const dataStreak2 = queryStreak[2].doc.data.value.mapValue.fields
                 setPicStreak2(dataStreak2.pic0.stringValue)
+                setAccountStreak2(dataStreak2.account.stringValue)
                 setNameStreak2(dataStreak2.name0.stringValue)
                 setWinStreak2(dataStreak2.winStreak.integerValue)
                 setBlockStreak2(dataStreak2.winStreakBlock.integerValue)
@@ -132,6 +143,7 @@ export default function WinStreakLeaderboard(props) {
             try {
                 const dataStreak3 = queryStreak[3].doc.data.value.mapValue.fields
                 setPicStreak3(dataStreak3.pic0.stringValue)
+                setAccountStreak3(dataStreak3.account.stringValue)
                 setNameStreak3(dataStreak3.name0.stringValue)
                 setWinStreak3(dataStreak3.winStreak.integerValue)
                 setBlockStreak3(dataStreak3.winStreakBlock.integerValue)
@@ -148,6 +160,7 @@ export default function WinStreakLeaderboard(props) {
             try {
                 const dataStreak4 = queryStreak[4].doc.data.value.mapValue.fields
                 setPicStreak4(dataStreak4.pic0.stringValue)
+                setAccountStreak4(dataStreak4.account.stringValue)
                 setNameStreak4(dataStreak4.name0.stringValue)
                 setWinStreak4(dataStreak4.winStreak.integerValue)
                 setBlockStreak4(dataStreak4.winStreakBlock.integerValue)
@@ -164,6 +177,7 @@ export default function WinStreakLeaderboard(props) {
             try {
                 const dataStreak5 = queryStreak[5].doc.data.value.mapValue.fields
                 setPicStreak5(dataStreak5.pic0.stringValue)
+                setAccountStreak5(dataStreak5.account.stringValue)
                 setNameStreak5(dataStreak5.name0.stringValue)
                 setWinStreak5(dataStreak5.winStreak.integerValue)
                 setBlockStreak5(dataStreak5.winStreakBlock.integerValue)
@@ -180,6 +194,7 @@ export default function WinStreakLeaderboard(props) {
             try {
                 const dataStreak6 = queryStreak[6].doc.data.value.mapValue.fields
                 setPicStreak6(dataStreak6.pic0.stringValue)
+                setAccountStreak6(dataStreak6.account.stringValue)
                 setNameStreak6(dataStreak6.name0.stringValue)
                 setWinStreak6(dataStreak6.winStreak.integerValue)
                 setBlockStreak6(dataStreak6.winStreakBlock.integerValue)
@@ -196,6 +211,7 @@ export default function WinStreakLeaderboard(props) {
             try {
                 const dataStreak7 = queryStreak[7].doc.data.value.mapValue.fields
                 setPicStreak7(dataStreak7.pic0.stringValue)
+                setAccountStreak7(dataStreak7.account.stringValue)
                 setNameStreak7(dataStreak7.name0.stringValue)
                 setWinStreak7(dataStreak7.winStreak.integerValue)
                 setBlockStreak7(dataStreak7.winStreakBlock.integerValue)
@@ -231,8 +247,8 @@ export default function WinStreakLeaderboard(props) {
                     {winStreak7 > 0 && blockStreak7 > dayBlock ?
                         <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
                             <img width="35" height="35" className="rounded-circle" alt="" src={`${picStreak7}`} />
-
-                            {" " + nameStreak7 + " is on a " + winStreak7 + " win streak"}
+                            {nameStreak7 !== '' ? nameStreak7 : accountStreak7.substring(0, 5)}
+                            {" is on a " + winStreak7 + " win streak"}
                             <small className="d-flex justify-content-end">
                                 {second7 < 0 || second7 === 0 ? "now" : ""}
                                 {second7 < 60 ? second7 + " seconds ago" : ""}
@@ -248,7 +264,8 @@ export default function WinStreakLeaderboard(props) {
                     {winStreak6 > 0 && blockStreak6 > dayBlock ?
                         <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
                             <img width="35" height="35" className="rounded-circle" alt="" src={`${picStreak6}`} />
-                            {" " + nameStreak6 + " is on a " + winStreak6 + " win streak"}
+                            {nameStreak6 !== '' ? nameStreak6 : accountStreak6.substring(0, 5)}
+                            {" is on a " + winStreak6 + " win streak"}
                             <small className="d-flex justify-content-end">
                                 {second6 < 0 || second6 === 0 ? "now" : ""}
                                 {second6 < 60 ? second6 + " seconds ago" : ""}
@@ -264,7 +281,8 @@ export default function WinStreakLeaderboard(props) {
                     {winStreak5 > 0 && blockStreak5 > dayBlock ?
                         <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
                             <img width="35" height="35" className="rounded-circle" alt="" src={`${picStreak5}`} />
-                            {" " + nameStreak5 + " is on a " + winStreak5 + " win streak"}
+                            {nameStreak5 !== '' ? nameStreak5 : accountStreak5.substring(0, 5)}
+                            {" is on a " + winStreak5 + " win streak"}
                             <small className="d-flex justify-content-end">
                                 {second5 < 0 || second5 === 0 ? "now" : ""}
                                 {second5 < 60 ? second5 + " seconds ago" : ""}
@@ -280,7 +298,8 @@ export default function WinStreakLeaderboard(props) {
                     {winStreak4 > 0 && blockStreak4 > dayBlock ?
                         <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
                             <img width="35" height="35" className="rounded-circle" alt="" src={`${picStreak4}`} />
-                            {" " + nameStreak4 + " is on a " + winStreak4 + " win streak"}
+                            {nameStreak4 !== '' ? nameStreak4 : accountStreak4.substring(0, 5)}
+                            {" is on a " + winStreak4 + " win streak"}
                             <small className="d-flex justify-content-end">
                                 {second4 < 0 || second4 === 0 ? "now" : ""}
                                 {second4 < 60 ? second4 + " seconds ago" : ""}
@@ -296,7 +315,8 @@ export default function WinStreakLeaderboard(props) {
                     {winStreak3 > 0 && blockStreak3 > dayBlock ?
                         <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
                             <img width="35" height="35" className="rounded-circle" alt="" src={`${picStreak3}`} />
-                            {" " + nameStreak3 + " is on a " + winStreak3 + " win streak"}
+                            {nameStreak3 !== '' ? nameStreak3 : accountStreak3.substring(0, 5)}
+                            {" is on a " + winStreak3 + " win streak"}
                             <small className="d-flex justify-content-end">
                                 {second3 < 0 || second3 === 0 ? "now" : ""}
                                 {second3 < 60 ? second3 + " seconds ago" : ""}
@@ -312,7 +332,8 @@ export default function WinStreakLeaderboard(props) {
                     {winStreak2 > 0 && blockStreak2 > dayBlock ?
                         <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
                             <img width="35" height="35" className="rounded-circle" alt="" src={`${picStreak2}`} />
-                            {" " + nameStreak2 + " is on a " + winStreak2 + " win streak"}
+                            {nameStreak2 !== '' ? nameStreak2 : accountStreak2.substring(0, 5)}
+                            {" is on a " + winStreak2 + " win streak"}
                             <small className="d-flex justify-content-end">
                                 {second2 < 0 || second2 === 0 ? "now" : ""}
                                 {second2 < 60 ? second2 + " seconds ago" : ""}
@@ -328,7 +349,8 @@ export default function WinStreakLeaderboard(props) {
                     {winStreak1 > 0 && blockStreak1 > dayBlock ?
                         <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
                             <img width="35" height="35" className="rounded-circle" alt="" src={`${picStreak1}`} />
-                            {" " + nameStreak1 + " is on a " + winStreak1 + " win streak"}
+                            {nameStreak1 !== '' ? nameStreak1 : accountStreak1.substring(0, 5)}
+                            {" is on a " + winStreak1 + " win streak"}
                             <small className="d-flex justify-content-end">
                                 {second1 < 0 || second1 === 0 ? "now" : ""}
                                 {second1 < 60 ? second1 + " seconds ago" : ""}
@@ -344,7 +366,8 @@ export default function WinStreakLeaderboard(props) {
                     {winStreak0 > 0 && blockStreak0 > dayBlock ?
                         <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
                             <img width="35" height="35" className="rounded-circle" alt="" src={`${picStreak0}`} />
-                            {" " + nameStreak0 + " is on a " + winStreak0 + " win streak"}
+                            {nameStreak0 !== '' ? nameStreak0 : accountStreak0.substring(0, 5)}
+                            {" is on a " + winStreak0 + " win streak"}
                             <small className="d-flex justify-content-end">
                                 {second0 < 0 || second0 === 0 ? "now" : ""}
                                 {second0 < 60 ? second0 + " seconds ago" : ""}

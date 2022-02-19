@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { useOutletContext } from 'react-router-dom'
-import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Button, Modal, ModalBody, ModalFooter, FormGroup, Input, Label } from 'reactstrap'
-import { getDocs, query, where, collection } from "firebase/firestore";
+import { Button, Modal, ModalBody, ModalFooter, FormGroup } from 'reactstrap'
+import { getDocs, query, where, collection, limit } from "firebase/firestore";
 import { auth, db } from '../../../../firebase/firesbaseConfig'
 export default function Profile() {
   const [user] = useAuthState(auth)
@@ -19,6 +19,18 @@ export default function Profile() {
   const [won1, setWon1] = useState(0);
   const [won2, setWon2] = useState(0);
   const [won3, setWon3] = useState(0);
+  const [wonAmount0, setWonAmount0] = useState(0);
+  const [wonAmount1, setWonAmount1] = useState(0);
+  const [wonAmount2, setWonAmount2] = useState(0);
+  const [wonAmount3, setWonAmount3] = useState(0);
+  const [lossAmount0, setLossAmount0] = useState(0);
+  const [lossAmount1, setLossAmount1] = useState(0);
+  const [lossAmount2, setLossAmount2] = useState(0);
+  const [lossAmount3, setLossAmount3] = useState(0);
+  const [totalAmount0, setTotalAmount0] = useState(0);
+  const [totalAmount1, setTotalAmount1] = useState(0);
+  const [totalAmount2, setTotalAmount2] = useState(0);
+  const [totalAmount3, setTotalAmount3] = useState(0);
   const [loss0, setLoss0] = useState(0);
   const [loss1, setLoss1] = useState(0);
   const [loss2, setLoss2] = useState(0);
@@ -33,8 +45,8 @@ export default function Profile() {
   const [level3, setLevel3] = useState(0);
   const [totalLevel, setTotalLevel] = useState(0);
   const [rpsInfo, setRpsInfo] = useState(undefined);
-  useEffect(() => {
 
+  useEffect(() => {
     loadMainProfile()
   }, []);
 
@@ -46,11 +58,12 @@ export default function Profile() {
     try {
       const data0 = queryData[0].doc.data.value.mapValue.fields
       if (data0 !== undefined) {
-        const won0 = parseInt(data0.won.integerValue)
-        const loss0 = parseInt(data0.loss.integerValue)
-        setWon0(won0)
-        setLoss0(loss0)
-        setTotalGames0(won0 + loss0)
+        setWon0(parseInt(data0.gameWon.integerValue))
+        setLoss0(parseInt(data0.gameLoss.integerValue))
+        setTotalGames0(parseInt(data0.gameWon.integerValue) + parseInt(data0.gameLoss.integerValue))
+        setWonAmount0(parseInt(data0.amountWon.integerValue))
+        setLossAmount0(parseInt(data0.amountLoss.integerValue))
+        setTotalAmount0(parseInt(data0.amountWon.integerValue) + parseInt(data0.amountLoss.integerValue))
         setStreak0(data0.winStreak.integerValue)
         setLevel0(data0.level.integerValue)
         setAccount0(data0.account.stringValue)
@@ -58,11 +71,12 @@ export default function Profile() {
       }
       const data1 = queryData[1].doc.data.value.mapValue.fields
       if (data1 !== undefined) {
-        const won1 = parseInt(data1.won.integerValue)
-        const loss1 = parseInt(data1.loss.integerValue)
-        setWon1(won1)
-        setLoss1(loss1)
-        setTotalGames1(won1 + loss1)
+        setWon1(parseInt(data1.gameWon.integerValue))
+        setLoss1(parseInt(data1.gameLoss.integerValue))
+        setTotalGames1(parseInt(data1.gameWon.integerValue) + parseInt(data1.gameLoss.integerValue))
+        setWonAmount1(parseInt(data1.amountWon.integerValue))
+        setLossAmount1(parseInt(data1.amountLoss.integerValue))
+        setTotalAmount1(parseInt(data1.amountWon.integerValue) + parseInt(data1.amountLoss.integerValue))
         setStreak1(data1.winStreak.integerValue)
         setLevel1(data1.level.integerValue)
         setAccount1(data1.account.stringValue)
@@ -70,11 +84,12 @@ export default function Profile() {
       }
       const data2 = queryData[2].doc.data.value.mapValue.fields
       if (data2 !== undefined) {
-        const won2 = parseInt(data2.won.integerValue)
-        const loss2 = parseInt(data2.loss.integerValue)
-        setWon2(won2)
-        setLoss2(loss2)
-        setTotalGames2(won2 + loss2)
+        setWon2(parseInt(data2.gameWon.integerValue))
+        setLoss2(parseInt(data2.gameLoss.integerValue))
+        setTotalGames2(parseInt(data2.gameWon.integerValue) + parseInt(data2.gameLoss.integerValue))
+        setWonAmount2(parseInt(data2.amountWon.integerValue))
+        setLossAmount2(parseInt(data2.amountLoss.integerValue))
+        setTotalAmount2(parseInt(data2.amountWon.integerValue) + parseInt(data2.amountLoss.integerValue))
         setStreak2(data2.winStreak.integerValue)
         setLevel2(data2.level.integerValue)
         setAccount2(data2.account.stringValue)
@@ -82,11 +97,12 @@ export default function Profile() {
       }
       const data3 = queryData[3].doc.data.value.mapValue.fields
       if (data3 !== undefined) {
-        const won3 = parseInt(data3.won.integerValue)
-        const loss3 = parseInt(data3.loss.integerValue)
-        setWon3(won3)
-        setLoss3(loss3)
-        setTotalGames3(won3 + loss3)
+        setWon3(parseInt(data3.gameWon.integerValue))
+        setLoss3(parseInt(data3.gameLoss.integerValue))
+        setTotalGames3(parseInt(data3.gameWon.integerValue) + parseInt(data3.gameLoss.integerValue))
+        setWonAmount3(parseInt(data3.amountWon.integerValue))
+        setLossAmount3(parseInt(data3.amountLoss.integerValue))
+        setTotalAmount3(parseInt(data3.amountWon.integerValue) + parseInt(data3.amountLoss.integerValue))
         setStreak3(data3.winStreak.integerValue)
         setLevel3(data3.level.integerValue)
         setAccount3(data3.account.stringValue)
@@ -103,7 +119,6 @@ export default function Profile() {
     } else {
       setRpsInfo(true)
     }
-
   }
 
   return (
@@ -111,12 +126,12 @@ export default function Profile() {
       <h1>PROFILE</h1>
       <p><img src={user.photoURL} alt="" /></p>
       <p>
-        {totalLevel.toFixed(0) < 50 ? "VIP: 1" : ""}
-        {totalLevel.toFixed(0) > 49 && totalLevel.toFixed(0) < 300 ? <> {"VIP: 2"} <br></br>{Math.round(300 - totalLevel) + "/" + 300 + " XP"} </> : ""}
-        {totalLevel.toFixed(0) > 299 && totalLevel.toFixed(0) < 2500 ? <> {"VIP: 3"} <br></br>{Math.round(2500 - totalLevel) + "/" + 2500 + " XP"} </> : ""}
-        {totalLevel.toFixed(0) > 2499 && totalLevel.toFixed(0) < 7000 ? <> {"VIP: 4"} <br></br>{Math.round(7000 - totalLevel) + "/" + 7000 + " XP"} </> : ""}
-        {totalLevel.toFixed(0) > 6599 && totalLevel.toFixed(0) < 20000 ? <> {"VIP: 5"} <br></br>{Math.round(20000 - totalLevel) + "/" + 20000 + " XP"} </> : ""}
-        {totalLevel.toFixed(0) > 19999 && totalLevel.toFixed(0) < 50000 ? "VIP: 6 (MAX. VIP)" : ""}
+        {totalLevel.toFixed() < 50 ? <> {"VIP: 1"} <br></br>{totalLevel.toFixed() + "/" + 50 + " XP"} </> : ""}
+        {totalLevel.toFixed() > 49 && totalLevel.toFixed() < 300 ? <> {"VIP: 2"} <br></br>{totalLevel.toFixed() + "/" + 300 + " XP"} </> : ""}
+        {totalLevel.toFixed() > 299 && totalLevel.toFixed() < 2500 ? <> {"VIP: 3"} <br></br>{totalLevel.toFixed() + "/" + 2500 + " XP"} </> : ""}
+        {totalLevel.toFixed() > 2499 && totalLevel.toFixed() < 7000 ? <> {"VIP: 4"} <br></br>{totalLevel.toFixed() + "/" + 7000 + " XP"} </> : ""}
+        {totalLevel.toFixed() > 6599 && totalLevel.toFixed() < 20000 ? <> {"VIP: 5"} <br></br>{totalLevel.toFixed() + "/" + 20000 + " XP"} </> : ""}
+        {totalLevel.toFixed() > 19999 && totalLevel.toFixed() < 50000 ? "VIP: 6 (MAX. VIP)" : ""}
       </p>
       <p>{"NAME: " + user.displayName}</p>
       <p>{"EMAIL: " + user.email}{user.emailVerified ? " VERIFIED" : " PLEASE VERIFY YOUR EMAIL"}</p>
@@ -126,14 +141,15 @@ export default function Profile() {
         <ModalBody>
           <FormGroup className="pt-3 text-center">
             <h4 className="text-center">ACCOUNTS</h4>
-            <p>{totalGames0 !== 0 ? "Account 1: " + account0 + " Games: " + totalGames0 + " Wons: " + won0 + " Loss: " + loss0 + " Win Streak: " + streak0 + " Level: " + level0 : ""}</p>
-            <p>{totalGames1 !== 0 ? "Account 2: " + account1 + " Games: " + totalGames1 + " Wons: " + won1 + " Loss: " + loss1 + " Win Streak: " + streak1 + " Level: " + level1 : ""}</p>
-            <p>{totalGames2 !== 0 ? "Account 3: " + account2 + " Games: " + totalGames2 + " Wons: " + won2 + " Loss: " + loss2 + " Win Streak: " + streak2 + " Level: " + level2 : ""}</p>
-            <p>{totalGames3 !== 0 ? "Account 4: " + account3 + " Games: " + totalGames3 + " Wons: " + won3 + " Loss: " + loss3 + " Win Streak: " + streak3 + " Level: " + level3 : ""}</p>
+            <p>{totalGames0 === 0 && totalGames1 === 0 && totalGames2 === 0 && totalGames3 === 0 ? "No account detected, play RPS game" : ""}</p>
+            <p>{totalGames0 !== 0 ? "Account 1: " + account0 + " Total Games: " + totalGames0 + " Games Won: " + won0 + " Games Loss: " + loss0 + " Top Win Streak: " + streak0 + " Level: " + level0 + " Total Amount: " + totalAmount0 + " Amount Won: " + wonAmount0 + " Amount Loss: " + lossAmount0 : ""}</p>
+            <p>{totalGames1 !== 0 ? "Account 2: " + account1 + " Total Games: " + totalGames1 + " Games Won: " + won1 + " Games Loss: " + loss1 + " Top Win Streak: " + streak1 + " Level: " + level1 + " Total Amount: " + totalAmount1 + " Amount Won: " + wonAmount1 + " Amount Loss: " + lossAmount1 : ""}</p>
+            <p>{totalGames2 !== 0 ? "Account 3: " + account2 + " Total Games: " + totalGames2 + " Games Won: " + won2 + " Games Loss: " + loss2 + " Top Win Streak: " + streak2 + " Level: " + level2 + " Total Amount: " + totalAmount2 + " Amount Won: " + wonAmount2 + " Amount Loss: " + lossAmount2 : ""}</p>
+            <p>{totalGames3 !== 0 ? "Account 4: " + account3 + " Total Games: " + totalGames3 + " Games Won: " + won3 + " Games Loss: " + loss3 + " Top Win Streak: " + streak3 + " Level: " + level3 + " Total Amount: " + totalAmount3 + " Amount Won: " + wonAmount3 + " Amount Loss: " + lossAmount3 : ""}</p>
           </FormGroup>
           <FormGroup className="text-center">
             <h4 className="text-center">ACHIEVEMENTS</h4>
-            <p>PLAY WITH ROCK 500 TIMES: <small>ACHIEVED</small></p>
+            <p>PLAY WITH ROCK 500 TIMES: <small>NOT ACHIEVED</small></p>
             <p>PLAY IN DIFERENTS NETWORKS: <small>NOT ACHIEVED</small></p>
             <p>PLAY WITH DIFERENTS WALLETS: <small>NOT ACHIEVED</small></p>
           </FormGroup>

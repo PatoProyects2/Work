@@ -112,6 +112,7 @@ export default function ConnectWallet(props) {
           </DropdownToggle>
           <DropdownMenu className={props.theme === 'dark' ? 'bg-dark' : 'bg-light'}>
             <DropdownItem header>{props.username !== '' ? props.username : "Nickname"}</DropdownItem>
+            <DropdownItem header>{"LVL " + props.userLevel}</DropdownItem>
             <DropdownItem header>
               {props.account.substring(0, 5) + "..." + props.account.substring(12, 16)}
               <button className={`btn-sm ms-2 ${props.theme === 'dark' ? 'btn-secondary' : 'btn-dark'}`}
