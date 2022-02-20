@@ -4,12 +4,12 @@ import Web3 from 'web3'
 import Web3Modal from "web3modal";
 import { useAuthState } from 'react-firebase-hooks/auth'
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Button, Modal, ModalBody, ModalFooter, FormGroup, Input, Label } from 'reactstrap'
+import { Modal, ModalBody, FormGroup } from 'reactstrap'
 import Torus from "@toruslabs/torus-embed";
 import Portis from "@portis/web3";
 import ethProvider from "eth-provider";
 import WalletLink from "walletlink";
-import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc, collection, getDocs, where, query, orderBy, limit } from "firebase/firestore";
 import RpsGame from '../../abis/RpsGame/rpsGame.json'
 import { rpsGameContract } from '../../components/blockchain/Contracts'
 import HistoryGamesModal from './components/HistoryGamesModal'
@@ -75,62 +75,146 @@ export default function Rps() {
   }, [web3, rpsgame, account, user])
 
   const loadHistoryUserPlays = async (web3, rpsgame, account, user) => {
+    const query0 = doc(db, "rpsUsers", account)
+    const userDocument0 = await getDoc(query0)
+    const userData = userDocument0.data()
+    if (userData) {
+      setUsername(userData.name0)
+      setRegister(userData.register)
+      setUserpic(userData.pic0)
+      setLogin(userData.uid)
+      if (user && userData.uid === '') {
+        updateDoc(doc(db, "rpsUsers", account), {
+          uid: user.uid,
+        })
+      }
+    } else {
+      const globalDate = new Date();
+      const year = globalDate.getUTCFullYear()
+      const month = globalDate.getUTCMonth() + 1
+      const day = globalDate.getUTCDate()
+      if (user) {
+        setDoc(doc(db, "rpsUsers", account), {
+          uid: user.uid,
+          game: 'RPS',
+          account: account,
+          name0: '',
+          pic0: 'https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh',
+          register: day.toString() + "/" + month.toString() + "/" + year.toString(),
+          winStreak: 0,
+          winStreakBlock: 0,
+          gameWon: 0,
+          gameLoss: 0,
+          amountWon: 0,
+          amountLoss: 0,
+        })
+      } else {
+        setDoc(doc(db, "rpsUsers", account), {
+          uid: '',
+          game: 'RPS',
+          account: account,
+          name0: '',
+          pic0: 'https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh',
+          register: day.toString() + "/" + month.toString() + "/" + year.toString(),
+          winStreak: 0,
+          winStreakBlock: 0,
+          gameWon: 0,
+          gameLoss: 0,
+          amountWon: 0,
+          amountLoss: 0,
+          rock: 0,
+          paper: 0,
+          scissors: 0,
+        })
+      }
+    }
     try {
-      const query = doc(db, "rpsUsers", account)
-      const userDocument = await getDoc(query)
-      const userData = userDocument.data()
-      if (userData) {
-        setUsername(userData.name0)
-        setRegister(userData.register)
-        setUserpic(userData.pic0)
-        setUserLevel(userData.level)
-        setLogin(userData.uid)
-        if (user && userData.uid === '') {
-          updateDoc(doc(db, "rpsUsers", account), {
-            uid: user.uid,
+      const collectionRps = collection(db, "rpsUsers")
+      const queryRps = query(collectionRps, where("uid", "==", userData.uid), limit(3))
+      const documentsRps = await getDocs(queryRps)
+      const queryData = documentsRps._snapshot.docChanges
+      let totalGames0 = 0
+      let totalGames1 = 0
+      let totalGames2 = 0
+      try {
+        const data0 = queryData[0].doc.data.value.mapValue.fields
+        if (data0 !== undefined) {
+          totalGames0 = parseInt(data0.gameWon.integerValue) + parseInt(data0.gameLoss.integerValue)
+        }
+      } catch (e) {
+
+      }
+      try {
+        const data1 = queryData[1].doc.data.value.mapValue.fields
+        if (data1 !== undefined) {
+          totalGames1 = (parseInt(data1.gameWon.integerValue) + parseInt(data1.gameLoss.integerValue))
+        }
+      } catch (e) {
+
+      }
+      try {
+        const data2 = queryData[2].doc.data.value.mapValue.fields
+        if (data2 !== undefined) {
+          totalGames2 = (parseInt(data2.gameWon.integerValue) + parseInt(data2.gameLoss.integerValue))
+        }
+      } catch (e) {
+
+      }
+      let globalGames = totalGames0 + totalGames1 + totalGames2
+      const queryClub = doc(db, "clubUsers", userData.uid)
+      const userDocumentClub = await getDoc(queryClub)
+      const userDataClub = userDocumentClub.data()
+      if (userDataClub) {
+        setUserLevel(userDataClub.rpsLevel)
+        if (globalGames > 5 && globalGames < 10) {
+          updateDoc(doc(db, "clubUsers", userData.uid), {
+            rpsLevel: 2
+          })
+        }
+        if (globalGames > 9 && globalGames < 20) {
+          updateDoc(doc(db, "clubUsers", userData.uid), {
+            rpsLevel: 3
+          })
+        }
+        if (globalGames > 19 && globalGames < 30) {
+          updateDoc(doc(db, "clubUsers", userData.uid), {
+            rpsLevel: 4
+          })
+        }
+        if (globalGames > 29 && globalGames < 40) {
+          updateDoc(doc(db, "clubUsers", userData.uid), {
+            rpsLevel: 5
+          })
+        }
+        if (globalGames > 39 && globalGames < 50) {
+          updateDoc(doc(db, "clubUsers", userData.uid), {
+            rpsLevel: 6
+          })
+        }
+        if (globalGames > 49 && globalGames < 60) {
+          updateDoc(doc(db, "clubUsers", userData.uid), {
+            rpsLevel: 7
+          })
+        }
+        if (globalGames > 59 && globalGames < 70) {
+          updateDoc(doc(db, "clubUsers", userData.uid), {
+            rpsLevel: 8
+          })
+        }
+        if (globalGames > 69) {
+          updateDoc(doc(db, "clubUsers", userData.uid), {
+            rpsLevel: 9
           })
         }
       } else {
-        const globalDate = new Date();
-        const year = globalDate.getUTCFullYear()
-        const month = globalDate.getUTCMonth() + 1
-        const day = globalDate.getUTCDate()
-        if (user) {
-          setDoc(doc(db, "rpsUsers", account), {
-            uid: user.uid,
-            game: 'RPS',
-            account: account,
-            level: 0,
-            name0: '',
-            pic0: 'https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh',
-            register: day.toString() + "/" + month.toString() + "/" + year.toString(),
-            winStreak: 0,
-            winStreakBlock: 0,
-            gameWon: 0,
-            gameLoss: 0,
-            amountWon: 0,
-            amountLoss: 0,
-          })
-        } else {
-          setDoc(doc(db, "rpsUsers", account), {
-            uid: '',
-            game: 'RPS',
-            account: account,
-            level: 0,
-            name0: '',
-            pic0: 'https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh',
-            register: day.toString() + "/" + month.toString() + "/" + year.toString(),
-            winStreak: 0,
-            winStreakBlock: 0,
-            gameWon: 0,
-            gameLoss: 0,
-            amountWon: 0,
-            amountLoss: 0,
-          })
-
-        }
-
+        setDoc(doc(db, "clubUsers", userData.uid), {
+          rpsLevel: 1
+        })
       }
+    } catch (e) {
+
+    }
+    try {
       const actuallBlock = await web3.eth.getBlockNumber()
       setBlockchain(actuallBlock)
       const lastMinuteBlock = actuallBlock - 25
@@ -311,108 +395,100 @@ export default function Rps() {
     const sleep = (milliseconds) => {
       return new Promise(resolve => setTimeout(resolve, milliseconds))
     }
-    if (document.getElementById('rock').checked || document.getElementById('paper').checked || document.getElementById('scissors').checked) {
-      setUserhand(usergame.hand)
-      setLog0('')
-    } else {
-      setLog0('SELECT THE BETTING HAND')
-      return false
-    }
-    if (document.getElementById('amount1').checked || document.getElementById('amount2').checked || document.getElementById('amount3').checked || document.getElementById('amount4').checked || document.getElementById('amount5').checked || document.getElementById('amount6').checked) {
-      setUseramount(usergame.amount)
-      setLog0('')
-    } else {
-      setLog0('SELECT THE BETTING AMOUNT')
-      return false
-    }
-    let myEvents = null
-    setPlaying(true)
-    setAnimation(true)
-    let calculateValue = await rpsgame.methods.calculateValue((web3.utils.toWei((usergame.amount).toString(), "ether"))).call()
-    rpsgame.methods
-      .play(web3.utils.toWei((usergame.amount).toString(), "ether"))
-      .send({
-        from: account,
-        value: calculateValue,
-        gasLimit: 400000
-      })
-      .catch((err) => {
-        if (err.code === 4001) {
-          setPlaying(false)
-          myEvents[0] = true
-        } else {
-          console.error(err);
-        }
-      });
-    const actuallBlock = await web3.eth.getBlockNumber()
-    let userGameBlock = actuallBlock
-    do {
-      myEvents = await rpsgame.getPastEvents('Play', { filter: { _to: account }, fromBlock: userGameBlock, toBlock: 'latest' })
+    let freeze = 5
+    for (freeze; freeze > 0; freeze--) {
+      setLog0('FREEZING TIME: ' + freeze.toString())
       await sleep(1000)
-    } while (myEvents[0] === undefined);
-    if (myEvents) {
-      try {
-        setUserGameResult(myEvents[0].returnValues[3])
-        setUserGameStreak(myEvents[0].returnValues[2])
-        const dayBlock = actuallBlock - 43200
-        const query = doc(db, "rpsUsers", account)
-        const document = await getDoc(query)
-        const userData = document.data()
-        const userAmount = web3.utils.fromWei(myEvents[0].returnValues[1], 'ether')
-        if (myEvents[0].returnValues[3] === true) {
-          updateDoc(doc(db, "rpsUsers", account), {
-            gameWon: userData.gameWon + 1,
-            amountWon: userData.amountWon + parseInt(userAmount)
-          })
-        }
-        if (myEvents[0].returnValues[3] === false) {
-          updateDoc(doc(db, "rpsUsers", account), {
-            gameLoss: userData.gameLoss + 1,
-            amountLoss: userData.amountLoss + parseInt(userAmount)
-          })
-        }
-        if (myEvents[0].returnValues[2] > userData.winStreak || dayBlock > userData.winStreakBlock) {
-          updateDoc(doc(db, "rpsUsers", account), {
-            winStreak: parseInt(myEvents[0].returnValues[2]),
-            winStreakBlock: myEvents[0].blockNumber
-          })
-        }
-        const totalAmount = userData.amountWon + userData.amountLoss
-        if (totalAmount > 20 && totalAmount < 40) {
-          updateDoc(doc(db, "rpsUsers", account), {
-            level: 1
-          })
-        }
-        if (totalAmount > 39 && totalAmount < 100) {
-          updateDoc(doc(db, "rpsUsers", account), {
-            level: 2
-          })
-        }
-        if (totalAmount > 99 && totalAmount < 200) {
-          updateDoc(doc(db, "rpsUsers", account), {
-            level: 3
-          })
-        }
-        if (totalAmount > 199 && totalAmount < 500) {
-          updateDoc(doc(db, "rpsUsers", account), {
-            level: 4
-          })
-        }
-        if (totalAmount > 499 && totalAmount < 1000) {
-          updateDoc(doc(db, "rpsUsers", account), {
-            level: 5
-          })
-        }
-        if (totalAmount > 999) {
-          updateDoc(doc(db, "rpsUsers", account), {
-            level: 6
-          })
-        }
-        setShowGameResult(true)
-      } catch (e) {
+    }
+    if (freeze === 0) {
+      if (document.getElementById('rock').checked || document.getElementById('paper').checked || document.getElementById('scissors').checked) {
+        setUserhand(usergame.hand)
+        setLog0('')
+      } else {
+        setLog0('SELECT THE BETTING HAND')
+        return false
+      }
+      if (document.getElementById('amount1').checked || document.getElementById('amount2').checked || document.getElementById('amount3').checked || document.getElementById('amount4').checked || document.getElementById('amount5').checked || document.getElementById('amount6').checked) {
+        setUseramount(usergame.amount)
+        setLog0('')
+      } else {
+        setLog0('SELECT THE BETTING AMOUNT')
+        return false
+      }
+      let myEvents = null
+      setPlaying(true)
+      setAnimation(true)
+      let calculateValue = await rpsgame.methods.calculateValue((web3.utils.toWei((usergame.amount).toString(), "ether"))).call()
+      rpsgame.methods
+        .play(web3.utils.toWei((usergame.amount).toString(), "ether"))
+        .send({
+          from: account,
+          value: calculateValue,
+          gasLimit: 400000
+        })
+        .catch((err) => {
+          if (err.code === 4001) {
+            setPlaying(false)
+            myEvents[0] = true
+          } else {
+            console.error(err);
+          }
+        });
+      const actuallBlock = await web3.eth.getBlockNumber()
+      let userGameBlock = actuallBlock
+      do {
+        myEvents = await rpsgame.getPastEvents('Play', { filter: { _to: account }, fromBlock: userGameBlock, toBlock: 'latest' })
+        await sleep(1000)
+      } while (myEvents[0] === undefined);
+      if (myEvents[0]) {
+        try {
+          setUserGameResult(myEvents[0].returnValues[3])
+          setUserGameStreak(myEvents[0].returnValues[2])
+          const dayBlock = actuallBlock - 43200
+          const query = doc(db, "rpsUsers", account)
+          const document = await getDoc(query)
+          const userData = document.data()
+          const userAmount = web3.utils.fromWei(myEvents[0].returnValues[1], 'ether')
+          if (myEvents[0].returnValues[3] === true) {
+            updateDoc(doc(db, "rpsUsers", account), {
+              gameWon: userData.gameWon + 1,
+              amountWon: userData.amountWon + parseInt(userAmount)
+            })
+          }
+          if (myEvents[0].returnValues[3] === false) {
+            updateDoc(doc(db, "rpsUsers", account), {
+              gameLoss: userData.gameLoss + 1,
+              amountLoss: userData.amountLoss + parseInt(userAmount)
+            })
+          }
+          if (myEvents[0].returnValues[2] > userData.winStreak || dayBlock > userData.winStreakBlock) {
+            updateDoc(doc(db, "rpsUsers", account), {
+              winStreak: parseInt(myEvents[0].returnValues[2]),
+              winStreakBlock: myEvents[0].blockNumber
+            })
+          }
+          if (usergame.hand === 'ROCK') {
+            updateDoc(doc(db, "rpsUsers", account), {
+              rock: userData.rock + 1,
+            })
+          }
+          if (usergame.hand === 'PAPER') {
+            updateDoc(doc(db, "rpsUsers", account), {
+              paper: userData.paper + 1,
+            })
+          }
+          if (usergame.hand === 'SCISSORS') {
+            updateDoc(doc(db, "rpsUsers", account), {
+              scissors: userData.scissors + 1,
+            })
+          }
+          setShowGameResult(true)
+        } catch (e) {
 
+        }
       }
     }
+
   }
 
   const showResult = async () => {
