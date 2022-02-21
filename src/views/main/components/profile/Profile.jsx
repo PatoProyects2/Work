@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import { useAuthState } from 'react-firebase-hooks/auth'
+import { sendEmailVerification, updateProfile } from 'firebase/auth';
 import { useOutletContext } from 'react-router-dom'
-import { Button, Modal, ModalBody, ModalFooter, FormGroup } from 'reactstrap'
+import { Button, Modal, ModalBody, ModalFooter, FormGroup, Label, Input } from 'reactstrap'
 import { getDocs, query, where, collection, limit } from "firebase/firestore";
 import { auth, db } from '../../../../firebase/firesbaseConfig'
 export default function Profile() {
+  const [userInfo, setUserInfo] = useState({
+    displayName: '',
+    photoURL: ''
+  });
   const [user] = useAuthState(auth)
   const [theme, setTheme] = useOutletContext();
-
   const [account0, setAccount0] = useState('');
   const [account1, setAccount1] = useState('');
   const [account2, setAccount2] = useState('');
@@ -39,8 +43,12 @@ export default function Profile() {
   const [scissors2, setScissors2] = useState(0);
   const [rpsStats, setRpsStats] = useState(undefined);
   const [rpsAchievements, setRpsAchievements] = useState(undefined);
-
-
+  const handleInputChange = (event) => {
+    setUserInfo({
+      ...userInfo,
+      [event.target.name]: event.target.value
+    });
+  }
   useEffect(() => {
     loadMainProfile()
   }, []);
@@ -135,59 +143,83 @@ export default function Profile() {
       setRpsAchievements(true)
     }
   }
+  const resendEmailVerification = () => {
+    sendEmailVerification(auth.currentUser)
+      .then(() => {
+        window.alert('Email sent')
+      })
+      .catch((error) => {
+        window.alert('Wait some time to resend email verification again')
+      });
+  }
+
+  const updateUserProfile = () => {
+    updateProfile(auth.currentUser, userInfo)
+      .then(() => {
+        window.location.reload()
+      }).catch((error) => {
+        console.log(error)
+      });
+  }
 
   return (
     <>
-      <h1>PROFILE</h1>
-      <p><img src={user.photoURL} alt="" /></p>
-      <p>{"NAME: " + user.displayName}</p>
-      <p>{"EMAIL: " + user.email}{user.emailVerified ? " VERIFIED" : " PLEASE VERIFY YOUR EMAIL"}</p>
-      <button onClick={rpsModalStats}>RPS STATS</button>
-      <button onClick={rpsModalAchievement}>RPS ACHIEVEMENTS</button>
-      <Modal isOpen={rpsStats} contentClassName={theme === 'dark' ? 'dark dark-border' : ''} size="xl">
-        <ModalBody>
-          <h3 className="text-center">RPS STATS</h3>
-          <FormGroup className="pt-3 text-center">
-            {globalUserGames + " games played"}
-            <br></br>
-            {globalUserAmount + " matic played"}
+      {user ?
+        <>
+          <h1>PROFILE</h1>
+          <p><img src={user.photoURL} alt="" /></p>
+          <FormGroup>
+            <Label>NAME</Label>
+            <Input name="displayName" defaultValue={user.displayName} onChange={handleInputChange} type="text" />
           </FormGroup>
-          <FormGroup className="pt-3 text-center">
-            {account0 !== '' ? <>
-              {"Wallet 1: " + account0.substring(0, 5) + "..." + account0.substring(12, 16) + " | " + won0 + " won | " + loss0 + " loss | " + wonAmount0 + " matic won | " + lossAmount0 + "  matic loss"}
-              {" | " + rock0 + " times rock | " + paper0 + " times paper | " + scissors0 + " times scissors | " + streak0 + " top win streak"}
-            </> : ""}
-            <br></br>
-            {account1 !== '' ? <>
-              {"Wallet 2: " + account1.substring(0, 5) + "..." + account1.substring(12, 16) + " | " + won1 + " won | " + loss1 + " loss | " + wonAmount1 + " matic won | " + lossAmount1 + "  matic loss"}
-              {" | " + rock1 + " times rock | " + paper1 + " times paper | " + scissors1 + " times scissors | " + streak1 + " top win streak"}
-            </> : ""}
-            <br></br>
-            {account2 !== '' ? <>
-              {"Wallet 3: " + account2.substring(0, 5) + "..." + account2.substring(12, 16) + " | " + won2 + " won | " + loss2 + " loss | " + wonAmount2 + " matic won | " + lossAmount2 + "  matic loss"}
-              {" | " + rock2 + " times rock | " + paper2 + " times paper | " + scissors2 + " times scissors | " + streak2 + " top win streak"}
-            </> : ""}
-          </FormGroup>
-        </ModalBody>
-        <ModalFooter>
-          <Button color="secondary" onClick={rpsModalStats}>CLOSE</Button>
-        </ModalFooter>
-      </Modal >
-      <Modal isOpen={rpsAchievements} contentClassName={theme === 'dark' ? 'dark dark-border' : ''} size="xl">
-        <ModalBody>
-          <h3 className="text-center">RPS ACHIEVEMENTS</h3>
-          <FormGroup className="pt-3 text-center">
+          <p>{"EMAIL: " + user.email}{user.emailVerified ? " VERIFIED" : <>{" NOT VERIFIED"} <button onClick={resendEmailVerification}>Resend email verification</button></>}</p>
+          <Button color="secondary" onClick={updateUserProfile}>SAVE</Button>
+          <button onClick={rpsModalStats}>RPS STATS</button>
+          <button onClick={rpsModalAchievement}>RPS ACHIEVEMENTS</button>
+          <Modal isOpen={rpsStats} contentClassName={theme === 'dark' ? 'dark dark-border' : ''} size="xl">
+            <ModalBody>
+              <h3 className="text-center">RPS STATS</h3>
+              <FormGroup className="pt-3 text-center">
+                {globalUserGames + " games played"}
+                <br></br>
+                {globalUserAmount + " matic played"}
+              </FormGroup>
+              <FormGroup className="pt-3 text-center">
+                {account0 !== '' ? <>
+                  {"Wallet 1: " + account0.substring(0, 5) + "..." + account0.substring(12, 16) + " | " + won0 + " won | " + loss0 + " loss | " + wonAmount0 + " matic won | " + lossAmount0 + "  matic loss"}
+                  {" | " + rock0 + " times rock | " + paper0 + " times paper | " + scissors0 + " times scissors | " + streak0 + " top win streak"}
+                </> : ""}
+                <br></br>
+                {account1 !== '' ? <>
+                  {"Wallet 2: " + account1.substring(0, 5) + "..." + account1.substring(12, 16) + " | " + won1 + " won | " + loss1 + " loss | " + wonAmount1 + " matic won | " + lossAmount1 + "  matic loss"}
+                  {" | " + rock1 + " times rock | " + paper1 + " times paper | " + scissors1 + " times scissors | " + streak1 + " top win streak"}
+                </> : ""}
+                <br></br>
+                {account2 !== '' ? <>
+                  {"Wallet 3: " + account2.substring(0, 5) + "..." + account2.substring(12, 16) + " | " + won2 + " won | " + loss2 + " loss | " + wonAmount2 + " matic won | " + lossAmount2 + "  matic loss"}
+                  {" | " + rock2 + " times rock | " + paper2 + " times paper | " + scissors2 + " times scissors | " + streak2 + " top win streak"}
+                </> : ""}
+              </FormGroup>
+            </ModalBody>
+            <ModalFooter>
+              <Button color="secondary" onClick={rpsModalStats}>CLOSE</Button>
+            </ModalFooter>
+          </Modal >
+          <Modal isOpen={rpsAchievements} contentClassName={theme === 'dark' ? 'dark dark-border' : ''} size="xl">
+            <ModalBody>
+              <h3 className="text-center">RPS ACHIEVEMENTS</h3>
+              <FormGroup className="pt-3 text-center">
 
-          </FormGroup>
-        </ModalBody>
-        <ModalFooter>
-          <Button color="secondary" onClick={rpsModalAchievement}>CLOSE</Button>
-        </ModalFooter>
-      </Modal>
-
-
-
-
+              </FormGroup>
+            </ModalBody>
+            <ModalFooter>
+              <Button color="secondary" onClick={rpsModalAchievement}>CLOSE</Button>
+            </ModalFooter>
+          </Modal>
+        </>
+        :
+        "PLEASE SIGN IN"
+      }
     </>
   );
 }

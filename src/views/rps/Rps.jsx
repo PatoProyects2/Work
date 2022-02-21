@@ -9,7 +9,7 @@ import Torus from "@toruslabs/torus-embed";
 import Portis from "@portis/web3";
 import ethProvider from "eth-provider";
 import WalletLink from "walletlink";
-import { doc, getDoc, setDoc, updateDoc, collection, getDocs, where, query, orderBy, limit } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc, collection, getDocs, where, query, limit } from "firebase/firestore";
 import RpsGame from '../../abis/RpsGame/rpsGame.json'
 import { rpsGameContract } from '../../components/blockchain/Contracts'
 import HistoryGamesModal from './components/HistoryGamesModal'
@@ -48,7 +48,6 @@ export default function Rps() {
   const [username, setUsername] = useState('');
   const [userLevel, setUserLevel] = useState(0);
   const [account, setAccount] = useState('0x000000000000000000000000000000000000dEaD');
-  const [log, setLog] = useState('');
   const [log0, setLog0] = useState('');
   const [walletLog, setWalletLog] = useState('CONNECT WALLET');
   const [walletBalance, setWalletBalance] = useState(0);
@@ -594,7 +593,6 @@ export default function Rps() {
         </div>
       }
       <article>
-        {log && (<span className="alert alert-danger mx-5">{log}</span>)}
         {active === true && log === '' && login !== '' ?
           <>
             {log0 && (<span className="alert alert-danger mx-5">{log0}</span>)}

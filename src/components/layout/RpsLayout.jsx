@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { auth } from '../../firebase/firesbaseConfig'
-import SignIn, { SignOut } from './Authentication';
 import Footer from '../footer/Footer'
 import { RpsMenu } from '../ui/menu/RpsMenu'
 
@@ -21,20 +20,15 @@ export function RpsLayout() {
 
   return (
     <div className={`wrapper ${theme}`}>
-
-
       <main className='pt-3'>
         <section className="text-center">
           <Outlet context={[theme, setTheme]} />
         </section>
       </main>
-
       <RpsMenu theme={theme} />
       {/* <footer>
         <Footer theme={theme} setTheme={setTheme} />
       </footer> */}
-
     </div>
-
   );
 }

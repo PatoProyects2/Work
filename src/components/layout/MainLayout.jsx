@@ -21,29 +21,19 @@ export function MainLayout() {
 
   return (
     <div className={`wrapper ${theme}`}>
-      {user ?
-        <>
-          <header>
-            <a href="/">LOGO CLUB GAMES</a>
-            <SignOut />
-          </header>
-          <main className='pt-3'>
-            <section className="text-center">
-              <Outlet context={[theme, setTheme]} />
-            </section>
-          </main>
-          <MainMenu theme={theme} />
-          <footer>
-            <Footer theme={theme} setTheme={setTheme} />
-          </footer>
-        </>
-        :
-        <>
-          <h2>Please Log In</h2>
-          <SignIn />
-        </>
-      }
+      <header>
+        <a href="/">LOGO CLUB GAMES</a>
+        {user ? <SignOut /> : <SignIn />}
+      </header>
+      <main className='pt-3'>
+        <section className="text-center">
+          <Outlet context={[theme, setTheme]} />
+        </section>
+      </main>
+      <MainMenu theme={theme} />
+      <footer>
+        <Footer theme={theme} setTheme={setTheme} />
+      </footer>
     </div>
-
   );
 }

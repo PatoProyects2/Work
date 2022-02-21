@@ -1,14 +1,14 @@
 import React from 'react'
+import { useAuthState } from 'react-firebase-hooks/auth'
+import { auth } from '../../firebase/firesbaseConfig'
 import { useMatchMedia } from '../../hooks/useMatchMedia'
 import ChatRoom from './components/chat/ChatRoom'
 const Footer = ({ theme, setTheme }) => {
-
   const isMobileResolution = useMatchMedia('(max-width:650px)', false);
-
+  const [user] = useAuthState(auth)
   const handleThemeChange = () => {
     setTheme(theme === 'light' ? 'dark' : 'light');
   };
-
   return (
     <>
       {
@@ -23,8 +23,7 @@ const Footer = ({ theme, setTheme }) => {
                 <i className="fab fa-2x fa-discord"></i>
               </a>
             </div>
-
-            <ChatRoom />
+            {user ? <ChatRoom /> : ""}
             <div className="d-flex justify-content-center mb-5">
               <button
                 type="button"
@@ -38,7 +37,7 @@ const Footer = ({ theme, setTheme }) => {
           </>
           :
           <>
-            <ChatRoom />
+            {user ? <ChatRoom /> : ""}
             <div className="social-icons">
               <a href="https://twitter.com/RPSGameClub" className="twitter-icon me-2" target="_blank" rel="noopener noreferrer">
                 <i className="fab fa-2x fa-twitter"></i>
@@ -47,6 +46,8 @@ const Footer = ({ theme, setTheme }) => {
                 <i className="fab fa-2x fa-discord"></i>
               </a>
             </div>
+
+
           </>
       }
     </>
