@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
+import { signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, setPersistence, browserSessionPersistence } from 'firebase/auth';
 import { Button, Modal, ModalBody, ModalFooter, FormGroup, Input, Label } from 'reactstrap'
 import { auth } from "../../firebase/firesbaseConfig"
 function SignIn() {
@@ -10,6 +10,7 @@ function SignIn() {
   const [log0, setLog0] = useState('')
   const [signUpModal, setSignUpModal] = useState(false)
   const [signInModal, setSignInModal] = useState(false)
+  const [recoveryModal, setRecoveryModal] = useState(false)
 
   const handleInputChange = (event) => {
     setUserInfo({
@@ -33,6 +34,13 @@ function SignIn() {
       setSignInModal(true)
     }
   }
+
+  const modalRecovery = () => {
+    if (signInModal) {
+      setRecoveryModal(true)
+      setSignInModal(false)
+    }
+  }
   const signUpWithUserPass = () => {
     createUserWithEmailAndPassword(auth, userInfo.email, userInfo.password)
       .then((userCredential) => {
@@ -47,12 +55,29 @@ function SignIn() {
       });
   }
   const signInWithUserPass = () => {
-    signInWithEmailAndPassword(auth, userInfo.email, userInfo.password)
-      .then((userCredential) => {
-        setLog0('')
-      }).catch((error) => {
-        setLog0('Invalid email or password')
-      });
+    if (document.getElementById('persistence').checked === true) {
+      setPersistence(auth, browserSessionPersistence)
+        .then(() => {
+          return signInWithEmailAndPassword(auth, userInfo.email, userInfo.password)
+            .then((userCredential) => {
+              setLog0('')
+            }).catch((error) => {
+              setLog0('Invalid email or password')
+            });
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+        });
+    } else {
+      signInWithEmailAndPassword(auth, userInfo.email, userInfo.password)
+        .then((userCredential) => {
+          setLog0('')
+        }).catch((error) => {
+          setLog0('Invalid email or password')
+        });
+    }
+
   }
   const signInWithGoogle = () => {
     const provider = new GoogleAuthProvider()
@@ -69,23 +94,52 @@ function SignIn() {
         console.log("Error received => ", error, "Credential used ", credential)
       });
   }
+
+  const recoveryPassword = () => {
+    sendPasswordResetEmail(auth, userInfo.email)
+      .then(() => {
+        setRecoveryModal(false)
+      })
+      .catch((error) => {
+        setLog0('Invalid email')
+      });
+  }
+
+  const changeAccountModal = () => {
+    if (signInModal) {
+      setSignInModal(false)
+      setSignUpModal(true)
+    }
+    if (signUpModal) {
+      setSignUpModal(false)
+      setSignInModal(true)
+    }
+  }
   return <>
     <button onClick={modalLogin}>Sign In</button>
     <button onClick={modalRegister}>Sign Up</button>
-    
-    <Modal isOpen={signInModal} size="sm">
+
+    <Modal isOpen={signInModal} size="md">
       {log0 && (<span className="alert alert-danger mx-5 row justify-content-center mt-2">{log0}</span>)}
       <ModalBody>
-        <h3 className="text-center">Access to your account</h3>
-        <button type="button" className="btn-close" aria-label="Close" onClick={modalRegister}></button>
         <FormGroup>
-          <Label>Email</Label>
-          <Input name="email" placeholder="Email" onChange={handleInputChange} type="text" />
+          <h5 className="text-center">Access to your account</h5>
+          <button type="button" className="btn-close" aria-label="Close" onClick={modalLogin}></button>
         </FormGroup>
         <FormGroup>
-          <Label>Password</Label>
+          {"You do not have an account?"}<button onClick={changeAccountModal}>Sign Up</button>
+        </FormGroup>
+        <FormGroup>
+          <Input name="email" placeholder="E-mail Address" onChange={handleInputChange} type="text" />
+        </FormGroup>
+        <FormGroup>
           <Input name="password" placeholder="Password" onChange={handleInputChange} type="password" />
         </FormGroup>
+        <p>
+          <input id="persistence" type="checkbox"></input>&nbsp;
+          <label htmlFor="persistence">Keep Log in</label>
+        </p>
+        <button onClick={modalRecovery}>Forgot your password?</button>
         <h6>Or continue with</h6>
         <FormGroup>
           <button onClick={signInWithGoogle}>
@@ -98,21 +152,46 @@ function SignIn() {
         </FormGroup>
       </ModalBody>
       <ModalFooter>
-        <Button color="warning" type="submit" onClick={signInWithUserPass}>SIGN IN</Button>
+        <Button color="warning" type="submit" onClick={signInWithUserPass}>Start Playing</Button>
       </ModalFooter>
     </Modal>
 
-    <Modal isOpen={signUpModal} size="sm">
+    <Modal isOpen={recoveryModal} size="md">
       {log0 && (<span className="alert alert-danger mx-5 row justify-content-center mt-2">{log0}</span>)}
       <ModalBody>
-        <h3 className="text-center">Create a new account</h3>
-        <button type="button" className="btn-close" aria-label="Close" onClick={modalLogin}></button>
         <FormGroup>
-          <Label>Email</Label>
-          <Input name="email" placeholder="Email" onChange={handleInputChange} type="text" />
+          <h5 className="text-center">Send a password reset e-mail</h5>
+          <button type="button" className="btn-close" aria-label="Close" onClick={modalRegister}></button>
         </FormGroup>
         <FormGroup>
-          <Label>Password</Label>
+          <small>Enter your email below and we will send you a link to reset your password</small>
+        </FormGroup>
+        <FormGroup>
+          <Input name="email" placeholder="E-mail Address" onChange={handleInputChange} type="text" />
+        </FormGroup>
+        <FormGroup>
+          <Button color="warning" type="submit" onClick={recoveryPassword}>Reset Password</Button>
+        </FormGroup>
+      </ModalBody>
+      <ModalFooter>
+        {"You do not have an account?"}<button onClick={modalRegister}>Sign Up</button>
+      </ModalFooter>
+    </Modal>
+
+    <Modal isOpen={signUpModal} size="md">
+      {log0 && (<span className="alert alert-danger mx-5 row justify-content-center mt-2">{log0}</span>)}
+      <ModalBody>
+        <FormGroup>
+          <h5 className="text-center">Create a new account</h5>
+          <button type="button" className="btn-close" aria-label="Close" onClick={modalRegister}></button>
+        </FormGroup>
+        <FormGroup>
+          {"Do you already have an account?"}<button onClick={changeAccountModal}>Sign In</button>
+        </FormGroup>
+        <FormGroup>
+          <Input name="email" placeholder="E-mail Address" onChange={handleInputChange} type="text" />
+        </FormGroup>
+        <FormGroup>
           <Input name="password" placeholder="Password" onChange={handleInputChange} type="password" />
         </FormGroup>
         <h6>Or continue with</h6>

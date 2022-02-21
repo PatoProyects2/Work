@@ -3,15 +3,16 @@ import { useAuthState } from 'react-firebase-hooks/auth'
 import { sendEmailVerification, updateProfile } from 'firebase/auth';
 import { useOutletContext } from 'react-router-dom'
 import { Button, Modal, ModalBody, ModalFooter, FormGroup, Label, Input } from 'reactstrap'
-import { getDocs, query, where, collection, limit } from "firebase/firestore";
+import { getDocs, query, where, collection, limit, getDoc, doc, updateDoc, setDoc } from "firebase/firestore";
 import { auth, db } from '../../../../firebase/firesbaseConfig'
 export default function Profile() {
   const [userInfo, setUserInfo] = useState({
     displayName: '',
-    photoURL: ''
+    photoURL: 'https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh'
   });
   const [user] = useAuthState(auth)
   const [theme, setTheme] = useOutletContext();
+  const [log0, setLog0] = useState('')
   const [account0, setAccount0] = useState('');
   const [account1, setAccount1] = useState('');
   const [account2, setAccount2] = useState('');
@@ -43,6 +44,7 @@ export default function Profile() {
   const [scissors2, setScissors2] = useState(0);
   const [rpsStats, setRpsStats] = useState(undefined);
   const [rpsAchievements, setRpsAchievements] = useState(undefined);
+  const [editProfile, setEditProfile] = useState(undefined);
   const handleInputChange = (event) => {
     setUserInfo({
       ...userInfo,
@@ -152,33 +154,60 @@ export default function Profile() {
         window.alert('Wait some time to resend email verification again')
       });
   }
-
+  const editProfileModal = () => {
+    if (editProfile) {
+      setEditProfile(false)
+    } else {
+      setEditProfile(true)
+    }
+  }
   const updateUserProfile = () => {
-    updateProfile(auth.currentUser, userInfo)
-      .then(() => {
-        window.location.reload()
-      }).catch((error) => {
-        console.log(error)
-      });
+    if (userInfo.displayName.length >= 4 && userInfo.displayName.length <= 12) {
+      setLog0('')
+      updateProfile(auth.currentUser, userInfo)
+        .then(() => {
+          setEditProfile(false)
+          const queryClub = doc(db, "clubUsers", user.uid)
+          getDoc(queryClub)
+            .then((userDocumentClub) => {
+              const userDataClub = userDocumentClub.data()
+              if (userDataClub) {
+                updateDoc(doc(db, "clubUsers", user.uid), {
+                  name: userInfo.displayName,
+                  pic: 'https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh'
+                })
+              } else {
+                setDoc(doc(db, "clubUsers", user.uid), {
+                  name: userInfo.displayName,
+                  pic: 'https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh',
+                  rpsLevel: 1
+                })
+              }
+            })
+        }).catch((error) => {
+          setLog0('Inavlid Username')
+        });
+    } else {
+      setLog0('Username 4-12 characters')
+    }
   }
 
   return (
     <>
       {user ?
         <>
-          <h1>PROFILE</h1>
-          <p><img src={user.photoURL} alt="" /></p>
-          <FormGroup>
-            <Label>NAME</Label>
-            <Input name="displayName" defaultValue={user.displayName} onChange={handleInputChange} type="text" />
-          </FormGroup>
-          <p>{"EMAIL: " + user.email}{user.emailVerified ? " VERIFIED" : <>{" NOT VERIFIED"} <button onClick={resendEmailVerification}>Resend email verification</button></>}</p>
-          <Button color="secondary" onClick={updateUserProfile}>SAVE</Button>
-          <button onClick={rpsModalStats}>RPS STATS</button>
-          <button onClick={rpsModalAchievement}>RPS ACHIEVEMENTS</button>
+          <h1>Profile</h1>
+          <p><img width="150" height="150" src={user.photoURL} alt="" /></p>
+          <p>{"Username: " + user.displayName}</p>
+          <p>{"E-mail: " + user.email}{user.emailVerified ? " VERIFIED" : <>{" NOT VERIFIED"} <button onClick={resendEmailVerification}>Resend email verification</button></>}</p>
+          <Button color="primary" onClick={editProfileModal}>Edit Profile</Button>
+          <Button color="secondary" onClick={rpsModalStats}>RPS Stats</Button>
+          <Button color="secondary" onClick={rpsModalAchievement}>RPS Achievements</Button>
+
           <Modal isOpen={rpsStats} contentClassName={theme === 'dark' ? 'dark dark-border' : ''} size="xl">
             <ModalBody>
-              <h3 className="text-center">RPS STATS</h3>
+              <h3 className="text-center">RPS Stats</h3>
+              <button type="button" className="btn-close" aria-label="Close" onClick={rpsModalStats}></button>
               <FormGroup className="pt-3 text-center">
                 {globalUserGames + " games played"}
                 <br></br>
@@ -201,19 +230,30 @@ export default function Profile() {
                 </> : ""}
               </FormGroup>
             </ModalBody>
-            <ModalFooter>
-              <Button color="secondary" onClick={rpsModalStats}>CLOSE</Button>
-            </ModalFooter>
           </Modal >
+
           <Modal isOpen={rpsAchievements} contentClassName={theme === 'dark' ? 'dark dark-border' : ''} size="xl">
             <ModalBody>
-              <h3 className="text-center">RPS ACHIEVEMENTS</h3>
+              <h3 className="text-center">RPS Achievements</h3>
+              <button type="button" className="btn-close" aria-label="Close" onClick={rpsModalAchievement}></button>
               <FormGroup className="pt-3 text-center">
-
+              </FormGroup>
+            </ModalBody>
+          </Modal>
+          <Modal isOpen={editProfile} contentClassName={theme === 'dark' ? 'dark dark-border' : ''} size="sm">
+            {log0 && (<span className="alert alert-danger mx-5 row justify-content-center mt-2">{log0}</span>)}
+            <ModalBody>
+              <h4 className="text-center">USER PROFILE</h4>
+              <button type="button" className="btn-close" aria-label="Close" onClick={editProfileModal}></button>
+              <FormGroup className="pt-3 text-center">
+                <img width="105" height="105" className="rounded-circle" alt="" src="https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh" />
+              </FormGroup>
+              <FormGroup>
+                <Input name="displayName" placeholder="Username" onChange={handleInputChange} defaultValue={user.displayName} type="text" />
               </FormGroup>
             </ModalBody>
             <ModalFooter>
-              <Button color="secondary" onClick={rpsModalAchievement}>CLOSE</Button>
+              <Button color="warning" type="submit" onClick={updateUserProfile}>Save</Button>
             </ModalFooter>
           </Modal>
         </>

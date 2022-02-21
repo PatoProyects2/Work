@@ -54,8 +54,9 @@ export default function ConnectWallet(props) {
       setLog1('THE NAME MUST BE BETWEEN 4 AND 12 CHARACTERS');
       return false
     }
-    updateDoc(doc(db, "rpsUsers", props.account), {
-      name0: userinfo.name0
+    updateDoc(doc(db, "clubUsers", props.login), {
+      name: userinfo.name0,
+      pic: 'https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh'
     }).then(r => {
       setEdit(false)
     })
@@ -111,7 +112,7 @@ export default function ConnectWallet(props) {
             <img width="35" height="35" className="rounded-circle" alt="" src={`${props.userpic}`} />
           </DropdownToggle>
           <DropdownMenu className={props.theme === 'dark' ? 'bg-dark' : 'bg-light'}>
-            <DropdownItem header>{props.username !== '' ? props.username : "Nickname"}</DropdownItem>
+            <DropdownItem header>{props.username !== '' ? props.username : "Username"}</DropdownItem>
             <DropdownItem header>{"LVL " + props.userLevel}</DropdownItem>
             <DropdownItem header>
               {props.account.substring(0, 5) + "..." + props.account.substring(12, 16)}
@@ -145,7 +146,7 @@ export default function ConnectWallet(props) {
             <Label>{"User since " + props.register}</Label>
           </FormGroup>
           <FormGroup>
-            <Input name="name0" placeholder="Nickname" className={props.theme === 'dark' ? 'dark-input' : ''} onChange={handleInputChange} type="text" defaultValue={props.username} />
+            <Input name="name0" placeholder="Username" className={props.theme === 'dark' ? 'dark-input' : ''} onChange={handleInputChange} type="text" defaultValue={props.username} />
           </FormGroup>
         </ModalBody>
         <ModalFooter>

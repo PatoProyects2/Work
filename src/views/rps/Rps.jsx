@@ -31,18 +31,18 @@ export default function Rps() {
   });
   const [eventsmodal, setEventsmodal] = useState({});
   const [web3ModalInfo, setWeb3ModalInfo] = useState({});
-  const [userdata0, setUserdata0] = useState({ name0: '' });
-  const [userdata1, setUserdata1] = useState({ name0: '' });
-  const [userdata2, setUserdata2] = useState({ name0: '' });
-  const [userdata3, setUserdata3] = useState({ name0: '' });
-  const [userdata4, setUserdata4] = useState({ name0: '' });
-  const [userdata5, setUserdata5] = useState({ name0: '' });
-  const [userdata6, setUserdata6] = useState({ name0: '' });
-  const [userdata7, setUserdata7] = useState({ name0: '' });
-  const [userdata8, setUserdata8] = useState({ name0: '' });
-  const [userdata9, setUserdata9] = useState({ name0: '' });
-  const [userdata10, setUserdata10] = useState({ name0: '' });
-  const [userdata11, setUserdata11] = useState({ name0: '' });
+  const [userdata0, setUserdata0] = useState({});
+  const [userdata1, setUserdata1] = useState({});
+  const [userdata2, setUserdata2] = useState({});
+  const [userdata3, setUserdata3] = useState({});
+  const [userdata4, setUserdata4] = useState({});
+  const [userdata5, setUserdata5] = useState({});
+  const [userdata6, setUserdata6] = useState({});
+  const [userdata7, setUserdata7] = useState({});
+  const [userdata8, setUserdata8] = useState({});
+  const [userdata9, setUserdata9] = useState({});
+  const [userdata10, setUserdata10] = useState({});
+  const [userdata11, setUserdata11] = useState({});
   const [register, setRegister] = useState('');
   const [userpic, setUserpic] = useState('');
   const [username, setUsername] = useState('');
@@ -56,20 +56,18 @@ export default function Rps() {
   const [userGameStreak, setUserGameStreak] = useState(0);
   const [userhand, setUserhand] = useState(0);
   const [useramount, setUseramount] = useState(0);
+  const [blockchain, setBlockchain] = useState(0);
   const [active, setActive] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [animation, setAnimation] = useState(false);
   const [userGameResult, setUserGameResult] = useState(undefined);
   const [gameResult, setGameResult] = useState(undefined);
   const [showGameResult, setShowGameResult] = useState(false);
-  const [login, setLogin] = useState(false);
-  const [signIn, setSignIn] = useState(undefined);
+  const [login, setLogin] = useState('');
   const isMobileResolution = useMatchMedia('(max-width:650px)', false);
 
-  const [blockchain, setBlockchain] = useState(0);
-
   useEffect(() => {
-    const timer = setInterval(() => { loadHistoryUserPlays(web3, rpsgame, account, user) }, 3000);
+    const timer = setInterval(() => { loadHistoryUserPlays(web3, rpsgame, account, user) }, 1000);
     return () => clearInterval(timer);
   }, [web3, rpsgame, account, user])
 
@@ -78,9 +76,7 @@ export default function Rps() {
     const userDocument0 = await getDoc(query0)
     const userData = userDocument0.data()
     if (userData) {
-      setUsername(userData.name0)
       setRegister(userData.register)
-      setUserpic(userData.pic0)
       setLogin(userData.uid)
       if (user && userData.uid === '') {
         updateDoc(doc(db, "rpsUsers", account), {
@@ -96,9 +92,9 @@ export default function Rps() {
         setDoc(doc(db, "rpsUsers", account), {
           uid: user.uid,
           game: 'RPS',
-          account: account,
           name0: '',
-          pic0: 'https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh',
+          pic0: '',
+          account: account,
           register: day.toString() + "/" + month.toString() + "/" + year.toString(),
           winStreak: 0,
           winStreakBlock: 0,
@@ -106,14 +102,17 @@ export default function Rps() {
           gameLoss: 0,
           amountWon: 0,
           amountLoss: 0,
+          rock: 0,
+          paper: 0,
+          scissors: 0,
         })
       } else {
         setDoc(doc(db, "rpsUsers", account), {
           uid: '',
           game: 'RPS',
-          account: account,
           name0: '',
-          pic0: 'https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh',
+          pic0: '',
+          account: account,
           register: day.toString() + "/" + month.toString() + "/" + year.toString(),
           winStreak: 0,
           winStreakBlock: 0,
@@ -164,6 +163,12 @@ export default function Rps() {
       const userDocumentClub = await getDoc(queryClub)
       const userDataClub = userDocumentClub.data()
       if (userDataClub) {
+        updateDoc(doc(db, "rpsUsers", account), {
+          name0: userDataClub.name,
+          pic0: userDataClub.pic
+        })
+        setUsername(userDataClub.name)
+        setUserpic(userDataClub.pic)
         setUserLevel(userDataClub.rpsLevel)
         if (globalGames > 5 && globalGames < 10) {
           updateDoc(doc(db, "clubUsers", userData.uid), {
@@ -207,6 +212,8 @@ export default function Rps() {
         }
       } else {
         setDoc(doc(db, "clubUsers", userData.uid), {
+          name: '',
+          pic: 'https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh',
           rpsLevel: 1
         })
       }
@@ -377,9 +384,11 @@ export default function Rps() {
       setActive(true)
       setLog0('')
     }
-    if (!login) {
-      setSignIn(true)
+    if (login === '') {
+      setLog0('YOU ARE A NEW PLAYER, PLEASE SIGN IN OR SIGN UP')
       return false
+    } else {
+      setLog0('')
     }
   }
 
@@ -539,7 +548,7 @@ export default function Rps() {
                 web3={web3}
               />
               <NavLink className="btn btn-danger" to="/leaderboard">LEADERBOARD</NavLink>
-              <ConnectWallet decimal={decimal} web3={web3} account={account} theme={theme} walletBalance={walletBalance} username={username} userpic={userpic} register={register} userLevel={userLevel} disconnectWallet={disconnectWallet} />
+              {login !== '' ? <ConnectWallet decimal={decimal} web3={web3} account={account} theme={theme} walletBalance={walletBalance} username={username} userpic={userpic} register={register} userLevel={userLevel} disconnectWallet={disconnectWallet} login={login} /> : ""}
             </>
             :
             ""
@@ -584,7 +593,7 @@ export default function Rps() {
                   web3={web3}
                 />
                 <NavLink className="btn btn-danger" to="/leaderboard">LEADERBOARD <i className="d-none d-sm-inline-flex fas fa-external-link-alt fa-xs"></i></NavLink>
-                <ConnectWallet decimal={decimal} web3={web3} account={account} theme={theme} walletBalance={walletBalance} username={username} userpic={userpic} register={register} userLevel={userLevel} s disconnectWallet={disconnectWallet} />
+                {login !== '' ? <ConnectWallet decimal={decimal} web3={web3} account={account} theme={theme} walletBalance={walletBalance} username={username} userpic={userpic} register={register} userLevel={userLevel} disconnectWallet={disconnectWallet} login={login} /> : ""}
               </>
               :
               ""
@@ -593,7 +602,7 @@ export default function Rps() {
         </div>
       }
       <article>
-        {active === true && log === '' && login !== '' ?
+        {active === true && login !== '' ?
           <>
             {log0 && (<span className="alert alert-danger mx-5">{log0}</span>)}
             <h5 className="my-4 text-end me-3 me-lg-0">MATIC {(walletBalance / decimal).toFixed(4)}</h5>
@@ -743,18 +752,10 @@ export default function Rps() {
                   userdata11={userdata11}
                 />
                 {!user ?
-                  <Modal isOpen={signIn} contentClassName={theme === 'dark' ? 'dark dark-border' : ''} size="sm">
-                    <ModalBody>
-                      <h4 className="text-center">SIGN IN</h4>
-                      <FormGroup>
-                        <SignIn />
-                      </FormGroup>
-                    </ModalBody>
-                  </Modal>
+                  <SignIn />
                   :
                   <SignOut />
                 }
-
               </>
               :
               <>
