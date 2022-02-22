@@ -6,234 +6,306 @@ export default function HistoryGamesModal(props) {
             <div className="container">
                 <div className="play-list">
                     <ul className="list-group">
-                        {props.eventsmodal[11] !== undefined
-                            ?
-                            <li className={`d-flex list-group-item list-group-item-action ${props.theme === 'dark' ? 'dark-list-item' : ''}`}>
-                                <div className="title mb-auto ms-2">
-                                    <img width="35" height="35" className="rounded-circle" alt="" src={`${props.userdata11.pic0}`} />
-                                    {props.userdata11.name0 !== '' ? props.userdata11.name0 : props.eventsmodal[11].returnValues[0].substring(0, 5).toLowerCase()}
-                                    {" played " + (props.eventsmodal[11].returnValues[1] / props.decimal) + " MATIC and"}
-                                    <span style={{ color: props.eventsmodal[11].returnValues[3] ? "mediumseagreen" : "crimson" }}>
-                                        {props.eventsmodal[11].returnValues[3] === false ? " lost all " : ""}{props.eventsmodal[11].returnValues[3] === true ? " doubled " : ""}
-                                    </span>
-                                    {props.eventsmodal[11].returnValues[2] > 1 ? props.eventsmodal[11].returnValues[2] + " times " : ""}
-                                </div>
-                                <small className="ms-auto mt-auto time-in-row">
-                                    {((props.blockchain - props.eventsmodal[11].blockNumber) * 2) < 0 || ((props.blockchain - props.eventsmodal[11].blockNumber) * 2) === 0 ? "now" : ((props.blockchain - props.eventsmodal[11].blockNumber) * 2) + " seconds ago"}
-                                </small>
-                            </li>
-                            :
-                            ""
-                        }
-                        {props.eventsmodal[10] !== undefined
-                            ?
-                            <li className={`d-flex list-group-item list-group-item-action ${props.theme === 'dark' ? 'dark-list-item' : ''}`}>
-                                <div className="title mb-auto ms-2">
-                                    <img width="35" height="35" className="rounded-circle" alt="" src={`${props.userdata10.pic0}`} />
-                                    {props.userdata10.name0 !== '' ? props.userdata10.name0 : props.eventsmodal[10].returnValues[0].substring(0, 5).toLowerCase()}
-                                    {" played " + (props.eventsmodal[10].returnValues[1] / props.decimal) + " MATIC and"}
-                                    <span style={{ color: props.eventsmodal[10].returnValues[3] ? "mediumseagreen" : "crimson" }}>
-                                        {props.eventsmodal[10].returnValues[3] === false ? " lost all " : ""}{props.eventsmodal[10].returnValues[3] === true ? " doubled " : ""}
-                                    </span>
-                                    {props.eventsmodal[10].returnValues[2] > 1 ? props.eventsmodal[10].returnValues[2] + " times " : ""}
-                                </div>
-                                <small className="ms-auto mt-auto time-in-row">
-                                    {((props.blockchain - props.eventsmodal[10].blockNumber) * 2) < 0 || ((props.blockchain - props.eventsmodal[10].blockNumber) * 2) === 0 ? "now" : ((props.blockchain - props.eventsmodal[10].blockNumber) * 2) + " seconds ago"}
-                                </small>
-                            </li>
-                            :
-                            ""
-                        }
-                        {props.eventsmodal[9] !== undefined
-                            ?
-                            <li className={`d-flex list-group-item list-group-item-action ${props.theme === 'dark' ? 'dark-list-item' : ''}`}>
-                                <div className="title mb-auto ms-2">
-                                    <img width="35" height="35" className="rounded-circle" alt="" src={`${props.userdata9.pic0}`} />
-                                    {props.userdata9.name0 !== '' ? props.userdata9.name0 : props.eventsmodal[9].returnValues[0].substring(0, 5).toLowerCase()}
-                                    {" played " + (props.eventsmodal[9].returnValues[1] / props.decimal) + " MATIC and"}
-                                    <span style={{ color: props.eventsmodal[9].returnValues[3] ? "mediumseagreen" : "crimson" }}>
-                                        {props.eventsmodal[9].returnValues[3] === false ? " lost all " : ""}{props.eventsmodal[9].returnValues[3] === true ? " doubled " : ""}
-                                    </span>
-                                    {props.eventsmodal[9].returnValues[2] > 1 ? props.eventsmodal[9].returnValues[2] + " times " : ""}
-                                </div>
-                                <small className="ms-auto mt-auto time-in-row">
-                                    {((props.blockchain - props.eventsmodal[9].blockNumber) * 2) < 0 || ((props.blockchain - props.eventsmodal[9].blockNumber) * 2) === 0 ? "now" : ((props.blockchain - props.eventsmodal[9].blockNumber) * 2) + " seconds ago"}
-                                </small>
-                            </li>
-                            :
-                            ""
-                        }
-                        {props.eventsmodal[8] !== undefined
-                            ?
-                            <li className={`d-flex list-group-item list-group-item-action ${props.theme === 'dark' ? 'dark-list-item' : ''}`}>
-                                <div className="title mb-auto ms-2">
-                                    <img width="35" height="35" className="rounded-circle" alt="" src={`${props.userdata8.pic0}`} />
-                                    {props.userdata8.name0 !== '' ? props.userdata8.name0 : props.eventsmodal[8].returnValues[0].substring(0, 5).toLowerCase()}
-                                    {" played " + (props.eventsmodal[8].returnValues[1] / props.decimal) + " MATIC and"}
-                                    <span style={{ color: props.eventsmodal[8].returnValues[3] ? "mediumseagreen" : "crimson" }}>
-                                        {props.eventsmodal[8].returnValues[3] === false ? " lost all " : ""}{props.eventsmodal[8].returnValues[3] === true ? " doubled " : ""}
-                                    </span>
-                                    {props.eventsmodal[8].returnValues[2] > 1 ? props.eventsmodal[8].returnValues[2] + " times " : ""}
-                                </div>
-                                <small className="ms-auto mt-auto time-in-row">
-                                    {((props.blockchain - props.eventsmodal[8].blockNumber) * 2) < 0 || ((props.blockchain - props.eventsmodal[8].blockNumber) * 2) === 0 ? "now" : ((props.blockchain - props.eventsmodal[8].blockNumber) * 2) + " seconds ago"}
-                                </small>
-                            </li>
-                            :
-                            ""
-                        }
-                        {props.eventsmodal[7] !== undefined
-                            ?
-                            <li className={`d-flex list-group-item list-group-item-action ${props.theme === 'dark' ? 'dark-list-item' : ''}`}>
-                                <div className="title mb-auto ms-2">
-                                    <img width="35" height="35" className="rounded-circle" alt="" src={`${props.userdata7.pic0}`} />
-                                    {props.userdata7.name0 !== '' ? props.userdata7.name0 : props.eventsmodal[7].returnValues[0].substring(0, 5).toLowerCase()}
-                                    {" played " + (props.eventsmodal[7].returnValues[1] / props.decimal) + " MATIC and"}
-                                    <span style={{ color: props.eventsmodal[7].returnValues[3] ? "mediumseagreen" : "crimson" }}>
-                                        {props.eventsmodal[7].returnValues[3] === false ? " lost all " : ""}{props.eventsmodal[7].returnValues[3] === true ? " doubled " : ""}
-                                    </span>
-                                    {props.eventsmodal[7].returnValues[2] > 1 ? props.eventsmodal[7].returnValues[2] + " times " : ""}
-                                </div>
-                                <small className="ms-auto mt-auto time-in-row">
-                                    {((props.blockchain - props.eventsmodal[7].blockNumber) * 2) < 0 || ((props.blockchain - props.eventsmodal[7].blockNumber) * 2) === 0 ? "now" : ((props.blockchain - props.eventsmodal[7].blockNumber) * 2) + " seconds ago"}
-                                </small>
-                            </li>
-                            :
-                            ""
-                        }
-                        {props.eventsmodal[6] !== undefined
-                            ?
-                            <li className={`d-flex list-group-item list-group-item-action ${props.theme === 'dark' ? 'dark-list-item' : ''}`}>
-                                <div className="title mb-auto ms-2">
-                                    <img width="35" height="35" className="rounded-circle" alt="" src={`${props.userdata6.pic0}`} />
-                                    {props.userdata6.name0 !== '' ? props.userdata6.name0 : props.eventsmodal[6].returnValues[0].substring(0, 5).toLowerCase()}
-                                    {" played " + (props.eventsmodal[6].returnValues[1] / props.decimal) + " MATIC and"}
-                                    <span style={{ color: props.eventsmodal[6].returnValues[3] ? "mediumseagreen" : "crimson" }}>
-                                        {props.eventsmodal[6].returnValues[3] === false ? " lost all " : ""}{props.eventsmodal[6].returnValues[3] === true ? " doubled " : ""}
-                                    </span>
-                                    {props.eventsmodal[6].returnValues[2] > 1 ? props.eventsmodal[6].returnValues[2] + " times " : ""}
-                                </div>
-                                <small className="ms-auto mt-auto time-in-row">
-                                    {((props.blockchain - props.eventsmodal[6].blockNumber) * 2) < 0 || ((props.blockchain - props.eventsmodal[6].blockNumber) * 2) === 0 ? "now" : ((props.blockchain - props.eventsmodal[6].blockNumber) * 2) + " seconds ago"}
-                                </small>
-                            </li>
-                            :
-                            ""
-                        }
-                        {props.eventsmodal[5] !== undefined
-                            ?
-                            <li className={`d-flex list-group-item list-group-item-action ${props.theme === 'dark' ? 'dark-list-item' : ''}`}>
-                                <div className="title mb-auto ms-2">
-                                    <img width="35" height="35" className="rounded-circle" alt="" src={`${props.userdata5.pic0}`} />
-                                    {props.userdata5.name0 !== '' ? props.userdata5.name0 : props.eventsmodal[5].returnValues[0].substring(0, 5).toLowerCase()}
-                                    {" played " + (props.eventsmodal[5].returnValues[1] / props.decimal) + " MATIC and"}
-                                    <span style={{ color: props.eventsmodal[5].returnValues[3] ? "mediumseagreen" : "crimson" }}>
-                                        {props.eventsmodal[5].returnValues[3] === false ? " lost all " : ""}{props.eventsmodal[5].returnValues[3] === true ? " doubled " : ""}
-                                    </span>
-                                    {props.eventsmodal[5].returnValues[2] > 1 ? props.eventsmodal[5].returnValues[2] + " times " : ""}
-                                </div>
-                                <small className="ms-auto mt-auto time-in-row">
-                                    {((props.blockchain - props.eventsmodal[5].blockNumber) * 2) < 0 || ((props.blockchain - props.eventsmodal[5].blockNumber) * 2) === 0 ? "now" : ((props.blockchain - props.eventsmodal[5].blockNumber) * 2) + " seconds ago"}
-                                </small>
-                            </li>
-                            :
-                            ""
-                        }
-                        {props.eventsmodal[4] !== undefined
-                            ?
-                            <li className={`d-flex list-group-item list-group-item-action ${props.theme === 'dark' ? 'dark-list-item' : ''}`}>
-                                <div className="title mb-auto ms-2">
-                                    <img width="35" height="35" className="rounded-circle" alt="" src={`${props.userdata4.pic0}`} />
-                                    {props.userdata4.name0 !== '' ? props.userdata4.name0 : props.eventsmodal[4].returnValues[0].substring(0, 5).toLowerCase()}
-                                    {" played " + (props.eventsmodal[4].returnValues[1] / props.decimal) + " MATIC and"}
-                                    <span style={{ color: props.eventsmodal[4].returnValues[3] ? "mediumseagreen" : "crimson" }}>
-                                        {props.eventsmodal[4].returnValues[3] === false ? " lost all " : ""}{props.eventsmodal[4].returnValues[3] === true ? " doubled " : ""}
-                                    </span>
-                                    {props.eventsmodal[4].returnValues[2] > 1 ? props.eventsmodal[4].returnValues[2] + " times " : ""}
-                                </div>
-                                <small className="ms-auto mt-auto time-in-row">
-                                    {((props.blockchain - props.eventsmodal[4].blockNumber) * 2) < 0 || ((props.blockchain - props.eventsmodal[4].blockNumber) * 2) === 0 ? "now" : ((props.blockchain - props.eventsmodal[4].blockNumber) * 2) + " seconds ago"}
-                                </small>
-                            </li>
-                            :
-                            ""
-                        }
-                        {props.eventsmodal[3] !== undefined
-                            ?
-                            <li className={`d-flex list-group-item list-group-item-action ${props.theme === 'dark' ? 'dark-list-item' : ''}`}>
-                                <div className="title mb-auto ms-2">
-                                    <img width="35" height="35" className="rounded-circle" alt="" src={`${props.userdata3.pic0}`} />
-                                    {props.userdata3.name0 !== '' ? props.userdata3.name0 : props.eventsmodal[3].returnValues[0].substring(0, 5).toLowerCase()}
-                                    {" played " + (props.eventsmodal[3].returnValues[1] / props.decimal) + " MATIC and"}
-                                    <span style={{ color: props.eventsmodal[3].returnValues[3] ? "mediumseagreen" : "crimson" }}>
-                                        {props.eventsmodal[3].returnValues[3] === false ? " lost all " : ""}{props.eventsmodal[3].returnValues[3] === true ? " doubled " : ""}
-                                    </span>
-                                    {props.eventsmodal[3].returnValues[2] > 1 ? props.eventsmodal[3].returnValues[2] + " times " : ""}
-                                </div>
-                                <small className="ms-auto mt-auto time-in-row">
-                                    {((props.blockchain - props.eventsmodal[3].blockNumber) * 2) < 0 || ((props.blockchain - props.eventsmodal[3].blockNumber) * 2) === 0 ? "now" : ((props.blockchain - props.eventsmodal[3].blockNumber) * 2) + " seconds ago"}
-                                </small>
-                            </li>
-                            :
-                            ""
-                        }
-                        {props.eventsmodal[2] !== undefined
-                            ?
-                            <li className={`d-flex list-group-item list-group-item-action ${props.theme === 'dark' ? 'dark-list-item' : ''}`}>
-                                <div className="title mb-auto ms-2">
-                                    <img width="35" height="35" className="rounded-circle" alt="" src={`${props.userdata2.pic0}`} />
-                                    {props.userdata2.name0 !== '' ? props.userdata2.name0 : props.eventsmodal[2].returnValues[0].substring(0, 5).toLowerCase()}
-                                    {" played " + (props.eventsmodal[2].returnValues[1] / props.decimal) + " MATIC and"}
-                                    <span style={{ color: props.eventsmodal[2].returnValues[3] ? "mediumseagreen" : "crimson" }}>
-                                        {props.eventsmodal[2].returnValues[3] === false ? " lost all " : ""}{props.eventsmodal[2].returnValues[3] === true ? " doubled " : ""}
-                                    </span>
-                                    {props.eventsmodal[2].returnValues[2] > 1 ? props.eventsmodal[2].returnValues[2] + " times " : ""}
-                                </div>
-                                <small className="ms-auto mt-auto time-in-row">
-                                    {((props.blockchain - props.eventsmodal[2].blockNumber) * 2) < 0 || ((props.blockchain - props.eventsmodal[2].blockNumber) * 2) === 0 ? "now" : ((props.blockchain - props.eventsmodal[2].blockNumber) * 2) + " seconds ago"}
-                                </small>
-                            </li>
-                            :
-                            ""
-                        }
-                        {props.eventsmodal[1] !== undefined
-                            ?
-                            <li className={`d-flex list-group-item list-group-item-action ${props.theme === 'dark' ? 'dark-list-item' : ''}`}>
-                                <div className="title mb-auto ms-2">
-                                    <img width="35" height="35" className="rounded-circle" alt="" src={`${props.userdata1.pic0}`} />
-                                    {props.userdata1.name0 !== '' ? props.userdata1.name0 : props.eventsmodal[1].returnValues[0].substring(0, 5).toLowerCase()}
-                                    {" played " + (props.eventsmodal[1].returnValues[1] / props.decimal) + " MATIC and"}
-                                    <span style={{ color: props.eventsmodal[1].returnValues[3] ? "mediumseagreen" : "crimson" }}>
-                                        {props.eventsmodal[1].returnValues[3] === false ? " lost all " : ""}{props.eventsmodal[1].returnValues[3] === true ? " doubled " : ""}
-                                    </span>
-                                </div>
-                                {props.eventsmodal[1].returnValues[2] > 1 ? props.eventsmodal[1].returnValues[2] + " times " : ""}
-                                <small className="ms-auto mt-auto time-in-row">
-                                    {((props.blockchain - props.eventsmodal[1].blockNumber) * 2) < 0 || ((props.blockchain - props.eventsmodal[1].blockNumber) * 2) === 0 ? "now" : ((props.blockchain - props.eventsmodal[1].blockNumber) * 2) + " seconds ago"}
-                                </small>
-                            </li>
-                            :
-                            ""
-                        }
-                        {props.eventsmodal[0] !== undefined
-                            ?
-                            <li className={`d-flex list-group-item list-group-item-action ${props.theme === 'dark' ? 'dark-list-item' : ''}`}>
-                                <div className="title mb-auto ms-2">
-                                    <img width="35" height="35" className="rounded-circle" alt="" src={`${props.userdata0.pic0}`} />
-                                    {props.userdata0.name0 !== '' ? props.userdata0.name0 : props.eventsmodal[0].returnValues[0].substring(0, 5).toLowerCase()  }
-                                    {" played " + (props.eventsmodal[0].returnValues[1] / props.decimal) + " MATIC and"}
-                                    <span style={{ color: props.eventsmodal[0].returnValues[3] ? "mediumseagreen" : "crimson" }}>
-                                        {props.eventsmodal[0].returnValues[3] === false ? " lost all " : ""}{props.eventsmodal[0].returnValues[3] === true ? " doubled " : ""}
-                                    </span>
-                                    {props.eventsmodal[0].returnValues[2] > 1 ? props.eventsmodal[0].returnValues[2] + " times " : ""}
-                                </div>
-                                <small className="ms-auto mt-auto time-in-row">
-                                    {((props.blockchain - props.eventsmodal[0].blockNumber) * 2) < 0 || ((props.blockchain - props.eventsmodal[0].blockNumber) * 2) === 0 ? "now" : ((props.blockchain - props.eventsmodal[0].blockNumber) * 2) + " seconds ago"}
-                                </small>
-                            </li>
-                            :
-                            ""
-                        }
+                        {props.historyPlays[0] !== undefined && props.historyPlays[0].createdAt ?
+                            <>
+                                {(props.unixTimeStamp - props.historyPlays[0].createdAt.seconds) < 60 ?
+                                    <>
+                                        <li className={`d-flex list-group-item list-group-item-action ${props.theme === 'dark' ? 'dark-list-item' : ''}`}>
+                                            <div className="title mb-auto ms-2">
+                                                <img width="35" height="35" className="rounded-circle" alt="" src={`${props.historyPlays[0].photo}`} />
+                                                {props.historyPlays[0].name !== '' ? props.historyPlays[0].name : props.historyPlays[0].account.substring(0, 5).toLowerCase()}
+                                                {" played " + props.historyPlays[0].maticAmount + " MATIC and"}
+                                                <span style={{ color: props.historyPlays[0].result ? "mediumseagreen" : "crimson" }}>
+                                                    {props.historyPlays[0].result === false ? " lost all " : ""}{props.historyPlays[0].result === true ? " doubled " : ""}
+                                                </span>
+                                                {props.historyPlays[0].streak > 1 ? props.historyPlays[0].streak + " times " : ""}
+                                            </div>
+                                            <small className="ms-auto mt-auto time-in-row">
+                                                {(props.unixTimeStamp - props.historyPlays[0].createdAt.seconds) <= 0 ?
+                                                    " now" : (props.unixTimeStamp - props.historyPlays[0].createdAt.seconds) + " seconds ago"}
+                                            </small>
+                                        </li>
+                                    </>
+                                    :
+                                    ""
+                                }
+                            </>
+                            : ""}
+                        {props.historyPlays[1] !== undefined && props.historyPlays[1].createdAt ?
+                            <>
+                                {(props.unixTimeStamp - props.historyPlays[1].createdAt.seconds) < 60 ?
+                                    <>
+                                        <li className={`d-flex list-group-item list-group-item-action ${props.theme === 'dark' ? 'dark-list-item' : ''}`}>
+                                            <div className="title mb-auto ms-2">
+                                                <img width="35" height="35" className="rounded-circle" alt="" src={`${props.historyPlays[1].photo}`} />
+                                                {props.historyPlays[1].name !== '' ? props.historyPlays[1].name : props.historyPlays[1].account.substring(0, 5).toLowerCase()}
+                                                {" played " + props.historyPlays[1].maticAmount + " MATIC and"}
+                                                <span style={{ color: props.historyPlays[1].result ? "mediumseagreen" : "crimson" }}>
+                                                    {props.historyPlays[1].result === false ? " lost all " : ""}{props.historyPlays[1].result === true ? " doubled " : ""}
+                                                </span>
+                                                {props.historyPlays[1].streak > 1 ? props.historyPlays[1].streak + " times " : ""}
+                                            </div>
+                                            <small className="ms-auto mt-auto time-in-row">
+                                                {(props.unixTimeStamp - props.historyPlays[1].createdAt.seconds) <= 0 ?
+                                                    " now" : (props.unixTimeStamp - props.historyPlays[1].createdAt.seconds) + " seconds ago"}
+                                            </small>
+                                        </li>
+                                    </>
+                                    :
+                                    ""
+                                }
+                            </>
+                            : ""}
+                        {props.historyPlays[2] !== undefined && props.historyPlays[2].createdAt ?
+                            <>
+                                {(props.unixTimeStamp - props.historyPlays[2].createdAt.seconds) < 60 ?
+                                    <>
+                                        <li className={`d-flex list-group-item list-group-item-action ${props.theme === 'dark' ? 'dark-list-item' : ''}`}>
+                                            <div className="title mb-auto ms-2">
+                                                <img width="35" height="35" className="rounded-circle" alt="" src={`${props.historyPlays[2].photo}`} />
+                                                {props.historyPlays[2].name !== '' ? props.historyPlays[2].name : props.historyPlays[2].account.substring(0, 5).toLowerCase()}
+                                                {" played " + props.historyPlays[2].maticAmount + " MATIC and"}
+                                                <span style={{ color: props.historyPlays[2].result ? "mediumseagreen" : "crimson" }}>
+                                                    {props.historyPlays[2].result === false ? " lost all " : ""}{props.historyPlays[2].result === true ? " doubled " : ""}
+                                                </span>
+                                                {props.historyPlays[2].streak > 1 ? props.historyPlays[2].streak + " times " : ""}
+                                            </div>
+                                            <small className="ms-auto mt-auto time-in-row">
+                                                {(props.unixTimeStamp - props.historyPlays[2].createdAt.seconds) <= 0 ?
+                                                    " now" : (props.unixTimeStamp - props.historyPlays[2].createdAt.seconds) + " seconds ago"}
+                                            </small>
+                                        </li>
+                                    </>
+                                    :
+                                    ""
+                                }
+                            </>
+                            : ""}
+                        {props.historyPlays[3] !== undefined && props.historyPlays[3].createdAt ?
+                            <>
+                                {(props.unixTimeStamp - props.historyPlays[3].createdAt.seconds) < 60 ?
+                                    <>
+                                        <li className={`d-flex list-group-item list-group-item-action ${props.theme === 'dark' ? 'dark-list-item' : ''}`}>
+                                            <div className="title mb-auto ms-2">
+                                                <img width="35" height="35" className="rounded-circle" alt="" src={`${props.historyPlays[3].photo}`} />
+                                                {props.historyPlays[3].name !== '' ? props.historyPlays[3].name : props.historyPlays[3].account.substring(0, 5).toLowerCase()}
+                                                {" played " + props.historyPlays[3].maticAmount + " MATIC and"}
+                                                <span style={{ color: props.historyPlays[3].result ? "mediumseagreen" : "crimson" }}>
+                                                    {props.historyPlays[3].result === false ? " lost all " : ""}{props.historyPlays[3].result === true ? " doubled " : ""}
+                                                </span>
+                                                {props.historyPlays[3].streak > 1 ? props.historyPlays[3].streak + " times " : ""}
+                                            </div>
+                                            <small className="ms-auto mt-auto time-in-row">
+                                                {(props.unixTimeStamp - props.historyPlays[3].createdAt.seconds) <= 0 ?
+                                                    " now" : (props.unixTimeStamp - props.historyPlays[3].createdAt.seconds) + " seconds ago"}
+                                            </small>
+                                        </li>
+                                    </>
+                                    :
+                                    ""
+                                }
+                            </>
+                            : ""}
+                        {props.historyPlays[4] !== undefined && props.historyPlays[4].createdAt ?
+                            <>
+                                {(props.unixTimeStamp - props.historyPlays[4].createdAt.seconds) < 60 ?
+                                    <>
+                                        <li className={`d-flex list-group-item list-group-item-action ${props.theme === 'dark' ? 'dark-list-item' : ''}`}>
+                                            <div className="title mb-auto ms-2">
+                                                <img width="35" height="35" className="rounded-circle" alt="" src={`${props.historyPlays[4].photo}`} />
+                                                {props.historyPlays[4].name !== '' ? props.historyPlays[4].name : props.historyPlays[4].account.substring(0, 5).toLowerCase()}
+                                                {" played " + props.historyPlays[4].maticAmount + " MATIC and"}
+                                                <span style={{ color: props.historyPlays[4].result ? "mediumseagreen" : "crimson" }}>
+                                                    {props.historyPlays[4].result === false ? " lost all " : ""}{props.historyPlays[4].result === true ? " doubled " : ""}
+                                                </span>
+                                                {props.historyPlays[4].streak > 1 ? props.historyPlays[4].streak + " times " : ""}
+                                            </div>
+                                            <small className="ms-auto mt-auto time-in-row">
+                                                {(props.unixTimeStamp - props.historyPlays[4].createdAt.seconds) <= 0 ?
+                                                    " now" : (props.unixTimeStamp - props.historyPlays[4].createdAt.seconds) + " seconds ago"}
+                                            </small>
+                                        </li>
+                                    </>
+                                    :
+                                    ""
+                                }
+                            </>
+                            : ""}
+                        {props.historyPlays[5] !== undefined && props.historyPlays[5].createdAt ?
+                            <>
+                                {(props.unixTimeStamp - props.historyPlays[5].createdAt.seconds) < 60 ?
+                                    <>
+                                        <li className={`d-flex list-group-item list-group-item-action ${props.theme === 'dark' ? 'dark-list-item' : ''}`}>
+                                            <div className="title mb-auto ms-2">
+                                                <img width="35" height="35" className="rounded-circle" alt="" src={`${props.historyPlays[5].photo}`} />
+                                                {props.historyPlays[5].name !== '' ? props.historyPlays[5].name : props.historyPlays[5].account.substring(0, 5).toLowerCase()}
+                                                {" played " + props.historyPlays[5].maticAmount + " MATIC and"}
+                                                <span style={{ color: props.historyPlays[5].result ? "mediumseagreen" : "crimson" }}>
+                                                    {props.historyPlays[5].result === false ? " lost all " : ""}{props.historyPlays[5].result === true ? " doubled " : ""}
+                                                </span>
+                                                {props.historyPlays[5].streak > 1 ? props.historyPlays[5].streak + " times " : ""}
+                                            </div>
+                                            <small className="ms-auto mt-auto time-in-row">
+                                                {(props.unixTimeStamp - props.historyPlays[5].createdAt.seconds) <= 0 ?
+                                                    " now" : (props.unixTimeStamp - props.historyPlays[5].createdAt.seconds) + " seconds ago"}
+                                            </small>
+                                        </li>
+                                    </>
+                                    :
+                                    ""
+                                }
+                            </>
+                            : ""}
+                        {props.historyPlays[6] !== undefined && props.historyPlays[6].createdAt ?
+                            <>
+                                {(props.unixTimeStamp - props.historyPlays[6].createdAt.seconds) < 60 ?
+                                    <>
+                                        <li className={`d-flex list-group-item list-group-item-action ${props.theme === 'dark' ? 'dark-list-item' : ''}`}>
+                                            <div className="title mb-auto ms-2">
+                                                <img width="35" height="35" className="rounded-circle" alt="" src={`${props.historyPlays[6].photo}`} />
+                                                {props.historyPlays[6].name !== '' ? props.historyPlays[6].name : props.historyPlays[6].account.substring(0, 5).toLowerCase()}
+                                                {" played " + props.historyPlays[6].maticAmount + " MATIC and"}
+                                                <span style={{ color: props.historyPlays[6].result ? "mediumseagreen" : "crimson" }}>
+                                                    {props.historyPlays[6].result === false ? " lost all " : ""}{props.historyPlays[6].result === true ? " doubled " : ""}
+                                                </span>
+                                                {props.historyPlays[6].streak > 1 ? props.historyPlays[6].streak + " times " : ""}
+                                            </div>
+                                            <small className="ms-auto mt-auto time-in-row">
+                                                {(props.unixTimeStamp - props.historyPlays[6].createdAt.seconds) <= 0 ?
+                                                    " now" : (props.unixTimeStamp - props.historyPlays[6].createdAt.seconds) + " seconds ago"}
+                                            </small>
+                                        </li>
+                                    </>
+                                    :
+                                    ""
+                                }
+                            </>
+                            : ""}
+                        {props.historyPlays[7] !== undefined && props.historyPlays[7].createdAt ?
+                            <>
+                                {(props.unixTimeStamp - props.historyPlays[7].createdAt.seconds) < 60 ?
+                                    <>
+                                        <li className={`d-flex list-group-item list-group-item-action ${props.theme === 'dark' ? 'dark-list-item' : ''}`}>
+                                            <div className="title mb-auto ms-2">
+                                                <img width="35" height="35" className="rounded-circle" alt="" src={`${props.historyPlays[7].photo}`} />
+                                                {props.historyPlays[7].name !== '' ? props.historyPlays[7].name : props.historyPlays[7].account.substring(0, 5).toLowerCase()}
+                                                {" played " + props.historyPlays[7].maticAmount + " MATIC and"}
+                                                <span style={{ color: props.historyPlays[7].result ? "mediumseagreen" : "crimson" }}>
+                                                    {props.historyPlays[7].result === false ? " lost all " : ""}{props.historyPlays[7].result === true ? " doubled " : ""}
+                                                </span>
+                                                {props.historyPlays[7].streak > 1 ? props.historyPlays[7].streak + " times " : ""}
+                                            </div>
+                                            <small className="ms-auto mt-auto time-in-row">
+                                                {(props.unixTimeStamp - props.historyPlays[7].createdAt.seconds) <= 0 ?
+                                                    " now" : (props.unixTimeStamp - props.historyPlays[7].createdAt.seconds) + " seconds ago"}
+                                            </small>
+                                        </li>
+                                    </>
+                                    :
+                                    ""
+                                }
+                            </>
+                            : ""}
+                        {props.historyPlays[8] !== undefined && props.historyPlays[8].createdAt ?
+                            <>
+                                {(props.unixTimeStamp - props.historyPlays[8].createdAt.seconds) < 60 ?
+                                    <>
+                                        <li className={`d-flex list-group-item list-group-item-action ${props.theme === 'dark' ? 'dark-list-item' : ''}`}>
+                                            <div className="title mb-auto ms-2">
+                                                <img width="35" height="35" className="rounded-circle" alt="" src={`${props.historyPlays[8].photo}`} />
+                                                {props.historyPlays[8].name !== '' ? props.historyPlays[8].name : props.historyPlays[8].account.substring(0, 5).toLowerCase()}
+                                                {" played " + props.historyPlays[8].maticAmount + " MATIC and"}
+                                                <span style={{ color: props.historyPlays[8].result ? "mediumseagreen" : "crimson" }}>
+                                                    {props.historyPlays[8].result === false ? " lost all " : ""}{props.historyPlays[8].result === true ? " doubled " : ""}
+                                                </span>
+                                                {props.historyPlays[8].streak > 1 ? props.historyPlays[8].streak + " times " : ""}
+                                            </div>
+                                            <small className="ms-auto mt-auto time-in-row">
+                                                {(props.unixTimeStamp - props.historyPlays[8].createdAt.seconds) <= 0 ?
+                                                    " now" : (props.unixTimeStamp - props.historyPlays[8].createdAt.seconds) + " seconds ago"}
+                                            </small>
+                                        </li>
+                                    </>
+                                    :
+                                    ""
+                                }
+                            </>
+                            : ""}
+                        {props.historyPlays[9] !== undefined && props.historyPlays[9].createdAt ?
+                            <>
+                                {(props.unixTimeStamp - props.historyPlays[9].createdAt.seconds) < 60 ?
+                                    <>
+                                        <li className={`d-flex list-group-item list-group-item-action ${props.theme === 'dark' ? 'dark-list-item' : ''}`}>
+                                            <div className="title mb-auto ms-2">
+                                                <img width="35" height="35" className="rounded-circle" alt="" src={`${props.historyPlays[9].photo}`} />
+                                                {props.historyPlays[9].name !== '' ? props.historyPlays[9].name : props.historyPlays[9].account.substring(0, 5).toLowerCase()}
+                                                {" played " + props.historyPlays[9].maticAmount + " MATIC and"}
+                                                <span style={{ color: props.historyPlays[9].result ? "mediumseagreen" : "crimson" }}>
+                                                    {props.historyPlays[9].result === false ? " lost all " : ""}{props.historyPlays[9].result === true ? " doubled " : ""}
+                                                </span>
+                                                {props.historyPlays[9].streak > 1 ? props.historyPlays[9].streak + " times " : ""}
+                                            </div>
+                                            <small className="ms-auto mt-auto time-in-row">
+                                                {(props.unixTimeStamp - props.historyPlays[9].createdAt.seconds) <= 0 ?
+                                                    " now" : (props.unixTimeStamp - props.historyPlays[9].createdAt.seconds) + " seconds ago"}
+                                            </small>
+                                        </li>
+                                    </>
+                                    :
+                                    ""
+                                }
+                            </>
+                            : ""}
+                        {props.historyPlays[10] !== undefined && props.historyPlays[10].createdAt ?
+                            <>
+                                {(props.unixTimeStamp - props.historyPlays[10].createdAt.seconds) < 60 ?
+                                    <>
+                                        <li className={`d-flex list-group-item list-group-item-action ${props.theme === 'dark' ? 'dark-list-item' : ''}`}>
+                                            <div className="title mb-auto ms-2">
+                                                <img width="35" height="35" className="rounded-circle" alt="" src={`${props.historyPlays[10].photo}`} />
+                                                {props.historyPlays[10].name !== '' ? props.historyPlays[10].name : props.historyPlays[10].account.substring(0, 5).toLowerCase()}
+                                                {" played " + props.historyPlays[10].maticAmount + " MATIC and"}
+                                                <span style={{ color: props.historyPlays[10].result ? "mediumseagreen" : "crimson" }}>
+                                                    {props.historyPlays[10].result === false ? " lost all " : ""}{props.historyPlays[10].result === true ? " doubled " : ""}
+                                                </span>
+                                                {props.historyPlays[10].streak > 1 ? props.historyPlays[10].streak + " times " : ""}
+                                            </div>
+                                            <small className="ms-auto mt-auto time-in-row">
+                                                {(props.unixTimeStamp - props.historyPlays[10].createdAt.seconds) <= 0 ?
+                                                    " now" : (props.unixTimeStamp - props.historyPlays[10].createdAt.seconds) + " seconds ago"}
+                                            </small>
+                                        </li>
+                                    </>
+                                    :
+                                    ""
+                                }
+                            </>
+                            : ""}
+                        {props.historyPlays[11] !== undefined && props.historyPlays[11].createdAt ?
+                            <>
+                                {(props.unixTimeStamp - props.historyPlays[11].createdAt.seconds) < 60 ?
+                                    <>
+                                        <li className={`d-flex list-group-item list-group-item-action ${props.theme === 'dark' ? 'dark-list-item' : ''}`}>
+                                            <div className="title mb-auto ms-2">
+                                                <img width="35" height="35" className="rounded-circle" alt="" src={`${props.historyPlays[11].photo}`} />
+                                                {props.historyPlays[11].name !== '' ? props.historyPlays[11].name : props.historyPlays[11].account.substring(0, 5).toLowerCase()}
+                                                {" played " + props.historyPlays[11].maticAmount + " MATIC and"}
+                                                <span style={{ color: props.historyPlays[11].result ? "mediumseagreen" : "crimson" }}>
+                                                    {props.historyPlays[11].result === false ? " lost all " : ""}{props.historyPlays[11].result === true ? " doubled " : ""}
+                                                </span>
+                                                {props.historyPlays[11].streak > 1 ? props.historyPlays[11].streak + " times " : ""}
+                                            </div>
+                                            <small className="ms-auto mt-auto time-in-row">
+                                                {(props.unixTimeStamp - props.historyPlays[11].createdAt.seconds) <= 0 ?
+                                                    " now" : (props.unixTimeStamp - props.historyPlays[11].createdAt.seconds) + " seconds ago"}
+                                            </small>
+                                        </li>
+                                    </>
+                                    :
+                                    ""
+                                }
+                            </>
+                            : ""}
                     </ul>
                 </div>
             </div>

@@ -4,12 +4,11 @@ import Web3 from 'web3'
 import Web3Modal from "web3modal";
 import { useAuthState } from 'react-firebase-hooks/auth'
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import { Modal, ModalBody, FormGroup } from 'reactstrap'
 import Torus from "@toruslabs/torus-embed";
 import Portis from "@portis/web3";
 import ethProvider from "eth-provider";
 import WalletLink from "walletlink";
-import { doc, getDoc, setDoc, updateDoc, collection, getDocs, where, query, limit } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc, collection, getDocs, where, query, limit, addDoc, serverTimestamp, onSnapshot, orderBy } from "firebase/firestore";
 import RpsGame from '../../abis/RpsGame/rpsGame.json'
 import { rpsGameContract } from '../../components/blockchain/Contracts'
 import HistoryGamesModal from './components/HistoryGamesModal'
@@ -29,20 +28,8 @@ export default function Rps() {
     hand: '',
     amount: 0
   });
-  const [eventsmodal, setEventsmodal] = useState({});
   const [web3ModalInfo, setWeb3ModalInfo] = useState({});
-  const [userdata0, setUserdata0] = useState({});
-  const [userdata1, setUserdata1] = useState({});
-  const [userdata2, setUserdata2] = useState({});
-  const [userdata3, setUserdata3] = useState({});
-  const [userdata4, setUserdata4] = useState({});
-  const [userdata5, setUserdata5] = useState({});
-  const [userdata6, setUserdata6] = useState({});
-  const [userdata7, setUserdata7] = useState({});
-  const [userdata8, setUserdata8] = useState({});
-  const [userdata9, setUserdata9] = useState({});
-  const [userdata10, setUserdata10] = useState({});
-  const [userdata11, setUserdata11] = useState({});
+  const [historyPlays, setHistoryPlays] = useState({});
   const [register, setRegister] = useState('');
   const [userpic, setUserpic] = useState('');
   const [username, setUsername] = useState('');
@@ -56,7 +43,7 @@ export default function Rps() {
   const [userGameStreak, setUserGameStreak] = useState(0);
   const [userhand, setUserhand] = useState(0);
   const [useramount, setUseramount] = useState(0);
-  const [blockchain, setBlockchain] = useState(0);
+  const [unixTimeStamp, setUnixTimeStamp] = useState(0);
   const [active, setActive] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [animation, setAnimation] = useState(false);
@@ -65,16 +52,46 @@ export default function Rps() {
   const [showGameResult, setShowGameResult] = useState(false);
   const [login, setLogin] = useState('');
   const isMobileResolution = useMatchMedia('(max-width:650px)', false);
+  const [userDataStats, setUserDataStats] = useState({});
 
   useEffect(() => {
-    const timer = setInterval(() => { loadHistoryUserPlays(web3, rpsgame, account, user) }, 1000);
+    const timer = setInterval(() => { getUnixTime() }, 2000);
     return () => clearInterval(timer);
-  }, [web3, rpsgame, account, user])
+  }, [])
 
-  const loadHistoryUserPlays = async (web3, rpsgame, account, user) => {
+  const getUnixTime = async () => {
+    fetch('https://showcase.api.linx.twenty57.net/UnixTime/tounixtimestamp?datetime=now')
+      .then(response =>
+        response.json()
+      )
+      .then(data =>
+        setUnixTimeStamp(data.UnixTimeStamp)
+      );
+  }
+
+  useEffect(() => {
+    const q = query(collection(db, "allGames"), orderBy("createdAt", "desc"), limit(12))
+    const unsub = onSnapshot(q, (doc) => {
+      const played = doc.docs.map(historyPlays => historyPlays.data())
+      setHistoryPlays(played)
+    });
+    return unsub;
+  }, [])
+
+  useEffect(() => {
+    loadUserGame(account, user)
+  }, [account, user])
+
+  const loadUserGame = async (account, user) => {
+    const globalDate = new Date();
+    const year = globalDate.getUTCFullYear()
+    const month = globalDate.getUTCMonth() + 1
+    const day = globalDate.getUTCDate()
+
     const query0 = doc(db, "rpsUsers", account)
     const userDocument0 = await getDoc(query0)
     const userData = userDocument0.data()
+    setUserDataStats(userData)
     if (userData) {
       setRegister(userData.register)
       setLogin(userData.uid)
@@ -84,10 +101,6 @@ export default function Rps() {
         })
       }
     } else {
-      const globalDate = new Date();
-      const year = globalDate.getUTCFullYear()
-      const month = globalDate.getUTCMonth() + 1
-      const day = globalDate.getUTCDate()
       if (user) {
         setDoc(doc(db, "rpsUsers", account), {
           uid: user.uid,
@@ -145,7 +158,7 @@ export default function Rps() {
       try {
         const data1 = queryData[1].doc.data.value.mapValue.fields
         if (data1 !== undefined) {
-          totalGames1 = (parseInt(data1.gameWon.integerValue) + parseInt(data1.gameLoss.integerValue))
+          totalGames1 = parseInt(data1.gameWon.integerValue) + parseInt(data1.gameLoss.integerValue)
         }
       } catch (e) {
 
@@ -153,7 +166,7 @@ export default function Rps() {
       try {
         const data2 = queryData[2].doc.data.value.mapValue.fields
         if (data2 !== undefined) {
-          totalGames2 = (parseInt(data2.gameWon.integerValue) + parseInt(data2.gameLoss.integerValue))
+          totalGames2 = parseInt(data2.gameWon.integerValue) + parseInt(data2.gameLoss.integerValue)
         }
       } catch (e) {
 
@@ -217,39 +230,6 @@ export default function Rps() {
           rpsLevel: 1
         })
       }
-    } catch (e) {
-
-    }
-    try {
-      const actuallBlock = await web3.eth.getBlockNumber()
-      setBlockchain(actuallBlock)
-      const lastMinuteBlock = actuallBlock - 25
-      const eventsmodal = await rpsgame.getPastEvents('Play', { fromBlock: lastMinuteBlock, toBlock: 'latest' })
-      setEventsmodal(eventsmodal)
-      const userData0 = await getDoc(doc(db, "rpsUsers", eventsmodal[0].returnValues[0].toLowerCase()))
-      setUserdata0(userData0.data())
-      const userData1 = await getDoc(doc(db, "rpsUsers", eventsmodal[1].returnValues[0].toLowerCase()))
-      setUserdata1(userData1.data())
-      const userData2 = await getDoc(doc(db, "rpsUsers", eventsmodal[2].returnValues[0].toLowerCase()))
-      setUserdata2(userData2.data())
-      const userData3 = await getDoc(doc(db, "rpsUsers", eventsmodal[3].returnValues[0].toLowerCase()))
-      setUserdata3(userData3.data())
-      const userData4 = await getDoc(doc(db, "rpsUsers", eventsmodal[4].returnValues[0].toLowerCase()))
-      setUserdata4(userData4.data())
-      const userData5 = await getDoc(doc(db, "rpsUsers", eventsmodal[5].returnValues[0].toLowerCase()))
-      setUserdata5(userData5.data())
-      const userData6 = await getDoc(doc(db, "rpsUsers", eventsmodal[6].returnValues[0].toLowerCase()))
-      setUserdata6(userData6.data())
-      const userData7 = await getDoc(doc(db, "rpsUsers", eventsmodal[7].returnValues[0].toLowerCase()))
-      setUserdata7(userData7.data())
-      const userData8 = await getDoc(doc(db, "rpsUsers", eventsmodal[8].returnValues[0].toLowerCase()))
-      setUserdata8(userData8.data())
-      const userData9 = await getDoc(doc(db, "rpsUsers", eventsmodal[9].returnValues[0].toLowerCase()))
-      setUserdata9(userData9.data())
-      const userData10 = await getDoc(doc(db, "rpsUsers", eventsmodal[10].returnValues[0].toLowerCase()))
-      setUserdata10(userData10.data())
-      const userData11 = await getDoc(doc(db, "rpsUsers", eventsmodal[11].returnValues[0].toLowerCase()))
-      setUserdata11(userData11.data())
     } catch (e) {
 
     }
@@ -450,26 +430,35 @@ export default function Rps() {
       } while (myEvents[0] === undefined);
       if (myEvents[0]) {
         try {
+          addDoc(collection(db, "allGames"), {
+            createdAt: serverTimestamp(),
+            uid: userDataStats.uid,
+            block: myEvents[0].blockNumber,
+            name: userDataStats.name0,
+            photo: userDataStats.pic0,
+            account: myEvents[0].returnValues[0],
+            maticAmount: web3.utils.fromWei(myEvents[0].returnValues[1], 'ether'),
+            streak: myEvents[0].returnValues[2],
+            result: myEvents[0].returnValues[3],
+            game: 'RPS'
+          })
           setUserGameResult(myEvents[0].returnValues[3])
           setUserGameStreak(myEvents[0].returnValues[2])
           const dayBlock = actuallBlock - 43200
-          const query = doc(db, "rpsUsers", account)
-          const document = await getDoc(query)
-          const userData = document.data()
           const userAmount = web3.utils.fromWei(myEvents[0].returnValues[1], 'ether')
           if (myEvents[0].returnValues[3] === true) {
             updateDoc(doc(db, "rpsUsers", account), {
-              gameWon: userData.gameWon + 1,
-              amountWon: userData.amountWon + parseInt(userAmount)
+              gameWon: userDataStats.gameWon + 1,
+              amountWon: userDataStats.amountWon + parseInt(userAmount)
             })
           }
           if (myEvents[0].returnValues[3] === false) {
             updateDoc(doc(db, "rpsUsers", account), {
-              gameLoss: userData.gameLoss + 1,
-              amountLoss: userData.amountLoss + parseInt(userAmount)
+              gameLoss: userDataStats.gameLoss + 1,
+              amountLoss: userDataStats.amountLoss + parseInt(userAmount)
             })
           }
-          if (myEvents[0].returnValues[2] > userData.winStreak || dayBlock > userData.winStreakBlock) {
+          if (myEvents[0].returnValues[2] > userDataStats.winStreak || dayBlock > userDataStats.winStreakBlock) {
             updateDoc(doc(db, "rpsUsers", account), {
               winStreak: parseInt(myEvents[0].returnValues[2]),
               winStreakBlock: myEvents[0].blockNumber
@@ -477,17 +466,17 @@ export default function Rps() {
           }
           if (usergame.hand === 'ROCK') {
             updateDoc(doc(db, "rpsUsers", account), {
-              rock: userData.rock + 1,
+              rock: userDataStats.rock + 1,
             })
           }
           if (usergame.hand === 'PAPER') {
             updateDoc(doc(db, "rpsUsers", account), {
-              paper: userData.paper + 1,
+              paper: userDataStats.paper + 1,
             })
           }
           if (usergame.hand === 'SCISSORS') {
             updateDoc(doc(db, "rpsUsers", account), {
-              scissors: userData.scissors + 1,
+              scissors: userDataStats.scissors + 1,
             })
           }
           setShowGameResult(true)
@@ -496,7 +485,6 @@ export default function Rps() {
         }
       }
     }
-
   }
 
   const showResult = async () => {
@@ -524,23 +512,8 @@ export default function Rps() {
               <HistoryGames
                 theme={theme}
                 isMobileVersion={true}
-                web3={web3}
-                rpsgame={rpsgame}
-                decimal={decimal}
-                eventsmodal={eventsmodal}
-                blockchain={blockchain}
-                userdata0={userdata0}
-                userdata1={userdata1}
-                userdata2={userdata2}
-                userdata3={userdata3}
-                userdata4={userdata4}
-                userdata5={userdata5}
-                userdata6={userdata6}
-                userdata7={userdata7}
-                userdata8={userdata8}
-                userdata9={userdata9}
-                userdata10={userdata10}
-                userdata11={userdata11}
+                historyPlays={historyPlays}
+                unixTimeStamp={unixTimeStamp}
               />
               <WinStreakLeaderboard
                 theme={theme}
@@ -569,23 +542,8 @@ export default function Rps() {
                 <HistoryGames
                   theme={theme}
                   isMobileVersion={false}
-                  web3={web3}
-                  rpsgame={rpsgame}
-                  decimal={decimal}
-                  eventsmodal={eventsmodal}
-                  blockchain={blockchain}
-                  userdata0={userdata0}
-                  userdata1={userdata1}
-                  userdata2={userdata2}
-                  userdata3={userdata3}
-                  userdata4={userdata4}
-                  userdata5={userdata5}
-                  userdata6={userdata6}
-                  userdata7={userdata7}
-                  userdata8={userdata8}
-                  userdata9={userdata9}
-                  userdata10={userdata10}
-                  userdata11={userdata11}
+                  historyPlays={historyPlays}
+                  unixTimeStamp={unixTimeStamp}
                 />
                 <WinStreakLeaderboard
                   theme={theme}
@@ -733,23 +691,8 @@ export default function Rps() {
                 <p>CLICK TO SEE OPTIONS</p>
                 <HistoryGamesModal
                   theme={theme}
-                  decimal={decimal}
-                  rpsgame={rpsgame}
-                  web3={web3}
-                  eventsmodal={eventsmodal}
-                  blockchain={blockchain}
-                  userdata0={userdata0}
-                  userdata1={userdata1}
-                  userdata2={userdata2}
-                  userdata3={userdata3}
-                  userdata4={userdata4}
-                  userdata5={userdata5}
-                  userdata6={userdata6}
-                  userdata7={userdata7}
-                  userdata8={userdata8}
-                  userdata9={userdata9}
-                  userdata10={userdata10}
-                  userdata11={userdata11}
+                  historyPlays={historyPlays}
+                  unixTimeStamp={unixTimeStamp}
                 />
                 {!user ?
                   <SignIn />

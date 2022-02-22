@@ -47,7 +47,7 @@ function SignIn() {
         setLog0('')
         sendEmailVerification(auth.currentUser)
           .then(() => {
-
+            window.location.reload()
           });
       })
       .catch((error) => {
@@ -61,6 +61,7 @@ function SignIn() {
           return signInWithEmailAndPassword(auth, userInfo.email, userInfo.password)
             .then((userCredential) => {
               setLog0('')
+              window.location.reload()
             }).catch((error) => {
               setLog0('Invalid email or password')
             });
@@ -73,6 +74,7 @@ function SignIn() {
       signInWithEmailAndPassword(auth, userInfo.email, userInfo.password)
         .then((userCredential) => {
           setLog0('')
+          window.location.reload()
         }).catch((error) => {
           setLog0('Invalid email or password')
         });

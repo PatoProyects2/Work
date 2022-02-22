@@ -59,6 +59,7 @@ export default function ConnectWallet(props) {
       pic: 'https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh'
     }).then(r => {
       setEdit(false)
+      window.location.reload()
     })
   }
 
