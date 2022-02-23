@@ -56,8 +56,17 @@ export default function Rps() {
   const [userDataStats, setUserDataStats] = useState({});
 
   useEffect(() => {
-    const timer = setInterval(() => { getUnixTime() }, 2000);
+    const timer = setInterval(() => { getUnixTime() }, 4000);
     return () => clearInterval(timer);
+  }, [])
+
+  useEffect(() => {
+    const q = query(collection(db, "allGames"), orderBy("createdAt", "desc"), limit(12))
+    const unsub = onSnapshot(q, (doc) => {
+      const played = doc.docs.map(historyPlays => historyPlays.data())
+      setHistoryPlays(played)
+    });
+    return unsub;
   }, [])
 
   const getUnixTime = async () => {
@@ -71,120 +80,63 @@ export default function Rps() {
   }
 
   useEffect(() => {
-    const q = query(collection(db, "allGames"), orderBy("createdAt", "desc"), limit(12))
-    const unsub = onSnapshot(q, (doc) => {
-      const played = doc.docs.map(historyPlays => historyPlays.data())
-      setHistoryPlays(played)
-    });
-    return unsub;
-  }, [])
-
-  useEffect(() => {
     loadUserGame(account, user)
   }, [account, user])
 
   const loadUserGame = async (account, user) => {
+    console.log('Reading...')
     const globalDate = new Date();
     const year = globalDate.getUTCFullYear()
     const month = globalDate.getUTCMonth() + 1
     const day = globalDate.getUTCDate()
-
     const query0 = doc(db, "rpsUsers", account)
     const userDocument0 = await getDoc(query0)
     const userData = userDocument0.data()
-    setUserDataStats(userData)
+    let queryClub = null
+    let userDocumentClub = null
+    let userDataClub = null
+    let collectionRps = null
+    let queryRps = null
+    let documentsRps = null
+    let queryData = null
+    let totalGames0 = 0
+    let totalGames1 = 0
+    let totalGames2 = 0
+    let globalGames = 0
     if (userData) {
+      setUserDataStats(userData)
       setRegister(userData.register)
       setLogin(userData.uid)
-      if (user && userData.uid === '') {
-        updateDoc(doc(db, "rpsUsers", account), {
-          uid: user.uid,
-        })
-      }
-    } else {
-      if (user) {
-        setDoc(doc(db, "rpsUsers", account), {
-          uid: user.uid,
-          game: 'RPS',
-          name0: '',
-          pic0: '',
-          account: account,
-          register: day.toString() + "/" + month.toString() + "/" + year.toString(),
-          winStreak: 0,
-          winStreakBlock: 0,
-          gameWon: 0,
-          gameLoss: 0,
-          amountWon: 0,
-          amountLoss: 0,
-          rock: 0,
-          paper: 0,
-          scissors: 0,
-        })
-      } else {
-        setDoc(doc(db, "rpsUsers", account), {
-          uid: '',
-          game: 'RPS',
-          name0: '',
-          pic0: '',
-          account: account,
-          register: day.toString() + "/" + month.toString() + "/" + year.toString(),
-          winStreak: 0,
-          winStreakBlock: 0,
-          gameWon: 0,
-          gameLoss: 0,
-          amountWon: 0,
-          amountLoss: 0,
-          rock: 0,
-          paper: 0,
-          scissors: 0,
-        })
-      }
-    }
-    try {
-      const collectionRps = collection(db, "rpsUsers")
-      const queryRps = query(collectionRps, where("uid", "==", userData.uid), limit(3))
-      const documentsRps = await getDocs(queryRps)
-      const queryData = documentsRps._snapshot.docChanges
-      let totalGames0 = 0
-      let totalGames1 = 0
-      let totalGames2 = 0
-      try {
-        const data0 = queryData[0].doc.data.value.mapValue.fields
-        if (data0 !== undefined) {
-          totalGames0 = parseInt(data0.gameWon.integerValue) + parseInt(data0.gameLoss.integerValue)
-        }
-      } catch (e) {
+      collectionRps = collection(db, "rpsUsers")
+      queryRps = query(collectionRps, where("uid", "==", userData.uid), limit(3))  //SOPORTE DE WALLETS = 3
+      documentsRps = await getDocs(queryRps)
+      queryData = documentsRps._snapshot.docChanges
+      if (queryData) {
+        try {
+          const data0 = queryData[0].doc.data.value.mapValue.fields
+          if (data0 !== undefined) {
+            totalGames0 = parseInt(data0.gameWon.integerValue) + parseInt(data0.gameLoss.integerValue)
+          }
+        } catch (e) {
 
-      }
-      try {
-        const data1 = queryData[1].doc.data.value.mapValue.fields
-        if (data1 !== undefined) {
-          totalGames1 = parseInt(data1.gameWon.integerValue) + parseInt(data1.gameLoss.integerValue)
         }
-      } catch (e) {
+        try {
+          const data1 = queryData[1].doc.data.value.mapValue.fields
+          if (data1 !== undefined) {
+            totalGames1 = parseInt(data1.gameWon.integerValue) + parseInt(data1.gameLoss.integerValue)
+          }
+        } catch (e) {
 
-      }
-      try {
-        const data2 = queryData[2].doc.data.value.mapValue.fields
-        if (data2 !== undefined) {
-          totalGames2 = parseInt(data2.gameWon.integerValue) + parseInt(data2.gameLoss.integerValue)
         }
-      } catch (e) {
+        try {
+          const data2 = queryData[2].doc.data.value.mapValue.fields
+          if (data2 !== undefined) {
+            totalGames2 = parseInt(data2.gameWon.integerValue) + parseInt(data2.gameLoss.integerValue)
+          }
+        } catch (e) {
 
-      }
-      let globalGames = totalGames0 + totalGames1 + totalGames2
-      const queryClub = doc(db, "clubUsers", userData.uid)
-      const userDocumentClub = await getDoc(queryClub)
-      const userDataClub = userDocumentClub.data()
-      setUserDataClubStats(userDataClub)
-      if (userDataClub) {
-        updateDoc(doc(db, "rpsUsers", account), {
-          name0: userDataClub.name,
-          pic0: userDataClub.pic
-        })
-        setUsername(userDataClub.name)
-        setUserpic(userDataClub.pic)
-        setUserLevel(userDataClub.rpsLevel)
+        }
+        globalGames = totalGames0 + totalGames1 + totalGames2
         if (globalGames > 5 && globalGames < 10) {
           updateDoc(doc(db, "clubUsers", userData.uid), {
             rpsLevel: 2
@@ -225,6 +177,22 @@ export default function Rps() {
             rpsLevel: 9
           })
         }
+      }
+      queryClub = doc(db, "clubUsers", userData.uid)
+      userDocumentClub = await getDoc(queryClub)
+      userDataClub = userDocumentClub.data()
+      if (userDataClub) {
+        setUserDataClubStats(userDataClub)
+        setUsername(userDataClub.name)
+        setUserpic(userDataClub.pic)
+        setUserLevel(userDataClub.rpsLevel)
+        if (userDataClub.name !== userData.name0 || userDataClub.pic !== userData.pic0) {
+          updateDoc(doc(db, "rpsUsers", account), {
+            name0: userDataClub.name,
+            pic0: userDataClub.pic
+          })
+          loadUserGame(account, user)
+        }
       } else {
         setDoc(doc(db, "clubUsers", userData.uid), {
           name: '',
@@ -233,9 +201,29 @@ export default function Rps() {
           totalGames: 0,
           totalMaticAmount: 0
         })
+        loadUserGame(account, user)
       }
-    } catch (e) {
-
+    } else {
+      if (user && account !== '0x000000000000000000000000000000000000dEaD') {
+        setDoc(doc(db, "rpsUsers", account), {
+          uid: user.uid,
+          game: 'RPS',
+          name0: '',
+          pic0: '',
+          account: account,
+          register: day.toString() + "/" + month.toString() + "/" + year.toString(),
+          winStreak: 0,
+          winStreakBlock: 0,
+          gameWon: 0,
+          gameLoss: 0,
+          amountWon: 0,
+          amountLoss: 0,
+          rock: 0,
+          paper: 0,
+          scissors: 0,
+        })
+        loadUserGame(account, user)
+      }
     }
   }
 
@@ -364,16 +352,19 @@ export default function Rps() {
     if (document.getElementById('age').checked === false) {
       setLog0('CONFIRM THAT YOU ARE AT LEAST 18 YEARS OLD')
       return false
-    } else {
-      setActive(true)
-      setLog0('')
     }
-    if (login === '') {
-      setLog0('YOU ARE A NEW PLAYER, PLEASE SIGN IN OR SIGN UP')
-      return false
+    if (!user) {
+      if (login === '') {
+        setLog0('YOU ARE A NEW PLAYER, PLEASE SIGN IN OR SIGN UP')
+        return false
+      }
     } else {
-      setLog0('')
+      if (login === '') {
+        loadUserGame(account, user)
+      }
     }
+    setActive(true)
+    setLog0('')
   }
 
   const handleInputChange = (event) => {
@@ -387,32 +378,34 @@ export default function Rps() {
     const sleep = (milliseconds) => {
       return new Promise(resolve => setTimeout(resolve, milliseconds))
     }
-    let freeze = 5
+    if (document.getElementById('rock').checked || document.getElementById('paper').checked || document.getElementById('scissors').checked) {
+      setUserhand(usergame.hand)
+      setLog0('')
+    } else {
+      setLog0('SELECT THE BETTING HAND')
+      return false
+    }
+    if (document.getElementById('amount1').checked || document.getElementById('amount2').checked || document.getElementById('amount3').checked || document.getElementById('amount4').checked || document.getElementById('amount5').checked || document.getElementById('amount6').checked) {
+      setUseramount(usergame.amount)
+      setLog0('')
+    } else {
+      setLog0('SELECT THE BETTING AMOUNT')
+      return false
+    }
+    let freeze = 3
     for (freeze; freeze > 0; freeze--) {
       setLog0('FREEZING TIME: ' + freeze.toString())
       await sleep(1000)
     }
     if (freeze === 0) {
-      if (document.getElementById('rock').checked || document.getElementById('paper').checked || document.getElementById('scissors').checked) {
-        setUserhand(usergame.hand)
-        setLog0('')
-      } else {
-        setLog0('SELECT THE BETTING HAND')
-        return false
-      }
-      if (document.getElementById('amount1').checked || document.getElementById('amount2').checked || document.getElementById('amount3').checked || document.getElementById('amount4').checked || document.getElementById('amount5').checked || document.getElementById('amount6').checked) {
-        setUseramount(usergame.amount)
-        setLog0('')
-      } else {
-        setLog0('SELECT THE BETTING AMOUNT')
-        return false
-      }
+      setLog0('')
       let myEvents = null
       setPlaying(true)
       setAnimation(true)
-      let calculateValue = await rpsgame.methods.calculateValue((web3.utils.toWei((usergame.amount).toString(), "ether"))).call()
+      const inputAmount = web3.utils.toWei(usergame.amount.toString(), "ether")
+      let calculateValue = await rpsgame.methods.calculateValue(inputAmount).call()
       rpsgame.methods
-        .play(web3.utils.toWei((usergame.amount).toString(), "ether"))
+        .play(inputAmount)
         .send({
           from: account,
           value: calculateValue,
@@ -433,63 +426,59 @@ export default function Rps() {
         await sleep(1000)
       } while (myEvents[0] === undefined);
       if (myEvents[0]) {
-        try {
-          updateDoc(doc(db, "clubUsers", userDataStats.uid), {
-            totalGames: userDataClubStats.totalGames + 1,
-            totalMaticAmount: userDataClubStats.totalMaticAmount + web3.utils.fromWei(myEvents[0].returnValues[1], 'ether')
+        const dayBlock = actuallBlock - 43200
+        const userAmount = web3.utils.fromWei(myEvents[0].returnValues[1], 'ether')
+        setUserGameResult(myEvents[0].returnValues[3])
+        setUserGameStreak(myEvents[0].returnValues[2])
+        updateDoc(doc(db, "clubUsers", userDataStats.uid), {
+          totalGames: userDataClubStats.totalGames + 1,
+          totalMaticAmount: userDataClubStats.totalMaticAmount + parseInt(userAmount)
+        })
+        addDoc(collection(db, "allGames"), {
+          createdAt: serverTimestamp(),
+          uid: userDataStats.uid,
+          block: myEvents[0].blockNumber,
+          name: userDataStats.name0,
+          photo: userDataStats.pic0,
+          account: myEvents[0].returnValues[0],
+          maticAmount: userAmount,
+          streak: myEvents[0].returnValues[2],
+          result: myEvents[0].returnValues[3],
+          game: 'RPS'
+        })
+        setShowGameResult(true)
+        if (myEvents[0].returnValues[3] === true) {
+          updateDoc(doc(db, "rpsUsers", account), {
+            gameWon: userDataStats.gameWon + 1,
+            amountWon: userDataStats.amountWon + parseInt(userAmount)
           })
-          addDoc(collection(db, "allGames"), {
-            createdAt: serverTimestamp(),
-            uid: userDataStats.uid,
-            block: myEvents[0].blockNumber,
-            name: userDataStats.name0,
-            photo: userDataStats.pic0,
-            account: myEvents[0].returnValues[0],
-            maticAmount: web3.utils.fromWei(myEvents[0].returnValues[1], 'ether'),
-            streak: myEvents[0].returnValues[2],
-            result: myEvents[0].returnValues[3],
-            game: 'RPS'
+        }
+        if (myEvents[0].returnValues[3] === false) {
+          updateDoc(doc(db, "rpsUsers", account), {
+            gameLoss: userDataStats.gameLoss + 1,
+            amountLoss: userDataStats.amountLoss + parseInt(userAmount)
           })
-          setUserGameResult(myEvents[0].returnValues[3])
-          setUserGameStreak(myEvents[0].returnValues[2])
-          const dayBlock = actuallBlock - 43200
-          const userAmount = web3.utils.fromWei(myEvents[0].returnValues[1], 'ether')
-          if (myEvents[0].returnValues[3] === true) {
-            updateDoc(doc(db, "rpsUsers", account), {
-              gameWon: userDataStats.gameWon + 1,
-              amountWon: userDataStats.amountWon + parseInt(userAmount)
-            })
-          }
-          if (myEvents[0].returnValues[3] === false) {
-            updateDoc(doc(db, "rpsUsers", account), {
-              gameLoss: userDataStats.gameLoss + 1,
-              amountLoss: userDataStats.amountLoss + parseInt(userAmount)
-            })
-          }
-          if (myEvents[0].returnValues[2] > userDataStats.winStreak || dayBlock > userDataStats.winStreakBlock) {
-            updateDoc(doc(db, "rpsUsers", account), {
-              winStreak: parseInt(myEvents[0].returnValues[2]),
-              winStreakBlock: myEvents[0].blockNumber
-            })
-          }
-          if (usergame.hand === 'ROCK') {
-            updateDoc(doc(db, "rpsUsers", account), {
-              rock: userDataStats.rock + 1,
-            })
-          }
-          if (usergame.hand === 'PAPER') {
-            updateDoc(doc(db, "rpsUsers", account), {
-              paper: userDataStats.paper + 1,
-            })
-          }
-          if (usergame.hand === 'SCISSORS') {
-            updateDoc(doc(db, "rpsUsers", account), {
-              scissors: userDataStats.scissors + 1,
-            })
-          }
-          setShowGameResult(true)
-        } catch (e) {
-
+        }
+        if (myEvents[0].returnValues[2] > userDataStats.winStreak || dayBlock > userDataStats.winStreakBlock) {
+          updateDoc(doc(db, "rpsUsers", account), {
+            winStreak: parseInt(myEvents[0].returnValues[2]),
+            winStreakBlock: myEvents[0].blockNumber
+          })
+        }
+        if (usergame.hand === 'ROCK') {
+          updateDoc(doc(db, "rpsUsers", account), {
+            rock: userDataStats.rock + 1,
+          })
+        }
+        if (usergame.hand === 'PAPER') {
+          updateDoc(doc(db, "rpsUsers", account), {
+            paper: userDataStats.paper + 1,
+          })
+        }
+        if (usergame.hand === 'SCISSORS') {
+          updateDoc(doc(db, "rpsUsers", account), {
+            scissors: userDataStats.scissors + 1,
+          })
         }
       }
     }
