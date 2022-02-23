@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import { useAuthState } from 'react-firebase-hooks/auth'
-import { auth } from '../../firebase/firesbaseConfig'
-import SignIn, { SignOut } from './Authentication';
+import { auth, db } from '../../firebase/firesbaseConfig'
+import AccountFirebase from './Authentication';
 import Footer from '../footer/Footer'
 import { MainMenu } from '../ui/menu/MainMenu'
 
@@ -14,16 +14,18 @@ export function MainLayout() {
   const [user] = useAuthState(auth)
   const [theme, setTheme] = useState(currentTheme());
 
+
   useEffect(() => {
     if (!theme) return;
     localStorage.setItem("theme", theme);
   }, [theme]);
 
+
   return (
     <div className={`wrapper ${theme}`}>
       <header>
         <a href="/">LOGO CLUB GAMES</a>
-        {user ? <SignOut /> : <SignIn />}
+        <AccountFirebase />
       </header>
       <main className='pt-3'>
         <section className="text-center">

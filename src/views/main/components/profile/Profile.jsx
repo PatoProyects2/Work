@@ -8,7 +8,7 @@ import { auth, db } from '../../../../firebase/firesbaseConfig'
 export default function Profile() {
   const [userInfo, setUserInfo] = useState({
     displayName: '',
-    photoURL: 'https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh'
+    photoURL: 'https://ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh'
   });
   const [user] = useAuthState(auth)
   const [theme, setTheme] = useOutletContext();
@@ -45,6 +45,11 @@ export default function Profile() {
   const [rpsStats, setRpsStats] = useState(undefined);
   const [rpsAchievements, setRpsAchievements] = useState(undefined);
   const [editProfile, setEditProfile] = useState(undefined);
+
+  const handleThemeChange = () => {
+    setTheme(theme === 'light' ? 'dark' : 'light');
+  };
+  
   const handleInputChange = (event) => {
     setUserInfo({
       ...userInfo,
@@ -174,13 +179,15 @@ export default function Profile() {
               if (userDataClub) {
                 updateDoc(doc(db, "clubUsers", user.uid), {
                   name: userInfo.displayName,
-                  pic: 'https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh'
+                  pic: 'https://ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh'
                 })
               } else {
                 setDoc(doc(db, "clubUsers", user.uid), {
                   name: userInfo.displayName,
-                  pic: 'https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh',
-                  rpsLevel: 1
+                  pic: 'https://ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh',
+                  rpsLevel: 1,
+                  totalGames: 0,
+                  totalMaticAmount: 0
                 })
               }
             })
@@ -246,7 +253,7 @@ export default function Profile() {
               <h4 className="text-center">USER PROFILE</h4>
               <button type="button" className="btn-close" aria-label="Close" onClick={editProfileModal}></button>
               <FormGroup className="pt-3 text-center">
-                <img width="105" height="105" className="rounded-circle" alt="" src="https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh" />
+                <img width="105" height="105" className="rounded-circle" alt="" src="https://ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh" />
               </FormGroup>
               <FormGroup>
                 <Input name="displayName" placeholder="Username" onChange={handleInputChange} defaultValue={user.displayName} type="text" />

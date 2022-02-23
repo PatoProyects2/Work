@@ -5,7 +5,6 @@ export const MainMenu = ({ theme }) => {
         <>
             <nav className='menu'>
                 <NavLink className={({ isActive }) => `${theme === "dark" ? "text-white" : ""} btn btn-transparent ${isActive ? 'active' : ''}`} to="/" >HOME</NavLink>
-                <NavLink className={({ isActive }) => `${theme === "dark" ? "text-white" : ""} btn btn-transparent ${isActive ? 'active' : ''}`} to="/profile" >PROFILE</NavLink>
                 <NavLink className={({ isActive }) => `${theme === "dark" ? "text-white" : ""} btn btn-transparent ${isActive ? 'active' : ''}`} to="/rps" >RPS GAME</NavLink>
                 <NavLink className={({ isActive }) => `${theme === "dark" ? "text-white" : ""} btn btn-transparent ${isActive ? 'active' : ''}`} to="/info" >ABOUT</NavLink>
             </nav>

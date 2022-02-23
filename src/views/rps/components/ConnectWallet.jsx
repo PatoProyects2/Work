@@ -56,7 +56,7 @@ export default function ConnectWallet(props) {
     }
     updateDoc(doc(db, "clubUsers", props.login), {
       name: userinfo.name0,
-      pic: 'https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh'
+      pic: 'https://ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh'
     }).then(r => {
       setEdit(false)
       window.location.reload()

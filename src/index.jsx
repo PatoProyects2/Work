@@ -10,6 +10,7 @@ import {
 import { MainLayout } from './components/layout/MainLayout'
 import Main from './views/main/Main'
 import MainAbout from './views/main/components/about/About'
+import MainRewards from './views/main/components/rewards/Rewards'
 import MainProfile from './views/main/components/profile/Profile'
 
 import { RpsLayout } from './components/layout/RpsLayout'
@@ -26,7 +27,8 @@ ReactDOM.render(
       <Route path="/" element={<MainLayout />}>
         <Route index element={<Main />} />
         <Route path="profile" element={<MainProfile />} />
-        <Route path="info" element={<MainAbout />} />
+        <Route path="rewards" element={<MainRewards />} />
+        <Route path="about" element={<MainAbout />} />
         <Route path="*" element={<Navigate replace to="/" />} />
       </Route>
       <Route path="/rps" element={<RpsLayout />}>

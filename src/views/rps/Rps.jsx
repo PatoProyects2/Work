@@ -16,7 +16,7 @@ import HistoryGames from './components/HistoryGames'
 import ConnectWallet from './components/ConnectWallet'
 import ConnectChain from './components/ConnectChain'
 import WinStreakLeaderboard from './components/WinStreakLeaderboard'
-import SignIn, { SignOut } from '../../components/layout/Authentication';
+import AccountFirebase from '../../components/layout/Authentication';
 import { auth, db } from '../../firebase/firesbaseConfig'
 import { useMatchMedia } from '../../hooks/useMatchMedia'
 export default function Rps() {
@@ -28,15 +28,17 @@ export default function Rps() {
     hand: '',
     amount: 0
   });
+  const [userDataClubStats, setUserDataClubStats] = useState({});
   const [web3ModalInfo, setWeb3ModalInfo] = useState({});
   const [historyPlays, setHistoryPlays] = useState({});
+  const [login, setLogin] = useState('');
   const [register, setRegister] = useState('');
   const [userpic, setUserpic] = useState('');
   const [username, setUsername] = useState('');
-  const [userLevel, setUserLevel] = useState(0);
   const [account, setAccount] = useState('0x000000000000000000000000000000000000dEaD');
   const [log0, setLog0] = useState('');
   const [walletLog, setWalletLog] = useState('CONNECT WALLET');
+  const [userLevel, setUserLevel] = useState(0);
   const [walletBalance, setWalletBalance] = useState(0);
   const [network, setNetwork] = useState(0);
   const [decimal, setDecimal] = useState(1000000000000000000);
@@ -50,7 +52,6 @@ export default function Rps() {
   const [userGameResult, setUserGameResult] = useState(undefined);
   const [gameResult, setGameResult] = useState(undefined);
   const [showGameResult, setShowGameResult] = useState(false);
-  const [login, setLogin] = useState('');
   const isMobileResolution = useMatchMedia('(max-width:650px)', false);
   const [userDataStats, setUserDataStats] = useState({});
 
@@ -175,6 +176,7 @@ export default function Rps() {
       const queryClub = doc(db, "clubUsers", userData.uid)
       const userDocumentClub = await getDoc(queryClub)
       const userDataClub = userDocumentClub.data()
+      setUserDataClubStats(userDataClub)
       if (userDataClub) {
         updateDoc(doc(db, "rpsUsers", account), {
           name0: userDataClub.name,
@@ -227,7 +229,9 @@ export default function Rps() {
         setDoc(doc(db, "clubUsers", userData.uid), {
           name: '',
           pic: 'https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh',
-          rpsLevel: 1
+          rpsLevel: 1,
+          totalGames: 0,
+          totalMaticAmount: 0
         })
       }
     } catch (e) {
@@ -430,6 +434,10 @@ export default function Rps() {
       } while (myEvents[0] === undefined);
       if (myEvents[0]) {
         try {
+          updateDoc(doc(db, "clubUsers", userDataStats.uid), {
+            totalGames: userDataClubStats.totalGames + 1,
+            totalMaticAmount: userDataClubStats.totalMaticAmount + web3.utils.fromWei(myEvents[0].returnValues[1], 'ether')
+          })
           addDoc(collection(db, "allGames"), {
             createdAt: serverTimestamp(),
             uid: userDataStats.uid,
@@ -694,11 +702,8 @@ export default function Rps() {
                   historyPlays={historyPlays}
                   unixTimeStamp={unixTimeStamp}
                 />
-                {!user ?
-                  <SignIn />
-                  :
-                  <SignOut />
-                }
+                <AccountFirebase />
+
               </>
               :
               <>
