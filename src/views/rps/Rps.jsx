@@ -51,6 +51,7 @@ export default function Rps() {
   const [animation, setAnimation] = useState(false);
   const [userGameResult, setUserGameResult] = useState(undefined);
   const [gameResult, setGameResult] = useState(undefined);
+  const [doubleOrNothingStatus, setDoubleOrNothingStatus] = useState(undefined);
   const [showGameResult, setShowGameResult] = useState(false);
   const isMobileResolution = useMatchMedia('(max-width:650px)', false);
   const [userDataStats, setUserDataStats] = useState({});
@@ -84,7 +85,6 @@ export default function Rps() {
   }, [account, user])
 
   const loadUserGame = async (account, user) => {
-    console.log('Reading...')
     const globalDate = new Date();
     const year = globalDate.getUTCFullYear()
     const month = globalDate.getUTCMonth() + 1
@@ -375,6 +375,7 @@ export default function Rps() {
   }
 
   const doubleOrNothing = async () => {
+    setDoubleOrNothingStatus(true)
     const sleep = (milliseconds) => {
       return new Promise(resolve => setTimeout(resolve, milliseconds))
     }
@@ -383,6 +384,7 @@ export default function Rps() {
       setLog0('')
     } else {
       setLog0('SELECT THE BETTING HAND')
+      setDoubleOrNothingStatus(false)
       return false
     }
     if (document.getElementById('amount1').checked || document.getElementById('amount2').checked || document.getElementById('amount3').checked || document.getElementById('amount4').checked || document.getElementById('amount5').checked || document.getElementById('amount6').checked) {
@@ -390,6 +392,7 @@ export default function Rps() {
       setLog0('')
     } else {
       setLog0('SELECT THE BETTING AMOUNT')
+      setDoubleOrNothingStatus(false)
       return false
     }
     let freeze = 3
@@ -414,7 +417,8 @@ export default function Rps() {
         .catch((err) => {
           if (err.code === 4001) {
             setPlaying(false)
-            myEvents[0] = true
+            myEvents[0] = false
+
           } else {
             console.error(err);
           }
@@ -480,7 +484,11 @@ export default function Rps() {
             scissors: userDataStats.scissors + 1,
           })
         }
+      } else {
+        setDoubleOrNothingStatus(false)
+        return false
       }
+      setDoubleOrNothingStatus(false)
     }
   }
 
@@ -655,7 +663,7 @@ export default function Rps() {
                       <span>100 MATIC</span>
                     </label>
                   </div>
-                  <button onClick={doubleOrNothing} className="btn-hover btn-green">DOUBLE OR NOTHING</button>
+                  <button onClick={doubleOrNothing} className="btn-hover btn-green" disabled={doubleOrNothingStatus}>DOUBLE OR NOTHING</button>
                 </div>
               }
             </div>

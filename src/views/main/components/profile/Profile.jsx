@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { sendEmailVerification, updateProfile } from 'firebase/auth';
 import { useOutletContext } from 'react-router-dom'
-import { Button, Modal, ModalBody, ModalFooter, FormGroup, Label, Input } from 'reactstrap'
+import { Button, Modal, ModalBody, ModalFooter, FormGroup, Input } from 'reactstrap'
 import { getDocs, query, where, collection, limit, getDoc, doc, updateDoc, setDoc } from "firebase/firestore";
 import { auth, db } from '../../../../firebase/firesbaseConfig'
 export default function Profile() {
@@ -49,7 +49,7 @@ export default function Profile() {
   const handleThemeChange = () => {
     setTheme(theme === 'light' ? 'dark' : 'light');
   };
-  
+
   const handleInputChange = (event) => {
     setUserInfo({
       ...userInfo,
@@ -57,81 +57,71 @@ export default function Profile() {
     });
   }
   useEffect(() => {
-    loadMainProfile()
-  }, []);
+    loadMainProfile(user)
+  }, [user]);
 
-  const loadMainProfile = async () => {
-    try {
-      const userCollection = collection(db, "rpsUsers")
-      const queryStreakBlock = query(userCollection, where("uid", "==", user.uid), limit(3))
-      const queryDocuments = await getDocs(queryStreakBlock)
-      const queryData = queryDocuments._snapshot.docChanges
-      let totalGames0 = 0
-      let totalGames1 = 0
-      let totalGames2 = 0
-      let totalAmount0 = 0
-      let totalAmount1 = 0
-      let totalAmount2 = 0
-      try {
+  const loadMainProfile = async (user) => {
+    let userCollection = null
+    let queryStreakBlock = null
+    let queryDocuments = null
+    let queryData = null
+    let totalGames0 = 0
+    let totalGames1 = 0
+    let totalGames2 = 0
+    let totalAmount0 = 0
+    let totalAmount1 = 0
+    let totalAmount2 = 0
+    if (user) {
+      userCollection = collection(db, "rpsUsers")
+      queryStreakBlock = query(userCollection, where("uid", "==", user.uid), limit(3))
+      queryDocuments = await getDocs(queryStreakBlock)
+      queryData = queryDocuments._snapshot.docChanges
+      if (queryData[0]) {
         const data0 = queryData[0].doc.data.value.mapValue.fields
-        if (data0 !== undefined) {
-          setAccount0(data0.account.stringValue)
-          setWon0(data0.gameWon.integerValue)
-          setLoss0(data0.gameLoss.integerValue)
-          setWonAmount0(data0.amountWon.integerValue)
-          setLossAmount0(data0.amountLoss.integerValue)
-          setStreak0(data0.winStreak.integerValue)
-          setRock0(data0.rock.integerValue)
-          setPaper0(data0.paper.integerValue)
-          setScissors0(data0.scissors.integerValue)
-          totalGames0 = parseInt(data0.gameWon.integerValue) + parseInt(data0.gameLoss.integerValue)
-          totalAmount0 = parseInt(data0.amountWon.integerValue) + parseInt(data0.amountLoss.integerValue)
-        }
-      } catch (e) {
-
+        setAccount0(data0.account.stringValue)
+        setWon0(data0.gameWon.integerValue)
+        setLoss0(data0.gameLoss.integerValue)
+        setWonAmount0(data0.amountWon.integerValue)
+        setLossAmount0(data0.amountLoss.integerValue)
+        setStreak0(data0.winStreak.integerValue)
+        setRock0(data0.rock.integerValue)
+        setPaper0(data0.paper.integerValue)
+        setScissors0(data0.scissors.integerValue)
+        totalGames0 = parseInt(data0.gameWon.integerValue) + parseInt(data0.gameLoss.integerValue)
+        totalAmount0 = parseInt(data0.amountWon.integerValue) + parseInt(data0.amountLoss.integerValue)
       }
-      try {
+      if (queryData[1]) {
         const data1 = queryData[1].doc.data.value.mapValue.fields
-        if (data1 !== undefined) {
-          setAccount1(data1.account.stringValue)
-          setWon1(data1.gameWon.integerValue)
-          setLoss1(data1.gameLoss.integerValue)
-          setWonAmount1(data1.amountWon.integerValue)
-          setLossAmount1(data1.amountLoss.integerValue)
-          setStreak1(data1.winStreak.integerValue)
-          setRock1(data1.rock.integerValue)
-          setPaper1(data1.paper.integerValue)
-          setScissors1(data1.scissors.integerValue)
-          totalGames1 = (parseInt(data1.gameWon.integerValue) + parseInt(data1.gameLoss.integerValue))
-          totalAmount0 = parseInt(data1.amountWon.integerValue) + parseInt(data1.amountLoss.integerValue)
-        }
-      } catch (e) {
-
+        setAccount1(data1.account.stringValue)
+        setWon1(data1.gameWon.integerValue)
+        setLoss1(data1.gameLoss.integerValue)
+        setWonAmount1(data1.amountWon.integerValue)
+        setLossAmount1(data1.amountLoss.integerValue)
+        setStreak1(data1.winStreak.integerValue)
+        setRock1(data1.rock.integerValue)
+        setPaper1(data1.paper.integerValue)
+        setScissors1(data1.scissors.integerValue)
+        totalGames1 = parseInt(data1.gameWon.integerValue) + parseInt(data1.gameLoss.integerValue)
+        totalAmount1 = parseInt(data1.amountWon.integerValue) + parseInt(data1.amountLoss.integerValue)
       }
-      try {
+      if (queryData[2]) {
         const data2 = queryData[2].doc.data.value.mapValue.fields
-        if (data2 !== undefined) {
-          setAccount2(data2.account.stringValue)
-          setWon2(data2.gameWon.integerValue)
-          setLoss2(data2.gameLoss.integerValue)
-          setWonAmount2(data2.amountWon.integerValue)
-          setLossAmount2(data2.amountLoss.integerValue)
-          setStreak2(data2.winStreak.integerValue)
-          setRock2(data2.rock.integerValue)
-          setPaper2(data2.paper.integerValue)
-          setScissors2(data2.scissors.integerValue)
-          totalGames2 = (parseInt(data2.gameWon.integerValue) + parseInt(data2.gameLoss.integerValue))
-          totalAmount0 = parseInt(data2.amountWon.integerValue) + parseInt(data2.amountLoss.integerValue)
-        }
-      } catch (e) {
-
+        setAccount2(data2.account.stringValue)
+        setWon2(data2.gameWon.integerValue)
+        setLoss2(data2.gameLoss.integerValue)
+        setWonAmount2(data2.amountWon.integerValue)
+        setLossAmount2(data2.amountLoss.integerValue)
+        setStreak2(data2.winStreak.integerValue)
+        setRock2(data2.rock.integerValue)
+        setPaper2(data2.paper.integerValue)
+        setScissors2(data2.scissors.integerValue)
+        totalGames2 = parseInt(data2.gameWon.integerValue) + parseInt(data2.gameLoss.integerValue)
+        totalAmount2 = parseInt(data2.amountWon.integerValue) + parseInt(data2.amountLoss.integerValue)
       }
       let globalGames = totalGames0 + totalGames1 + totalGames2
       setGlobalUserGames(globalGames)
       let globalAmount = totalAmount0 + totalAmount1 + totalAmount2
       setGlobalUserAmount(globalAmount)
-    } catch (e) {
-
     }
   }
 
