@@ -18,152 +18,152 @@ export default function MostPlays(props) {
           </tr>
         </thead>
         <tbody>
-          {props.leaderboardGames[0] ?
+          {props.leaderboard[0] ?
             <tr>
               <td>
                 1
               </td>
               <td>
-                <img width="35" height="35" className="rounded-circle" alt="" src={`${props.leaderboardGames[0].pic}`} />
-                {" " + props.leaderboardGames[0].name}
+                <img width="35" height="35" className="rounded-circle" alt="" src={`${props.leaderboard[0][1]}`} />
+                {props.leaderboard[0][2] ? " " + props.leaderboard[0][2] : props.leaderboard[0][0].substring(0, 5) + "..." + props.leaderboard[0][0].substring(38, 42)}
               </td>
               <td>
-                {props.leaderboardGames[0].totalGames}
-              </td>
-            </tr>
-            :
-            ""}
-          {props.leaderboardGames[1] ?
-            <tr>
-              <td>
-                2
-              </td>
-              <td>
-                <img width="35" height="35" className="rounded-circle" alt="" src={`${props.leaderboardGames[1].pic}`} />
-                {" " + props.leaderboardGames[1].name}
-              </td>
-              <td>
-                {props.leaderboardGames[1].totalGames}
+                {props.leaderboard[0][3]}
               </td>
             </tr>
             :
             ""}
-          {props.leaderboardGames[2] ?
+          {props.leaderboard[1] ?
             <tr>
               <td>
-                3
+                1
               </td>
               <td>
-                <img width="35" height="35" className="rounded-circle" alt="" src={`${props.leaderboardGames[2].pic}`} />
-                {" " + props.leaderboardGames[2].name}
+                <img width="35" height="35" className="rounded-circle" alt="" src={`${props.leaderboard[1][1]}`} />
+                {props.leaderboard[1][2] ? " " + props.leaderboard[1][2] : props.leaderboard[1][0].substring(0, 5) + "..." + props.leaderboard[1][0].substring(38, 42)}
               </td>
               <td>
-                {props.leaderboardGames[2].totalGames}
+                {props.leaderboard[1][3]}
               </td>
             </tr>
             :
             ""}
-          {props.leaderboardGames[3] ?
+          {props.leaderboard[2] ?
             <tr>
               <td>
-                4
+                1
               </td>
               <td>
-                <img width="35" height="35" className="rounded-circle" alt="" src={`${props.leaderboardGames[3].pic}`} />
-                {" " + props.leaderboardGames[3].name}
+                <img width="35" height="35" className="rounded-circle" alt="" src={`${props.leaderboard[2][1]}`} />
+                {props.leaderboard[2][2] ? " " + props.leaderboard[2][2] : props.leaderboard[2][0].substring(0, 5) + "..." + props.leaderboard[2][0].substring(38, 42)}
               </td>
               <td>
-                {props.leaderboardGames[3].totalGames}
+                {props.leaderboard[2][3]}
               </td>
             </tr>
             :
             ""}
-          {props.leaderboardGames[4] ?
+          {props.leaderboard[3] ?
             <tr>
               <td>
-                5
+                1
               </td>
               <td>
-                <img width="35" height="35" className="rounded-circle" alt="" src={`${props.leaderboardGames[4].pic}`} />
-                {" " + props.leaderboardGames[4].name}
+                <img width="35" height="35" className="rounded-circle" alt="" src={`${props.leaderboard[3][1]}`} />
+                {props.leaderboard[3][2] ? " " + props.leaderboard[3][2] : props.leaderboard[3][0].substring(0, 5) + "..." + props.leaderboard[3][0].substring(38, 42)}
               </td>
               <td>
-                {props.leaderboardGames[4].totalGames}
+                {props.leaderboard[3][3]}
               </td>
             </tr>
             :
             ""}
-          {props.leaderboardGames[5] ?
+          {props.leaderboard[4] ?
             <tr>
               <td>
-                6
+                1
               </td>
               <td>
-                <img width="35" height="35" className="rounded-circle" alt="" src={`${props.leaderboardGames[5].pic}`} />
-                {" " + props.leaderboardGames[5].name}
+                <img width="35" height="35" className="rounded-circle" alt="" src={`${props.leaderboard[4][1]}`} />
+                {props.leaderboard[4][2] ? " " + props.leaderboard[4][2] : props.leaderboard[4][0].substring(0, 5) + "..." + props.leaderboard[4][0].substring(38, 42)}
               </td>
               <td>
-                {props.leaderboardGames[5].totalGames}
+                {props.leaderboard[4][3]}
               </td>
             </tr>
             :
             ""}
-          {props.leaderboardGames[6] ?
+          {props.leaderboard[5] ?
             <tr>
               <td>
-                7
+                1
               </td>
               <td>
-                <img width="35" height="35" className="rounded-circle" alt="" src={`${props.leaderboardGames[6].pic}`} />
-                {" " + props.leaderboardGames[6].name}
+                <img width="35" height="35" className="rounded-circle" alt="" src={`${props.leaderboard[5][1]}`} />
+                {props.leaderboard[5][2] ? " " + props.leaderboard[5][2] : props.leaderboard[5][0].substring(0, 5) + "..." + props.leaderboard[5][0].substring(38, 42)}
               </td>
               <td>
-                {props.leaderboardGames[6].totalGames}
+                {props.leaderboard[5][3]}
               </td>
             </tr>
             :
             ""}
-          {props.leaderboardGames[7] ?
+          {props.leaderboard[6] ?
             <tr>
               <td>
-                8
+                1
               </td>
               <td>
-                <img width="35" height="35" className="rounded-circle" alt="" src={`${props.leaderboardGames[7].pic}`} />
-                {" " + props.leaderboardGames[7].name}
+                <img width="35" height="35" className="rounded-circle" alt="" src={`${props.leaderboard[6][1]}`} />
+                {props.leaderboard[6][2] ? " " + props.leaderboard[6][2] : props.leaderboard[6][0].substring(0, 5) + "..." + props.leaderboard[6][0].substring(38, 42)}
               </td>
               <td>
-                {props.leaderboardGames[7].totalGames}
+                {props.leaderboard[6][3]}
               </td>
             </tr>
             :
             ""}
-          {props.leaderboardGames[8] ?
+          {props.leaderboard[7] ?
             <tr>
               <td>
-                9
+                1
               </td>
               <td>
-                <img width="35" height="35" className="rounded-circle" alt="" src={`${props.leaderboardGames[8].pic}`} />
-                {" " + props.leaderboardGames[8].name}
+                <img width="35" height="35" className="rounded-circle" alt="" src={`${props.leaderboard[7][1]}`} />
+                {props.leaderboard[7][2] ? " " + props.leaderboard[7][2] : props.leaderboard[7][0].substring(0, 5) + "..." + props.leaderboard[7][0].substring(38, 42)}
               </td>
               <td>
-                {props.leaderboardGames[8].totalGames}
+                {props.leaderboard[7][3]}
               </td>
             </tr>
             :
             ""}
-          {props.leaderboardGames[9] ?
+          {props.leaderboard[8] ?
             <tr>
               <td>
-                10
+                1
               </td>
               <td>
-                <img width="35" height="35" className="rounded-circle" alt="" src={`${props.leaderboardGames[9].pic}`} />
-                {" " + props.leaderboardGames[9].name}
+                <img width="35" height="35" className="rounded-circle" alt="" src={`${props.leaderboard[8][1]}`} />
+                {props.leaderboard[8][2] ? " " + props.leaderboard[8][2] : props.leaderboard[8][0].substring(0, 5) + "..." + props.leaderboard[8][0].substring(38, 42)}
               </td>
               <td>
-                {props.leaderboardGames[9].totalGames}
+                {props.leaderboard[8][3]}
+              </td>
+            </tr>
+            :
+            ""}
+          {props.leaderboard[9] ?
+            <tr>
+              <td>
+                1
+              </td>
+              <td>
+                <img width="35" height="35" className="rounded-circle" alt="" src={`${props.leaderboard[9][1]}`} />
+                {props.leaderboard[9][2] ? " " + props.leaderboard[9][2] : props.leaderboard[9][0].substring(0, 5) + "..." + props.leaderboard[9][0].substring(38, 42)}
+              </td>
+              <td>
+                {props.leaderboard[9][3]}
               </td>
             </tr>
             :

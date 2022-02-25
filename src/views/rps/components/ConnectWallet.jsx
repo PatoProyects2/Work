@@ -116,7 +116,7 @@ export default function ConnectWallet(props) {
             <DropdownItem header>{props.username !== '' ? props.username : "Username"}</DropdownItem>
             <DropdownItem header>{"LVL " + props.userLevel}</DropdownItem>
             <DropdownItem header>
-              {props.account.substring(0, 5) + "..." + props.account.substring(12, 16)}
+              {props.account.substring(0, 5) + "..." + props.account.substring(38, 42)}
               <button className={`btn-sm ms-2 ${props.theme === 'dark' ? 'btn-secondary' : 'btn-dark'}`}
                 onClick={() => navigator.clipboard.writeText(props.account)}>
                 <i className="fa-regular fa-clone white"></i>

@@ -8,7 +8,7 @@ import Torus from "@toruslabs/torus-embed";
 import Portis from "@portis/web3";
 import ethProvider from "eth-provider";
 import WalletLink from "walletlink";
-import { doc, getDoc, setDoc, updateDoc, collection, getDocs, where, query, limit, addDoc, serverTimestamp, onSnapshot, orderBy } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc, collection, query, limit, addDoc, serverTimestamp, onSnapshot, orderBy } from "firebase/firestore";
 import RpsGame from '../../abis/RpsGame/rpsGame.json'
 import { rpsGameContract } from '../../components/blockchain/Contracts'
 import HistoryGamesModal from './components/HistoryGamesModal'
@@ -28,7 +28,6 @@ export default function Rps() {
     hand: '',
     amount: 0
   });
-  const [userDataClubStats, setUserDataClubStats] = useState({});
   const [web3ModalInfo, setWeb3ModalInfo] = useState({});
   const [historyPlays, setHistoryPlays] = useState({});
   const [login, setLogin] = useState('');
@@ -45,7 +44,7 @@ export default function Rps() {
   const [userGameStreak, setUserGameStreak] = useState(0);
   const [userhand, setUserhand] = useState(0);
   const [useramount, setUseramount] = useState(0);
-  const [unixTimeStamp, setUnixTimeStamp] = useState(0);
+  const [unixTimeStamp, setUnixTimeStamp] = useState(1000000000000000000);
   const [active, setActive] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [animation, setAnimation] = useState(false);
@@ -76,8 +75,11 @@ export default function Rps() {
         response.json()
       )
       .then(data =>
-        setUnixTimeStamp(data.UnixTimeStamp)
+        setUnixTimeStamp(parseInt(data.UnixTimeStamp))
       );
+
+
+
   }
 
   useEffect(() => {
@@ -85,142 +87,111 @@ export default function Rps() {
   }, [account, user])
 
   const loadUserGame = async (account, user) => {
-    const globalDate = new Date();
-    const year = globalDate.getUTCFullYear()
-    const month = globalDate.getUTCMonth() + 1
-    const day = globalDate.getUTCDate()
-    const query0 = doc(db, "rpsUsers", account)
+    const query0 = doc(db, "clubUsers", account)
     const userDocument0 = await getDoc(query0)
     const userData = userDocument0.data()
-    let queryClub = null
-    let userDocumentClub = null
-    let userDataClub = null
-    let collectionRps = null
-    let queryRps = null
-    let documentsRps = null
-    let queryData = null
-    let totalGames0 = 0
-    let totalGames1 = 0
-    let totalGames2 = 0
-    let globalGames = 0
     if (userData) {
       setUserDataStats(userData)
-      setRegister(userData.register)
+      fetch('https://showcase.api.linx.twenty57.net/UnixTime/fromunix?timestamp=' + `${userData.register.seconds}`)
+        .then(response =>
+          response.json()
+        )
+        .then(data => {
+          setRegister(data)
+        }
+        );
       setLogin(userData.uid)
-      collectionRps = collection(db, "rpsUsers")
-      queryRps = query(collectionRps, where("uid", "==", userData.uid), limit(3))  //SOPORTE DE WALLETS = 3
-      documentsRps = await getDocs(queryRps)
-      queryData = documentsRps._snapshot.docChanges
-      if (queryData) {
-        try {
-          const data0 = queryData[0].doc.data.value.mapValue.fields
-          if (data0 !== undefined) {
-            totalGames0 = parseInt(data0.gameWon.integerValue) + parseInt(data0.gameLoss.integerValue)
-          }
-        } catch (e) {
-
-        }
-        try {
-          const data1 = queryData[1].doc.data.value.mapValue.fields
-          if (data1 !== undefined) {
-            totalGames1 = parseInt(data1.gameWon.integerValue) + parseInt(data1.gameLoss.integerValue)
-          }
-        } catch (e) {
-
-        }
-        try {
-          const data2 = queryData[2].doc.data.value.mapValue.fields
-          if (data2 !== undefined) {
-            totalGames2 = parseInt(data2.gameWon.integerValue) + parseInt(data2.gameLoss.integerValue)
-          }
-        } catch (e) {
-
-        }
-        globalGames = totalGames0 + totalGames1 + totalGames2
-        if (globalGames > 5 && globalGames < 10) {
-          updateDoc(doc(db, "clubUsers", userData.uid), {
-            rpsLevel: 2
-          })
-        }
-        if (globalGames > 9 && globalGames < 20) {
-          updateDoc(doc(db, "clubUsers", userData.uid), {
-            rpsLevel: 3
-          })
-        }
-        if (globalGames > 19 && globalGames < 30) {
-          updateDoc(doc(db, "clubUsers", userData.uid), {
-            rpsLevel: 4
-          })
-        }
-        if (globalGames > 29 && globalGames < 40) {
-          updateDoc(doc(db, "clubUsers", userData.uid), {
-            rpsLevel: 5
-          })
-        }
-        if (globalGames > 39 && globalGames < 50) {
-          updateDoc(doc(db, "clubUsers", userData.uid), {
-            rpsLevel: 6
-          })
-        }
-        if (globalGames > 49 && globalGames < 60) {
-          updateDoc(doc(db, "clubUsers", userData.uid), {
-            rpsLevel: 7
-          })
-        }
-        if (globalGames > 59 && globalGames < 70) {
-          updateDoc(doc(db, "clubUsers", userData.uid), {
-            rpsLevel: 8
-          })
-        }
-        if (globalGames > 69) {
-          updateDoc(doc(db, "clubUsers", userData.uid), {
-            rpsLevel: 9
-          })
-        }
-      }
-      queryClub = doc(db, "clubUsers", userData.uid)
-      userDocumentClub = await getDoc(queryClub)
-      userDataClub = userDocumentClub.data()
-      if (userDataClub) {
-        setUserDataClubStats(userDataClub)
-        setUsername(userDataClub.name)
-        setUserpic(userDataClub.pic)
-        setUserLevel(userDataClub.rpsLevel)
-        if (userDataClub.name !== userData.name0 || userDataClub.pic !== userData.pic0) {
-          updateDoc(doc(db, "rpsUsers", account), {
-            name0: userDataClub.name,
-            pic0: userDataClub.pic
-          })
-          loadUserGame(account, user)
-        }
-      } else {
-        setDoc(doc(db, "clubUsers", userData.uid), {
-          name: '',
-          pic: 'https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh',
-          rpsLevel: 1,
-          totalGames: 0,
-          totalMaticAmount: 0
+      setUsername(userData.name)
+      setUserpic(userData.photo)
+      if (userData.rps.totalGames > 5 && userData.rps.totalGames < 10) {
+        updateDoc(doc(db, "clubUsers", userData.uid), {
+          level: 2
         })
-        loadUserGame(account, user)
+      }
+      if (userData.rps.totalGames > 9 && userData.rps.totalGames < 20) {
+        updateDoc(doc(db, "clubUsers", userData.uid), {
+          level: 3
+        })
+      }
+      if (userData.rps.totalGames > 19 && userData.rps.totalGames < 30) {
+        updateDoc(doc(db, "clubUsers", userData.uid), {
+          level: 4
+        })
+      }
+      if (userData.rps.totalGames > 29 && userData.rps.totalGames < 40) {
+        updateDoc(doc(db, "clubUsers", userData.uid), {
+          level: 5
+        })
+      }
+      if (userData.rps.totalGames > 39 && userData.rps.totalGames < 50) {
+        updateDoc(doc(db, "clubUsers", userData.uid), {
+          level: 6
+        })
+      }
+      if (userData.rps.totalGames > 49 && userData.rps.totalGames < 60) {
+        updateDoc(doc(db, "clubUsers", userData.uid), {
+          level: 7
+        })
+      }
+      if (userData.rps.totalGames > 59 && userData.rps.totalGames < 70) {
+        updateDoc(doc(db, "clubUsers", userData.uid), {
+          level: 8
+        })
+      }
+      if (userData.rps.totalGames > 69 && userData.rps.totalGames < 90) {
+        updateDoc(doc(db, "clubUsers", userData.uid), {
+          level: 9
+        })
+      }
+      if (userData.rps.totalGames > 89 && userData.rps.totalGames < 110) {
+        updateDoc(doc(db, "clubUsers", userData.uid), {
+          level: 10
+        })
+      }
+      if (userData.rps.totalGames > 109 && userData.rps.totalGames < 140) {
+        updateDoc(doc(db, "clubUsers", userData.uid), {
+          level: 11
+        })
+      }
+      if (userData.rps.totalGames > 139 && userData.rps.totalGames < 170) {
+        updateDoc(doc(db, "clubUsers", userData.uid), {
+          level: 12
+        })
+      }
+      if (userData.rps.totalGames > 169 && userData.rps.totalGames < 200) {
+        updateDoc(doc(db, "clubUsers", userData.uid), {
+          level: 13
+        })
+      }
+      if (userData.rps.totalGames > 199) {
+        updateDoc(doc(db, "clubUsers", userData.uid), {
+          level: 14
+        })
       }
     } else {
       if (user && account !== '0x000000000000000000000000000000000000dEaD') {
-        setDoc(doc(db, "rpsUsers", account), {
+        setDoc(doc(db, "clubUsers", account), {
           uid: user.uid,
-          game: 'RPS',
-          name0: '',
-          pic0: '',
+          register: serverTimestamp(),
+          name: '',
+          photo: 'https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh',
           account: account,
-          register: day.toString() + "/" + month.toString() + "/" + year.toString(),
-          winStreak: 0,
-          winStreakBlock: 0,
-          gameWon: 0,
-          gameLoss: 0,
-          amountWon: 0,
-          amountLoss: 0,
-          rock: 0,
-          paper: 0,
-          scissors: 0,
+          games: ['RPS'],
+          level: 0,
+          rps: {
+            rock: 0,
+            paper: 0,
+            scissors: 0,
+            winStreak: 0,
+            winStreakBlock: 0,
+            gameWon: 0,
+            gameLoss: 0,
+            amountWon: 0,
+            amountLoss: 0,
+            totalGames: 0,
+            totalMaticAmount: 0,
+            lastGame: 0,
+          },
         })
         loadUserGame(account, user)
       }
@@ -395,7 +366,7 @@ export default function Rps() {
       setDoubleOrNothingStatus(false)
       return false
     }
-    let freeze = 3
+    let freeze = 10
     for (freeze; freeze > 0; freeze--) {
       setLog0('FREEZING TIME: ' + freeze.toString())
       await sleep(1000)
@@ -430,20 +401,24 @@ export default function Rps() {
         await sleep(1000)
       } while (myEvents[0] === undefined);
       if (myEvents[0]) {
+        const query0 = doc(db, "clubUsers", account)
+        const userDocument0 = await getDoc(query0)
+        const userData = userDocument0.data()
         const dayBlock = actuallBlock - 43200
         const userAmount = web3.utils.fromWei(myEvents[0].returnValues[1], 'ether')
         setUserGameResult(myEvents[0].returnValues[3])
         setUserGameStreak(myEvents[0].returnValues[2])
-        updateDoc(doc(db, "clubUsers", userDataStats.uid), {
-          totalGames: userDataClubStats.totalGames + 1,
-          totalMaticAmount: userDataClubStats.totalMaticAmount + parseInt(userAmount)
+        updateDoc(doc(db, "clubUsers", account), {
+          "rps.totalGames": userData.rps.totalGames + 1,
+          "rps.totalMaticAmount": userData.rps.totalMaticAmount + parseInt(userAmount),
+          "rps.lastGame": unixTimeStamp
         })
         addDoc(collection(db, "allGames"), {
           createdAt: serverTimestamp(),
-          uid: userDataStats.uid,
+          uid: userData.uid,
           block: myEvents[0].blockNumber,
-          name: userDataStats.name0,
-          photo: userDataStats.pic0,
+          name: userData.name,
+          photo: userData.photo,
           account: myEvents[0].returnValues[0],
           maticAmount: userAmount,
           streak: myEvents[0].returnValues[2],
@@ -452,36 +427,36 @@ export default function Rps() {
         })
         setShowGameResult(true)
         if (myEvents[0].returnValues[3] === true) {
-          updateDoc(doc(db, "rpsUsers", account), {
-            gameWon: userDataStats.gameWon + 1,
-            amountWon: userDataStats.amountWon + parseInt(userAmount)
+          updateDoc(doc(db, "clubUsers", account), {
+            "rps.gameWon": userData.rps.gameWon + 1,
+            "rps.amountWon": userData.rps.amountWon + parseInt(userAmount)
           })
         }
         if (myEvents[0].returnValues[3] === false) {
-          updateDoc(doc(db, "rpsUsers", account), {
-            gameLoss: userDataStats.gameLoss + 1,
-            amountLoss: userDataStats.amountLoss + parseInt(userAmount)
+          updateDoc(doc(db, "clubUsers", account), {
+            "rps.gameLoss": userData.rps.gameLoss + 1,
+            "rps.amountLoss": userData.rps.amountLoss + parseInt(userAmount)
           })
         }
-        if (myEvents[0].returnValues[2] > userDataStats.winStreak || dayBlock > userDataStats.winStreakBlock) {
-          updateDoc(doc(db, "rpsUsers", account), {
-            winStreak: parseInt(myEvents[0].returnValues[2]),
-            winStreakBlock: myEvents[0].blockNumber
+        if (myEvents[0].returnValues[2] > userData.rps.winStreak || dayBlock > userData.rps.winStreakBlock) {
+          updateDoc(doc(db, "clubUsers", account), {
+            "rps.winStreak": parseInt(myEvents[0].returnValues[2]),
+            "rps.winStreakBlock": myEvents[0].blockNumber
           })
         }
         if (usergame.hand === 'ROCK') {
-          updateDoc(doc(db, "rpsUsers", account), {
-            rock: userDataStats.rock + 1,
+          updateDoc(doc(db, "clubUsers", account), {
+            "rps.rock": userData.rps.rock + 1,
           })
         }
         if (usergame.hand === 'PAPER') {
-          updateDoc(doc(db, "rpsUsers", account), {
-            paper: userDataStats.paper + 1,
+          updateDoc(doc(db, "clubUsers", account), {
+            "rps.paper": userData.rps.paper + 1,
           })
         }
         if (usergame.hand === 'SCISSORS') {
-          updateDoc(doc(db, "rpsUsers", account), {
-            scissors: userDataStats.scissors + 1,
+          updateDoc(doc(db, "clubUsers", account), {
+            "rps.scissors": userData.rps.scissors + 1,
           })
         }
       } else {
