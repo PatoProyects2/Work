@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, setPersistence, browserSessionPersistence } from 'firebase/auth';
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Button, Modal, ModalBody, ModalFooter, FormGroup, Input, Label } from 'reactstrap'
-import { getDocs, query, where, collection, limit, getDoc, doc, updateDoc, setDoc } from "firebase/firestore";
+import { query, where, collection, limit, onSnapshot } from "firebase/firestore";
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { NavLink, useOutletContext } from 'react-router-dom'
 import { auth, db } from "../../firebase/firesbaseConfig"
@@ -11,29 +11,25 @@ export default function AccountFirebase(props) {
     email: '',
     password: ''
   });
+  const [userData, setUserData] = useState({});
   const [log0, setLog0] = useState('')
-  const [userLevel, setUserLevel] = useState(0);
   const [dropdown, setDropdown] = useState(false);
   const [signUpModal, setSignUpModal] = useState(false)
   const [signInModal, setSignInModal] = useState(false)
   const [recoveryModal, setRecoveryModal] = useState(false)
 
   useEffect(() => {
-    readClubUserInfo(user)
+    readUserClubData(user)
   }, [user])
 
-  const readClubUserInfo = async (user) => {
+  const readUserClubData = (user) => {
     if (user) {
-      try {
-        const queryClub = doc(db, "clubUsers", user.uid)
-        const clubDocument = await getDoc(queryClub)
-        const userDataClub = clubDocument.data()
-        setUserLevel(userDataClub.rpsLevel)
-      } catch (e) {
-
-      }
-    } else {
-
+      const q = query(collection(db, "clubUsers"), where("uid", "==", user.uid), limit(3))
+      const unsub = onSnapshot(q, (doc) => {
+        const clubData = doc.docs.map(userData => userData.data())
+        setUserData(clubData)
+      });
+      return unsub;
     }
   }
 
@@ -153,7 +149,7 @@ export default function AccountFirebase(props) {
           <NavLink to="/profile">
             <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="md">
               <DropdownToggle color='transparent' className='p-0'>
-                {"Lvl " + userLevel + " " + user.displayName}
+                {userData[0] ? "LVL " + userData[0].level : "LVL 0 "}{" " + user.displayName}
               </DropdownToggle>
               <DropdownMenu >
                 <DropdownItem><NavLink to="/rewards">Rewards</NavLink></DropdownItem>

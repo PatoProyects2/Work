@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { getDocs, query, where, orderBy, limit, collection } from "firebase/firestore";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap'
+import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import { db } from '../../../firebase/firesbaseConfig'
 export default function WinStreakLeaderboard(props) {
-    const [blockchain, setBlockchain] = useState(0);
-    const [dayBlock, setDayBlock] = useState(0)
+    const [dropdown, setDropdown] = useState(false);
+    const [winStreak, setWinStreak] = useState(0);
     const [hour0, setHour0] = useState(0);
     const [hour1, setHour1] = useState(0);
     const [hour2, setHour2] = useState(0);
@@ -29,206 +29,99 @@ export default function WinStreakLeaderboard(props) {
     const [second5, setSecond5] = useState(0);
     const [second6, setSecond6] = useState(0);
     const [second7, setSecond7] = useState(0);
-    const [picStreak0, setPicStreak0] = useState('')
-    const [picStreak1, setPicStreak1] = useState('')
-    const [picStreak2, setPicStreak2] = useState('')
-    const [picStreak3, setPicStreak3] = useState('')
-    const [picStreak4, setPicStreak4] = useState('')
-    const [picStreak5, setPicStreak5] = useState('')
-    const [picStreak6, setPicStreak6] = useState('')
-    const [picStreak7, setPicStreak7] = useState('')
-    const [nameStreak0, setNameStreak0] = useState('')
-    const [nameStreak1, setNameStreak1] = useState('')
-    const [nameStreak2, setNameStreak2] = useState('')
-    const [nameStreak3, setNameStreak3] = useState('')
-    const [nameStreak4, setNameStreak4] = useState('')
-    const [nameStreak5, setNameStreak5] = useState('')
-    const [nameStreak6, setNameStreak6] = useState('')
-    const [nameStreak7, setNameStreak7] = useState('')
-    const [accountStreak0, setAccountStreak0] = useState('')
-    const [accountStreak1, setAccountStreak1] = useState('')
-    const [accountStreak2, setAccountStreak2] = useState('')
-    const [accountStreak3, setAccountStreak3] = useState('')
-    const [accountStreak4, setAccountStreak4] = useState('')
-    const [accountStreak5, setAccountStreak5] = useState('')
-    const [accountStreak6, setAccountStreak6] = useState('')
-    const [accountStreak7, setAccountStreak7] = useState('')
-    const [blockStreak0, setBlockStreak0] = useState(0)
-    const [blockStreak1, setBlockStreak1] = useState(0)
-    const [blockStreak2, setBlockStreak2] = useState(0)
-    const [blockStreak3, setBlockStreak3] = useState(0)
-    const [blockStreak4, setBlockStreak4] = useState(0)
-    const [blockStreak5, setBlockStreak5] = useState(0)
-    const [blockStreak6, setBlockStreak6] = useState(0)
-    const [blockStreak7, setBlockStreak7] = useState(0)
-    const [winStreak0, setWinStreak0] = useState(0)
-    const [winStreak1, setWinStreak1] = useState(0)
-    const [winStreak2, setWinStreak2] = useState(0)
-    const [winStreak3, setWinStreak3] = useState(0)
-    const [winStreak4, setWinStreak4] = useState(0)
-    const [winStreak5, setWinStreak5] = useState(0)
-    const [winStreak6, setWinStreak6] = useState(0)
-    const [winStreak7, setWinStreak7] = useState(0)
-    const [dropdown, setDropdown] = useState(false);
     const toggleMenu = () => {
         setDropdown(!dropdown);
     }
-
     useEffect(() => {
-        const timer = setInterval(() => { loadUserStreaks(props.web3) }, 4000);
-        return () => clearTimeout(timer);
-    }, [props.web3]);
+        readActuallTime(props.unixTimeStamp)
+    }, [props.unixTimeStamp])
+    const readActuallTime = async (unixTimeStamp) => {
+        let winStreakDay = []
+        const unixSeconds = parseInt(unixTimeStamp)
+        let lastDay = unixSeconds - 86400
+        const clubCollection = collection(db, "clubUsers")
+        const queryGames = query(clubCollection, orderBy("rps.totalGames", "desc"))
+        const documentGames = await getDocs(queryGames)
 
-    const loadUserStreaks = async (web3) => {
-        try {
-            const actuallBlock = await web3.eth.getBlockNumber()
-            setBlockchain(actuallBlock)
-            const dayBlock = actuallBlock - 43200
-            setDayBlock(dayBlock)
-            const userCollection = collection(db, "rpsUsers")
-            const queryStreakBlock = query(userCollection, where("winStreak", ">", 1), orderBy("winStreak"), limit(8))
-            const queryDocuments = await getDocs(queryStreakBlock)
-            const queryStreak = queryDocuments._snapshot.docChanges
-            try {
-                const dataStreak0 = queryStreak[0].doc.data.value.mapValue.fields
-                setPicStreak0(dataStreak0.pic0.stringValue)
-                setAccountStreak0(dataStreak0.account.stringValue)
-                setNameStreak0(dataStreak0.name0.stringValue)
-                setWinStreak0(dataStreak0.winStreak.integerValue)
-                setBlockStreak0(dataStreak0.winStreakBlock.integerValue)
-                var seg = (actuallBlock - dataStreak0.winStreakBlock.integerValue) * 2;
-                var day = Math.floor(seg / (24 * 3600));
-                var hour = Math.floor((seg - day * 24 * 3600) / 3600);
-                var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
-                setHour0(hour)
-                setMinute0(minute)
-                setSecond0(seg)
-            } catch (e) {
-
+        documentGames.forEach((doc) => {
+            if (doc.data().rps.winStreakTime > lastDay) {
+                winStreakDay.push([doc.data().photo, doc.data().name, doc.data().account, doc.data().rps.winStreak, doc.data().rps.winStreakTime.seconds])
             }
-            try {
-                const dataStreak1 = queryStreak[1].doc.data.value.mapValue.fields
-                setPicStreak1(dataStreak1.pic0.stringValue)
-                setAccountStreak1(dataStreak1.account.stringValue)
-                setNameStreak1(dataStreak1.name0.stringValue)
-                setWinStreak1(dataStreak1.winStreak.integerValue)
-                setBlockStreak1(dataStreak1.winStreakBlock.integerValue)
-                var seg = (actuallBlock - dataStreak1.winStreakBlock.integerValue) * 2;
-                var day = Math.floor(seg / (24 * 3600));
-                var hour = Math.floor((seg - day * 24 * 3600) / 3600);
-                var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
-                setHour1(hour)
-                setMinute1(minute)
-                setSecond1(seg)
-            } catch (e) {
-
-            }
-            try {
-                const dataStreak2 = queryStreak[2].doc.data.value.mapValue.fields
-                setPicStreak2(dataStreak2.pic0.stringValue)
-                setAccountStreak2(dataStreak2.account.stringValue)
-                setNameStreak2(dataStreak2.name0.stringValue)
-                setWinStreak2(dataStreak2.winStreak.integerValue)
-                setBlockStreak2(dataStreak2.winStreakBlock.integerValue)
-                var seg = (actuallBlock - dataStreak2.winStreakBlock.integerValue) * 2;
-                var day = Math.floor(seg / (24 * 3600));
-                var hour = Math.floor((seg - day * 24 * 3600) / 3600);
-                var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
-                setHour2(hour)
-                setMinute2(minute)
-                setSecond2(seg)
-            } catch (e) {
-
-            }
-            try {
-                const dataStreak3 = queryStreak[3].doc.data.value.mapValue.fields
-                setPicStreak3(dataStreak3.pic0.stringValue)
-                setAccountStreak3(dataStreak3.account.stringValue)
-                setNameStreak3(dataStreak3.name0.stringValue)
-                setWinStreak3(dataStreak3.winStreak.integerValue)
-                setBlockStreak3(dataStreak3.winStreakBlock.integerValue)
-                var seg = (actuallBlock - dataStreak3.winStreakBlock.integerValue) * 2;
-                var day = Math.floor(seg / (24 * 3600));
-                var hour = Math.floor((seg - day * 24 * 3600) / 3600);
-                var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
-                setHour3(hour)
-                setMinute3(minute)
-                setSecond3(seg)
-            } catch (e) {
-
-            }
-            try {
-                const dataStreak4 = queryStreak[4].doc.data.value.mapValue.fields
-                setPicStreak4(dataStreak4.pic0.stringValue)
-                setAccountStreak4(dataStreak4.account.stringValue)
-                setNameStreak4(dataStreak4.name0.stringValue)
-                setWinStreak4(dataStreak4.winStreak.integerValue)
-                setBlockStreak4(dataStreak4.winStreakBlock.integerValue)
-                var seg = (actuallBlock - dataStreak4.winStreakBlock.integerValue) * 2;
-                var day = Math.floor(seg / (24 * 3600));
-                var hour = Math.floor((seg - day * 24 * 3600) / 3600);
-                var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
-                setHour4(hour)
-                setMinute4(minute)
-                setSecond4(seg)
-            } catch (e) {
-
-            }
-            try {
-                const dataStreak5 = queryStreak[5].doc.data.value.mapValue.fields
-                setPicStreak5(dataStreak5.pic0.stringValue)
-                setAccountStreak5(dataStreak5.account.stringValue)
-                setNameStreak5(dataStreak5.name0.stringValue)
-                setWinStreak5(dataStreak5.winStreak.integerValue)
-                setBlockStreak5(dataStreak5.winStreakBlock.integerValue)
-                var seg = (actuallBlock - dataStreak5.winStreakBlock.integerValue) * 2;
-                var day = Math.floor(seg / (24 * 3600));
-                var hour = Math.floor((seg - day * 24 * 3600) / 3600);
-                var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
-                setHour5(hour)
-                setMinute5(minute)
-                setSecond5(seg)
-            } catch (e) {
-
-            }
-            try {
-                const dataStreak6 = queryStreak[6].doc.data.value.mapValue.fields
-                setPicStreak6(dataStreak6.pic0.stringValue)
-                setAccountStreak6(dataStreak6.account.stringValue)
-                setNameStreak6(dataStreak6.name0.stringValue)
-                setWinStreak6(dataStreak6.winStreak.integerValue)
-                setBlockStreak6(dataStreak6.winStreakBlock.integerValue)
-                var seg = (actuallBlock - dataStreak6.winStreakBlock.integerValue) * 2;
-                var day = Math.floor(seg / (24 * 3600));
-                var hour = Math.floor((seg - day * 24 * 3600) / 3600);
-                var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
-                setHour6(hour)
-                setMinute6(minute)
-                setSecond6(seg)
-            } catch (e) {
-
-            }
-            try {
-                const dataStreak7 = queryStreak[7].doc.data.value.mapValue.fields
-                setPicStreak7(dataStreak7.pic0.stringValue)
-                setAccountStreak7(dataStreak7.account.stringValue)
-                setNameStreak7(dataStreak7.name0.stringValue)
-                setWinStreak7(dataStreak7.winStreak.integerValue)
-                setBlockStreak7(dataStreak7.winStreakBlock.integerValue)
-                var seg = (actuallBlock - dataStreak7.winStreakBlock.integerValue) * 2;
-                var day = Math.floor(seg / (24 * 3600));
-                var hour = Math.floor((seg - day * 24 * 3600) / 3600);
-                var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
-                setHour7(hour)
-                setMinute7(minute)
-                setSecond7(seg)
-            } catch (e) {
-
-            }
-        } catch (e) {
-
+        });
+        setWinStreak(winStreakDay)
+        if (winStreakDay[0]) {
+            var seg = unixSeconds - winStreakDay[0][4]
+            var day = Math.floor(seg / (24 * 3600));
+            var hour = Math.floor((seg - day * 24 * 3600) / 3600);
+            var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
+            setHour0(hour)
+            setMinute0(minute)
+            setSecond0(seg)
         }
-        setTimeout(loadUserStreaks, 2000)
+        if (winStreakDay[1]) {
+            var seg = unixSeconds - winStreakDay[1][4]
+            var day = Math.floor(seg / (24 * 3600));
+            var hour = Math.floor((seg - day * 24 * 3600) / 3600);
+            var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
+            setHour1(hour)
+            setMinute1(minute)
+            setSecond1(seg)
+        }
+        if (winStreakDay[2]) {
+            var seg = unixSeconds - winStreakDay[2][4]
+            var day = Math.floor(seg / (24 * 3600));
+            var hour = Math.floor((seg - day * 24 * 3600) / 3600);
+            var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
+            setHour2(hour)
+            setMinute2(minute)
+            setSecond2(seg)
+        }
+        if (winStreakDay[3]) {
+            var seg = unixSeconds - winStreakDay[3][4]
+            var day = Math.floor(seg / (24 * 3600));
+            var hour = Math.floor((seg - day * 24 * 3600) / 3600);
+            var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
+            setHour3(hour)
+            setMinute3(minute)
+            setSecond3(seg)
+        }
+        if (winStreakDay[4]) {
+            var seg = unixSeconds - winStreakDay[4][4]
+            var day = Math.floor(seg / (24 * 3600));
+            var hour = Math.floor((seg - day * 24 * 3600) / 3600);
+            var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
+            setHour4(hour)
+            setMinute4(minute)
+            setSecond4(seg)
+        }
+        if (winStreakDay[5]) {
+            var seg = unixSeconds - winStreakDay[5][4]
+            var day = Math.floor(seg / (24 * 3600));
+            var hour = Math.floor((seg - day * 24 * 3600) / 3600);
+            var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
+            setHour5(hour)
+            setMinute5(minute)
+            setSecond5(seg)
+        }
+        if (winStreakDay[6]) {
+            var seg = unixSeconds - winStreakDay[6][4]
+            var day = Math.floor(seg / (24 * 3600));
+            var hour = Math.floor((seg - day * 24 * 3600) / 3600);
+            var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
+            setHour6(hour)
+            setMinute6(minute)
+            setSecond6(seg)
+        }
+        if (winStreakDay[7]) {
+            var seg = unixSeconds - winStreakDay[7][4]
+            var day = Math.floor(seg / (24 * 3600));
+            var hour = Math.floor((seg - day * 24 * 3600) / 3600);
+            var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
+            setHour7(hour)
+            setMinute7(minute)
+            setSecond7(seg)
+        }
+
     }
     return (
         <>
@@ -244,113 +137,28 @@ export default function WinStreakLeaderboard(props) {
                         </DropdownToggle>
                 }
                 <DropdownMenu className={props.theme === 'dark' ? 'bg-dark' : 'bg-light'}>
-                    {winStreak7 > 0 && blockStreak7 > dayBlock ?
+                    {winStreak[0] ?
                         <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
-                            <img width="35" height="35" className="rounded-circle" alt="" src={`${picStreak7}`} />
-                            {nameStreak7 !== '' ? nameStreak7 : accountStreak7.substring(0, 5)}
-                            {" is on a " + winStreak7 + " win streak"}
+                            <img width="35" height="35" className="rounded-circle" alt="" src={`${winStreak[0][0]}`} />
+                            {winStreak[0][1] !== 'Username' ? winStreak[0][1] : winStreak[0][2].substring(0, 5)}
+                            {" is on a " + winStreak[0][3] + " win streak"}
                             <small className="d-flex justify-content-end">
-                                {second7 < 0 || second7 === 0 ? "now" : ""}
-                                {second7 > 0 && second7 < 60 ? second7 + " seconds ago" : ""}
-                                {second7 > 59 && second7 < 120 ? minute7 + " minute ago" : ""}
-                                {second7 > 119 && second7 < 3600 ? minute7 + " minutes ago" : ""}
-                                {second7 > 3599 && second7 < 7200 ? hour7 + " hour ago" : ""}
-                                {second7 > 7199 ? hour7 + " hours ago" : ""}
+                                {second0 < 0 || second0 === 0 ? "now" : ""}
+                                {second0 > 0 && second0 < 60 ? second0 + " seconds ago" : ""}
+                                {second0 > 59 && second0 < 120 ? minute0 + " minute ago" : ""}
+                                {second0 > 119 && second0 < 3600 ? minute0 + " minutes ago" : ""}
+                                {second0 > 3599 && second0 < 7200 ? hour0 + " hour ago" : ""}
+                                {second0 > 7199 ? hour0 + " hours ago" : ""}
                             </small>
                         </DropdownItem>
                         :
                         ""
                     }
-                    {winStreak6 > 0 && blockStreak6 > dayBlock ?
+                    {winStreak[1] ?
                         <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
-                            <img width="35" height="35" className="rounded-circle" alt="" src={`${picStreak6}`} />
-                            {nameStreak6 !== '' ? nameStreak6 : accountStreak6.substring(0, 5)}
-                            {" is on a " + winStreak6 + " win streak"}
-                            <small className="d-flex justify-content-end">
-                                {second6 < 0 || second6 === 0 ? "now" : ""}
-                                {second6 > 0 && second6 < 60 ? second6 + " seconds ago" : ""}
-                                {second6 > 59 && second6 < 120 ? minute6 + " minute ago" : ""}
-                                {second6 > 119 && second6 < 3600 ? minute6 + " minutes ago" : ""}
-                                {second6 > 3599 && second6 < 7200 ? hour6 + " hour ago" : ""}
-                                {second6 > 7199 ? hour6 + " hours ago" : ""}
-                            </small>
-                        </DropdownItem>
-                        :
-                        ""
-                    }
-                    {winStreak5 > 0 && blockStreak5 > dayBlock ?
-                        <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
-                            <img width="35" height="35" className="rounded-circle" alt="" src={`${picStreak5}`} />
-                            {nameStreak5 !== '' ? nameStreak5 : accountStreak5.substring(0, 5)}
-                            {" is on a " + winStreak5 + " win streak"}
-                            <small className="d-flex justify-content-end">
-                                {second5 < 0 || second5 === 0 ? "now" : ""}
-                                {second5 > 0 && second5 < 60 ? second5 + " seconds ago" : ""}
-                                {second5 > 59 && second5 < 120 ? minute5 + " minute ago" : ""}
-                                {second5 > 119 && second5 < 3600 ? minute5 + " minutes ago" : ""}
-                                {second5 > 3599 && second5 < 7200 ? hour5 + " hour ago" : ""}
-                                {second5 > 7199 ? hour5 + " hours ago" : ""}
-                            </small>
-                        </DropdownItem>
-                        :
-                        ""
-                    }
-                    {winStreak4 > 0 && blockStreak4 > dayBlock ?
-                        <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
-                            <img width="35" height="35" className="rounded-circle" alt="" src={`${picStreak4}`} />
-                            {nameStreak4 !== '' ? nameStreak4 : accountStreak4.substring(0, 5)}
-                            {" is on a " + winStreak4 + " win streak"}
-                            <small className="d-flex justify-content-end">
-                                {second4 < 0 || second4 === 0 ? "now" : ""}
-                                {second4 > 0 && second4 < 60 ? second4 + " seconds ago" : ""}
-                                {second4 > 59 && second4 < 120 ? minute4 + " minute ago" : ""}
-                                {second4 > 119 && second4 < 3600 ? minute4 + " minutes ago" : ""}
-                                {second4 > 3599 && second4 < 7200 ? hour4 + " hour ago" : ""}
-                                {second4 > 7199 ? hour4 + " hours ago" : ""}
-                            </small>
-                        </DropdownItem>
-                        :
-                        ""
-                    }
-                    {winStreak3 > 0 && blockStreak3 > dayBlock ?
-                        <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
-                            <img width="35" height="35" className="rounded-circle" alt="" src={`${picStreak3}`} />
-                            {nameStreak3 !== '' ? nameStreak3 : accountStreak3.substring(0, 5)}
-                            {" is on a " + winStreak3 + " win streak"}
-                            <small className="d-flex justify-content-end">
-                                {second3 < 0 || second3 === 0 ? "now" : ""}
-                                {second3 > 0 && second3 < 60 ? second3 + " seconds ago" : ""}
-                                {second3 > 59 && second3 < 120 ? minute3 + " minute ago" : ""}
-                                {second3 > 119 && second3 < 3600 ? minute3 + " minutes ago" : ""}
-                                {second3 > 3599 && second3 < 7200 ? hour3 + " hour ago" : ""}
-                                {second3 > 7199 ? hour3 + " hours ago" : ""}
-                            </small>
-                        </DropdownItem>
-                        :
-                        ""
-                    }
-                    {winStreak2 > 0 && blockStreak2 > dayBlock ?
-                        <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
-                            <img width="35" height="35" className="rounded-circle" alt="" src={`${picStreak2}`} />
-                            {nameStreak2 !== '' ? nameStreak2 : accountStreak2.substring(0, 5)}
-                            {" is on a " + winStreak2 + " win streak"}
-                            <small className="d-flex justify-content-end">
-                                {second2 < 0 || second2 === 0 ? "now" : ""}
-                                {second2 > 0 && second2 < 60 ? second2 + " seconds ago" : ""}
-                                {second2 > 59 && second2 < 120 ? minute2 + " minute ago" : ""}
-                                {second2 > 119 && second2 < 3600 ? minute2 + " minutes ago" : ""}
-                                {second2 > 3599 && second2 < 7200 ? hour2 + " hour ago" : ""}
-                                {second2 > 7199 ? hour2 + " hours ago" : ""}
-                            </small>
-                        </DropdownItem>
-                        :
-                        ""
-                    }
-                    {winStreak1 > 0 && blockStreak1 > dayBlock ?
-                        <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
-                            <img width="35" height="35" className="rounded-circle" alt="" src={`${picStreak1}`} />
-                            {nameStreak1 !== '' ? nameStreak1 : accountStreak1.substring(0, 5)}
-                            {" is on a " + winStreak1 + " win streak"}
+                            <img width="35" height="35" className="rounded-circle" alt="" src={`${winStreak[1][0]}`} />
+                            {winStreak[1][1] !== 'Username' ? winStreak[1][1] : winStreak[1][2].substring(0, 5)}
+                            {" is on a " + winStreak[1][3] + " win streak"}
                             <small className="d-flex justify-content-end">
                                 {second1 < 0 || second1 === 0 ? "now" : ""}
                                 {second1 > 0 && second1 < 60 ? second1 + " seconds ago" : ""}
@@ -363,18 +171,103 @@ export default function WinStreakLeaderboard(props) {
                         :
                         ""
                     }
-                    {winStreak0 > 0 && blockStreak0 > dayBlock ?
+                    {winStreak[2] ?
                         <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
-                            <img width="35" height="35" className="rounded-circle" alt="" src={`${picStreak0}`} />
-                            {nameStreak0 !== '' ? nameStreak0 : accountStreak0.substring(0, 5)}
-                            {" is on a " + winStreak0 + " win streak"}
+                            <img width="35" height="35" className="rounded-circle" alt="" src={`${winStreak[2][0]}`} />
+                            {winStreak[2][1] !== 'Username' ? winStreak[2][1] : winStreak[2][2].substring(0, 5)}
+                            {" is on a " + winStreak[2][3] + " win streak"}
                             <small className="d-flex justify-content-end">
-                                {second0 < 0 || second0 === 0 ? "now" : ""}
-                                {second0 > 0 && second0 < 60 ? second0 + " seconds ago" : ""}
-                                {second0 > 59 && second0 < 120 ? minute0 + " minute ago" : ""}
-                                {second0 > 119 && second0 < 3600 ? minute0 + " minutes ago" : ""}
-                                {second0 > 3599 && second0 < 7200 ? hour0 + " hour ago" : ""}
-                                {second0 > 7199 ? hour0 + " hours ago" : ""}
+                                {second2 < 0 || second2 === 0 ? "now" : ""}
+                                {second2 > 0 && second2 < 60 ? second2 + " seconds ago" : ""}
+                                {second2 > 59 && second2 < 120 ? minute2 + " minute ago" : ""}
+                                {second2 > 119 && second2 < 3600 ? minute2 + " minutes ago" : ""}
+                                {second2 > 3599 && second2 < 7200 ? hour2 + " hour ago" : ""}
+                                {second2 > 7199 ? hour2 + " hours ago" : ""}
+                            </small>
+                        </DropdownItem>
+                        :
+                        ""
+                    }
+                    {winStreak[3] ?
+                        <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
+                            <img width="35" height="35" className="rounded-circle" alt="" src={`${winStreak[3][0]}`} />
+                            {winStreak[3][1] !== 'Username' ? winStreak[3][1] : winStreak[3][2].substring(0, 5)}
+                            {" is on a " + winStreak[3][3] + " win streak"}
+                            <small className="d-flex justify-content-end">
+                                {second3 < 0 || second3 === 0 ? "now" : ""}
+                                {second3 > 0 && second3 < 60 ? second3 + " seconds ago" : ""}
+                                {second3 > 59 && second3 < 120 ? minute3 + " minute ago" : ""}
+                                {second3 > 119 && second3 < 3600 ? minute3 + " minutes ago" : ""}
+                                {second3 > 3599 && second3 < 7200 ? hour3 + " hour ago" : ""}
+                                {second3 > 7199 ? hour3 + " hours ago" : ""}
+                            </small>
+                        </DropdownItem>
+                        :
+                        ""
+                    }
+                    {winStreak[4] ?
+                        <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
+                            <img width="35" height="35" className="rounded-circle" alt="" src={`${winStreak[4][0]}`} />
+                            {winStreak[4][1] !== 'Username' ? winStreak[4][1] : winStreak[4][2].substring(0, 5)}
+                            {" is on a " + winStreak[4][3] + " win streak"}
+                            <small className="d-flex justify-content-end">
+                                {second4 < 0 || second4 === 0 ? "now" : ""}
+                                {second4 > 0 && second4 < 60 ? second4 + " seconds ago" : ""}
+                                {second4 > 59 && second4 < 120 ? minute4 + " minute ago" : ""}
+                                {second4 > 119 && second4 < 3600 ? minute4 + " minutes ago" : ""}
+                                {second4 > 3599 && second4 < 7200 ? hour4 + " hour ago" : ""}
+                                {second4 > 7199 ? hour4 + " hours ago" : ""}
+                            </small>
+                        </DropdownItem>
+                        :
+                        ""
+                    }
+                    {winStreak[5] ?
+                        <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
+                            <img width="35" height="35" className="rounded-circle" alt="" src={`${winStreak[5][0]}`} />
+                            {winStreak[5][1] !== 'Username' ? winStreak[5][1] : winStreak[5][2].substring(0, 5)}
+                            {" is on a " + winStreak[5][3] + " win streak"}
+                            <small className="d-flex justify-content-end">
+                                {second5 < 0 || second5 === 0 ? "now" : ""}
+                                {second5 > 0 && second5 < 60 ? second5 + " seconds ago" : ""}
+                                {second5 > 59 && second5 < 120 ? minute5 + " minute ago" : ""}
+                                {second5 > 119 && second5 < 3600 ? minute5 + " minutes ago" : ""}
+                                {second5 > 3599 && second5 < 7200 ? hour5 + " hour ago" : ""}
+                                {second5 > 7199 ? hour5 + " hours ago" : ""}
+                            </small>
+                        </DropdownItem>
+                        :
+                        ""
+                    }
+                    {winStreak[6] ?
+                        <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
+                            <img width="35" height="35" className="rounded-circle" alt="" src={`${winStreak[6][0]}`} />
+                            {winStreak[6][1] !== 'Username' ? winStreak[6][1] : winStreak[6][2].substring(0, 5)}
+                            {" is on a " + winStreak[6][3] + " win streak"}
+                            <small className="d-flex justify-content-end">
+                                {second6 < 0 || second6 === 0 ? "now" : ""}
+                                {second6 > 0 && second6 < 60 ? second6 + " seconds ago" : ""}
+                                {second6 > 59 && second6 < 120 ? minute6 + " minute ago" : ""}
+                                {second6 > 119 && second6 < 3600 ? minute6 + " minutes ago" : ""}
+                                {second6 > 3599 && second6 < 7200 ? hour6 + " hour ago" : ""}
+                                {second6 > 7199 ? hour6 + " hours ago" : ""}
+                            </small>
+                        </DropdownItem>
+                        :
+                        ""
+                    }
+                    {winStreak[7] ?
+                        <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
+                            <img width="35" height="35" className="rounded-circle" alt="" src={`${winStreak[7][0]}`} />
+                            {winStreak[7][1] !== 'Username' ? winStreak[7][1] : winStreak[7][2].substring(0, 5)}
+                            {" is on a " + winStreak[7][3] + " win streak"}
+                            <small className="d-flex justify-content-end">
+                                {second7 < 0 || second7 === 0 ? "now" : ""}
+                                {second7 > 0 && second7 < 60 ? second7 + " seconds ago" : ""}
+                                {second7 > 59 && second7 < 120 ? minute7 + " minute ago" : ""}
+                                {second7 > 119 && second7 < 3600 ? minute7 + " minutes ago" : ""}
+                                {second7 > 3599 && second7 < 7200 ? hour7 + " hour ago" : ""}
+                                {second7 > 7199 ? hour7 + " hours ago" : ""}
                             </small>
                         </DropdownItem>
                         :

@@ -28,16 +28,13 @@ export default function Rps() {
     hand: '',
     amount: 0
   });
+  const [userData, setUserData] = useState({});
   const [web3ModalInfo, setWeb3ModalInfo] = useState({});
   const [historyPlays, setHistoryPlays] = useState({});
-  const [login, setLogin] = useState('');
   const [register, setRegister] = useState('');
-  const [userpic, setUserpic] = useState('');
-  const [username, setUsername] = useState('');
   const [account, setAccount] = useState('0x000000000000000000000000000000000000dEaD');
   const [log0, setLog0] = useState('');
   const [walletLog, setWalletLog] = useState('CONNECT WALLET');
-  const [userLevel, setUserLevel] = useState(0);
   const [walletBalance, setWalletBalance] = useState(0);
   const [network, setNetwork] = useState(0);
   const [decimal, setDecimal] = useState(1000000000000000000);
@@ -53,7 +50,7 @@ export default function Rps() {
   const [doubleOrNothingStatus, setDoubleOrNothingStatus] = useState(undefined);
   const [showGameResult, setShowGameResult] = useState(false);
   const isMobileResolution = useMatchMedia('(max-width:650px)', false);
-  const [userDataStats, setUserDataStats] = useState({});
+
 
   useEffect(() => {
     const timer = setInterval(() => { getUnixTime() }, 4000);
@@ -77,9 +74,6 @@ export default function Rps() {
       .then(data =>
         setUnixTimeStamp(parseInt(data.UnixTimeStamp))
       );
-
-
-
   }
 
   useEffect(() => {
@@ -91,18 +85,19 @@ export default function Rps() {
     const userDocument0 = await getDoc(query0)
     const userData = userDocument0.data()
     if (userData) {
-      setUserDataStats(userData)
-      fetch('https://showcase.api.linx.twenty57.net/UnixTime/fromunix?timestamp=' + `${userData.register.seconds}`)
-        .then(response =>
-          response.json()
-        )
-        .then(data => {
-          setRegister(data)
-        }
-        );
-      setLogin(userData.uid)
-      setUsername(userData.name)
-      setUserpic(userData.photo)
+      setUserData(userData)
+      try {
+        fetch('https://showcase.api.linx.twenty57.net/UnixTime/fromunix?timestamp=' + `${userData.register.seconds}`)
+          .then(response =>
+            response.json()
+          )
+          .then(data => {
+            setRegister(data)
+          }
+          );
+      } catch (e) {
+
+      }
       if (userData.rps.totalGames > 5 && userData.rps.totalGames < 10) {
         updateDoc(doc(db, "clubUsers", userData.uid), {
           level: 2
@@ -173,7 +168,7 @@ export default function Rps() {
         setDoc(doc(db, "clubUsers", account), {
           uid: user.uid,
           register: serverTimestamp(),
-          name: '',
+          name: 'Username',
           photo: 'https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh',
           account: account,
           games: ['RPS'],
@@ -183,7 +178,7 @@ export default function Rps() {
             paper: 0,
             scissors: 0,
             winStreak: 0,
-            winStreakBlock: 0,
+            winStreakTime: 0,
             gameWon: 0,
             gameLoss: 0,
             amountWon: 0,
@@ -325,12 +320,12 @@ export default function Rps() {
       return false
     }
     if (!user) {
-      if (login === '') {
+      if (userData.uid === '') {
         setLog0('YOU ARE A NEW PLAYER, PLEASE SIGN IN OR SIGN UP')
         return false
       }
     } else {
-      if (login === '') {
+      if (userData.uid === '') {
         loadUserGame(account, user)
       }
     }
@@ -441,7 +436,7 @@ export default function Rps() {
         if (myEvents[0].returnValues[2] > userData.rps.winStreak || dayBlock > userData.rps.winStreakBlock) {
           updateDoc(doc(db, "clubUsers", account), {
             "rps.winStreak": parseInt(myEvents[0].returnValues[2]),
-            "rps.winStreakBlock": myEvents[0].blockNumber
+            "rps.winStreakTime": serverTimestamp()
           })
         }
         if (usergame.hand === 'ROCK') {
@@ -498,10 +493,21 @@ export default function Rps() {
               <WinStreakLeaderboard
                 theme={theme}
                 isMobileVersion={true}
-                web3={web3}
+                unixTimeStamp={unixTimeStamp}
               />
               <NavLink className="btn btn-danger" to="/leaderboard">LEADERBOARD</NavLink>
-              {login !== '' ? <ConnectWallet decimal={decimal} web3={web3} account={account} theme={theme} walletBalance={walletBalance} username={username} userpic={userpic} register={register} userLevel={userLevel} disconnectWallet={disconnectWallet} login={login} /> : ""}
+              <ConnectWallet
+                decimal={decimal}
+                web3={web3}
+                account={account}
+                theme={theme}
+                walletBalance={walletBalance}
+
+                disconnectWallet={disconnectWallet}
+                userData={userData}
+                register={register}
+                user={user}
+              />
             </>
             :
             ""
@@ -528,10 +534,21 @@ export default function Rps() {
                 <WinStreakLeaderboard
                   theme={theme}
                   isMobileVersion={false}
-                  web3={web3}
+                  unixTimeStamp={unixTimeStamp}
                 />
                 <NavLink className="btn btn-danger" to="/leaderboard">LEADERBOARD <i className="d-none d-sm-inline-flex fas fa-external-link-alt fa-xs"></i></NavLink>
-                {login !== '' ? <ConnectWallet decimal={decimal} web3={web3} account={account} theme={theme} walletBalance={walletBalance} username={username} userpic={userpic} register={register} userLevel={userLevel} disconnectWallet={disconnectWallet} login={login} /> : ""}
+                <ConnectWallet
+                  decimal={decimal}
+                  web3={web3}
+                  account={account}
+                  theme={theme}
+                  walletBalance={walletBalance}
+
+                  disconnectWallet={disconnectWallet}
+                  userData={userData}
+                  register={register}
+                  user={user}
+                />
               </>
               :
               ""
@@ -540,7 +557,7 @@ export default function Rps() {
         </div>
       }
       <article>
-        {active === true && login !== '' ?
+        {active === true && userData.uid !== '' ?
           <>
             {log0 && (<span className="alert alert-danger mx-5">{log0}</span>)}
             <h5 className="my-4 text-end me-3 me-lg-0">MATIC {(walletBalance / decimal).toFixed(4)}</h5>

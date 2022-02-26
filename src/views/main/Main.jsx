@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { NavLink, useOutletContext } from 'react-router-dom'
-import { collection, getDocs, query, limit, onSnapshot, orderBy, where } from "firebase/firestore";
+import { collection, getDocs, query, limit, onSnapshot, orderBy } from "firebase/firestore";
 import { db } from '../../firebase/firesbaseConfig'
 import LiveBets from './components/LiveBets'
 import MostPlays from './components/MostPlays'
@@ -44,19 +44,19 @@ export default function Main() {
 
   useEffect(() => {
     const readLeaderboard = async (unixTimeStamp) => {
-      const unixSeconds = parseInt(unixTimeStamp)
-      const clubCollection = collection(db, "clubUsers")
-
-      const lastDay = unixSeconds - 86400
-      const lastWeek = unixSeconds - 604800
-      const lastMonth = unixSeconds - 259200
-      const queryGames = query(clubCollection, orderBy("rps.totalGames", "desc"))
-      const documentGames = await getDocs(queryGames)
       let topGames = {}
       let dayGames = []
       let weekGames = []
       let monthGames = []
       let globalGames = []
+      const unixSeconds = parseInt(unixTimeStamp)
+      const lastDay = unixSeconds - 86400
+      const lastWeek = unixSeconds - 604800
+      const lastMonth = unixSeconds - 259200
+
+      const clubCollection = collection(db, "clubUsers")
+      const queryGames = query(clubCollection, orderBy("rps.totalGames", "desc"))
+      const documentGames = await getDocs(queryGames)
       documentGames.forEach((doc) => {
         if (doc.data().rps.lastGame > lastDay) {
           dayGames.push([doc.data().account, doc.data().photo, doc.data().name, doc.data().rps.totalGames])
