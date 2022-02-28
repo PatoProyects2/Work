@@ -1,0 +1,134 @@
+/* LIGHT THEME */
+/* MAIN PAGE */
+.wrapper {
+    background: url('./bg_light.png') no-repeat;
+    background-size: cover;
+}
+
+.main-navbar {
+    background-color: rgba(255,255,255, 0.35);
+    color: #000;
+}
+
+.main-navbar a {
+    color: #404040;
+}
+
+.main-navbar a:hover {
+    color: #1c1917;
+}
+
+.btn-auth-group {
+    background-color: rgba(255,255,255, 0.65);
+}
+
+.btn-signin,
+.btn-menu-bars {
+    background-color: rgba(28,31,35,1) !important;
+    color: white !important;
+}
+
+.btn-signin:hover {
+    background-color: rgba(28,31,35,0.6);
+}
+
+.btn-signup {
+    background-color: rgba(255, 193, 7, 1);
+    color: #212529;
+}
+
+.btn-signup:hover {
+    background-color: rgba(255, 193, 7, 0.6);
+}
+
+.dd-toggle {
+    background-color: rgba(255,255,255,0.8) !important;
+    color: #212529 !important;
+}
+
+.dd-menu,
+.dd-menu-item {
+    background-color: rgba(255,255,255,1) !important;
+}
+
+.btn-rank {
+    background-color: rgba(255,255,255,0.5) !important;
+    color: rgba(28,31,35,1) !important;
+}
+
+.btn-rank.active {
+    background-color: rgba(255,255,255,0.95) !important;    
+}
+
+.tbl-ranking {
+    background-color: white;
+}
+
+input[type=radio][name=pic1]:checked+img {
+    border: 2px solid gray;
+}
+
+.btn-close {
+    background-color: white;
+}
+
+/* Offcanvas */
+.oc-menu {
+    background: url('./bg_light.png') no-repeat;
+    background-size: cover;
+}
+
+.nav-link-primary {
+    color: rgba(28,31,35,1) !important;
+}
+
+.nav-link-secondary {
+    color: rgba(28,31,35,0.5) !important;
+    font-size: 0.9rem;;
+}
+
+.nav-link-primary:hover,
+.nav-link-secondary:hover {
+    color:#78350f !important;
+    border-bottom: 2px solid #78350f;
+}
+
+.nav-item.nav-link.active{
+    border-bottom: 2px solid #78350f;
+}
+
+/* End Game styles */
+
+@media (min-width: 992px) {
+    .wrapper {
+        padding-left: 20px;
+        padding-right: 20px;
+        padding-top: 58px;
+    }
+}
+
+@media (max-width: 500px) {
+    .menu {
+        left: 75px;
+    }
+}
+
+@media (max-width: 767px) {
+    .main-navbar {
+        background-color: #e2d4c2;
+    }
+
+    .btn-auth-group{
+        background-color: transparent;
+    }
+}
+
+
+.web3modal-provider-container {
+    border: 1px solid #52525B;    
+}
+
+.web3modal-provider-container:hover {
+    border: 1px solid #3B82F6;
+}
+/* End web3modal */
