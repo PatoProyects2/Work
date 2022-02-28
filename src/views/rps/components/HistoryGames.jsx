@@ -19,14 +19,14 @@ export default function HistoryGames(props) {
                             LIVEPLAYS
                         </DropdownToggle>
                 }
-                <DropdownMenu className={props.theme === 'dark' ? 'bg-dark' : 'bg-light'}>
+                <DropdownMenu className="dd-menu">
                     {props.historyPlays[0] !== undefined && props.historyPlays[0].createdAt ?
                         <>
                             {(props.unixTimeStamp - props.historyPlays[0].createdAt.seconds) < 60 ?
                                 <>
-                                    <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
+                                    <DropdownItem className="dd-menu-item">
                                         <img width="35" height="35" className="rounded-circle" alt="" src={`${props.historyPlays[0].photo}`} />
-                                        {props.historyPlays[0].name !== '' ? props.historyPlays[0].name : props.historyPlays[0].account.substring(0, 5).toLowerCase()}
+                                        {props.historyPlays[0].name !== 'Username' ? props.historyPlays[0].name : props.historyPlays[0].account.substring(0, 5).toLowerCase()}
                                         {" played " + props.historyPlays[0].maticAmount + " MATIC and"}
                                         <span style={{ color: props.historyPlays[0].result ? "mediumseagreen" : "crimson" }}>
                                             {props.historyPlays[0].result === false ? " lost all " : ""}{props.historyPlays[0].result === true ? " doubled " : ""}
@@ -45,9 +45,9 @@ export default function HistoryGames(props) {
                         <>
                             {(props.unixTimeStamp - props.historyPlays[1].createdAt.seconds) < 60 ?
                                 <>
-                                    <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
+                                    <DropdownItem className="dd-menu-item">
                                         <img width="35" height="35" className="rounded-circle" alt="" src={`${props.historyPlays[1].photo}`} />
-                                        {props.historyPlays[1].name !== '' ? props.historyPlays[1].name : props.historyPlays[1].account.substring(0, 5).toLowerCase()}
+                                        {props.historyPlays[1].name !== 'Username' ? props.historyPlays[1].name : props.historyPlays[1].account.substring(0, 5).toLowerCase()}
                                         {" played " + props.historyPlays[1].maticAmount + " MATIC and"}
                                         <span style={{ color: props.historyPlays[1].result ? "mediumseagreen" : "crimson" }}>
                                             {props.historyPlays[1].result === false ? " lost all " : ""}{props.historyPlays[1].result === true ? " doubled " : ""}
@@ -66,9 +66,9 @@ export default function HistoryGames(props) {
                         <>
                             {(props.unixTimeStamp - props.historyPlays[2].createdAt.seconds) < 60 ?
                                 <>
-                                    <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
+                                    <DropdownItem className="dd-menu-item">
                                         <img width="35" height="35" className="rounded-circle" alt="" src={`${props.historyPlays[2].photo}`} />
-                                        {props.historyPlays[2].name !== '' ? props.historyPlays[2].name : props.historyPlays[2].account.substring(0, 5).toLowerCase()}
+                                        {props.historyPlays[2].name !== 'Username' ? props.historyPlays[2].name : props.historyPlays[2].account.substring(0, 5).toLowerCase()}
                                         {" played " + props.historyPlays[2].maticAmount + " MATIC and"}
                                         <span style={{ color: props.historyPlays[2].result ? "mediumseagreen" : "crimson" }}>
                                             {props.historyPlays[2].result === false ? " lost all " : ""}{props.historyPlays[2].result === true ? " doubled " : ""}
@@ -87,9 +87,9 @@ export default function HistoryGames(props) {
                         <>
                             {(props.unixTimeStamp - props.historyPlays[3].createdAt.seconds) < 60 ?
                                 <>
-                                    <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
+                                    <DropdownItem className="dd-menu-item">
                                         <img width="35" height="35" className="rounded-circle" alt="" src={`${props.historyPlays[3].photo}`} />
-                                        {props.historyPlays[3].name !== '' ? props.historyPlays[3].name : props.historyPlays[3].account.substring(0, 5).toLowerCase()}
+                                        {props.historyPlays[3].name !== 'Username' ? props.historyPlays[3].name : props.historyPlays[3].account.substring(0, 5).toLowerCase()}
                                         {" played " + props.historyPlays[3].maticAmount + " MATIC and"}
                                         <span style={{ color: props.historyPlays[3].result ? "mediumseagreen" : "crimson" }}>
                                             {props.historyPlays[3].result === false ? " lost all " : ""}{props.historyPlays[3].result === true ? " doubled " : ""}
@@ -108,9 +108,9 @@ export default function HistoryGames(props) {
                         <>
                             {(props.unixTimeStamp - props.historyPlays[4].createdAt.seconds) < 60 ?
                                 <>
-                                    <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
+                                    <DropdownItem className="dd-menu-item">
                                         <img width="35" height="35" className="rounded-circle" alt="" src={`${props.historyPlays[4].photo}`} />
-                                        {props.historyPlays[4].name !== '' ? props.historyPlays[4].name : props.historyPlays[4].account.substring(0, 5).toLowerCase()}
+                                        {props.historyPlays[4].name !== 'Username' ? props.historyPlays[4].name : props.historyPlays[4].account.substring(0, 5).toLowerCase()}
                                         {" played " + props.historyPlays[4].maticAmount + " MATIC and"}
                                         <span style={{ color: props.historyPlays[4].result ? "mediumseagreen" : "crimson" }}>
                                             {props.historyPlays[4].result === false ? " lost all " : ""}{props.historyPlays[4].result === true ? " doubled " : ""}
@@ -129,9 +129,9 @@ export default function HistoryGames(props) {
                         <>
                             {(props.unixTimeStamp - props.historyPlays[5].createdAt.seconds) < 60 ?
                                 <>
-                                    <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
+                                    <DropdownItem className="dd-menu-item">
                                         <img width="35" height="35" className="rounded-circle" alt="" src={`${props.historyPlays[5].photo}`} />
-                                        {props.historyPlays[5].name !== '' ? props.historyPlays[5].name : props.historyPlays[5].account.substring(0, 5).toLowerCase()}
+                                        {props.historyPlays[5].name !== 'Username' ? props.historyPlays[5].name : props.historyPlays[5].account.substring(0, 5).toLowerCase()}
                                         {" played " + props.historyPlays[5].maticAmount + " MATIC and"}
                                         <span style={{ color: props.historyPlays[5].result ? "mediumseagreen" : "crimson" }}>
                                             {props.historyPlays[5].result === false ? " lost all " : ""}{props.historyPlays[5].result === true ? " doubled " : ""}
@@ -150,9 +150,9 @@ export default function HistoryGames(props) {
                         <>
                             {(props.unixTimeStamp - props.historyPlays[6].createdAt.seconds) < 60 ?
                                 <>
-                                    <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
+                                    <DropdownItem className="dd-menu-item">
                                         <img width="35" height="35" className="rounded-circle" alt="" src={`${props.historyPlays[6].photo}`} />
-                                        {props.historyPlays[6].name !== '' ? props.historyPlays[6].name : props.historyPlays[6].account.substring(0, 5).toLowerCase()}
+                                        {props.historyPlays[6].name !== 'Username' ? props.historyPlays[6].name : props.historyPlays[6].account.substring(0, 5).toLowerCase()}
                                         {" played " + props.historyPlays[6].maticAmount + " MATIC and"}
                                         <span style={{ color: props.historyPlays[6].result ? "mediumseagreen" : "crimson" }}>
                                             {props.historyPlays[6].result === false ? " lost all " : ""}{props.historyPlays[6].result === true ? " doubled " : ""}
@@ -171,9 +171,9 @@ export default function HistoryGames(props) {
                         <>
                             {(props.unixTimeStamp - props.historyPlays[7].createdAt.seconds) < 60 ?
                                 <>
-                                    <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
+                                    <DropdownItem className="dd-menu-item">
                                         <img width="35" height="35" className="rounded-circle" alt="" src={`${props.historyPlays[7].photo}`} />
-                                        {props.historyPlays[7].name !== '' ? props.historyPlays[7].name : props.historyPlays[7].account.substring(0, 5).toLowerCase()}
+                                        {props.historyPlays[7].name !== 'Username' ? props.historyPlays[7].name : props.historyPlays[7].account.substring(0, 5).toLowerCase()}
                                         {" played " + props.historyPlays[7].maticAmount + " MATIC and"}
                                         <span style={{ color: props.historyPlays[7].result ? "mediumseagreen" : "crimson" }}>
                                             {props.historyPlays[7].result === false ? " lost all " : ""}{props.historyPlays[7].result === true ? " doubled " : ""}
@@ -192,9 +192,9 @@ export default function HistoryGames(props) {
                         <>
                             {(props.unixTimeStamp - props.historyPlays[8].createdAt.seconds) < 60 ?
                                 <>
-                                    <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
+                                    <DropdownItem className="dd-menu-item">
                                         <img width="35" height="35" className="rounded-circle" alt="" src={`${props.historyPlays[8].photo}`} />
-                                        {props.historyPlays[8].name !== '' ? props.historyPlays[8].name : props.historyPlays[8].account.substring(0, 5).toLowerCase()}
+                                        {props.historyPlays[8].name !== 'Username' ? props.historyPlays[8].name : props.historyPlays[8].account.substring(0, 5).toLowerCase()}
                                         {" played " + props.historyPlays[8].maticAmount + " MATIC and"}
                                         <span style={{ color: props.historyPlays[8].result ? "mediumseagreen" : "crimson" }}>
                                             {props.historyPlays[8].result === false ? " lost all " : ""}{props.historyPlays[8].result === true ? " doubled " : ""}
@@ -213,9 +213,9 @@ export default function HistoryGames(props) {
                         <>
                             {(props.unixTimeStamp - props.historyPlays[9].createdAt.seconds) < 60 ?
                                 <>
-                                    <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
+                                    <DropdownItem className="dd-menu-item">
                                         <img width="35" height="35" className="rounded-circle" alt="" src={`${props.historyPlays[9].photo}`} />
-                                        {props.historyPlays[9].name !== '' ? props.historyPlays[9].name : props.historyPlays[9].account.substring(0, 5).toLowerCase()}
+                                        {props.historyPlays[9].name !== 'Username' ? props.historyPlays[9].name : props.historyPlays[9].account.substring(0, 5).toLowerCase()}
                                         {" played " + props.historyPlays[9].maticAmount + " MATIC and"}
                                         <span style={{ color: props.historyPlays[9].result ? "mediumseagreen" : "crimson" }}>
                                             {props.historyPlays[9].result === false ? " lost all " : ""}{props.historyPlays[9].result === true ? " doubled " : ""}
@@ -234,9 +234,9 @@ export default function HistoryGames(props) {
                         <>
                             {(props.unixTimeStamp - props.historyPlays[10].createdAt.seconds) < 60 ?
                                 <>
-                                    <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
+                                    <DropdownItem className="dd-menu-item">
                                         <img width="35" height="35" className="rounded-circle" alt="" src={`${props.historyPlays[10].photo}`} />
-                                        {props.historyPlays[10].name !== '' ? props.historyPlays[10].name : props.historyPlays[10].account.substring(0, 5).toLowerCase()}
+                                        {props.historyPlays[10].name !== 'Username' ? props.historyPlays[10].name : props.historyPlays[10].account.substring(0, 5).toLowerCase()}
                                         {" played " + props.historyPlays[10].maticAmount + " MATIC and"}
                                         <span style={{ color: props.historyPlays[10].result ? "mediumseagreen" : "crimson" }}>
                                             {props.historyPlays[10].result === false ? " lost all " : ""}{props.historyPlays[10].result === true ? " doubled " : ""}
@@ -255,9 +255,9 @@ export default function HistoryGames(props) {
                         <>
                             {(props.unixTimeStamp - props.historyPlays[11].createdAt.seconds) < 60 ?
                                 <>
-                                    <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
+                                    <DropdownItem className="dd-menu-item">
                                         <img width="35" height="35" className="rounded-circle" alt="" src={`${props.historyPlays[11].photo}`} />
-                                        {props.historyPlays[11].name !== '' ? props.historyPlays[11].name : props.historyPlays[11].account.substring(0, 5).toLowerCase()}
+                                        {props.historyPlays[11].name !== 'Username' ? props.historyPlays[11].name : props.historyPlays[11].account.substring(0, 5).toLowerCase()}
                                         {" played " + props.historyPlays[11].maticAmount + " MATIC and"}
                                         <span style={{ color: props.historyPlays[11].result ? "mediumseagreen" : "crimson" }}>
                                             {props.historyPlays[11].result === false ? " lost all " : ""}{props.historyPlays[11].result === true ? " doubled " : ""}

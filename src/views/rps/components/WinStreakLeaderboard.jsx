@@ -136,9 +136,9 @@ export default function WinStreakLeaderboard(props) {
                             <span>WINSTREAKS <i className="fa-solid fa-trophy fa-xs"></i></span>
                         </DropdownToggle>
                 }
-                <DropdownMenu className={props.theme === 'dark' ? 'bg-dark' : 'bg-light'}>
+                <DropdownMenu className="dd-menu">
                     {winStreak[0] ?
-                        <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
+                        <DropdownItem className="dd-menu-item">
                             <img width="35" height="35" className="rounded-circle" alt="" src={`${winStreak[0][0]}`} />
                             {winStreak[0][1] !== 'Username' ? winStreak[0][1] : winStreak[0][2].substring(0, 5)}
                             {" is on a " + winStreak[0][3] + " win streak"}
@@ -155,7 +155,7 @@ export default function WinStreakLeaderboard(props) {
                         ""
                     }
                     {winStreak[1] ?
-                        <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
+                        <DropdownItem className="dd-menu-item">
                             <img width="35" height="35" className="rounded-circle" alt="" src={`${winStreak[1][0]}`} />
                             {winStreak[1][1] !== 'Username' ? winStreak[1][1] : winStreak[1][2].substring(0, 5)}
                             {" is on a " + winStreak[1][3] + " win streak"}
@@ -172,7 +172,7 @@ export default function WinStreakLeaderboard(props) {
                         ""
                     }
                     {winStreak[2] ?
-                        <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
+                        <DropdownItem className="dd-menu-item">
                             <img width="35" height="35" className="rounded-circle" alt="" src={`${winStreak[2][0]}`} />
                             {winStreak[2][1] !== 'Username' ? winStreak[2][1] : winStreak[2][2].substring(0, 5)}
                             {" is on a " + winStreak[2][3] + " win streak"}
@@ -189,7 +189,7 @@ export default function WinStreakLeaderboard(props) {
                         ""
                     }
                     {winStreak[3] ?
-                        <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
+                        <DropdownItem className="dd-menu-item">
                             <img width="35" height="35" className="rounded-circle" alt="" src={`${winStreak[3][0]}`} />
                             {winStreak[3][1] !== 'Username' ? winStreak[3][1] : winStreak[3][2].substring(0, 5)}
                             {" is on a " + winStreak[3][3] + " win streak"}
@@ -206,7 +206,7 @@ export default function WinStreakLeaderboard(props) {
                         ""
                     }
                     {winStreak[4] ?
-                        <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
+                        <DropdownItem className="dd-menu-item">
                             <img width="35" height="35" className="rounded-circle" alt="" src={`${winStreak[4][0]}`} />
                             {winStreak[4][1] !== 'Username' ? winStreak[4][1] : winStreak[4][2].substring(0, 5)}
                             {" is on a " + winStreak[4][3] + " win streak"}
@@ -223,7 +223,7 @@ export default function WinStreakLeaderboard(props) {
                         ""
                     }
                     {winStreak[5] ?
-                        <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
+                        <DropdownItem className="dd-menu-item">
                             <img width="35" height="35" className="rounded-circle" alt="" src={`${winStreak[5][0]}`} />
                             {winStreak[5][1] !== 'Username' ? winStreak[5][1] : winStreak[5][2].substring(0, 5)}
                             {" is on a " + winStreak[5][3] + " win streak"}
@@ -240,7 +240,7 @@ export default function WinStreakLeaderboard(props) {
                         ""
                     }
                     {winStreak[6] ?
-                        <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
+                        <DropdownItem className="dd-menu-item">
                             <img width="35" height="35" className="rounded-circle" alt="" src={`${winStreak[6][0]}`} />
                             {winStreak[6][1] !== 'Username' ? winStreak[6][1] : winStreak[6][2].substring(0, 5)}
                             {" is on a " + winStreak[6][3] + " win streak"}
@@ -257,7 +257,7 @@ export default function WinStreakLeaderboard(props) {
                         ""
                     }
                     {winStreak[7] ?
-                        <DropdownItem className={`${props.theme === 'dark' ? 'bg-dark text-white' : ''}`}>
+                        <DropdownItem className="dd-menu-item">
                             <img width="35" height="35" className="rounded-circle" alt="" src={`${winStreak[7][0]}`} />
                             {winStreak[7][1] !== 'Username' ? winStreak[7][1] : winStreak[7][2].substring(0, 5)}
                             {" is on a " + winStreak[7][3] + " win streak"}

@@ -1,14 +1,13 @@
 import React from 'react';
 import { Modal, ModalBody, ModalFooter, Button } from 'reactstrap';
 
-export const RPSResponsibly = ({ theme, show, onHide }) => {
+export const RPSResponsibly = ({ show, onHide }) => {
 
     return (
         <Modal
             isOpen={show}
             size="lg"
             toggle={onHide}
-            contentClassName={theme === "dark" ? "dark dark-border" : ""}
             centered>
 
             <ModalBody>
@@ -21,8 +20,8 @@ export const RPSResponsibly = ({ theme, show, onHide }) => {
                     <h5 className="mb-0">Ask For Help</h5>
                     <hr className='my-1' />
                     <p className="mb-4">
-                        Chat <a href="https://ncpgambling.org/chat" className={theme === "dark" ? "text-warning" : ""} target="_blank" rel="noreferrer">ncpgambling.org/chat</a><br/>
-                        Call or Text <a href="tel:1-800-522-4700" className={theme === "dark" ? "text-warning" : ""} target="_blank" rel="noreferrer">1-800-522-4700</a>
+                        Chat <a href="https://ncpgambling.org/chat" className="text-warning" target="_blank" rel="noreferrer">ncpgambling.org/chat</a><br/>
+                        Call or Text <a href="tel:1-800-522-4700" className="text-warning" target="_blank" rel="noreferrer">1-800-522-4700</a>
                     </p>                    
                 </div>
             </ModalBody>

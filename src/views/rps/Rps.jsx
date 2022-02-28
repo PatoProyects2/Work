@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { NavLink, useOutletContext } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import Web3 from 'web3'
 import Web3Modal from "web3modal";
 import { useAuthState } from 'react-firebase-hooks/auth'
@@ -19,9 +19,9 @@ import WinStreakLeaderboard from './components/WinStreakLeaderboard'
 import AccountFirebase from '../../components/layout/Authentication';
 import { auth, db } from '../../firebase/firesbaseConfig'
 import { useMatchMedia } from '../../hooks/useMatchMedia'
+
 export default function Rps() {
   const [user] = useAuthState(auth)
-  const [theme, setTheme] = useOutletContext();
   const [web3, setWeb3] = useState({});
   const [rpsgame, setRpsgame] = useState({});
   const [usergame, setUsergame] = useState({
@@ -172,7 +172,7 @@ export default function Rps() {
           photo: 'https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh',
           account: account,
           games: ['RPS'],
-          level: 0,
+          level: 1,
           rps: {
             rock: 0,
             paper: 0,
@@ -255,7 +255,7 @@ export default function Rps() {
     const web3Modal = new Web3Modal({
       cacheProvider: false,
       providerOptions,
-      theme: theme
+      //theme: theme
     });
     setWeb3ModalInfo(web3Modal)
     try {
@@ -309,10 +309,6 @@ export default function Rps() {
     setActive(false)
     setAccount('0x000000000000000000000000000000000000dEaD')
   }
-
-  const handleThemeChange = () => {
-    setTheme(theme === 'light' ? 'dark' : 'light');
-  };
 
   const openGame = () => {
     if (document.getElementById('age').checked === false) {
@@ -485,13 +481,11 @@ export default function Rps() {
           {account !== '0x000000000000000000000000000000000000dEaD' ?
             <>
               <HistoryGames
-                theme={theme}
                 isMobileVersion={true}
                 historyPlays={historyPlays}
                 unixTimeStamp={unixTimeStamp}
               />
               <WinStreakLeaderboard
-                theme={theme}
                 isMobileVersion={true}
                 unixTimeStamp={unixTimeStamp}
               />
@@ -500,9 +494,7 @@ export default function Rps() {
                 decimal={decimal}
                 web3={web3}
                 account={account}
-                theme={theme}
                 walletBalance={walletBalance}
-
                 disconnectWallet={disconnectWallet}
                 userData={userData}
                 register={register}
@@ -514,25 +506,16 @@ export default function Rps() {
           }
         </div>
         :
-        <div className="d-flex flex-row justify-content-between align-items-center">
-          <button
-            type="button"
-            className={`btn ${theme === 'dark' ? 'btn-outline-light' : 'btn-outline-dark'}`}
-            title={theme === 'light' ? 'Dark Theme' : 'Light Theme'}
-            onClick={handleThemeChange}>
-            {theme === "light" ? "DARK " : "LIGHT "}<i className={`${theme === "light" ? "fa-solid fa-moon" : "fa-solid fa-sun"}`}></i>
-          </button>
-          <div className="d-flex flex-row gap-3">
+        <div className="d-flex flex-row justify-content-between align-items-center">          
+          <div className="d-flex flex-row gap-3 mt-3">
             {account !== '0x000000000000000000000000000000000000dEaD' ?
               <>
                 <HistoryGames
-                  theme={theme}
                   isMobileVersion={false}
                   historyPlays={historyPlays}
                   unixTimeStamp={unixTimeStamp}
                 />
                 <WinStreakLeaderboard
-                  theme={theme}
                   isMobileVersion={false}
                   unixTimeStamp={unixTimeStamp}
                 />
@@ -541,9 +524,7 @@ export default function Rps() {
                   decimal={decimal}
                   web3={web3}
                   account={account}
-                  theme={theme}
                   walletBalance={walletBalance}
-
                   disconnectWallet={disconnectWallet}
                   userData={userData}
                   register={register}
@@ -687,16 +668,13 @@ export default function Rps() {
                 <button className="btn-hover btn-start" onClick={openGame}>DOUBLE OR NOTHING</button>
                 <p>CLICK TO SEE OPTIONS</p>
                 <HistoryGamesModal
-                  theme={theme}
                   historyPlays={historyPlays}
                   unixTimeStamp={unixTimeStamp}
                 />
-                <AccountFirebase />
-
               </>
               :
               <>
-                <ConnectWallet connectWeb3Modal={connectWeb3Modal} decimal={decimal} web3={web3} account={account} theme={theme} walletLog={walletLog} />
+                <ConnectWallet connectWeb3Modal={connectWeb3Modal} decimal={decimal} web3={web3} account={account} walletLog={walletLog} />
               </>
             }
           </div>

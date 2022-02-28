@@ -1,0 +1,206 @@
+/* DARK THEME */
+/* MAIN PAGE */
+.wrapper {
+    background: url('./bg_dark.png') no-repeat;
+    background-size: cover;
+    color: whitesmoke;
+}
+
+.main-navbar {
+    background-color: rgba(28,31,35,1);
+    color: #fff;
+}
+
+.main-navbar a {
+    color: whitesmoke;
+}
+
+.main-navbar a:hover {
+    color: gray;
+}
+
+.btn-auth-group {
+    background-color: #292b2c
+}
+
+.btn-signin {
+    background-color: whitesmoke !important;
+    color: #000 !important;
+}
+
+.btn-signin:hover {
+    background-color: rgba(28,31,35,1) !important;
+    color: whitesmoke !important;
+}
+
+.btn-signup {
+    background-color: rgba(255, 193, 7, 1);
+    color: #212529;
+}
+
+.btn-signup:hover {
+    background-color: rgba(255, 193, 7, 0.6);
+}
+
+.dd-toggle,
+.btn-menu-bars  {
+    background-color: #292b2c !important;
+    color: whitesmoke !important;
+}
+
+.dd-menu,
+.dd-menu-item {
+    background-color: #292b2c !important;
+    color: whitesmoke !important;
+}
+
+.dd-menu-item:hover {
+    background-color: #52525B !important;
+}
+
+.btn-rank {
+    background-color: rgba(28,31,35,1) !important;
+    color: whitesmoke!important;
+}
+
+.btn-rank.active {
+    background-color: #292b2c !important;    
+}
+
+.list-group {
+    background-color: rgba(28,31,35,1);
+    color: whitesmoke;
+}
+.list-group-item.list-group-item-action {
+    background-color: rgba(28,31,35,1);
+    color: whitesmoke;
+}
+
+.tbl-ranking {
+    background-color: rgba(28,31,35,1);
+}
+
+th, td {
+    color: whitesmoke;
+}
+
+input[type=radio][name=pic1]:checked+img {
+    border: 2px solid gray;
+}
+
+.btn-close {
+    background-color: white;
+}
+
+.menu .btn.btn-transparent {
+    color: whitesmoke;
+}
+/* Offcanvas */
+.oc-menu {
+    background: url('./bg_dark.png') no-repeat;
+    background-size: cover;
+}
+
+.nav-link-primary {
+    color: whitesmoke !important;
+}
+
+.nav-link-secondary {
+    color: #adb5bd !important;
+    font-size: 0.9rem;;
+}
+
+.nav-link-primary:hover,
+.nav-link-secondary:hover {
+    color:#ffb74d !important;
+    border-bottom: 2px solid #ffb74d;
+}
+
+.d-modal .modal-content {
+    background-color: #292b2c !important;
+}
+
+.d-modal .btn.btn-transparent{
+    color: #ffb74d !important;
+}
+
+.d-modal {
+    color: whitesmoke;
+}
+
+.d-modal-input {
+    background-color: #292b2c !important;
+    color: whitesmoke !important;
+}
+
+.dd-profile .dropdown-menu {
+    background-color: #292b2c !important;
+}
+
+.dd-profile .dropdown-item{
+    color: whitesmoke !important;
+}
+
+.dd-profile .dropdown-item:hover {
+    background-color: #52525B !important;
+}
+
+.nav-item.nav-link.active{
+    border-bottom: 2px solid #ffb74d;
+}
+
+.btn-wallet {
+    background-color: #212529 !important;
+    border: 1px solid whitesmoke !important;
+    color: whitesmoke !important;
+    padding: 5px 10px !important;
+}
+
+@media (min-width: 992px) {
+    .wrapper {
+        padding-left: 20px;
+        padding-right: 20px;
+        padding-top: 58px;
+    }
+}
+
+@media (max-width: 500px) {
+    .menu {
+        left: 75px;
+    }
+}
+
+@media (max-width: 767px) {
+    .btn-auth-group{
+        background-color: transparent;
+    }
+}
+
+.web3modal-provider-container {
+    border: 1px solid #52525B;    
+}
+
+.web3modal-provider-container:hover {
+    border: 1px solid #3B82F6;
+}
+
+.web3modal-modal-card {
+    background-color: #212529 !important;
+}
+
+.web3modal-provider-container {
+    background-color: #212529 !important;
+    
+}
+
+.web3modal-provider-container:hover {
+    background-color: #52525B !important;
+}
+
+.web3modal-provider-name {
+    color: whitesmoke !important;
+}
+.modal-content {
+    color: whitesmoke;
+    background-color: #212529 !important;
+}

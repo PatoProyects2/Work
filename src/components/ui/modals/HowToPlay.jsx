@@ -1,14 +1,13 @@
 import React from 'react';
 import { Modal, ModalBody, ModalFooter, Button } from 'reactstrap';
 
-export const HowToPlay = ({ theme, show, onHide }) => {
+export const HowToPlay = ({ show, onHide }) => {
 
     return (
         <Modal
             isOpen={show}
             size="lg"
             toggle={onHide}
-            contentClassName={theme === "dark" ? "dark dark-border" : ""}
             centered>
 
             <ModalBody>

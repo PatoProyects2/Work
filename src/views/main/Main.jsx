@@ -1,12 +1,19 @@
 import React, { useState, useEffect } from 'react'
-import { NavLink, useOutletContext } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import { collection, getDocs, query, limit, onSnapshot, orderBy } from "firebase/firestore";
 import { db } from '../../firebase/firesbaseConfig'
 import LiveBets from './components/LiveBets'
 import MostPlays from './components/MostPlays'
 import MostAmount from './components/MostAmount'
+import { Button, ButtonGroup } from 'reactstrap';
+import RPSGameImg from '../../assets/imgs/rps_banner.png'
+import ComingSoonImg from '../../assets/imgs/coming_soon.png'
+import DiscordImg from '../../assets/imgs/discord.png'
+import TwitterImg from '../../assets/imgs/twitter.png'
+import FairPlayImg from '../../assets/imgs/fair_play.png'
+import NFTImg from '../../assets/imgs/nft.png'
+
 export default function Main() {
-  const [theme, setTheme] = useOutletContext();
   const [historyPlays, setHistoryPlays] = useState({});
   const [leaderboard, setLeaderboard] = useState({});
   const [globalGames, setGlobalGames] = useState(0);
@@ -22,10 +29,6 @@ export default function Main() {
   const [weeklyAmount, setWeeklyAmount] = useState(false);
   const [monthlyAmount, setMonthlyAmount] = useState(false);
   const [globalAmount, setGlobalAmount] = useState(false);
-
-  const handleThemeChange = () => {
-    setTheme(theme === 'light' ? 'dark' : 'light');
-  };
 
   useEffect(() => {
     const timer = setInterval(() => { getUnixTime() }, 4000);
@@ -221,89 +224,127 @@ export default function Main() {
 
   return (
     <>
-      <button
-        type="button"
-        className={`btn ${theme === 'dark' ? 'btn-outline-light' : 'btn-outline-dark'}`}
-        title={theme === 'light' ? 'Dark Theme' : 'Light Theme'}
-        onClick={handleThemeChange}>
-        {theme === "light" ? "DARK " : "LIGHT "}<i className={`${theme === "light" ? "fa-solid fa-moon" : "fa-solid fa-sun"}`}></i>
-      </button>
-      <h1>Games</h1>
-      <NavLink to="/rps" >RPS</NavLink>
+      <div className='cards-container'>
+        <div className='row text-center mb-2 mb-md-5'>
+          <div className='game-card col-md-6 col-12 mx-auto'>
+            <NavLink to='/rps'>
+              <div className='card-bg rps-bg'></div>
+              <img src={RPSGameImg} width='400' />
+            </NavLink>
+          </div>
+        </div>
+        <div className='row text-center mb-2 mb-md-5'>
+          <div className='game-card col-md-4 mx-auto'>
+            <NavLink to='/'>
+              <div className='card-bg rps-bg'></div>
+              <img src={ComingSoonImg} width='400' />
+            </NavLink>
+          </div>
+          <div className='game-card col-md-4 mx-auto'>
+            <NavLink to='/nfts'>
+              <div className='card-bg rps-bg'></div>
+              <img src={NFTImg} width='400' />
+            </NavLink>
+          </div>
+          <div className='game-card last col-md-4 mx-auto'>
+            <NavLink to='/fair-play'>
+              <div className='card-bg rps-bg'></div>
+              <img src={FairPlayImg} width='400' />
+            </NavLink>
+          </div>
+        </div>
+        <div className='row text-center mb-2'>
+          <div className='social-card col-6 mx-auto'>
+            <a href='https://twitter.com/RPSGameClub' target="_blank" rel="noreferrer"><img src={TwitterImg} width='400' /></a>
+          </div>
+          <div className='social-card col-6 mx-auto'>
+            <a href="https://discord.gg/Ygk58VR4" target="_blank" rel="noreferrer"><img src={DiscordImg} width='400' /></a>
+          </div>
+        </div>
+      </div>
+
       <br></br>
-      <button onClick={liveBetsModal}>Live Bets</button>
-      <button onClick={leaderboardsModalPlays}>Most Plays</button>
-      <button onClick={leaderboardsModalAmount}>Most Amount</button>
-      {liveBets ?
-        <>
-          {globalGames + " Total bets"}
-          <LiveBets
-            theme={theme}
-            historyPlays={historyPlays}
-            unixTimeStamp={unixTimeStamp}
-          />
-        </>
-        : ""}
-      {mostPlays ?
-        <>
-          <button onClick={day}>Daily</button>
-          <button onClick={week}>Weekly</button>
-          <button onClick={month}>Monthly</button>
-          <button onClick={all}>Global</button>
-          {dailyGame ?
-            < MostPlays
-              leaderboard={leaderboard.topGames.dayGames}
+
+      <div className="table-list-container">
+        <ButtonGroup>
+          <Button onClick={liveBetsModal} className={liveBets ? 'active btn-rank' : 'btn-rank'}>Live Bets</Button>
+          <Button onClick={leaderboardsModalPlays} className={mostPlays ? 'active btn-rank' : 'btn-rank'}>Most Plays</Button>
+          <Button onClick={leaderboardsModalAmount} className={mostAmount ? 'active btn-rank' : 'btn-rank'}>Most Amount</Button>
+        </ButtonGroup>
+        {liveBets ?
+          <>
+            <p className="d-flex justify-content-end mt-3 me-4">{globalGames + " Total Bets"}</p>
+            <LiveBets
+              historyPlays={historyPlays}
+              unixTimeStamp={unixTimeStamp}
             />
-            : ""}
-          {weeklyGame ?
-            < MostPlays
-              leaderboard={leaderboard.topGames.weekGames}
-            />
-            : ""}
-          {monthlyGame ?
-            < MostPlays
-              leaderboard={leaderboard.topGames.monthGames}
-            />
-            : ""}
-          {globalGame ?
-            < MostPlays
-              leaderboard={leaderboard.topGames.globalGames}
-            />
-            : ""}
-        </>
-        :
-        ""
-      }
-      {mostAmount ?
-        <>
-          <button onClick={day}>Daily</button>
-          <button onClick={week}>Weekly</button>
-          <button onClick={month}>Monthly</button>
-          <button onClick={all}>Global</button>
-          {dailyAmount ?
-            < MostAmount
-              leaderboard={leaderboard.topAmount.dayAmount}
-            />
-            : ""}
-          {weeklyAmount ?
-            < MostAmount
-              leaderboard={leaderboard.topAmount.weekAmount}
-            />
-            : ""}
-          {monthlyAmount ?
-            < MostAmount
-              leaderboard={leaderboard.topAmount.monthAmount}
-            />
-            : ""}
-          {globalAmount ?
-            < MostAmount
-              leaderboard={leaderboard.topAmount.globalAmount}
-            />
-            : ""}
-        </>
-        :
-        ""
-      }
+          </>
+          : ""}
+        {mostPlays ?
+          <>
+            <ButtonGroup>
+              <Button onClick={day} className='btn-rank'>Daily</Button>
+              <Button onClick={week} className='btn-rank'>Weekly</Button>
+              <Button onClick={month} className='btn-rank'>Monthly</Button>
+              <Button onClick={all} className='btn-rank'>Global</Button>
+            </ButtonGroup>           
+            {dailyGame ?
+              < MostPlays
+                leaderboard={leaderboard.topGames.dayGames}
+              />
+              : ""}
+            {weeklyGame ?
+              < MostPlays
+                leaderboard={leaderboard.topGames.weekGames}
+              />
+              : ""}
+            {monthlyGame ?
+              < MostPlays
+                leaderboard={leaderboard.topGames.monthGames}
+              />
+              : ""}
+            {globalGame ?
+              < MostPlays
+                leaderboard={leaderboard.topGames.globalGames}
+              />
+              : ""}
+          </>
+          :
+          ""
+        }
+        {mostAmount ?
+          <>
+            <ButtonGroup>
+              <Button onClick={day} className='btn-rank'>Daily</Button>
+              <Button onClick={week} className='btn-rank'>Weekly</Button>
+              <Button onClick={month} className='btn-rank'>Monthly</Button>
+              <Button onClick={all} className='btn-rank'>Global</Button>
+            </ButtonGroup> 
+            {dailyAmount ?
+              < MostAmount
+                leaderboard={leaderboard.topAmount.dayAmount}
+              />
+              : ""}
+            {weeklyAmount ?
+              < MostAmount
+                leaderboard={leaderboard.topAmount.weekAmount}
+              />
+              : ""}
+            {monthlyAmount ?
+              < MostAmount
+                leaderboard={leaderboard.topAmount.monthAmount}
+              />
+              : ""}
+            {globalAmount ?
+              < MostAmount
+                leaderboard={leaderboard.topAmount.globalAmount}
+              />
+              : ""}
+          </>
+          :
+          ""
+        }
+      </div>
     </>
   );
 }

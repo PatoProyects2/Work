@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useAuthState } from 'react-firebase-hooks/auth'
-import { sendEmailVerifications } from 'firebase/auth';
-import { useOutletContext } from 'react-router-dom'
+import { sendEmailVerification } from 'firebase/auth';
 import { Button, Modal, ModalBody, ModalFooter, FormGroup, Input } from 'reactstrap'
 import { query, where, collection, limit, onSnapshot } from "firebase/firestore";
 import { auth, db } from '../../../../firebase/firesbaseConfig'
@@ -12,7 +11,6 @@ export default function Profile() {
     photoURL: 'https://ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh'
   });
   const [user] = useAuthState(auth)
-  const [theme, setTheme] = useOutletContext();
   const [log0, setLog0] = useState('')
   const [rpsStats, setRpsStats] = useState(undefined);
   const [rpsAchievements, setRpsAchievements] = useState(undefined);
@@ -72,16 +70,28 @@ export default function Profile() {
     }
   }
   const updateUserProfile = () => {
-    if (userInfo.displayName.length >= 4 && userInfo.displayName.length <= 12) {
-      setLog0('')
-      updateProfile(auth.currentUser, userInfo)
-        .then(() => {
-          setEditProfile(false)
-        }).catch((error) => {
-          setLog0('Inavlid Username')
-        });
+    if (userData[0]) {
+      if (userInfo.displayName.length >= 4 && userInfo.displayName.length <= 12) {
+        updateDoc(doc(db, "clubUsers", props.account), {
+          name: userInfo.displayName
+        }).then(() => window.location.reload())
+      } else {
+        setLog0('Username 4-12 characters')
+        return false
+      }
     } else {
-      setLog0('Username 4-12 characters')
+      if (userInfo.displayName.length >= 4 && userInfo.displayName.length <= 12) {
+        setLog0('')
+        updateProfile(auth.currentUser, userInfo)
+          .then(() => {
+            setEditProfile(false)
+          }).catch((error) => {
+            setLog0('Inavlid Username')
+          });
+      } else {
+        setLog0('Username 4-12 characters')
+        return false
+      }
     }
   }
 
@@ -90,14 +100,23 @@ export default function Profile() {
       {user ?
         <>
           <h1>Profile</h1>
-          <p><img width="150" height="150" src={user.photoURL} alt="" /></p>
-          <p>{user.displayName !== '' ? "Username: " + user.displayName : "User"}</p>
+          {userData[0] ?
+            <>
+              <p>{userData[0].photo && <img width="150" height="150" className="rounded-circle me-2" src={userData[0].photo} alt="" />}</p>
+              <p>{userData[0].name !== 'Username' ? userData[0].name : "User"}</p>
+            </>
+            :
+            <>
+              <p><img width="150" height="150" className="rounded-circle me-2" src={user.photoURL} alt="" /></p>
+              <p>{user.displayName !== '' ? user.displayName : "User"}</p>
+            </>
+          }
           <p>{"E-mail: " + user.email}{user.emailVerified ? " VERIFIED" : <>{" NOT VERIFIED"} <button onClick={resendEmailVerification}>Resend email verification</button></>}</p>
           <Button color="primary" onClick={editProfileModal}>Edit Profile</Button>
           <Button color="secondary" onClick={rpsModalStats}>RPS Stats</Button>
           <Button color="secondary" onClick={rpsModalAchievement}>RPS Achievements</Button>
 
-          <Modal isOpen={rpsStats} contentClassName={theme === 'dark' ? 'dark dark-border' : ''} size="xl">
+          <Modal isOpen={rpsStats} className="d-modal" size="xl">
             <ModalBody>
               <h3 className="text-center">RPS Stats</h3>
               <button type="button" className="btn-close" aria-label="Close" onClick={rpsModalStats}></button>
@@ -109,7 +128,7 @@ export default function Profile() {
             </ModalBody>
           </Modal >
 
-          <Modal isOpen={rpsAchievements} contentClassName={theme === 'dark' ? 'dark dark-border' : ''} size="xl">
+          <Modal isOpen={rpsAchievements} className="d-modal" size="xl">
             <ModalBody>
               <h3 className="text-center">RPS Achievements</h3>
               <button type="button" className="btn-close" aria-label="Close" onClick={rpsModalAchievement}></button>
@@ -117,16 +136,16 @@ export default function Profile() {
               </FormGroup>
             </ModalBody>
           </Modal>
-          <Modal isOpen={editProfile} contentClassName={theme === 'dark' ? 'dark dark-border' : ''} size="sm">
+          <Modal isOpen={editProfile} className="d-modal" size="sm">
             {log0 && (<span className="alert alert-danger mx-5 row justify-content-center mt-2">{log0}</span>)}
             <ModalBody>
               <h4 className="text-center">USER PROFILE</h4>
               <button type="button" className="btn-close" aria-label="Close" onClick={editProfileModal}></button>
               <FormGroup className="pt-3 text-center">
-                <img width="105" height="105" className="rounded-circle" alt="" src="https://ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh" />
+                <p>{userData[0] && <img width="105" height="105" className="rounded-circle me-2" src={userData[0].photo} alt="" />}</p>
               </FormGroup>
               <FormGroup>
-                <Input name="displayName" placeholder="Username" onChange={handleInputChange} defaultValue={user.displayName} type="text" />
+                <Input name="displayName" className="d-modal-input" placeholder="Username" onChange={handleInputChange} defaultValue={user.displayName} type="text" />
               </FormGroup>
             </ModalBody>
             <ModalFooter>

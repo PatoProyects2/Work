@@ -1,14 +1,13 @@
 import React from 'react';
 import { Modal, ModalBody, ModalFooter, Button } from 'reactstrap';
 
-export const FAQ = ({ theme, show, onHide }) => {
+export const FAQ = ({ show, onHide }) => {
 
     return (
         <Modal
             isOpen={show}
             size="lg"
             toggle={onHide}
-            contentClassName={theme === "dark" ? "dark dark-border" : ""}
             centered>
 
             <ModalBody>
@@ -20,7 +19,7 @@ export const FAQ = ({ theme, show, onHide }) => {
                     <p className="mb-4">
                         Available as a browser extension and as a mobile app, MetaMask equips you with a key vault, 
                         secure login, token wallet, and token exchange—everything you need to manage your digital assets. 
-                        <a href="https://metamask.io/" className={theme === "dark" ? "text-warning" : ""} target="_blank" rel="noreferrer">&nbsp;https://metamask.io</a>
+                        <a href="https://metamask.io/" className="text-warning" target="_blank" rel="noreferrer">&nbsp;https://metamask.io</a>
 
                     </p>
                     <h5 className="mb-0">How do I get funds (digital currency) in Metamask?</h5>

@@ -5,7 +5,7 @@ class Maintenance extends Component {
   render() {
     return ( 
       <div>
-        <h1 class="titles">Maintenance</h1>
+        <h1 className="titles">Maintenance</h1>
       </div>
     );
   }

@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Button, Modal, ModalBody, ModalFooter, FormGroup, Input, Label } from 'reactstrap'
-import { auth } from '../../../firebase/firesbaseConfig'
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from '../../../firebase/firesbaseConfig'
+
 export default function ConnectWallet(props) {
   const [userInfo, setUserInfo] = useState({
     displayName: '',
@@ -50,8 +52,8 @@ export default function ConnectWallet(props) {
   const updateUserProfile = () => {
     if (userInfo.displayName.length >= 4 && userInfo.displayName.length <= 12) {
       updateDoc(doc(db, "clubUsers", props.account), {
-        name: userInfo.name
-      })
+        name: userInfo.displayName
+      }).then(() => window.location.reload())
     } else {
       setLog1('Username 4-12 characters')
     }
@@ -103,45 +105,45 @@ export default function ConnectWallet(props) {
     <>
       {props.account !== '0x000000000000000000000000000000000000dEaD' ?
         <>
-          <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="md">
+          <Dropdown className="dd-profile" isOpen={dropdown} toggle={toggleMenu} direction="down" size="md">
             <DropdownToggle color='transparent' className='p-0'>
-              {props.userData.photo && <img src={props.userData.photo} width="35" height="35" alt="" />}
+              {props.userData.photo && <img className="rounded-circle me-2" src={props.userData.photo} width="35" height="35" alt="" />}
             </DropdownToggle>
-            <DropdownMenu className={props.theme === 'dark' ? 'bg-dark' : 'bg-light'}>
+            <DropdownMenu>
               <DropdownItem header>{props.userData.name}</DropdownItem>
               <DropdownItem header>{"LVL " + props.userData.level}</DropdownItem>
               <DropdownItem header>
                 {props.account.substring(0, 5) + "..." + props.account.substring(38, 42)}
-                <button className={`btn-sm ms-2 ${props.theme === 'dark' ? 'btn-secondary' : 'btn-dark'}`}
+                <button className="btn-sm ms-2 btn-secondary"
                   onClick={() => navigator.clipboard.writeText(props.account)}>
                   <i className="fa-regular fa-clone white"></i>
                 </button>
               </DropdownItem>
               <DropdownItem divider />
-              <DropdownItem className={props.theme === 'dark' ? 'dropdown-item-dark' : ''} onClick={editProfile}>Edit profile</DropdownItem>
-              <DropdownItem className={props.theme === 'dark' ? 'dropdown-item-dark' : ''} onClick={sendMatic}>Send matic</DropdownItem>
-              <DropdownItem className={props.theme === 'dark' ? 'dropdown-item-dark' : ''} onClick={manageWallets}>Accounts</DropdownItem>
-              <DropdownItem className={props.theme === 'dark' ? 'dropdown-item-dark' : ''} onClick={props.disconnectWallet}>Disconnect</DropdownItem>
+              <DropdownItem onClick={editProfile}>Edit profile</DropdownItem>
+              <DropdownItem onClick={sendMatic}>Send matic</DropdownItem>
+              <DropdownItem onClick={manageWallets}>Accounts</DropdownItem>
+              <DropdownItem onClick={props.disconnectWallet}>Disconnect</DropdownItem>
             </DropdownMenu>
           </Dropdown>
-          <Modal isOpen={edit} contentClassName={props.theme === 'dark' ? 'dark dark-border' : ''} size="sm">
+          <Modal isOpen={edit} className="d-modal" size="sm">
             {log1 && (<span className="alert alert-danger mx-5 row justify-content-center mt-2">{log1}</span>)}
             <ModalBody>
               <h4 className="text-center">USER PROFILE</h4>
               <FormGroup className="pt-3 text-center">
-                {props.userData.photo && <img src={props.userData.photo} width="105" height="105" alt="" />}
+                {props.userData.photo && <img className="rounded-circle me-2" src={props.userData.photo} width="105" height="105" alt="" />}
               </FormGroup>
               <FormGroup className="text-center">
                 <Label>{"User since " + props.register}</Label>
               </FormGroup>
               <FormGroup>
                 <Input
-                  name="name0"
+                  name="displayName"
                   placeholder="Username"
-                  className={props.theme === 'dark' ? 'dark-input' : ''}
+                  className="d-modal-input"
                   onChange={handleInputChange}
                   type="text"
-                  defaultValue={props.username} />
+                  defaultValue={props.userData.name} />
               </FormGroup>
             </ModalBody>
             <ModalFooter>
@@ -149,17 +151,17 @@ export default function ConnectWallet(props) {
               <Button color="secondary" onClick={editProfile}>CLOSE</Button>
             </ModalFooter>
           </Modal>
-          <Modal isOpen={send} contentClassName={props.theme === 'dark' ? 'dark dark-border' : ''} size="sm">
+          <Modal isOpen={send} className="d-modal" size="sm">
             {log1 && (<span className="alert alert-danger mx-5 row justify-content-center mt-2">{log1}</span>)}
             <ModalBody>
               <h4 className="text-center">SEND MATIC</h4>
               <FormGroup>
                 <Label>ADDRESS</Label>
-                <Input name="account1" className={props.theme === 'dark' ? 'dark-input' : ''} placeholder="0x00..." onChange={handleInputChange} type="text" />
+                <Input name="account1" className="d-modal-input" placeholder="0x00..." onChange={handleInputChange} type="text" />
               </FormGroup>
               <FormGroup>
                 <Label>AMOUNT</Label>
-                <Input name="amount1" className={props.theme === 'dark' ? 'dark-input' : ''} placeholder="1" onChange={handleInputChange} type="number" />
+                <Input name="amount1" className="d-modal-input" placeholder="1" onChange={handleInputChange} type="number" />
               </FormGroup>
             </ModalBody>
             <ModalFooter>

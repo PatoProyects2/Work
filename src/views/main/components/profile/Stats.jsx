@@ -1,44 +1,45 @@
 import React from 'react'
+import { Table } from 'reactstrap';
 export default function Stats(props) {
 
   return (
     <>
-      <table>
+      <Table className="tbl-ranking" borderless responsive size="">
         <thead>
           <tr>
-            <td>
+            <th>
               Wallet
-            </td>
-            <td>
+            </th>
+            <th>
               Games Won
-            </td>
-            <td>
+            </th>
+            <th>
               Games Loss
-            </td>
-            <td>
+            </th>
+            <th>
               Total Games
-            </td>
-            <td>
+            </th>
+            <th>
               Amount Won
-            </td>
-            <td>
+            </th>
+            <th>
               Amount Loss
-            </td>
-            <td>
+            </th>
+            <th>
               Total Amount
-            </td>
-            <td>
+            </th>
+            <th>
               Win Streak
-            </td>
-            <td>
+            </th>
+            <th>
               Rock
-            </td>
-            <td>
+            </th>
+            <th>
               Paper
-            </td>
-            <td>
+            </th>
+            <th>
               Scissors
-            </td>
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -157,7 +158,7 @@ export default function Stats(props) {
             :
             ""}
         </tbody>
-      </table>
+      </Table>
     </>
   );
 }

@@ -1,41 +1,23 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { Outlet } from 'react-router-dom'
-import { useAuthState } from 'react-firebase-hooks/auth'
-import { auth, db } from '../../firebase/firesbaseConfig'
-import AccountFirebase from './Authentication';
 import Footer from '../footer/Footer'
-import { MainMenu } from '../ui/menu/MainMenu'
-
-const currentTheme = () => {
-  return localStorage.getItem("theme") || "light";
-}
+import { Navbar } from '../ui/navbar/Navbar';
 
 export function MainLayout() {
-  const [user] = useAuthState(auth)
-  const [theme, setTheme] = useState(currentTheme());
-
-
-  useEffect(() => {
-    if (!theme) return;
-    localStorage.setItem("theme", theme);
-  }, [theme]);
-
 
   return (
-    <div className={`wrapper ${theme}`}>
-      <header>
-        <a href="/">LOGO CLUB GAMES</a>
-        <AccountFirebase />
+    <>
+      <header>        
+        <Navbar navType="main" />
       </header>
-      <main className='pt-3'>
-        <section className="text-center">
-          <Outlet context={[theme, setTheme]} />
+      <main className="wrapper">
+        <section>
+          <Outlet />
         </section>
       </main>
-      <MainMenu theme={theme} />
       <footer>
-        <Footer theme={theme} setTheme={setTheme} />
+        <Footer />
       </footer>
-    </div>
+    </>
   );
 }

@@ -1,20 +1,21 @@
 import React from 'react'
+import { Table } from 'reactstrap';
 export default function MostAmount(props) {
 
   return (
     <>
-      <table>
+      <Table className='tbl-ranking' borderless responsive>
         <thead>
           <tr>
-            <td>
+            <th>
               No #
-            </td>
-            <td>
+            </th>
+            <th>
               User
-            </td>
-            <td>
+            </th>
+            <th>
               Most amount played
-            </td>
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -24,8 +25,8 @@ export default function MostAmount(props) {
                 1
               </td>
               <td>
-                <img width="35" height="35" className="rounded-circle" alt="" src={`${props.leaderboard[0][1]}`} />
-                {props.leaderboard[0][2] ? " " + props.leaderboard[0][2] : props.leaderboard[0][0].substring(0, 5) + "..." + props.leaderboard[0][0].substring(38, 42)}
+                <img width="35" height="35" className="rounded-circle me-2" alt="" src={`${props.leaderboard[0][1]}`} />
+                {props.leaderboard[0][2] !== 'Username' ? props.leaderboard[0][2] : props.leaderboard[0][0].substring(0, 5)}
               </td>
               <td>
                 {props.leaderboard[0][3]}
@@ -36,11 +37,11 @@ export default function MostAmount(props) {
           {props.leaderboard[1] ?
             <tr>
               <td>
-                1
+                2
               </td>
               <td>
-                <img width="35" height="35" className="rounded-circle" alt="" src={`${props.leaderboard[1][1]}`} />
-                {props.leaderboard[1][2] ? " " + props.leaderboard[1][2] : props.leaderboard[1][0].substring(0, 5) + "..." + props.leaderboard[1][0].substring(38, 42)}
+                <img width="35" height="35" className="rounded-circle me-2" alt="" src={`${props.leaderboard[1][1]}`} />
+                {props.leaderboard[1][2] !== 'Username' ? props.leaderboard[1][2] : props.leaderboard[1][0].substring(0, 5)}
               </td>
               <td>
                 {props.leaderboard[1][3]}
@@ -51,11 +52,11 @@ export default function MostAmount(props) {
           {props.leaderboard[2] ?
             <tr>
               <td>
-                1
+                3
               </td>
               <td>
-                <img width="35" height="35" className="rounded-circle" alt="" src={`${props.leaderboard[2][1]}`} />
-                {props.leaderboard[2][2] ? " " + props.leaderboard[2][2] : props.leaderboard[2][0].substring(0, 5) + "..." + props.leaderboard[2][0].substring(38, 42)}
+                <img width="35" height="35" className="rounded-circle me-2" alt="" src={`${props.leaderboard[2][1]}`} />
+                {props.leaderboard[2][2] !== 'Username' ? props.leaderboard[2][2] : props.leaderboard[2][0].substring(0, 5)}
               </td>
               <td>
                 {props.leaderboard[2][3]}
@@ -66,11 +67,11 @@ export default function MostAmount(props) {
           {props.leaderboard[3] ?
             <tr>
               <td>
-                1
+                4
               </td>
               <td>
-                <img width="35" height="35" className="rounded-circle" alt="" src={`${props.leaderboard[3][1]}`} />
-                {props.leaderboard[3][2] ? " " + props.leaderboard[3][2] : props.leaderboard[3][0].substring(0, 5) + "..." + props.leaderboard[3][0].substring(38, 42)}
+                <img width="35" height="35" className="rounded-circle me-2" alt="" src={`${props.leaderboard[3][1]}`} />
+                {props.leaderboard[3][2] !== 'Username' ? props.leaderboard[3][2] : props.leaderboard[3][0].substring(0, 5)}
               </td>
               <td>
                 {props.leaderboard[3][3]}
@@ -81,11 +82,11 @@ export default function MostAmount(props) {
           {props.leaderboard[4] ?
             <tr>
               <td>
-                1
+                5
               </td>
               <td>
-                <img width="35" height="35" className="rounded-circle" alt="" src={`${props.leaderboard[4][1]}`} />
-                {props.leaderboard[4][2] ? " " + props.leaderboard[4][2] : props.leaderboard[4][0].substring(0, 5) + "..." + props.leaderboard[4][0].substring(38, 42)}
+                <img width="35" height="35" className="rounded-circle me-2" alt="" src={`${props.leaderboard[4][1]}`} />
+                {props.leaderboard[4][2] !== 'Username' ? props.leaderboard[4][2] : props.leaderboard[4][0].substring(0, 5)}
               </td>
               <td>
                 {props.leaderboard[4][3]}
@@ -96,11 +97,11 @@ export default function MostAmount(props) {
           {props.leaderboard[5] ?
             <tr>
               <td>
-                1
+                6
               </td>
               <td>
-                <img width="35" height="35" className="rounded-circle" alt="" src={`${props.leaderboard[5][1]}`} />
-                {props.leaderboard[5][2] ? " " + props.leaderboard[5][2] : props.leaderboard[5][0].substring(0, 5) + "..." + props.leaderboard[5][0].substring(38, 42)}
+                <img width="35" height="35" className="rounded-circle me-2" alt="" src={`${props.leaderboard[5][1]}`} />
+                {props.leaderboard[5][2] !== 'Username' ? props.leaderboard[5][2] : props.leaderboard[5][0].substring(0, 5)}
               </td>
               <td>
                 {props.leaderboard[5][3]}
@@ -111,11 +112,11 @@ export default function MostAmount(props) {
           {props.leaderboard[6] ?
             <tr>
               <td>
-                1
+                7
               </td>
               <td>
-                <img width="35" height="35" className="rounded-circle" alt="" src={`${props.leaderboard[6][1]}`} />
-                {props.leaderboard[6][2] ? " " + props.leaderboard[6][2] : props.leaderboard[6][0].substring(0, 5) + "..." + props.leaderboard[6][0].substring(38, 42)}
+                <img width="35" height="35" className="rounded-circle me-2" alt="" src={`${props.leaderboard[6][1]}`} />
+                {props.leaderboard[6][2] !== 'Username' ? props.leaderboard[6][2] : props.leaderboard[6][0].substring(0, 5)}
               </td>
               <td>
                 {props.leaderboard[6][3]}
@@ -126,11 +127,11 @@ export default function MostAmount(props) {
           {props.leaderboard[7] ?
             <tr>
               <td>
-                1
+                8
               </td>
               <td>
-                <img width="35" height="35" className="rounded-circle" alt="" src={`${props.leaderboard[7][1]}`} />
-                {props.leaderboard[7][2] ? " " + props.leaderboard[7][2] : props.leaderboard[7][0].substring(0, 5) + "..." + props.leaderboard[7][0].substring(38, 42)}
+                <img width="35" height="35" className="rounded-circle me-2" alt="" src={`${props.leaderboard[7][1]}`} />
+                {props.leaderboard[7][2] !== 'Username' ? props.leaderboard[7][2] : props.leaderboard[7][0].substring(0, 5)}
               </td>
               <td>
                 {props.leaderboard[7][3]}
@@ -141,11 +142,11 @@ export default function MostAmount(props) {
           {props.leaderboard[8] ?
             <tr>
               <td>
-                1
+                9
               </td>
               <td>
-                <img width="35" height="35" className="rounded-circle" alt="" src={`${props.leaderboard[8][1]}`} />
-                {props.leaderboard[8][2] ? " " + props.leaderboard[8][2] : props.leaderboard[8][0].substring(0, 5) + "..." + props.leaderboard[8][0].substring(38, 42)}
+                <img width="35" height="35" className="rounded-circle me-2" alt="" src={`${props.leaderboard[8][1]}`} />
+                {props.leaderboard[8][2] !== 'Username' ? props.leaderboard[8][2] : props.leaderboard[8][0].substring(0, 5)}
               </td>
               <td>
                 {props.leaderboard[8][3]}
@@ -156,11 +157,11 @@ export default function MostAmount(props) {
           {props.leaderboard[9] ?
             <tr>
               <td>
-                1
+                10
               </td>
               <td>
-                <img width="35" height="35" className="rounded-circle" alt="" src={`${props.leaderboard[9][1]}`} />
-                {props.leaderboard[9][2] ? " " + props.leaderboard[9][2] : props.leaderboard[9][0].substring(0, 5) + "..." + props.leaderboard[9][0].substring(38, 42)}
+                <img width="35" height="35" className="rounded-circle me-2" alt="" src={`${props.leaderboard[9][1]}`} />
+                {props.leaderboard[9][2] !== 'Username' ? props.leaderboard[9][2] : props.leaderboard[9][0].substring(0, 5)}
               </td>
               <td>
                 {props.leaderboard[9][3]}
@@ -169,7 +170,7 @@ export default function MostAmount(props) {
             :
             ""}
         </tbody>
-      </table>
+      </Table>
     </>
   );
 }

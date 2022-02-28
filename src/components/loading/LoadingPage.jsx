@@ -9,9 +9,9 @@ class LoadingPage extends Component {
     return ( 
       <div>
         <article>
-          <div class="loader">
-            <div class="spinner">
-              <Spinner class="circle"/>
+          <div className="loader">
+            <div className="spinner">
+              <Spinner className="circle"/>
             </div>
           </div>
         </article>
