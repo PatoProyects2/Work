@@ -1,30 +1,31 @@
 {
   "files": {
-    "main.css": "/Work/static/css/main.fb02eaf2.chunk.css",
-    "main.js": "/Work/static/js/main.c216a464.chunk.js",
-    "main.js.map": "/Work/static/js/main.c216a464.chunk.js.map",
+    "main.css": "/Work/static/css/main.e7909e0f.chunk.css",
+    "main.js": "/Work/static/js/main.5ca7d8e6.chunk.js",
+    "main.js.map": "/Work/static/js/main.5ca7d8e6.chunk.js.map",
     "runtime-main.js": "/Work/static/js/runtime-main.9471df77.js",
     "runtime-main.js.map": "/Work/static/js/runtime-main.9471df77.js.map",
     "static/css/2.8c0e6b67.chunk.css": "/Work/static/css/2.8c0e6b67.chunk.css",
-    "static/js/2.614a5243.chunk.js": "/Work/static/js/2.614a5243.chunk.js",
-    "static/js/2.614a5243.chunk.js.map": "/Work/static/js/2.614a5243.chunk.js.map",
+    "static/js/2.dc9d39a6.chunk.js": "/Work/static/js/2.dc9d39a6.chunk.js",
+    "static/js/2.dc9d39a6.chunk.js.map": "/Work/static/js/2.dc9d39a6.chunk.js.map",
     "index.html": "/Work/index.html",
     "static/css/2.8c0e6b67.chunk.css.map": "/Work/static/css/2.8c0e6b67.chunk.css.map",
-    "static/css/main.fb02eaf2.chunk.css.map": "/Work/static/css/main.fb02eaf2.chunk.css.map",
-    "static/js/2.614a5243.chunk.js.LICENSE.txt": "/Work/static/js/2.614a5243.chunk.js.LICENSE.txt",
+    "static/css/main.e7909e0f.chunk.css.map": "/Work/static/css/main.e7909e0f.chunk.css.map",
+    "static/js/2.dc9d39a6.chunk.js.LICENSE.txt": "/Work/static/js/2.dc9d39a6.chunk.js.LICENSE.txt",
+    "static/media/animation.8586eafd.gif": "/Work/static/media/animation.8586eafd.gif",
     "static/media/coming_soon.db90112d.png": "/Work/static/media/coming_soon.db90112d.png",
     "static/media/discord.2a548029.png": "/Work/static/media/discord.2a548029.png",
     "static/media/fair_play.1d5a03fd.png": "/Work/static/media/fair_play.1d5a03fd.png",
     "static/media/nft.4e62ab5e.png": "/Work/static/media/nft.4e62ab5e.png",
-    "static/media/rps_banner.1880731e.png": "/Work/static/media/rps_banner.1880731e.png",
     "static/media/index.scss": "/Work/static/media/slots_hover.ff39acaa.png",
+    "static/media/rps_banner.1880731e.png": "/Work/static/media/rps_banner.1880731e.png",
     "static/media/twitter.504eeb0d.png": "/Work/static/media/twitter.504eeb0d.png"
   },
   "entrypoints": [
     "static/js/runtime-main.9471df77.js",
     "static/css/2.8c0e6b67.chunk.css",
-    "static/js/2.614a5243.chunk.js",
-    "static/css/main.fb02eaf2.chunk.css",
-    "static/js/main.c216a464.chunk.js"
+    "static/js/2.dc9d39a6.chunk.js",
+    "static/css/main.e7909e0f.chunk.css",
+    "static/js/main.5ca7d8e6.chunk.js"
   ]
 }
