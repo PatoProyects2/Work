@@ -118,7 +118,12 @@ export default function Stats(props) {
               </td>
             </tr>
             :
-            ""}
+            <tr>
+              <td>
+
+              </td>
+            </tr>
+          }
           {props.userData[2] ?
             <tr>
               <td>
@@ -156,7 +161,12 @@ export default function Stats(props) {
               </td>
             </tr>
             :
-            ""}
+            <tr>
+              <td>
+
+              </td>
+            </tr>
+          }
         </tbody>
       </Table>
     </>

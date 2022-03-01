@@ -7,15 +7,9 @@ export default function MostAmount(props) {
       <Table className='tbl-ranking' borderless responsive>
         <thead>
           <tr>
-            <th>
-              No #
-            </th>
-            <th>
-              User
-            </th>
-            <th>
-              Most amount played
-            </th>
+            <th> Nº</th>
+            <th> User </th>
+            <th> Most amount played</th>
           </tr>
         </thead>
         <tbody>
@@ -33,7 +27,12 @@ export default function MostAmount(props) {
               </td>
             </tr>
             :
-            ""}
+            <tr>
+              <td>
+
+              </td>
+            </tr>
+          }
           {props.leaderboard[1] ?
             <tr>
               <td>
@@ -48,7 +47,12 @@ export default function MostAmount(props) {
               </td>
             </tr>
             :
-            ""}
+            <tr>
+              <td>
+
+              </td>
+            </tr>
+          }
           {props.leaderboard[2] ?
             <tr>
               <td>
@@ -63,7 +67,12 @@ export default function MostAmount(props) {
               </td>
             </tr>
             :
-            ""}
+            <tr>
+              <td>
+
+              </td>
+            </tr>
+          }
           {props.leaderboard[3] ?
             <tr>
               <td>
@@ -78,7 +87,12 @@ export default function MostAmount(props) {
               </td>
             </tr>
             :
-            ""}
+            <tr>
+              <td>
+
+              </td>
+            </tr>
+          }
           {props.leaderboard[4] ?
             <tr>
               <td>
@@ -93,7 +107,12 @@ export default function MostAmount(props) {
               </td>
             </tr>
             :
-            ""}
+            <tr>
+              <td>
+
+              </td>
+            </tr>
+          }
           {props.leaderboard[5] ?
             <tr>
               <td>
@@ -108,7 +127,12 @@ export default function MostAmount(props) {
               </td>
             </tr>
             :
-            ""}
+            <tr>
+              <td>
+
+              </td>
+            </tr>
+          }
           {props.leaderboard[6] ?
             <tr>
               <td>
@@ -123,7 +147,12 @@ export default function MostAmount(props) {
               </td>
             </tr>
             :
-            ""}
+            <tr>
+              <td>
+
+              </td>
+            </tr>
+          }
           {props.leaderboard[7] ?
             <tr>
               <td>
@@ -138,7 +167,12 @@ export default function MostAmount(props) {
               </td>
             </tr>
             :
-            ""}
+            <tr>
+              <td>
+
+              </td>
+            </tr>
+          }
           {props.leaderboard[8] ?
             <tr>
               <td>
@@ -153,7 +187,12 @@ export default function MostAmount(props) {
               </td>
             </tr>
             :
-            ""}
+            <tr>
+              <td>
+
+              </td>
+            </tr>
+          }
           {props.leaderboard[9] ?
             <tr>
               <td>
@@ -168,7 +207,12 @@ export default function MostAmount(props) {
               </td>
             </tr>
             :
-            ""}
+            <tr>
+              <td>
+
+              </td>
+            </tr>
+          }
         </tbody>
       </Table>
     </>

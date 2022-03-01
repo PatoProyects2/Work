@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import AccountFirebase from '../../layout/Authentication';
 import { Navbar, Offcanvas, Nav, NavbarBrand, OffcanvasHeader, OffcanvasBody, Button } from 'reactstrap';
@@ -7,32 +7,38 @@ import { useMatchMedia } from '../../../hooks/useMatchMedia';
 
 export const NavbarDesktop = ({ handleFaqModal, handleHtpModal, navType }) => {
 
+    const [visitors, setVisitors] = useState(0);
     const [showOffcanvas, setShowOffCanvas] = useState(false);
 
     const isMobileResolution = useMatchMedia('(max-width:768px)', false);
 
+    useEffect(() => {
+     
+    }, [])
+
     return (
         <>
             <Navbar className={`main-navbar ${!isMobileResolution ? 'fixed-top' : ''}`}>
-                <div className='d-flex align-items-center'>
-                    <NavbarBrand href='/'>
-                        CLUB GAMES
-                    </NavbarBrand>
-                    {!isMobileResolution && <AccountFirebase />}
-                </div>
 
                 <div className="d-flex">
-                    <ThemeSwitcher />
                     <Button
                         onClick={() => setShowOffCanvas(true)}
                         color='menu-bars'
                         className='mx-2'>
                         <i className="fas fa-bars"></i>
                     </Button>
+                    <NavbarBrand href='/'>
+                        CLUB GAMES
+                    </NavbarBrand>
+                </div>
+
+                <div className='d-flex align-items-center'>
+                    <ThemeSwitcher />
+                    {!isMobileResolution && <AccountFirebase />}
                 </div>
 
                 <Offcanvas
-                    direction="end"
+                    direction="start"
                     isOpen={showOffcanvas}
                     className='oc-menu'
                     toggle={() => setShowOffCanvas(false)}>
@@ -90,17 +96,17 @@ export const NavbarDesktop = ({ handleFaqModal, handleHtpModal, navType }) => {
                                         FAQ
                                     </NavLink>
                                 )
-                                :
-                                (
-                                    <button className="btn btn-transparent" onClick={ handleFaqModal }>FAQ</button>
-                                )
+                                    :
+                                    (
+                                        <button className="btn btn-transparent" onClick={handleFaqModal}>FAQ</button>
+                                    )
                             }
                             {
                                 navType === "rps" && (
-                                    <button className="btn btn-transparent" onClick={ handleHtpModal }>FAQ</button>
+                                    <button className="btn btn-transparent" onClick={handleHtpModal}>FAQ</button>
                                 )
                             }
-                            
+
                             <NavLink
                                 onClick={() => setShowOffCanvas(false)}
                                 style={{ margin: 'auto' }}
@@ -125,7 +131,7 @@ export const NavbarDesktop = ({ handleFaqModal, handleHtpModal, navType }) => {
                         {isMobileResolution && <div className="d-flex justify-content-center mt-3"><AccountFirebase /></div>}
                     </OffcanvasBody>
                 </Offcanvas>
-            </Navbar>            
+            </Navbar>
         </>
     );
 };

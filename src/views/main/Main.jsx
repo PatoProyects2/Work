@@ -70,7 +70,10 @@ export default function Main() {
         if (doc.data().rps.lastGame > lastMonth) {
           monthGames.push([doc.data().account, doc.data().photo, doc.data().name, doc.data().rps.totalGames])
         }
-        globalGames.push([doc.data().account, doc.data().photo, doc.data().name, doc.data().rps.totalGames])
+        if (doc.data().rps.totalGames > 0) {
+          globalGames.push([doc.data().account, doc.data().photo, doc.data().name, doc.data().rps.totalGames])
+        }
+
       });
       topGames.dayGames = dayGames
       topGames.weekGames = weekGames
@@ -94,7 +97,9 @@ export default function Main() {
         if (doc.data().rps.lastGame > lastMonth) {
           monthAmount.push([doc.data().account, doc.data().photo, doc.data().name, doc.data().rps.totalMaticAmount])
         }
-        globalAmount.push([doc.data().account, doc.data().photo, doc.data().name, doc.data().rps.totalMaticAmount])
+        if (doc.data().rps.totalMaticAmount > 0) {
+          globalAmount.push([doc.data().account, doc.data().photo, doc.data().name, doc.data().rps.totalMaticAmount])
+        }
       });
       topAmount.dayAmount = dayAmount
       topAmount.weekAmount = weekAmount
@@ -282,12 +287,12 @@ export default function Main() {
           : ""}
         {mostPlays ?
           <>
-            <ButtonGroup>
-              <Button onClick={day} className='btn-rank'>Daily</Button>
-              <Button onClick={week} className='btn-rank'>Weekly</Button>
-              <Button onClick={month} className='btn-rank'>Monthly</Button>
-              <Button onClick={all} className='btn-rank'>Global</Button>
-            </ButtonGroup>           
+            <ButtonGroup className='float-end'>
+              <Button onClick={day} className={`btn-recurrence ${dailyGame ? 'active' : ''}`}>Daily</Button>
+              <Button onClick={week} className={`btn-recurrence ${weeklyGame ? 'active' : ''}`}>Weekly</Button>
+              <Button onClick={month} className={`btn-recurrence ${monthlyGame ? 'active' : ''}`}>Monthly</Button>
+              <Button onClick={all} className={`btn-recurrence ${globalGame ? 'active' : ''}`}>Global</Button>
+            </ButtonGroup>
             {dailyGame ?
               < MostPlays
                 leaderboard={leaderboard.topGames.dayGames}
@@ -314,12 +319,12 @@ export default function Main() {
         }
         {mostAmount ?
           <>
-            <ButtonGroup>
-              <Button onClick={day} className='btn-rank'>Daily</Button>
-              <Button onClick={week} className='btn-rank'>Weekly</Button>
-              <Button onClick={month} className='btn-rank'>Monthly</Button>
-              <Button onClick={all} className='btn-rank'>Global</Button>
-            </ButtonGroup> 
+            <ButtonGroup className='float-end'>
+              <Button onClick={day} className={`btn-recurrence ${dailyAmount ? 'active' : ''}`}>Daily</Button>
+              <Button onClick={week} className={`btn-recurrence ${weeklyAmount ? 'active' : ''}`}>Weekly</Button>
+              <Button onClick={month} className={`btn-recurrence ${monthlyAmount ? 'active' : ''}`}>Monthly</Button>
+              <Button onClick={all} className={`btn-recurrence ${globalAmount ? 'active' : ''}`}>Global</Button>
+            </ButtonGroup>
             {dailyAmount ?
               < MostAmount
                 leaderboard={leaderboard.topAmount.dayAmount}

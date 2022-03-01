@@ -51,6 +51,7 @@ export default function AccountFirebase(props) {
     if (signUpModal) {
       setSignUpModal(false)
     } else {
+      setRecoveryModal(false)
       setSignUpModal(true)
     }
   }
@@ -153,7 +154,7 @@ export default function AccountFirebase(props) {
         <>
           <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="md" className="dd-profile">
             <DropdownToggle color='transparent' className='p-0' caret>
-              {userData[0] ? userData[0].name + " LVL " + userData[0].level : user.displayName + "LVL 1 "}
+              {userData[0] ? userData[0].name + " LVL " + userData[0].level : <>{user.displayName ? user.displayName : "ClubUser"}{" LVL 1"}</>}
             </DropdownToggle>
             <DropdownMenu >
               <DropdownItem onClick={() => navigate('/profile')}>Profile</DropdownItem>

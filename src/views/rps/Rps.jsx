@@ -9,16 +9,20 @@ import Portis from "@portis/web3";
 import ethProvider from "eth-provider";
 import WalletLink from "walletlink";
 import { doc, getDoc, setDoc, updateDoc, collection, query, limit, addDoc, serverTimestamp, onSnapshot, orderBy } from "firebase/firestore";
-import RpsGame from '../../abis/RpsGame/rpsGame.json'
+import RpsGame from '../../abis/rpsGame/rpsGame.json'
 import { rpsGameContract } from '../../components/blockchain/Contracts'
 import HistoryGamesModal from './components/HistoryGamesModal'
 import HistoryGames from './components/HistoryGames'
 import ConnectWallet from './components/ConnectWallet'
 import ConnectChain from './components/ConnectChain'
 import WinStreakLeaderboard from './components/WinStreakLeaderboard'
-import AccountFirebase from '../../components/layout/Authentication';
 import { auth, db } from '../../firebase/firesbaseConfig'
 import { useMatchMedia } from '../../hooks/useMatchMedia'
+import Rock from '../../assets/imgs/rock.gif'
+import Paper from '../../assets/imgs/paper.gif'
+import Scissors from '../../assets/imgs/scissors.gif'
+import RPSAnimation from '../../assets/imgs/animation.gif'
+
 
 export default function Rps() {
   const [user] = useAuthState(auth)
@@ -165,29 +169,55 @@ export default function Rps() {
       }
     } else {
       if (user && account !== '0x000000000000000000000000000000000000dEaD') {
-        setDoc(doc(db, "clubUsers", account), {
-          uid: user.uid,
-          register: serverTimestamp(),
-          name: 'Username',
-          photo: 'https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh',
-          account: account,
-          games: ['RPS'],
-          level: 1,
-          rps: {
-            rock: 0,
-            paper: 0,
-            scissors: 0,
-            winStreak: 0,
-            winStreakTime: 0,
-            gameWon: 0,
-            gameLoss: 0,
-            amountWon: 0,
-            amountLoss: 0,
-            totalGames: 0,
-            totalMaticAmount: 0,
-            lastGame: 0,
-          },
-        })
+        if (user.displayName) {
+          setDoc(doc(db, "clubUsers", account), {
+            uid: user.uid,
+            register: serverTimestamp(),
+            name: user.displayName,
+            photo: 'https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh',
+            account: account,
+            games: ['RPS'],
+            level: 1,
+            rps: {
+              rock: 0,
+              paper: 0,
+              scissors: 0,
+              winStreak: 0,
+              winStreakTime: 0,
+              gameWon: 0,
+              gameLoss: 0,
+              amountWon: 0,
+              amountLoss: 0,
+              totalGames: 0,
+              totalMaticAmount: 0,
+              lastGame: 0,
+            },
+          })
+        } else {
+          setDoc(doc(db, "clubUsers", account), {
+            uid: user.uid,
+            register: serverTimestamp(),
+            name: 'Username',
+            photo: 'https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh',
+            account: account,
+            games: ['RPS'],
+            level: 1,
+            rps: {
+              rock: 0,
+              paper: 0,
+              scissors: 0,
+              winStreak: 0,
+              winStreakTime: 0,
+              gameWon: 0,
+              gameLoss: 0,
+              amountWon: 0,
+              amountLoss: 0,
+              totalGames: 0,
+              totalMaticAmount: 0,
+              lastGame: 0,
+            },
+          })
+        }
         loadUserGame(account, user)
       }
     }
@@ -315,15 +345,9 @@ export default function Rps() {
       setLog0('CONFIRM THAT YOU ARE AT LEAST 18 YEARS OLD')
       return false
     }
-    if (!user) {
-      if (userData.uid === '') {
-        setLog0('YOU ARE A NEW PLAYER, PLEASE SIGN IN OR SIGN UP')
-        return false
-      }
-    } else {
-      if (userData.uid === '') {
-        loadUserGame(account, user)
-      }
+    if (!userData.uid) {
+      setLog0('YOU ARE A NEW PLAYER, PLEASE SIGN IN OR SIGN UP')
+      return false
     }
     setActive(true)
     setLog0('')
@@ -506,7 +530,7 @@ export default function Rps() {
           }
         </div>
         :
-        <div className="d-flex flex-row justify-content-between align-items-center">          
+        <div className="d-flex flex-row justify-content-between align-items-center">
           <div className="d-flex flex-row gap-3 mt-3">
             {account !== '0x000000000000000000000000000000000000dEaD' ?
               <>
@@ -547,7 +571,7 @@ export default function Rps() {
                 <div className="mt-3">
                   {animation === true ?
                     <>
-                      <img src="https://gateway.ipfs.io/ipfs/QmdBg6qrUPFNjW31deKT678RXZ2fs6fM5zncHFAWAZwFBd" width="240" height="240" alt="Rock-Paper-Scissors" />
+                      <img src={RPSAnimation} width="240" height="240" alt="Rock-Paper-Scissors" />
                       <h3>PLAYING</h3>
                       <h3>{userhand + " FOR " + useramount + " MATIC"}</h3>
                     </> : ""}
@@ -565,12 +589,12 @@ export default function Rps() {
                         :
                         ""
                       }
-                      {userhand === 'ROCK' && userGameResult === true ? <img width="240" height="240" src="https://gateway.ipfs.io/ipfs/QmfPWAiw4m5RmnZbhUUcizNDASA1kzYHuUWoZB7Y6MZdqd" alt="" /> : ""}
-                      {userhand === 'PAPER' && userGameResult === true ? <img width="240" height="240" src="https://gateway.ipfs.io/ipfs/QmRssacnda9ZsbgtrUQSLTjdzFgiiCPgZ9o2hbZ5SRvT4m" alt="" /> : ""}
-                      {userhand === 'SCISSORS' && userGameResult === true ? <img width="240" height="240" src="https://gateway.ipfs.io/ipfs/QmQDQBaCe7NcUDm2tjVsqbiKAHVkWApL7pje8wpnViQ6GR" alt="" /> : ""}
-                      {userhand === 'ROCK' && userGameResult === false ? <img width="240" height="240" src="https://gateway.ipfs.io/ipfs/QmQDQBaCe7NcUDm2tjVsqbiKAHVkWApL7pje8wpnViQ6GR" alt="" /> : ""}
-                      {userhand === 'PAPER' && userGameResult === false ? <img width="240" height="240" src="https://gateway.ipfs.io/ipfs/QmfPWAiw4m5RmnZbhUUcizNDASA1kzYHuUWoZB7Y6MZdqd" alt="" /> : ""}
-                      {userhand === 'SCISSORS' && userGameResult === false ? <img width="240" height="240" src="https://gateway.ipfs.io/ipfs/QmRssacnda9ZsbgtrUQSLTjdzFgiiCPgZ9o2hbZ5SRvT4m" alt="" /> : ""}
+                      {userhand === 'ROCK' && userGameResult === true ? <img width="240" height="240" src={Scissors} alt="" /> : ""}
+                      {userhand === 'PAPER' && userGameResult === true ? <img width="240" height="240" src={Rock} alt="" /> : ""}
+                      {userhand === 'SCISSORS' && userGameResult === true ? <img width="240" height="240" src={Paper} alt="" /> : ""}
+                      {userhand === 'ROCK' && userGameResult === false ? <img width="240" height="240" src={Paper} alt="" /> : ""}
+                      {userhand === 'PAPER' && userGameResult === false ? <img width="240" height="240" src={Scissors} alt="" /> : ""}
+                      {userhand === 'SCISSORS' && userGameResult === false ? <img width="240" height="240" src={Rock} alt="" /> : ""}
                       <br></br>
                       <br></br>
                       <h3>{userGameResult === true ? " YOU WON " : ""}{userGameResult === false ? " YOU LOST " : ""}</h3>
@@ -648,13 +672,13 @@ export default function Rps() {
             {log0 && (<span className="alert alert-danger mx-5">{log0}</span>)}
             <div className="row g-0 my-5 justify-content-center">
               <div className="col-3 col-md-2">
-                <img className="my-3 img-fluid" src="https://gateway.ipfs.io/ipfs/QmRssacnda9ZsbgtrUQSLTjdzFgiiCPgZ9o2hbZ5SRvT4m" alt="Rock" />
+                <img className="my-3 img-fluid" src={Rock} alt="Rock" />
               </div>
               <div className="col-3 col-md-2">
-                <img className="my-3 img-fluid" src="https://gateway.ipfs.io/ipfs/QmQDQBaCe7NcUDm2tjVsqbiKAHVkWApL7pje8wpnViQ6GR" alt="Paper" />
+                <img className="my-3 img-fluid" src={Paper} alt="Paper" />
               </div>
               <div className="col-3 col-md-2">
-                <img className="my-3 img-fluid" src="https://gateway.ipfs.io/ipfs/QmfPWAiw4m5RmnZbhUUcizNDASA1kzYHuUWoZB7Y6MZdqd" alt="Scissors" />
+                <img className="my-3 img-fluid" src={Scissors} alt="Scissors" />
               </div>
             </div>
             {account !== '0x000000000000000000000000000000000000dEaD' ?

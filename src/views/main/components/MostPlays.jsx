@@ -7,7 +7,7 @@ export default function MostPlays(props) {
       <Table className="tbl-ranking" borderless responsive>
         <thead>
           <tr>
-            <th>No#</th>
+            <th>Nº</th>
             <th>User</th>
             <th>Most games played</th>
           </tr>
@@ -27,7 +27,12 @@ export default function MostPlays(props) {
               </td>
             </tr>
             :
-            ""}
+            <tr>
+              <td>
+
+              </td>
+            </tr>
+          }
           {props.leaderboard[1] ?
             <tr>
               <td>
@@ -42,7 +47,12 @@ export default function MostPlays(props) {
               </td>
             </tr>
             :
-            ""}
+            <tr>
+              <td>
+
+              </td>
+            </tr>
+          }
           {props.leaderboard[2] ?
             <tr>
               <td>
@@ -57,7 +67,12 @@ export default function MostPlays(props) {
               </td>
             </tr>
             :
-            ""}
+            <tr>
+              <td>
+
+              </td>
+            </tr>
+          }
           {props.leaderboard[3] ?
             <tr>
               <td>
@@ -72,7 +87,12 @@ export default function MostPlays(props) {
               </td>
             </tr>
             :
-            ""}
+            <tr>
+              <td>
+
+              </td>
+            </tr>
+          }
           {props.leaderboard[4] ?
             <tr>
               <td>
@@ -87,7 +107,12 @@ export default function MostPlays(props) {
               </td>
             </tr>
             :
-            ""}
+            <tr>
+              <td>
+
+              </td>
+            </tr>
+          }
           {props.leaderboard[5] ?
             <tr>
               <td>
@@ -102,7 +127,12 @@ export default function MostPlays(props) {
               </td>
             </tr>
             :
-            ""}
+            <tr>
+              <td>
+
+              </td>
+            </tr>
+          }
           {props.leaderboard[6] ?
             <tr>
               <td>
@@ -117,7 +147,12 @@ export default function MostPlays(props) {
               </td>
             </tr>
             :
-            ""}
+            <tr>
+              <td>
+
+              </td>
+            </tr>
+          }
           {props.leaderboard[7] ?
             <tr>
               <td>
@@ -132,7 +167,12 @@ export default function MostPlays(props) {
               </td>
             </tr>
             :
-            ""}
+            <tr>
+              <td>
+
+              </td>
+            </tr>
+          }
           {props.leaderboard[8] ?
             <tr>
               <td>
@@ -147,7 +187,12 @@ export default function MostPlays(props) {
               </td>
             </tr>
             :
-            ""}
+            <tr>
+              <td>
+
+              </td>
+            </tr>
+          }
           {props.leaderboard[9] ?
             <tr>
               <td>
@@ -162,7 +207,12 @@ export default function MostPlays(props) {
               </td>
             </tr>
             :
-            ""}
+            <tr>
+              <td>
+
+              </td>
+            </tr>
+          }
         </tbody>
       </Table>
     </>
