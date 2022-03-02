@@ -3,9 +3,11 @@ import { useAuthState } from 'react-firebase-hooks/auth'
 import { sendEmailVerification, updateProfile } from 'firebase/auth';
 import { Button, Modal, ModalBody, ModalFooter, FormGroup, Input } from 'reactstrap'
 import { query, where, collection, limit, onSnapshot, updateDoc, doc } from "firebase/firestore";
+import { useToasts } from 'react-toast-notifications';
 import { auth, db } from '../../../../firebase/firesbaseConfig'
 import Stats from './Stats'
 export default function Profile() {
+  const { addToast } = useToasts();
   const [userInfo, setUserInfo] = useState({
     displayName: '',
     photoURL: 'https://ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh'
@@ -56,10 +58,10 @@ export default function Profile() {
   const resendEmailVerification = () => {
     sendEmailVerification(auth.currentUser)
       .then(() => {
-        window.alert('Email sent')
+        addToast('Email sent to your inbox ', { appearance: 'success' });
       })
       .catch((error) => {
-        window.alert('Wait some time to resend email verification again')
+        addToast('Wait a few minutes to resend the email verification', { appearance: 'error' });
       });
   }
   const editProfileModal = () => {

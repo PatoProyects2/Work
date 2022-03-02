@@ -7,7 +7,7 @@ export function MainLayout() {
 
   return (
     <>
-      <header>        
+      <header>
         <Navbar navType="main" />
       </header>
       <main className="wrapper">

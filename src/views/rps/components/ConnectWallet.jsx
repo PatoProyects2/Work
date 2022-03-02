@@ -173,7 +173,7 @@ export default function ConnectWallet(props) {
         :
         <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="lg">
           <DropdownToggle color='danger' onClick={props.connectWeb3Modal}>
-            {props.walletLog}
+          CONNECT WALLET
           </DropdownToggle>
         </Dropdown>
       }

@@ -67,7 +67,7 @@ export default function Stats(props) {
                 {props.userData[0].rps.totalMaticAmount}
               </td>
               <td>
-                {props.userData[0].rps.winStreak}
+                {props.userData[0].rps.dayWinStreak}
               </td>
               <td>
                 {props.userData[0].rps.rock}
@@ -105,7 +105,7 @@ export default function Stats(props) {
                 {props.userData[1].rps.totalMaticAmount}
               </td>
               <td>
-                {props.userData[1].rps.winStreak}
+                {props.userData[1].rps.dayWinStreak}
               </td>
               <td>
                 {props.userData[1].rps.rock}
@@ -148,7 +148,7 @@ export default function Stats(props) {
                 {props.userData[2].rps.totalMaticAmount}
               </td>
               <td>
-                {props.userData[2].rps.winStreak}
+                {props.userData[2].rps.dayWinStreak}
               </td>
               <td>
                 {props.userData[2].rps.rock}

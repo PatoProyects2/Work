@@ -40,7 +40,7 @@ export default function Main() {
     const unsub = onSnapshot(q, (doc) => {
       const played = doc.docs.map(amountLeaderboard => amountLeaderboard.data())
       setHistoryPlays(played)
-      setGlobalGames(played.length)
+      setGlobalGames(played.length + 1)
     });
     return unsub;
   }, [])
@@ -61,13 +61,13 @@ export default function Main() {
       const queryGames = query(clubCollection, orderBy("rps.totalGames", "desc"))
       const documentGames = await getDocs(queryGames)
       documentGames.forEach((doc) => {
-        if (doc.data().rps.lastGame > lastDay) {
+        if (doc.data().rps.lastGameTime > lastDay) {
           dayGames.push([doc.data().account, doc.data().photo, doc.data().name, doc.data().rps.totalGames])
         }
-        if (doc.data().rps.lastGame > lastWeek) {
+        if (doc.data().rps.lastGameTime > lastWeek) {
           weekGames.push([doc.data().account, doc.data().photo, doc.data().name, doc.data().rps.totalGames])
         }
-        if (doc.data().rps.lastGame > lastMonth) {
+        if (doc.data().rps.lastGameTime > lastMonth) {
           monthGames.push([doc.data().account, doc.data().photo, doc.data().name, doc.data().rps.totalGames])
         }
         if (doc.data().rps.totalGames > 0) {
@@ -88,13 +88,13 @@ export default function Main() {
       let monthAmount = []
       let globalAmount = []
       documentAmount.forEach((doc) => {
-        if (doc.data().rps.lastGame > lastDay) {
+        if (doc.data().rps.lastGameTime > lastDay) {
           dayAmount.push([doc.data().account, doc.data().photo, doc.data().name, doc.data().rps.totalMaticAmount])
         }
-        if (doc.data().rps.lastGame > lastWeek) {
+        if (doc.data().rps.lastGameTime > lastWeek) {
           weekAmount.push([doc.data().account, doc.data().photo, doc.data().name, doc.data().rps.totalMaticAmount])
         }
-        if (doc.data().rps.lastGame > lastMonth) {
+        if (doc.data().rps.lastGameTime > lastMonth) {
           monthAmount.push([doc.data().account, doc.data().photo, doc.data().name, doc.data().rps.totalMaticAmount])
         }
         if (doc.data().rps.totalMaticAmount > 0) {
@@ -278,11 +278,11 @@ export default function Main() {
         </ButtonGroup>
         {liveBets ?
           <>
-            <p className="d-flex justify-content-end mt-3 me-4">{globalGames + " Total Bets"}</p>
             <LiveBets
               historyPlays={historyPlays}
               unixTimeStamp={unixTimeStamp}
             />
+            <p className="d-flex justify-content-end mt-3 me-4">{globalGames + " Total Bets"}</p>
           </>
           : ""}
         {mostPlays ?

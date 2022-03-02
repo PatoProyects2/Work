@@ -18,9 +18,6 @@ export default function ConnectChain(props) {
         if (network === 137) {
             setActualNetwork('POLYGON')
         }
-        if (network === 56) {
-            setActualNetwork('BSC')
-        }
     }
 
     const addPolygon = async () => {
@@ -74,7 +71,6 @@ export default function ConnectChain(props) {
             <DropdownMenu >
                 <DropdownItem disabled={actualNetwork === 'POLYGON'} onClick={addPolygon}>POLYGON</DropdownItem>
                 <DropdownItem disabled={actualNetwork === 'MUMBAI'} onClick={addMumbai}>MUMBAI</DropdownItem>
-                <DropdownItem disabled={actualNetwork === 'BSC'} onClick={addPolygon}>BSC</DropdownItem>
             </DropdownMenu>
         </Dropdown>
     )

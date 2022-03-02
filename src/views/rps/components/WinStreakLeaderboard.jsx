@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react'
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap'
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import { db } from '../../../firebase/firesbaseConfig'
-export default function WinStreakLeaderboard(props) {
+export default function dayWinStreakLeaderboard(props) {
     const [dropdown, setDropdown] = useState(false);
-    const [winStreak, setWinStreak] = useState(0);
+    const [dayWinStreak, setDayWinStreak] = useState(0);
     const [hour0, setHour0] = useState(0);
     const [hour1, setHour1] = useState(0);
     const [hour2, setHour2] = useState(0);
@@ -40,15 +40,14 @@ export default function WinStreakLeaderboard(props) {
         const unixSeconds = parseInt(unixTimeStamp)
         let lastDay = unixSeconds - 86400
         const clubCollection = collection(db, "clubUsers")
-        const queryGames = query(clubCollection, orderBy("rps.totalGames", "desc"))
+        const queryGames = query(clubCollection, orderBy("rps.dayWinStreak", "desc"))
         const documentGames = await getDocs(queryGames)
-
         documentGames.forEach((doc) => {
-            if (doc.data().rps.winStreakTime > lastDay) {
-                winStreakDay.push([doc.data().photo, doc.data().name, doc.data().account, doc.data().rps.winStreak, doc.data().rps.winStreakTime.seconds])
+            if (doc.data().rps.winStreakTime > lastDay && doc.data().rps.dayWinStreak > 1) {
+                winStreakDay.push([doc.data().photo, doc.data().name, doc.data().account, doc.data().rps.dayWinStreak, doc.data().rps.winStreakTime.seconds])
             }
         });
-        setWinStreak(winStreakDay)
+        setDayWinStreak(winStreakDay)
         if (winStreakDay[0]) {
             var seg = unixSeconds - winStreakDay[0][4]
             var day = Math.floor(seg / (24 * 3600));
@@ -137,11 +136,11 @@ export default function WinStreakLeaderboard(props) {
                         </DropdownToggle>
                 }
                 <DropdownMenu className="dd-menu">
-                    {winStreak[0] ?
+                    {dayWinStreak[0] ?
                         <DropdownItem className="dd-menu-item">
-                            <img width="35" height="35" className="rounded-circle" alt="" src={`${winStreak[0][0]}`} />
-                            {winStreak[0][1] !== 'Username' ? winStreak[0][1] : winStreak[0][2].substring(0, 5)}
-                            {" is on a " + winStreak[0][3] + " win streak"}
+                            <img width="35" height="35" className="rounded-circle" alt="" src={`${dayWinStreak[0][0]}`} />
+                            {dayWinStreak[0][1] !== 'Username' ? dayWinStreak[0][1] : dayWinStreak[0][2].substring(0, 5)}
+                            {" is on a " + dayWinStreak[0][3] + " win streak"}
                             <small className="d-flex justify-content-end">
                                 {second0 < 0 || second0 === 0 ? "now" : ""}
                                 {second0 > 0 && second0 < 60 ? second0 + " seconds ago" : ""}
@@ -154,11 +153,11 @@ export default function WinStreakLeaderboard(props) {
                         :
                         ""
                     }
-                    {winStreak[1] ?
+                    {dayWinStreak[1] ?
                         <DropdownItem className="dd-menu-item">
-                            <img width="35" height="35" className="rounded-circle" alt="" src={`${winStreak[1][0]}`} />
-                            {winStreak[1][1] !== 'Username' ? winStreak[1][1] : winStreak[1][2].substring(0, 5)}
-                            {" is on a " + winStreak[1][3] + " win streak"}
+                            <img width="35" height="35" className="rounded-circle" alt="" src={`${dayWinStreak[1][0]}`} />
+                            {dayWinStreak[1][1] !== 'Username' ? dayWinStreak[1][1] : dayWinStreak[1][2].substring(0, 5)}
+                            {" is on a " + dayWinStreak[1][3] + " win streak"}
                             <small className="d-flex justify-content-end">
                                 {second1 < 0 || second1 === 0 ? "now" : ""}
                                 {second1 > 0 && second1 < 60 ? second1 + " seconds ago" : ""}
@@ -171,11 +170,11 @@ export default function WinStreakLeaderboard(props) {
                         :
                         ""
                     }
-                    {winStreak[2] ?
+                    {dayWinStreak[2] ?
                         <DropdownItem className="dd-menu-item">
-                            <img width="35" height="35" className="rounded-circle" alt="" src={`${winStreak[2][0]}`} />
-                            {winStreak[2][1] !== 'Username' ? winStreak[2][1] : winStreak[2][2].substring(0, 5)}
-                            {" is on a " + winStreak[2][3] + " win streak"}
+                            <img width="35" height="35" className="rounded-circle" alt="" src={`${dayWinStreak[2][0]}`} />
+                            {dayWinStreak[2][1] !== 'Username' ? dayWinStreak[2][1] : dayWinStreak[2][2].substring(0, 5)}
+                            {" is on a " + dayWinStreak[2][3] + " win streak"}
                             <small className="d-flex justify-content-end">
                                 {second2 < 0 || second2 === 0 ? "now" : ""}
                                 {second2 > 0 && second2 < 60 ? second2 + " seconds ago" : ""}
@@ -188,11 +187,11 @@ export default function WinStreakLeaderboard(props) {
                         :
                         ""
                     }
-                    {winStreak[3] ?
+                    {dayWinStreak[3] ?
                         <DropdownItem className="dd-menu-item">
-                            <img width="35" height="35" className="rounded-circle" alt="" src={`${winStreak[3][0]}`} />
-                            {winStreak[3][1] !== 'Username' ? winStreak[3][1] : winStreak[3][2].substring(0, 5)}
-                            {" is on a " + winStreak[3][3] + " win streak"}
+                            <img width="35" height="35" className="rounded-circle" alt="" src={`${dayWinStreak[3][0]}`} />
+                            {dayWinStreak[3][1] !== 'Username' ? dayWinStreak[3][1] : dayWinStreak[3][2].substring(0, 5)}
+                            {" is on a " + dayWinStreak[3][3] + " win streak"}
                             <small className="d-flex justify-content-end">
                                 {second3 < 0 || second3 === 0 ? "now" : ""}
                                 {second3 > 0 && second3 < 60 ? second3 + " seconds ago" : ""}
@@ -205,11 +204,11 @@ export default function WinStreakLeaderboard(props) {
                         :
                         ""
                     }
-                    {winStreak[4] ?
+                    {dayWinStreak[4] ?
                         <DropdownItem className="dd-menu-item">
-                            <img width="35" height="35" className="rounded-circle" alt="" src={`${winStreak[4][0]}`} />
-                            {winStreak[4][1] !== 'Username' ? winStreak[4][1] : winStreak[4][2].substring(0, 5)}
-                            {" is on a " + winStreak[4][3] + " win streak"}
+                            <img width="35" height="35" className="rounded-circle" alt="" src={`${dayWinStreak[4][0]}`} />
+                            {dayWinStreak[4][1] !== 'Username' ? dayWinStreak[4][1] : dayWinStreak[4][2].substring(0, 5)}
+                            {" is on a " + dayWinStreak[4][3] + " win streak"}
                             <small className="d-flex justify-content-end">
                                 {second4 < 0 || second4 === 0 ? "now" : ""}
                                 {second4 > 0 && second4 < 60 ? second4 + " seconds ago" : ""}
@@ -222,11 +221,11 @@ export default function WinStreakLeaderboard(props) {
                         :
                         ""
                     }
-                    {winStreak[5] ?
+                    {dayWinStreak[5] ?
                         <DropdownItem className="dd-menu-item">
-                            <img width="35" height="35" className="rounded-circle" alt="" src={`${winStreak[5][0]}`} />
-                            {winStreak[5][1] !== 'Username' ? winStreak[5][1] : winStreak[5][2].substring(0, 5)}
-                            {" is on a " + winStreak[5][3] + " win streak"}
+                            <img width="35" height="35" className="rounded-circle" alt="" src={`${dayWinStreak[5][0]}`} />
+                            {dayWinStreak[5][1] !== 'Username' ? dayWinStreak[5][1] : dayWinStreak[5][2].substring(0, 5)}
+                            {" is on a " + dayWinStreak[5][3] + " win streak"}
                             <small className="d-flex justify-content-end">
                                 {second5 < 0 || second5 === 0 ? "now" : ""}
                                 {second5 > 0 && second5 < 60 ? second5 + " seconds ago" : ""}
@@ -239,11 +238,11 @@ export default function WinStreakLeaderboard(props) {
                         :
                         ""
                     }
-                    {winStreak[6] ?
+                    {dayWinStreak[6] ?
                         <DropdownItem className="dd-menu-item">
-                            <img width="35" height="35" className="rounded-circle" alt="" src={`${winStreak[6][0]}`} />
-                            {winStreak[6][1] !== 'Username' ? winStreak[6][1] : winStreak[6][2].substring(0, 5)}
-                            {" is on a " + winStreak[6][3] + " win streak"}
+                            <img width="35" height="35" className="rounded-circle" alt="" src={`${dayWinStreak[6][0]}`} />
+                            {dayWinStreak[6][1] !== 'Username' ? dayWinStreak[6][1] : dayWinStreak[6][2].substring(0, 5)}
+                            {" is on a " + dayWinStreak[6][3] + " win streak"}
                             <small className="d-flex justify-content-end">
                                 {second6 < 0 || second6 === 0 ? "now" : ""}
                                 {second6 > 0 && second6 < 60 ? second6 + " seconds ago" : ""}
@@ -256,11 +255,11 @@ export default function WinStreakLeaderboard(props) {
                         :
                         ""
                     }
-                    {winStreak[7] ?
+                    {dayWinStreak[7] ?
                         <DropdownItem className="dd-menu-item">
-                            <img width="35" height="35" className="rounded-circle" alt="" src={`${winStreak[7][0]}`} />
-                            {winStreak[7][1] !== 'Username' ? winStreak[7][1] : winStreak[7][2].substring(0, 5)}
-                            {" is on a " + winStreak[7][3] + " win streak"}
+                            <img width="35" height="35" className="rounded-circle" alt="" src={`${dayWinStreak[7][0]}`} />
+                            {dayWinStreak[7][1] !== 'Username' ? dayWinStreak[7][1] : dayWinStreak[7][2].substring(0, 5)}
+                            {" is on a " + dayWinStreak[7][3] + " win streak"}
                             <small className="d-flex justify-content-end">
                                 {second7 < 0 || second7 === 0 ? "now" : ""}
                                 {second7 > 0 && second7 < 60 ? second7 + " seconds ago" : ""}

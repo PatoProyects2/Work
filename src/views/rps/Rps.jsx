@@ -9,6 +9,7 @@ import Portis from "@portis/web3";
 import ethProvider from "eth-provider";
 import WalletLink from "walletlink";
 import { doc, getDoc, setDoc, updateDoc, collection, query, limit, addDoc, serverTimestamp, onSnapshot, orderBy } from "firebase/firestore";
+import { useToasts } from 'react-toast-notifications';
 import RpsGame from '../../abis/rpsGame/rpsGame.json'
 import { rpsGameContract } from '../../components/blockchain/Contracts'
 import HistoryGamesModal from './components/HistoryGamesModal'
@@ -25,20 +26,19 @@ import RPSAnimation from '../../assets/imgs/animation.gif'
 
 
 export default function Rps() {
+  const { addToast } = useToasts();
   const [user] = useAuthState(auth)
   const [web3, setWeb3] = useState({});
   const [rpsgame, setRpsgame] = useState({});
+  const [userData, setUserData] = useState({});
+  const [web3ModalInfo, setWeb3ModalInfo] = useState({});
+  const [historyPlays, setHistoryPlays] = useState({});
   const [usergame, setUsergame] = useState({
     hand: '',
     amount: 0
   });
-  const [userData, setUserData] = useState({});
-  const [web3ModalInfo, setWeb3ModalInfo] = useState({});
-  const [historyPlays, setHistoryPlays] = useState({});
   const [register, setRegister] = useState('');
   const [account, setAccount] = useState('0x000000000000000000000000000000000000dEaD');
-  const [log0, setLog0] = useState('');
-  const [walletLog, setWalletLog] = useState('CONNECT WALLET');
   const [walletBalance, setWalletBalance] = useState(0);
   const [network, setNetwork] = useState(0);
   const [decimal, setDecimal] = useState(1000000000000000000);
@@ -61,15 +61,6 @@ export default function Rps() {
     return () => clearInterval(timer);
   }, [])
 
-  useEffect(() => {
-    const q = query(collection(db, "allGames"), orderBy("createdAt", "desc"), limit(12))
-    const unsub = onSnapshot(q, (doc) => {
-      const played = doc.docs.map(historyPlays => historyPlays.data())
-      setHistoryPlays(played)
-    });
-    return unsub;
-  }, [])
-
   const getUnixTime = async () => {
     fetch('https://showcase.api.linx.twenty57.net/UnixTime/tounixtimestamp?datetime=now')
       .then(response =>
@@ -79,6 +70,15 @@ export default function Rps() {
         setUnixTimeStamp(parseInt(data.UnixTimeStamp))
       );
   }
+
+  useEffect(() => {
+    const q = query(collection(db, "allGames"), orderBy("createdAt", "desc"), limit(12))
+    const unsub = onSnapshot(q, (doc) => {
+      const played = doc.docs.map(historyPlays => historyPlays.data())
+      setHistoryPlays(played)
+    });
+    return unsub;
+  }, [])
 
   useEffect(() => {
     loadUserGame(account, user)
@@ -102,68 +102,81 @@ export default function Rps() {
       } catch (e) {
 
       }
-      if (userData.rps.totalGames > 5 && userData.rps.totalGames < 10) {
-        updateDoc(doc(db, "clubUsers", userData.uid), {
+      if (userData.rps.totalGames > 5 && userData.rps.totalGames < 10 && userData.level !== 2) {
+        addToast('You go up to level 2!', { appearance: 'info' });
+        updateDoc(doc(db, "clubUsers", account), {
           level: 2
         })
       }
-      if (userData.rps.totalGames > 9 && userData.rps.totalGames < 20) {
-        updateDoc(doc(db, "clubUsers", userData.uid), {
+      if (userData.rps.totalGames > 9 && userData.rps.totalGames < 20 && userData.level !== 3) {
+        addToast('You go up to level 3!', { appearance: 'info' });
+        updateDoc(doc(db, "clubUsers", account), {
           level: 3
         })
       }
-      if (userData.rps.totalGames > 19 && userData.rps.totalGames < 30) {
-        updateDoc(doc(db, "clubUsers", userData.uid), {
+      if (userData.rps.totalGames > 19 && userData.rps.totalGames < 30 && userData.level !== 4) {
+        addToast('You go up to level 4!', { appearance: 'info' });
+        updateDoc(doc(db, "clubUsers", account), {
           level: 4
         })
       }
-      if (userData.rps.totalGames > 29 && userData.rps.totalGames < 40) {
-        updateDoc(doc(db, "clubUsers", userData.uid), {
+      if (userData.rps.totalGames > 29 && userData.rps.totalGames < 40 && userData.level !== 5) {
+        addToast('You go up to level 5!', { appearance: 'info' });
+        updateDoc(doc(db, "clubUsers", account), {
           level: 5
         })
       }
-      if (userData.rps.totalGames > 39 && userData.rps.totalGames < 50) {
-        updateDoc(doc(db, "clubUsers", userData.uid), {
+      if (userData.rps.totalGames > 39 && userData.rps.totalGames < 50 && userData.level !== 6) {
+        addToast('You go up to level 6!', { appearance: 'info' });
+        updateDoc(doc(db, "clubUsers", account), {
           level: 6
         })
       }
-      if (userData.rps.totalGames > 49 && userData.rps.totalGames < 60) {
-        updateDoc(doc(db, "clubUsers", userData.uid), {
+      if (userData.rps.totalGames > 49 && userData.rps.totalGames < 60 && userData.level !== 7) {
+        addToast('You go up to level 7!', { appearance: 'info' });
+        updateDoc(doc(db, "clubUsers", account), {
           level: 7
         })
       }
-      if (userData.rps.totalGames > 59 && userData.rps.totalGames < 70) {
-        updateDoc(doc(db, "clubUsers", userData.uid), {
+      if (userData.rps.totalGames > 59 && userData.rps.totalGames < 70 && userData.level !== 8) {
+        addToast('You go up to level 8!', { appearance: 'info' });
+        updateDoc(doc(db, "clubUsers", account), {
           level: 8
         })
       }
-      if (userData.rps.totalGames > 69 && userData.rps.totalGames < 90) {
-        updateDoc(doc(db, "clubUsers", userData.uid), {
+      if (userData.rps.totalGames > 69 && userData.rps.totalGames < 90 && userData.level !== 9) {
+        addToast('You go up to level 9!', { appearance: 'info' });
+        updateDoc(doc(db, "clubUsers", account), {
           level: 9
         })
       }
-      if (userData.rps.totalGames > 89 && userData.rps.totalGames < 110) {
-        updateDoc(doc(db, "clubUsers", userData.uid), {
+      if (userData.rps.totalGames > 89 && userData.rps.totalGames < 110 && userData.level !== 10) {
+        addToast('You go up to level 10!', { appearance: 'info' });
+        updateDoc(doc(db, "clubUsers", account), {
           level: 10
         })
       }
-      if (userData.rps.totalGames > 109 && userData.rps.totalGames < 140) {
-        updateDoc(doc(db, "clubUsers", userData.uid), {
+      if (userData.rps.totalGames > 109 && userData.rps.totalGames < 140 && userData.level !== 11) {
+        addToast('You go up to level 11!', { appearance: 'info' });
+        updateDoc(doc(db, "clubUsers", account), {
           level: 11
         })
       }
-      if (userData.rps.totalGames > 139 && userData.rps.totalGames < 170) {
-        updateDoc(doc(db, "clubUsers", userData.uid), {
+      if (userData.rps.totalGames > 139 && userData.rps.totalGames < 170 && userData.level !== 12) {
+        addToast('You go up to level 12!', { appearance: 'info' });
+        updateDoc(doc(db, "clubUsers", account), {
           level: 12
         })
       }
-      if (userData.rps.totalGames > 169 && userData.rps.totalGames < 200) {
-        updateDoc(doc(db, "clubUsers", userData.uid), {
+      if (userData.rps.totalGames > 169 && userData.rps.totalGames < 200 && userData.level !== 13) {
+        addToast('You go up to level 13!', { appearance: 'info' });
+        updateDoc(doc(db, "clubUsers", account), {
           level: 13
         })
       }
-      if (userData.rps.totalGames > 199) {
-        updateDoc(doc(db, "clubUsers", userData.uid), {
+      if (userData.rps.totalGames > 199 && userData.level !== 14) {
+        addToast('You go up to level 14!', { appearance: 'info' });
+        updateDoc(doc(db, "clubUsers", account), {
           level: 14
         })
       }
@@ -182,7 +195,7 @@ export default function Rps() {
               rock: 0,
               paper: 0,
               scissors: 0,
-              winStreak: 0,
+              dayWinStreak: 0,
               winStreakTime: 0,
               gameWon: 0,
               gameLoss: 0,
@@ -190,7 +203,8 @@ export default function Rps() {
               amountLoss: 0,
               totalGames: 0,
               totalMaticAmount: 0,
-              lastGame: 0,
+              lastGameTime: 0,
+              lastGameBlock: 0,
             },
           })
         } else {
@@ -206,7 +220,7 @@ export default function Rps() {
               rock: 0,
               paper: 0,
               scissors: 0,
-              winStreak: 0,
+              dayWinStreak: 0,
               winStreakTime: 0,
               gameWon: 0,
               gameLoss: 0,
@@ -214,7 +228,8 @@ export default function Rps() {
               amountLoss: 0,
               totalGames: 0,
               totalMaticAmount: 0,
-              lastGame: 0,
+              lastGameTime: 0,
+              lastGameBlock: 0,
             },
           })
         }
@@ -302,12 +317,14 @@ export default function Rps() {
       ethereum.on('accountsChanged', () => {
         window.location.reload()
       });
+      const balance = await web3.eth.getBalance(accounts[0]);
+      setWalletBalance(balance)
+      const chainId = await web3.eth.getChainId();
+      setNetwork(chainId)
       ethereum.on('chainChanged', () => {
         window.location.reload()
       });
-      const chainId = await web3.eth.getChainId();
-      setNetwork(chainId)
-      if (chainId !== '0x13881') {
+      if (chainId !== 80001) {
         try {
           await ethereum.sendAsync({
             method: 'wallet_addEthereumChain',
@@ -328,8 +345,6 @@ export default function Rps() {
           console.log(error);
         }
       }
-      const balance = await web3.eth.getBalance(accounts[0]);
-      setWalletBalance(balance)
     } catch (e) {
     }
   }
@@ -342,15 +357,18 @@ export default function Rps() {
 
   const openGame = () => {
     if (document.getElementById('age').checked === false) {
-      setLog0('CONFIRM THAT YOU ARE AT LEAST 18 YEARS OLD')
+      addToast('Confirm that your are at least 18 years old', { appearance: 'warning' });
       return false
     }
     if (!userData.uid) {
-      setLog0('YOU ARE A NEW PLAYER, PLEASE SIGN IN OR SIGN UP')
+      addToast('Your are a new player, please sign in or sign up', { appearance: 'warning' });
+      return false
+    }
+    if (network !== 80001) {
+      addToast('Network not supported, please connect to Mumbai network', { appearance: 'error' });
       return false
     }
     setActive(true)
-    setLog0('')
   }
 
   const handleInputChange = (event) => {
@@ -367,30 +385,27 @@ export default function Rps() {
     }
     if (document.getElementById('rock').checked || document.getElementById('paper').checked || document.getElementById('scissors').checked) {
       setUserhand(usergame.hand)
-      setLog0('')
     } else {
-      setLog0('SELECT THE BETTING HAND')
+      addToast('Select your betting hand', { appearance: 'warning' });
       setDoubleOrNothingStatus(false)
       return false
     }
     if (document.getElementById('amount1').checked || document.getElementById('amount2').checked || document.getElementById('amount3').checked || document.getElementById('amount4').checked || document.getElementById('amount5').checked || document.getElementById('amount6').checked) {
       setUseramount(usergame.amount)
-      setLog0('')
     } else {
-      setLog0('SELECT THE BETTING AMOUNT')
+      addToast('Select your betting amount', { appearance: 'warning' });
       setDoubleOrNothingStatus(false)
       return false
     }
-    let freeze = 10
-    for (freeze; freeze > 0; freeze--) {
-      setLog0('FREEZING TIME: ' + freeze.toString())
-      await sleep(1000)
-    }
-    if (freeze === 0) {
-      setLog0('')
-      let myEvents = null
-      setPlaying(true)
-      setAnimation(true)
+    setPlaying(true)
+    setAnimation(true)
+    let myEvents = null
+    const query0 = doc(db, "clubUsers", account)
+    const userDocument0 = await getDoc(query0)
+    const userDocument = userDocument0.data()
+    const actuallBlock = await web3.eth.getBlockNumber()
+    const dayBlock = actuallBlock - 43200
+    if (userDocument.rps.lastGameBlock < actuallBlock) {
       const inputAmount = web3.utils.toWei(usergame.amount.toString(), "ether")
       let calculateValue = await rpsgame.methods.calculateValue(inputAmount).call()
       rpsgame.methods
@@ -407,82 +422,87 @@ export default function Rps() {
 
           } else {
             console.error(err);
+            setPlaying(false)
+            myEvents[0] = false
           }
         });
-      const actuallBlock = await web3.eth.getBlockNumber()
-      let userGameBlock = actuallBlock
       do {
-        myEvents = await rpsgame.getPastEvents('Play', { filter: { _to: account }, fromBlock: userGameBlock, toBlock: 'latest' })
+        myEvents = await rpsgame.getPastEvents('Play', { filter: { _to: account }, fromBlock: actuallBlock, toBlock: 'latest' })
         await sleep(1000)
       } while (myEvents[0] === undefined);
       if (myEvents[0]) {
-        const query0 = doc(db, "clubUsers", account)
-        const userDocument0 = await getDoc(query0)
-        const userData = userDocument0.data()
-        const dayBlock = actuallBlock - 43200
-        const userAmount = web3.utils.fromWei(myEvents[0].returnValues[1], 'ether')
-        setUserGameResult(myEvents[0].returnValues[3])
-        setUserGameStreak(myEvents[0].returnValues[2])
-        updateDoc(doc(db, "clubUsers", account), {
-          "rps.totalGames": userData.rps.totalGames + 1,
-          "rps.totalMaticAmount": userData.rps.totalMaticAmount + parseInt(userAmount),
-          "rps.lastGame": unixTimeStamp
-        })
-        addDoc(collection(db, "allGames"), {
-          createdAt: serverTimestamp(),
-          uid: userData.uid,
-          block: myEvents[0].blockNumber,
-          name: userData.name,
-          photo: userData.photo,
-          account: myEvents[0].returnValues[0],
-          maticAmount: userAmount,
-          streak: myEvents[0].returnValues[2],
-          result: myEvents[0].returnValues[3],
-          game: 'RPS'
-        })
-        setShowGameResult(true)
-        if (myEvents[0].returnValues[3] === true) {
+        if (myEvents[0].blockNumber > userDocument.rps.lastGameBlock) {
+          const userAmount = web3.utils.fromWei(myEvents[0].returnValues[1], 'ether')
           updateDoc(doc(db, "clubUsers", account), {
-            "rps.gameWon": userData.rps.gameWon + 1,
-            "rps.amountWon": userData.rps.amountWon + parseInt(userAmount)
+            "rps.totalGames": userDocument.rps.totalGames + 1,
+            "rps.totalMaticAmount": userDocument.rps.totalMaticAmount + parseInt(userAmount),
+            "rps.lastGameTime": serverTimestamp(),
+            "rps.lastGameBlock": myEvents[0].blockNumber
           })
-        }
-        if (myEvents[0].returnValues[3] === false) {
-          updateDoc(doc(db, "clubUsers", account), {
-            "rps.gameLoss": userData.rps.gameLoss + 1,
-            "rps.amountLoss": userData.rps.amountLoss + parseInt(userAmount)
+          addDoc(collection(db, "allGames"), {
+            createdAt: serverTimestamp(),
+            uid: userDocument.uid,
+            block: myEvents[0].blockNumber,
+            name: userDocument.name,
+            photo: userDocument.photo,
+            account: myEvents[0].returnValues[0],
+            maticAmount: userAmount,
+            streak: myEvents[0].returnValues[2],
+            result: myEvents[0].returnValues[3],
+            game: 'RPS'
           })
+          if (myEvents[0].returnValues[3] === true) {
+            updateDoc(doc(db, "clubUsers", account), {
+              "rps.gameWon": userDocument.rps.gameWon + 1,
+              "rps.amountWon": userDocument.rps.amountWon + parseInt(userAmount),
+            })
+          }
+          if (myEvents[0].returnValues[3] === false) {
+            updateDoc(doc(db, "clubUsers", account), {
+              "rps.gameLoss": userDocument.rps.gameLoss + 1,
+              "rps.amountLoss": userDocument.rps.amountLoss + parseInt(userAmount)
+            })
+          }
+          if (myEvents[0].returnValues[2] > userDocument.rps.dayWinStreak || dayBlock > userDocument.rps.winStreakTime) {
+            updateDoc(doc(db, "clubUsers", account), {
+              "rps.dayWinStreak": myEvents[0].returnValues[2],
+              "rps.winStreakTime": serverTimestamp()
+            })
+          }
+          if (usergame.hand === 'ROCK') {
+            updateDoc(doc(db, "clubUsers", account), {
+              "rps.rock": userDocument.rps.rock + 1,
+            })
+          }
+          if (usergame.hand === 'PAPER') {
+            updateDoc(doc(db, "clubUsers", account), {
+              "rps.paper": userDocument.rps.paper + 1,
+            })
+          }
+          if (usergame.hand === 'SCISSORS') {
+            updateDoc(doc(db, "clubUsers", account), {
+              "rps.scissors": userDocument.rps.scissors + 1,
+            })
+          }
+          setUserGameResult(myEvents[0].returnValues[3])
+          setUserGameStreak(myEvents[0].returnValues[2])
+          setShowGameResult(true)
+          setDoubleOrNothingStatus(false)
         }
-        if (myEvents[0].returnValues[2] > userData.rps.winStreak || dayBlock > userData.rps.winStreakBlock) {
-          updateDoc(doc(db, "clubUsers", account), {
-            "rps.winStreak": parseInt(myEvents[0].returnValues[2]),
-            "rps.winStreakTime": serverTimestamp()
-          })
-        }
-        if (usergame.hand === 'ROCK') {
-          updateDoc(doc(db, "clubUsers", account), {
-            "rps.rock": userData.rps.rock + 1,
-          })
-        }
-        if (usergame.hand === 'PAPER') {
-          updateDoc(doc(db, "clubUsers", account), {
-            "rps.paper": userData.rps.paper + 1,
-          })
-        }
-        if (usergame.hand === 'SCISSORS') {
-          updateDoc(doc(db, "clubUsers", account), {
-            "rps.scissors": userData.rps.scissors + 1,
-          })
-        }
-      } else {
-        setDoubleOrNothingStatus(false)
-        return false
       }
+    } else {
+      addToast('Wait some seconds to play again', { appearance: 'warning' });
       setDoubleOrNothingStatus(false)
+      setPlaying(false)
+      setAnimation(false)
     }
   }
 
   const showResult = async () => {
+    if (userGameResult) {
+      addToast('You doubled your money, congrats!', { appearance: 'info' });
+    }
+    loadUserGame(account, user)
     setAnimation(false)
     setShowGameResult(false)
     setGameResult(true)
@@ -562,9 +582,8 @@ export default function Rps() {
         </div>
       }
       <article>
-        {active === true && userData.uid !== '' ?
+        {active === true ?
           <>
-            {log0 && (<span className="alert alert-danger mx-5">{log0}</span>)}
             <h5 className="my-4 text-end me-3 me-lg-0">MATIC {(walletBalance / decimal).toFixed(4)}</h5>
             <div className="game-container">
               {playing === true ?
@@ -669,7 +688,6 @@ export default function Rps() {
           <div>
             <br></br>
             <br></br>
-            {log0 && (<span className="alert alert-danger mx-5">{log0}</span>)}
             <div className="row g-0 my-5 justify-content-center">
               <div className="col-3 col-md-2">
                 <img className="my-3 img-fluid" src={Rock} alt="Rock" />
@@ -698,13 +716,12 @@ export default function Rps() {
               </>
               :
               <>
-                <ConnectWallet connectWeb3Modal={connectWeb3Modal} decimal={decimal} web3={web3} account={account} walletLog={walletLog} />
+                <ConnectWallet connectWeb3Modal={connectWeb3Modal} decimal={decimal} web3={web3} account={account} />
               </>
             }
           </div>
         }
       </article >
-
     </>
   );
 }
