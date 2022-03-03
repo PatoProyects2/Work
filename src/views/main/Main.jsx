@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
-import { collection, getDocs, query, limit, onSnapshot, orderBy } from "firebase/firestore";
+import { collection, getDocs, query, limit, onSnapshot, orderBy, where } from "firebase/firestore";
 import { db } from '../../firebase/firesbaseConfig'
 import LiveBets from './components/LiveBets'
 import MostPlays from './components/MostPlays'
@@ -45,9 +45,14 @@ export default function Main() {
     return unsub;
   }, [])
 
+  const filterArray = (wallet) => {
+
+  }
+
+
   useEffect(() => {
     const readLeaderboard = async (unixTimeStamp) => {
-      let topGames = {}
+      let topGames = []
       let dayGames = []
       let weekGames = []
       let monthGames = []
@@ -57,28 +62,41 @@ export default function Main() {
       const lastWeek = unixSeconds - 604800
       const lastMonth = unixSeconds - 259200
 
-      const clubCollection = collection(db, "clubUsers")
-      const queryGames = query(clubCollection, orderBy("rps.totalGames", "desc"))
+      const clubCollection = collection(db, "allGames")
+      const queryGames = query(clubCollection, orderBy("createdAt", "desc"))
       const documentGames = await getDocs(queryGames)
       documentGames.forEach((doc) => {
-        if (doc.data().rps.lastGameTime > lastDay) {
-          dayGames.push([doc.data().account, doc.data().photo, doc.data().name, doc.data().rps.totalGames])
+        if (doc.data().createdAt > lastDay) {
+          dayGames.push([doc.data().account, doc.data().photo, doc.data().name])
         }
-        if (doc.data().rps.lastGameTime > lastWeek) {
-          weekGames.push([doc.data().account, doc.data().photo, doc.data().name, doc.data().rps.totalGames])
+        if (doc.data().createdAt > lastWeek) {
+          weekGames.push([doc.data().account, doc.data().photo, doc.data().name])
         }
-        if (doc.data().rps.lastGameTime > lastMonth) {
-          monthGames.push([doc.data().account, doc.data().photo, doc.data().name, doc.data().rps.totalGames])
+        if (doc.data().createdAt > lastMonth) {
+          monthGames.push([doc.data().account, doc.data().photo, doc.data().name])
         }
-        if (doc.data().rps.totalGames > 0) {
-          globalGames.push([doc.data().account, doc.data().photo, doc.data().name, doc.data().rps.totalGames])
-        }
-
+        globalGames.push([doc.data().account, doc.data().photo, doc.data().name])
       });
-      topGames.dayGames = dayGames
-      topGames.weekGames = weekGames
-      topGames.monthGames = monthGames
-      topGames.globalGames = globalGames
+      topGames.day = dayGames
+      topGames.week = weekGames
+      topGames.month = monthGames
+      topGames.allTime = globalGames
+
+       // ------------------------------------------------------------------------------------------------------------
+       let day = []
+       const uniqueArr = [... new Set(dayGames.map(data => data[0]))]
+       uniqueArr.forEach((doc) => {
+         const getTopInfo = async (doc) => {
+           const q = query(collection(db, "allGames"), where("account", "==", doc), where("createdAt", ">", lastDay))
+           const d = await getDocs(q)
+           const data = d._snapshot.docChanges
+           day.push([data.doc.data.value.mapValue.fields])
+         }
+         getTopInfo(doc)
+       });
+       console.log(day)
+       console.log(day.length)
+       // -------------------------------------------------------------------------------------------------------------
 
       const queryAmount = query(clubCollection, orderBy("rps.totalMaticAmount", "desc"))
       const documentAmount = await getDocs(queryAmount)
@@ -107,10 +125,12 @@ export default function Main() {
       topAmount.globalAmount = globalAmount
 
       let leaderboard = {}
-      leaderboard.topGames = topGames
-      leaderboard.topAmount = topAmount
+      leaderboard.games = topGames
+      leaderboard.amount = topAmount
       setLeaderboard(leaderboard)
+
     }
+
     readLeaderboard(unixTimeStamp)
   }, [unixTimeStamp])
 
