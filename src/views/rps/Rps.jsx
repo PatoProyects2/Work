@@ -446,7 +446,7 @@ export default function Rps() {
             name: userDocument.name,
             photo: userDocument.photo,
             account: myEvents[0].returnValues[0],
-            maticAmount: userAmount,
+            maticAmount: parseInt(userAmount),
             streak: myEvents[0].returnValues[2],
             result: myEvents[0].returnValues[3],
             game: 'RPS'
