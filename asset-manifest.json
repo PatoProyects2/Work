@@ -1,31 +1,31 @@
 {
   "files": {
-    "main.css": "/Work/static/css/main.e7909e0f.chunk.css",
-    "main.js": "/Work/static/js/main.5ca7d8e6.chunk.js",
-    "main.js.map": "/Work/static/js/main.5ca7d8e6.chunk.js.map",
+    "main.css": "/Work/static/css/main.edf42916.chunk.css",
+    "main.js": "/Work/static/js/main.5c01f869.chunk.js",
+    "main.js.map": "/Work/static/js/main.5c01f869.chunk.js.map",
     "runtime-main.js": "/Work/static/js/runtime-main.9471df77.js",
     "runtime-main.js.map": "/Work/static/js/runtime-main.9471df77.js.map",
-    "static/css/2.8c0e6b67.chunk.css": "/Work/static/css/2.8c0e6b67.chunk.css",
-    "static/js/2.dc9d39a6.chunk.js": "/Work/static/js/2.dc9d39a6.chunk.js",
-    "static/js/2.dc9d39a6.chunk.js.map": "/Work/static/js/2.dc9d39a6.chunk.js.map",
+    "static/css/2.4615dd22.chunk.css": "/Work/static/css/2.4615dd22.chunk.css",
+    "static/js/2.2adf9f77.chunk.js": "/Work/static/js/2.2adf9f77.chunk.js",
+    "static/js/2.2adf9f77.chunk.js.map": "/Work/static/js/2.2adf9f77.chunk.js.map",
     "index.html": "/Work/index.html",
-    "static/css/2.8c0e6b67.chunk.css.map": "/Work/static/css/2.8c0e6b67.chunk.css.map",
-    "static/css/main.e7909e0f.chunk.css.map": "/Work/static/css/main.e7909e0f.chunk.css.map",
-    "static/js/2.dc9d39a6.chunk.js.LICENSE.txt": "/Work/static/js/2.dc9d39a6.chunk.js.LICENSE.txt",
+    "static/css/2.4615dd22.chunk.css.map": "/Work/static/css/2.4615dd22.chunk.css.map",
+    "static/css/main.edf42916.chunk.css.map": "/Work/static/css/main.edf42916.chunk.css.map",
+    "static/js/2.2adf9f77.chunk.js.LICENSE.txt": "/Work/static/js/2.2adf9f77.chunk.js.LICENSE.txt",
     "static/media/animation.8586eafd.gif": "/Work/static/media/animation.8586eafd.gif",
-    "static/media/coming_soon.db90112d.png": "/Work/static/media/coming_soon.db90112d.png",
-    "static/media/discord.2a548029.png": "/Work/static/media/discord.2a548029.png",
-    "static/media/fair_play.1d5a03fd.png": "/Work/static/media/fair_play.1d5a03fd.png",
-    "static/media/nft.4e62ab5e.png": "/Work/static/media/nft.4e62ab5e.png",
+    "static/media/coming_soon_hover_card.2ef38cd2.png": "/Work/static/media/coming_soon_hover_card.2ef38cd2.png",
+    "static/media/discord_card.9c902417.png": "/Work/static/media/discord_card.9c902417.png",
+    "static/media/fair_play_hover_card.6bde0c0c.png": "/Work/static/media/fair_play_hover_card.6bde0c0c.png",
+    "static/media/nft_hover_card.80aaaca0.png": "/Work/static/media/nft_hover_card.80aaaca0.png",
     "static/media/index.scss": "/Work/static/media/slots_hover.ff39acaa.png",
-    "static/media/rps_banner.1880731e.png": "/Work/static/media/rps_banner.1880731e.png",
-    "static/media/twitter.504eeb0d.png": "/Work/static/media/twitter.504eeb0d.png"
+    "static/media/rps_card.90344e20.png": "/Work/static/media/rps_card.90344e20.png",
+    "static/media/twitter_card.71356aef.png": "/Work/static/media/twitter_card.71356aef.png"
   },
   "entrypoints": [
     "static/js/runtime-main.9471df77.js",
-    "static/css/2.8c0e6b67.chunk.css",
-    "static/js/2.dc9d39a6.chunk.js",
-    "static/css/main.e7909e0f.chunk.css",
-    "static/js/main.5ca7d8e6.chunk.js"
+    "static/css/2.4615dd22.chunk.css",
+    "static/js/2.2adf9f77.chunk.js",
+    "static/css/main.edf42916.chunk.css",
+    "static/js/main.5c01f869.chunk.js"
   ]
 }
