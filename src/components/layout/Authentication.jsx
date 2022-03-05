@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, setPersistence, browserSessionPersistence } from 'firebase/auth';
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Button, Modal, ModalBody, ModalFooter, FormGroup, Input, Label } from 'reactstrap'
 import { query, where, collection, limit, onSnapshot } from "firebase/firestore";
+import { toast } from 'react-hot-toast';
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { auth, db } from "../../firebase/firesbaseConfig"
@@ -13,7 +14,6 @@ export default function AccountFirebase(props) {
     password: ''
   });
   const [userData, setUserData] = useState({});
-  const [log0, setLog0] = useState('')
   const [dropdown, setDropdown] = useState(false);
   const [signUpModal, setSignUpModal] = useState(false)
   const [signInModal, setSignInModal] = useState(false)
@@ -47,7 +47,6 @@ export default function AccountFirebase(props) {
     });
   }
   const modalRegister = () => {
-    setLog0('')
     if (signUpModal) {
       setSignUpModal(false)
     } else {
@@ -56,7 +55,6 @@ export default function AccountFirebase(props) {
     }
   }
   const modalLogin = () => {
-    setLog0('')
     if (signInModal) {
       setSignInModal(false)
     } else {
@@ -73,45 +71,52 @@ export default function AccountFirebase(props) {
     }
   }
   const signUpWithUserPass = () => {
-    createUserWithEmailAndPassword(auth, userInfo.email, userInfo.password)
-      .then((userCredential) => {
-        setLog0('')
-        sendEmailVerification(auth.currentUser)
-          .then(() => {
-            window.location.reload()
-          });
-      })
-      .catch((error) => {
-        setLog0('User already exist')
-      });
+    if (userInfo.email.length > 0 && userInfo.password.length > 0) {
+      toast.promise(
+        createUserWithEmailAndPassword(auth, userInfo.email, userInfo.password),
+        {
+          loading: 'Creating account...',
+          success: <b>Account created</b>,
+          error: <b>Invalid email or password</b>,
+        })
+        .then(() => sendEmailVerification(auth.currentUser))
+    } else {
+      toast.error("Invalid email or password")
+      return false
+    }
   }
   const signInWithUserPass = () => {
-    if (document.getElementById('persistence').checked === true) {
-      setPersistence(auth, browserSessionPersistence)
-        .then(() => {
-          return signInWithEmailAndPassword(auth, userInfo.email, userInfo.password)
-            .then((userCredential) => {
-              setLog0('')
-              window.location.reload()
-            }).catch((error) => {
-              setLog0('Invalid email or password')
-            });
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-        });
+    if (userInfo.email.length > 0 && userInfo.password.length > 0) {
+      if (document.getElementById('persistence').checked === true) {
+        setPersistence(auth, browserSessionPersistence)
+          .then(() => {
+            return toast.promise(
+              signInWithEmailAndPassword(auth, userInfo.email, userInfo.password),
+              {
+                loading: 'Accessing account...',
+                success: <b>Welcome!</b>,
+                error: <b>Invalid email or password</b>,
+              })
+          })
+          .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+          });
+      } else {
+        toast.promise(
+          signInWithEmailAndPassword(auth, userInfo.email, userInfo.password),
+          {
+            loading: 'Accessing account...',
+            success: <b>Welcome!</b>,
+            error: <b>Invalid email or password</b>,
+          })
+      }
     } else {
-      signInWithEmailAndPassword(auth, userInfo.email, userInfo.password)
-        .then((userCredential) => {
-          setLog0('')
-          window.location.reload()
-        }).catch((error) => {
-          setLog0('Invalid email or password')
-        });
+      toast.error("Invalid email or password")
+      return false
     }
-
   }
+
   const signInWithGoogle = () => {
     const provider = new GoogleAuthProvider()
     signInWithPopup(auth, provider)
@@ -134,7 +139,7 @@ export default function AccountFirebase(props) {
         setRecoveryModal(false)
       })
       .catch((error) => {
-        setLog0('Invalid email')
+        toast.error("Invalid email")
       });
   }
 
@@ -153,7 +158,7 @@ export default function AccountFirebase(props) {
       {auth.currentUser ?
         <>
           <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="md" className="dd-profile">
-            <DropdownToggle color='transparent' className='p-0' caret>
+            <DropdownToggle color='transparent' className='dd-toggle' caret>
               {userData[0] ? userData[0].name + " LVL " + userData[0].level : <>{user.displayName ? user.displayName : "ClubUser"}{" LVL 1"}</>}
             </DropdownToggle>
             <DropdownMenu >
@@ -169,9 +174,7 @@ export default function AccountFirebase(props) {
             <button className="btn-auth btn-signin me-2" onClick={modalLogin}>Sign In</button>
             <button className="btn-auth btn-signup" onClick={modalRegister}>Sign Up</button>
           </div>
-
           <Modal className='d-modal' isOpen={signInModal} size="md">
-            {log0 && (<span className="alert alert-danger mx-3 row justify-content-center mt-2">{log0}</span>)}
             <ModalBody>
               <div className='d-flex justify-content-end'>
                 <button type="button" className="btn-close" aria-label="Close" onClick={modalLogin}></button>
@@ -190,7 +193,6 @@ export default function AccountFirebase(props) {
                 </div>
                 <button className='btn btn-transparent text-secondary' onClick={modalRecovery}>Forgot your password?</button>
               </FormGroup>
-
               <Button color="warning" type="button" className="w-100 mb-3" onClick={signInWithUserPass}>START PLAYING</Button>
               <h6 className="text-center">Or continue with</h6>
               <FormGroup className='d-flex justify-content-center'>
@@ -207,9 +209,7 @@ export default function AccountFirebase(props) {
               {"You do not have an account?"}<button className='btn btn-transparent text-secondary' onClick={changeAccountModal}>Sign Up</button>
             </ModalFooter>
           </Modal>
-
           <Modal className='d-modal' isOpen={recoveryModal} size="md">
-            {log0 && (<span className="alert alert-danger mx-3 row justify-content-center mt-2">{log0}</span>)}
             <ModalBody>
               <FormGroup>
                 <div className='d-flex justify-content-end'>
@@ -231,9 +231,7 @@ export default function AccountFirebase(props) {
               {"You do not have an account?"}<button className="btn btn-transparent text-secondary" onClick={modalRegister}>Sign Up</button>
             </ModalFooter>
           </Modal>
-
           <Modal className='d-modal' isOpen={signUpModal} size="md">
-            {log0 && (<span className="alert alert-danger mx-3 row justify-content-center mt-2">{log0}</span>)}
             <ModalBody>
               <FormGroup>
                 <div className='d-flex justify-content-end'>

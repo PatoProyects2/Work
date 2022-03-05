@@ -6,12 +6,12 @@ import LiveBets from './components/LiveBets'
 import MostPlays from './components/MostPlays'
 import MostAmount from './components/MostAmount'
 import { Button, ButtonGroup } from 'reactstrap';
-import RPSGameImg from '../../assets/imgs/rps_banner.png'
-import ComingSoonImg from '../../assets/imgs/coming_soon.png'
-import DiscordImg from '../../assets/imgs/discord.png'
-import TwitterImg from '../../assets/imgs/twitter.png'
-import FairPlayImg from '../../assets/imgs/fair_play.png'
-import NFTImg from '../../assets/imgs/nft.png'
+import RPSGameImg from '../../assets/imgs/rps_card.png'
+import ComingSoonImg from '../../assets/imgs/coming_soon_hover_card.png'
+import DiscordImg from '../../assets/imgs/discord_card.png'
+import TwitterImg from '../../assets/imgs/twitter_card.png'
+import FairPlayImg from '../../assets/imgs/fair_play_hover_card.png'
+import NFTImg from '../../assets/imgs/nft_hover_card.png'
 
 export default function Main() {
   const [historyPlays, setHistoryPlays] = useState({});
@@ -1303,19 +1303,19 @@ export default function Main() {
         <div className='row text-center mb-2 mb-md-5'>
           <div className='game-card col-md-4 mx-auto'>
             <NavLink to='/'>
-              <div className='card-bg rps-bg'></div>
+              {/* <div className='card-bg rps-bg'></div> */}
               <img src={ComingSoonImg} width='400' />
             </NavLink>
           </div>
           <div className='game-card col-md-4 mx-auto'>
             <NavLink to='/nfts'>
-              <div className='card-bg rps-bg'></div>
+              {/* <div className='card-bg rps-bg'></div> */}
               <img src={NFTImg} width='400' />
             </NavLink>
           </div>
           <div className='game-card last col-md-4 mx-auto'>
             <NavLink to='/fair-play'>
-              <div className='card-bg rps-bg'></div>
+              {/* <div className='card-bg rps-bg'></div> */}
               <img src={FairPlayImg} width='400' />
             </NavLink>
           </div>
@@ -1333,83 +1333,71 @@ export default function Main() {
       <br></br>
 
       <div className="table-list-container">
-        <ButtonGroup>
-          <Button onClick={liveBetsModal} className={liveBets ? 'active btn-rank' : 'btn-rank'}>Live Bets</Button>
-          <Button onClick={leaderboardsModalPlays} className={mostPlays ? 'active btn-rank' : 'btn-rank'}>Most Plays</Button>
-          <Button onClick={leaderboardsModalAmount} className={mostAmount ? 'active btn-rank' : 'btn-rank'}>Most Amount</Button>
-        </ButtonGroup>
-        {liveBets ?
-          <>
-            <p className="d-flex justify-content-end mt-3 me-4">{globalGames + " Total Bets"}</p>
-            <LiveBets
-              historyPlays={historyPlays}
-              unixTimeStamp={unixTimeStamp}
-            />
-          </>
-          : ""}
-        {mostPlays ?
-          <>
-            <ButtonGroup className='float-end'>
+        <div className='d-flex justify-content-between flex-wrap'>
+          <ButtonGroup>
+            <Button onClick={liveBetsModal} className={liveBets ? 'active btn-rank' : 'btn-rank'}>Live Bets</Button>
+            <Button onClick={leaderboardsModalPlays} className={mostPlays ? 'active btn-rank' : 'btn-rank'}>Most Plays</Button>
+            <Button onClick={leaderboardsModalAmount} className={mostAmount ? 'active btn-rank' : 'btn-rank'}>Most Amount</Button>
+          </ButtonGroup>
+
+          {liveBets &&
+            <p className="d-flex justify-content-end me-4">{globalGames + " Total Bets"}</p>
+          }
+          {mostPlays &&
+            <ButtonGroup>
               <Button onClick={day} className={`btn-recurrence ${dailyGame ? 'active' : ''}`}>Daily</Button>
               <Button onClick={week} className={`btn-recurrence ${weeklyGame ? 'active' : ''}`}>Weekly</Button>
               <Button onClick={month} className={`btn-recurrence ${monthlyGame ? 'active' : ''}`}>Monthly</Button>
               <Button onClick={all} className={`btn-recurrence ${globalGame ? 'active' : ''}`}>Global</Button>
             </ButtonGroup>
-            {dailyGame && leaderboard.game ?
-              < MostPlays
-                leaderboard={leaderboard.game.day}
-              />
-              : ""}
-            {weeklyGame ?
-              < MostPlays
-                leaderboard={leaderboard.game.week}
-              />
-              : ""}
-            {monthlyGame ?
-              < MostPlays
-                leaderboard={leaderboard.game.month}
-              />
-              : ""}
-            {globalGame ?
-              < MostPlays
-                leaderboard={leaderboard.game.global}
-              />
-              : ""}
-          </>
-          :
-          ""
-        }
-        {mostAmount ?
-          <>
-            <ButtonGroup className='float-end'>
+          }
+          {mostAmount &&
+            <ButtonGroup>
               <Button onClick={day} className={`btn-recurrence ${dailyAmount ? 'active' : ''}`}>Daily</Button>
               <Button onClick={week} className={`btn-recurrence ${weeklyAmount ? 'active' : ''}`}>Weekly</Button>
               <Button onClick={month} className={`btn-recurrence ${monthlyAmount ? 'active' : ''}`}>Monthly</Button>
               <Button onClick={all} className={`btn-recurrence ${globalAmount ? 'active' : ''}`}>Global</Button>
             </ButtonGroup>
-            {dailyAmount && leaderboard.amount?
-              < MostAmount
-                leaderboard={leaderboard.amount.day}
-              />
-              : ""}
-            {weeklyAmount ?
-              < MostAmount
-                leaderboard={leaderboard.amount.week}
-              />
-              : ""}
-            {monthlyAmount ?
-              < MostAmount
-                leaderboard={leaderboard.amount.month}
-              />
-              : ""}
-            {globalAmount ?
-              < MostAmount
-                leaderboard={leaderboard.amount.global}
-              />
-              : ""}
+          }
+        </div>
+
+        {liveBets &&
+          <LiveBets
+            historyPlays={historyPlays}
+            unixTimeStamp={unixTimeStamp}
+          />
+        }
+        {mostPlays && leaderboard.game &&
+          <>
+            {dailyGame &&
+              <MostPlays leaderboard={leaderboard.game.day} />
+            }
+            {weeklyGame &&
+              <MostPlays leaderboard={leaderboard.game.week} />
+            }
+            {monthlyGame &&
+              <MostPlays leaderboard={leaderboard.game.month} />
+            }
+            {globalGame &&
+              <MostPlays leaderboard={leaderboard.game.global} />
+            }
           </>
-          :
-          ""
+        }
+        {mostAmount && leaderboard.amount &&
+          <>
+            {dailyAmount &&
+              <MostAmount leaderboard={leaderboard.amount.day} />
+            }
+            {weeklyAmount &&
+              <MostAmount leaderboard={leaderboard.amount.week} />
+            }
+            {monthlyAmount &&
+              <MostAmount leaderboard={leaderboard.amount.month} />
+            }
+            {globalAmount &&
+              <MostAmount leaderboard={leaderboard.amount.global} />
+            }
+          </>
         }
       </div>
     </>

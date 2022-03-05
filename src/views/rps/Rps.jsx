@@ -9,7 +9,7 @@ import Portis from "@portis/web3";
 import ethProvider from "eth-provider";
 import WalletLink from "walletlink";
 import { doc, getDoc, setDoc, updateDoc, collection, query, limit, addDoc, serverTimestamp, onSnapshot, orderBy } from "firebase/firestore";
-import { useToasts } from 'react-toast-notifications';
+import toast from 'react-hot-toast';
 import RpsGame from '../../abis/rpsGame/rpsGame.json'
 import { rpsGameContract } from '../../components/blockchain/Contracts'
 import HistoryGamesModal from './components/HistoryGamesModal'
@@ -25,7 +25,6 @@ import Scissors from '../../assets/imgs/scissors.gif'
 import RPSAnimation from '../../assets/imgs/animation.gif'
 
 export default function Rps() {
-  const { addToast } = useToasts();
   const [user] = useAuthState(auth)
   const [web3, setWeb3] = useState({});
   const [rpsgame, setRpsgame] = useState({});
@@ -102,82 +101,108 @@ export default function Rps() {
 
       }
       if (userData.rps.totalGames > 5 && userData.rps.totalGames < 10 && userData.level !== 2) {
-        addToast('You go up to level 2!', { appearance: 'info' });
         updateDoc(doc(db, "clubUsers", account), {
           level: 2
         })
+        toast('You reach level 2, congrats!', {
+          icon: '🆙',
+        });
       }
       if (userData.rps.totalGames > 9 && userData.rps.totalGames < 20 && userData.level !== 3) {
-        addToast('You go up to level 3!', { appearance: 'info' });
         updateDoc(doc(db, "clubUsers", account), {
           level: 3
         })
+        toast('You reach level 3, congrats!', {
+          icon: '🆙',
+        });
       }
       if (userData.rps.totalGames > 19 && userData.rps.totalGames < 30 && userData.level !== 4) {
-        addToast('You go up to level 4!', { appearance: 'info' });
         updateDoc(doc(db, "clubUsers", account), {
           level: 4
         })
+        toast('You reach level 4, congrats!', {
+          icon: '🆙',
+        });
       }
       if (userData.rps.totalGames > 29 && userData.rps.totalGames < 40 && userData.level !== 5) {
-        addToast('You go up to level 5!', { appearance: 'info' });
         updateDoc(doc(db, "clubUsers", account), {
           level: 5
         })
+        toast('You reach level 5, congrats!', {
+          icon: '🆙',
+        });
       }
       if (userData.rps.totalGames > 39 && userData.rps.totalGames < 50 && userData.level !== 6) {
-        addToast('You go up to level 6!', { appearance: 'info' });
         updateDoc(doc(db, "clubUsers", account), {
           level: 6
         })
+        toast('You reach level 6, congrats!', {
+          icon: '🆙',
+        });
       }
       if (userData.rps.totalGames > 49 && userData.rps.totalGames < 60 && userData.level !== 7) {
-        addToast('You go up to level 7!', { appearance: 'info' });
         updateDoc(doc(db, "clubUsers", account), {
           level: 7
         })
+        toast('You reach level 7, congrats!', {
+          icon: '🆙',
+        });
       }
       if (userData.rps.totalGames > 59 && userData.rps.totalGames < 70 && userData.level !== 8) {
-        addToast('You go up to level 8!', { appearance: 'info' });
         updateDoc(doc(db, "clubUsers", account), {
           level: 8
         })
+        toast('You reach level 8, congrats!', {
+          icon: '🆙',
+        });
       }
       if (userData.rps.totalGames > 69 && userData.rps.totalGames < 90 && userData.level !== 9) {
-        addToast('You go up to level 9!', { appearance: 'info' });
         updateDoc(doc(db, "clubUsers", account), {
           level: 9
         })
+        toast('You reach level 9, congrats!', {
+          icon: '🆙',
+        });
       }
       if (userData.rps.totalGames > 89 && userData.rps.totalGames < 110 && userData.level !== 10) {
-        addToast('You go up to level 10!', { appearance: 'info' });
         updateDoc(doc(db, "clubUsers", account), {
           level: 10
         })
+        toast('You reach level 10, congrats!', {
+          icon: '🆙',
+        });
       }
       if (userData.rps.totalGames > 109 && userData.rps.totalGames < 140 && userData.level !== 11) {
-        addToast('You go up to level 11!', { appearance: 'info' });
         updateDoc(doc(db, "clubUsers", account), {
           level: 11
         })
+        toast('You reach level 11, congrats!', {
+          icon: '🆙',
+        });
       }
       if (userData.rps.totalGames > 139 && userData.rps.totalGames < 170 && userData.level !== 12) {
-        addToast('You go up to level 12!', { appearance: 'info' });
         updateDoc(doc(db, "clubUsers", account), {
           level: 12
         })
+        toast('You reach level 12, congrats!', {
+          icon: '🆙',
+        });
       }
       if (userData.rps.totalGames > 169 && userData.rps.totalGames < 200 && userData.level !== 13) {
-        addToast('You go up to level 13!', { appearance: 'info' });
         updateDoc(doc(db, "clubUsers", account), {
           level: 13
         })
+        toast('You reach level 13, congrats!', {
+          icon: '🆙',
+        });
       }
       if (userData.rps.totalGames > 199 && userData.level !== 14) {
-        addToast('You go up to level 14!', { appearance: 'info' });
         updateDoc(doc(db, "clubUsers", account), {
           level: 14
         })
+        toast('You reach level 14, congrats!', {
+          icon: '🆙',
+        });
       }
     } else {
       if (user && account !== '0x000000000000000000000000000000000000dEaD') {
@@ -354,15 +379,15 @@ export default function Rps() {
 
   const openGame = () => {
     if (document.getElementById('age').checked === false) {
-      addToast('Confirm that your are at least 18 years old', { appearance: 'warning' });
+      toast.error("Confirm that your are at least 18 years old")
       return false
     }
     if (!userData.uid) {
-      addToast('Your are a new player, please sign in or sign up', { appearance: 'warning' });
+      toast.error("Your are a new player, please sign in or sign up")
       return false
     }
     if (network !== 80001) {
-      addToast('Network not supported, please connect to Mumbai network', { appearance: 'error' });
+      toast.error("Network not supported, please connect to Mumbai network")
       return false
     }
     setActive(true)
@@ -383,14 +408,14 @@ export default function Rps() {
     if (document.getElementById('rock').checked || document.getElementById('paper').checked || document.getElementById('scissors').checked) {
       setUserhand(usergame.hand)
     } else {
-      addToast('Select your betting hand', { appearance: 'warning' });
+      toast.error("Select your betting hand")
       setDoubleOrNothingStatus(false)
       return false
     }
     if (document.getElementById('amount1').checked || document.getElementById('amount2').checked || document.getElementById('amount3').checked || document.getElementById('amount4').checked || document.getElementById('amount5').checked || document.getElementById('amount6').checked) {
       setUseramount(usergame.amount)
     } else {
-      addToast('Select your betting amount', { appearance: 'warning' });
+      toast.error("Select your betting amount")
       setDoubleOrNothingStatus(false)
       return false
     }
@@ -487,7 +512,7 @@ export default function Rps() {
         }
       }
     } else {
-      addToast('Wait some seconds to play again', { appearance: 'warning' });
+      toast.error("Wait some seconds to play again")
       setDoubleOrNothingStatus(false)
       setPlaying(false)
       setAnimation(false)
@@ -496,7 +521,7 @@ export default function Rps() {
 
   const showResult = async () => {
     if (userGameResult) {
-      addToast('You doubled your money, congrats!', { appearance: 'info' });
+      toast.success("You doubled your money, congrats!")
     }
     loadUserGame(account, user)
     setAnimation(false)
@@ -539,6 +564,7 @@ export default function Rps() {
                 userData={userData}
                 register={register}
                 user={user}
+                toast={toast}
               />
             </>
             :
@@ -569,6 +595,7 @@ export default function Rps() {
                   userData={userData}
                   register={register}
                   user={user}
+                  toast={toast}
                 />
               </div>
 

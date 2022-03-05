@@ -12,7 +12,6 @@ export default function ConnectWallet(props) {
     account1: '',
     amount1: 0,
   });
-  const [log1, setLog1] = useState('');
   const [edit, setEdit] = useState(false);
   const [send, setSend] = useState(false);
   const [dropdown, setDropdown] = useState(false);
@@ -33,7 +32,6 @@ export default function ConnectWallet(props) {
   }
 
   const editProfile = () => {
-    setLog1('')
     if (edit === false) {
       setEdit(true);
     } else {
@@ -51,45 +49,59 @@ export default function ConnectWallet(props) {
 
   const updateUserProfile = () => {
     if (userInfo.displayName.length >= 4 && userInfo.displayName.length <= 12) {
-      updateDoc(doc(db, "clubUsers", props.account), {
-        name: userInfo.displayName
-      }).then(() => window.location.reload())
+      props.toast.promise(
+        updateDoc(doc(db, "clubUsers", props.account), {
+          name: userInfo.displayName
+        }),
+        {
+          loading: 'Updating...',
+          success: <b>Profile updated</b>,
+          error: <b>Profile not updated</b>,
+        }
+      ).then(() => setEdit(false))
     } else {
-      setLog1('Username 4-12 characters')
+      props.toast.error("The name must be between 4 and 12 characters")
     }
   }
 
   const sendToFriend = () => {
     if (friend.account1.length === 42) {
-      setLog1('');
+
     } else {
-      setLog1('INVALID ADDRESS');
+      props.toast.error("Invalid address")
       return false
     }
     if (friend.amount1 > 0) {
-      setLog1('');
+
     } else {
-      setLog1('INVALID AMOUNT');
+      props.toast.error("Invalid Amount")
       return false
     }
+
     setFriend({
       ...friend,
       account1: '',
       amount: 0,
     })
-    ethereum
-      .request({
-        method: 'eth_sendTransaction',
-        params: [
-          {
-            from: props.account,
-            to: friend.account1,
-            value: props.web3.utils.numberToHex((friend.amount1 * props.decimal).toString()),
-          },
-        ],
-      })
-      .then((txHash) => setSend(false))
-      .catch((error) => console.error);
+
+    props.toast.promise(
+      ethereum
+        .request({
+          method: 'eth_sendTransaction',
+          params: [
+            {
+              from: props.account,
+              to: friend.account1,
+              value: props.web3.utils.numberToHex((friend.amount1 * props.decimal).toString()),
+            },
+          ],
+        }),
+      {
+        loading: 'Sending...',
+        success: <b>Transaction confirmed</b>,
+        error: <b>Transaction failed</b>,
+      }
+    ).then(() => setSend(false))
   }
 
   const manageWallets = async () => {
@@ -127,7 +139,6 @@ export default function ConnectWallet(props) {
             </DropdownMenu>
           </Dropdown>
           <Modal isOpen={edit} className="d-modal" size="sm">
-            {log1 && (<span className="alert alert-danger mx-5 row justify-content-center mt-2">{log1}</span>)}
             <ModalBody>
               <h4 className="text-center">USER PROFILE</h4>
               <FormGroup className="pt-3 text-center">
@@ -152,7 +163,6 @@ export default function ConnectWallet(props) {
             </ModalFooter>
           </Modal>
           <Modal isOpen={send} className="d-modal" size="sm">
-            {log1 && (<span className="alert alert-danger mx-5 row justify-content-center mt-2">{log1}</span>)}
             <ModalBody>
               <h4 className="text-center">SEND MATIC</h4>
               <FormGroup>
@@ -173,7 +183,7 @@ export default function ConnectWallet(props) {
         :
         <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="lg">
           <DropdownToggle color='danger' onClick={props.connectWeb3Modal}>
-          CONNECT WALLET
+            CONNECT WALLET
           </DropdownToggle>
         </Dropdown>
       }

@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { sendEmailVerification, updateProfile } from 'firebase/auth';
 import { Button, Modal, ModalBody, ModalFooter, FormGroup, Input } from 'reactstrap'
+import { toast } from 'react-hot-toast';
 import { query, where, collection, limit, onSnapshot, updateDoc, doc } from "firebase/firestore";
 import { useToasts } from 'react-toast-notifications';
 import { auth, db } from '../../../../firebase/firesbaseConfig'
 import Stats from './Stats'
 export default function Profile() {
-  const { addToast } = useToasts();
   const [userInfo, setUserInfo] = useState({
     displayName: '',
     photoURL: 'https://ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh'
@@ -56,13 +56,13 @@ export default function Profile() {
     }
   }
   const resendEmailVerification = () => {
-    sendEmailVerification(auth.currentUser)
-      .then(() => {
-        addToast('Email sent to your inbox ', { appearance: 'success' });
+    toast.promise(
+      sendEmailVerification(auth.currentUser),
+      {
+        loading: 'Sending...',
+        success: <b>Email sent to your inbox</b>,
+        error: <b>Wait a few minutes to resend the email verification</b>,
       })
-      .catch((error) => {
-        addToast('Wait a few minutes to resend the email verification', { appearance: 'error' });
-      });
   }
   const editProfileModal = () => {
     if (editProfile) {
@@ -74,24 +74,30 @@ export default function Profile() {
   const updateUserProfile = () => {
     if (userData[0]) {
       if (userInfo.displayName.length >= 4 && userInfo.displayName.length <= 12) {
-        updateDoc(doc(db, "clubUsers", userData[0].account), {
-          name: userInfo.displayName
-        }).then(() => window.location.reload())
+        toast.promise(
+          updateDoc(doc(db, "clubUsers", props.account), {
+            name: userInfo.displayName
+          }),
+          {
+            loading: 'Updating...',
+            success: <b>Profile updated</b>,
+            error: <b>Profile not updated</b>,
+          })
+          .then(() => setEditProfile(false))
       } else {
-        setLog0('Username 4-12 characters')
+        toast.error("The name must be between 4 and 12 characters")
         return false
       }
     } else {
       if (userInfo.displayName.length >= 4 && userInfo.displayName.length <= 12) {
-        setLog0('')
         updateProfile(auth.currentUser, userInfo)
           .then(() => {
             setEditProfile(false)
           }).catch((error) => {
-            setLog0('Inavlid Username')
+            toast.error("Invalid Username")
           });
       } else {
-        setLog0('Username 4-12 characters')
+        toast.error("The name must be between 4 and 12 characters")
         return false
       }
     }
