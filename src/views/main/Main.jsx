@@ -50,7 +50,7 @@ export default function Main() {
     const unsub = onSnapshot(q, (doc) => {
       const played = doc.docs.map(amountLeaderboard => amountLeaderboard.data())
       setHistoryPlays(played)
-      setGlobalGames(played.length + 1)
+      setGlobalGames(played.length)
     });
     return unsub;
   }, [])
@@ -128,17 +128,17 @@ export default function Main() {
       const documentGames = await getDocs(queryGames)
       documentGames.forEach((doc) => {
         if (doc.data().createdAt > lastDay) {
-          dayGames.push([doc.data().account, doc.data().photo, doc.data().name])
+          dayGames.push([doc.data().account])
         }
         if (doc.data().createdAt > lastWeek) {
-          weekGames.push([doc.data().account, doc.data().photo, doc.data().name])
+          weekGames.push([doc.data().account])
         }
         if (doc.data().createdAt > lastMonth) {
-          monthGames.push([doc.data().account, doc.data().photo, doc.data().name])
+          monthGames.push([doc.data().account])
         }
-        globalGames.push([doc.data().account, doc.data().photo, doc.data().name])
+        globalGames.push([doc.data().account])
       });
-      // ------------------------------------------------------------------------------------------------------------
+      // ---------------------------------------------------------------------------------------------------------------------------------------
       const arrDay = [... new Set(dayGames.map(data => data[0]))]
       try {
         const q0 = query(collection(db, "allGames"), where("account", "==", arrDay[0]), where("createdAt", ">", lastDay))
@@ -550,77 +550,72 @@ export default function Main() {
       leaderboard.push([aW, bW, cW, dW, eW, fW, gW, hW, iW, jW])
       leaderboard.push([aM, bM, cM, dM, eM, fM, gM, hM, iM, jM])
       leaderboard.push([aA, bA, cA, dA, eA, fA, gA, hA, iA, jA])
-      console.log(leaderboard)
-      // ------------------------------------------LEER-------------------------------------------
+      // ---------------------------------------------------------------------------------------------------------------------------------------
       let topGames = {}
       let dayTopGames = []
       let weekTopGames = []
       let monthTopGames = []
       let globalTopGames = []
       try {
-        dayTopGames.push([leaderboard[0][0][0][0].stringValue, leaderboard[0][0][0][2].stringValue, leaderboard[0][0].length])
-        dayTopGames.push([leaderboard[0][1][0][0].stringValue, leaderboard[0][1][0][2].stringValue, leaderboard[0][1].length])
-        dayTopGames.push([leaderboard[0][2][0][0].stringValue, leaderboard[0][2][0][2].stringValue, leaderboard[0][2].length])
-        dayTopGames.push([leaderboard[0][3][0][0].stringValue, leaderboard[0][3][0][2].stringValue, leaderboard[0][3].length])
-        dayTopGames.push([leaderboard[0][4][0][0].stringValue, leaderboard[0][4][0][2].stringValue, leaderboard[0][4].length])
-        dayTopGames.push([leaderboard[0][5][0][0].stringValue, leaderboard[0][5][0][2].stringValue, leaderboard[0][5].length])
-        dayTopGames.push([leaderboard[0][6][0][0].stringValue, leaderboard[0][6][0][2].stringValue, leaderboard[0][6].length])
-        dayTopGames.push([leaderboard[0][7][0][0].stringValue, leaderboard[0][7][0][2].stringValue, leaderboard[0][7].length])
-        dayTopGames.push([leaderboard[0][8][0][0].stringValue, leaderboard[0][8][0][2].stringValue, leaderboard[0][8].length])
-        dayTopGames.push([leaderboard[0][9][0][0].stringValue, leaderboard[0][9][0][2].stringValue, leaderboard[0][9].length])
+        dayTopGames.push([leaderboard[0][0][0][0].stringValue, leaderboard[0][0][0][1].stringValue, leaderboard[0][0][0][2].stringValue, leaderboard[0][0].length])
+        dayTopGames.push([leaderboard[0][1][0][0].stringValue, leaderboard[0][1][0][1].stringValue, leaderboard[0][1][0][2].stringValue, leaderboard[0][1].length])
+        dayTopGames.push([leaderboard[0][2][0][0].stringValue, leaderboard[0][2][0][1].stringValue, leaderboard[0][2][0][2].stringValue, leaderboard[0][2].length])
+        dayTopGames.push([leaderboard[0][3][0][0].stringValue, leaderboard[0][3][0][1].stringValue, leaderboard[0][3][0][2].stringValue, leaderboard[0][3].length])
+        dayTopGames.push([leaderboard[0][4][0][0].stringValue, leaderboard[0][4][0][1].stringValue, leaderboard[0][4][0][2].stringValue, leaderboard[0][4].length])
+        dayTopGames.push([leaderboard[0][5][0][0].stringValue, leaderboard[0][5][0][1].stringValue, leaderboard[0][5][0][2].stringValue, leaderboard[0][5].length])
+        dayTopGames.push([leaderboard[0][6][0][0].stringValue, leaderboard[0][6][0][1].stringValue, leaderboard[0][6][0][2].stringValue, leaderboard[0][6].length])
+        dayTopGames.push([leaderboard[0][7][0][0].stringValue, leaderboard[0][7][0][1].stringValue, leaderboard[0][7][0][2].stringValue, leaderboard[0][7].length])
+        dayTopGames.push([leaderboard[0][8][0][0].stringValue, leaderboard[0][8][0][1].stringValue, leaderboard[0][8][0][2].stringValue, leaderboard[0][8].length])
+        dayTopGames.push([leaderboard[0][9][0][0].stringValue, leaderboard[0][9][0][1].stringValue, leaderboard[0][9][0][2].stringValue, leaderboard[0][9].length])
       } catch (e) {
 
       }
       try {
-        weekTopGames.push([leaderboard[0][0][0][0].stringValue, leaderboard[0][0][0][2].stringValue, leaderboard[0][0].length])
-        weekTopGames.push([leaderboard[0][1][0][0].stringValue, leaderboard[0][1][0][2].stringValue, leaderboard[0][1].length])
-        weekTopGames.push([leaderboard[0][2][0][0].stringValue, leaderboard[0][2][0][2].stringValue, leaderboard[0][2].length])
-        weekTopGames.push([leaderboard[0][3][0][0].stringValue, leaderboard[0][3][0][2].stringValue, leaderboard[0][3].length])
-        weekTopGames.push([leaderboard[0][4][0][0].stringValue, leaderboard[0][4][0][2].stringValue, leaderboard[0][4].length])
-        weekTopGames.push([leaderboard[0][5][0][0].stringValue, leaderboard[0][5][0][2].stringValue, leaderboard[0][5].length])
-        weekTopGames.push([leaderboard[0][6][0][0].stringValue, leaderboard[0][6][0][2].stringValue, leaderboard[0][6].length])
-        weekTopGames.push([leaderboard[0][7][0][0].stringValue, leaderboard[0][7][0][2].stringValue, leaderboard[0][7].length])
-        weekTopGames.push([leaderboard[0][8][0][0].stringValue, leaderboard[0][8][0][2].stringValue, leaderboard[0][8].length])
-        weekTopGames.push([leaderboard[0][9][0][0].stringValue, leaderboard[0][9][0][2].stringValue, leaderboard[0][9].length])
+        weekTopGames.push([leaderboard[1][0][0][0].stringValue, leaderboard[1][0][0][1].stringValue, leaderboard[1][0][0][2].stringValue, leaderboard[1][0].length])
+        weekTopGames.push([leaderboard[1][1][0][0].stringValue, leaderboard[1][1][0][1].stringValue, leaderboard[1][1][0][2].stringValue, leaderboard[1][1].length])
+        weekTopGames.push([leaderboard[1][2][0][0].stringValue, leaderboard[1][2][0][1].stringValue, leaderboard[1][2][0][2].stringValue, leaderboard[1][2].length])
+        weekTopGames.push([leaderboard[1][3][0][0].stringValue, leaderboard[1][3][0][1].stringValue, leaderboard[1][3][0][2].stringValue, leaderboard[1][3].length])
+        weekTopGames.push([leaderboard[1][4][0][0].stringValue, leaderboard[1][4][0][1].stringValue, leaderboard[1][4][0][2].stringValue, leaderboard[1][4].length])
+        weekTopGames.push([leaderboard[1][5][0][0].stringValue, leaderboard[1][5][0][1].stringValue, leaderboard[1][5][0][2].stringValue, leaderboard[1][5].length])
+        weekTopGames.push([leaderboard[1][6][0][0].stringValue, leaderboard[1][6][0][1].stringValue, leaderboard[1][6][0][2].stringValue, leaderboard[1][6].length])
+        weekTopGames.push([leaderboard[1][7][0][0].stringValue, leaderboard[1][7][0][1].stringValue, leaderboard[1][7][0][2].stringValue, leaderboard[1][7].length])
+        weekTopGames.push([leaderboard[1][8][0][0].stringValue, leaderboard[1][8][0][1].stringValue, leaderboard[1][8][0][2].stringValue, leaderboard[1][8].length])
+        weekTopGames.push([leaderboard[1][9][0][0].stringValue, leaderboard[1][9][0][1].stringValue, leaderboard[1][9][0][2].stringValue, leaderboard[1][9].length])
       } catch (e) {
 
       }
       try {
-        monthTopGames.push([leaderboard[0][0][0][0].stringValue, leaderboard[0][0][0][2].stringValue, leaderboard[0][0].length])
-        monthTopGames.push([leaderboard[0][1][0][0].stringValue, leaderboard[0][1][0][2].stringValue, leaderboard[0][1].length])
-        monthTopGames.push([leaderboard[0][2][0][0].stringValue, leaderboard[0][2][0][2].stringValue, leaderboard[0][2].length])
-        monthTopGames.push([leaderboard[0][3][0][0].stringValue, leaderboard[0][3][0][2].stringValue, leaderboard[0][3].length])
-        monthTopGames.push([leaderboard[0][4][0][0].stringValue, leaderboard[0][4][0][2].stringValue, leaderboard[0][4].length])
-        monthTopGames.push([leaderboard[0][5][0][0].stringValue, leaderboard[0][5][0][2].stringValue, leaderboard[0][5].length])
-        monthTopGames.push([leaderboard[0][6][0][0].stringValue, leaderboard[0][6][0][2].stringValue, leaderboard[0][6].length])
-        monthTopGames.push([leaderboard[0][7][0][0].stringValue, leaderboard[0][7][0][2].stringValue, leaderboard[0][7].length])
-        monthTopGames.push([leaderboard[0][8][0][0].stringValue, leaderboard[0][8][0][2].stringValue, leaderboard[0][8].length])
-        monthTopGames.push([leaderboard[0][9][0][0].stringValue, leaderboard[0][9][0][2].stringValue, leaderboard[0][9].length])
+        monthTopGames.push([leaderboard[2][0][0][0].stringValue, leaderboard[2][0][0][1].stringValue, leaderboard[2][0][0][2].stringValue, leaderboard[2][0].length])
+        monthTopGames.push([leaderboard[2][1][0][0].stringValue, leaderboard[2][1][0][1].stringValue, leaderboard[2][1][0][2].stringValue, leaderboard[2][1].length])
+        monthTopGames.push([leaderboard[2][2][0][0].stringValue, leaderboard[2][2][0][1].stringValue, leaderboard[2][2][0][2].stringValue, leaderboard[2][2].length])
+        monthTopGames.push([leaderboard[2][3][0][0].stringValue, leaderboard[2][3][0][1].stringValue, leaderboard[2][3][0][2].stringValue, leaderboard[2][3].length])
+        monthTopGames.push([leaderboard[2][4][0][0].stringValue, leaderboard[2][4][0][1].stringValue, leaderboard[2][4][0][2].stringValue, leaderboard[2][4].length])
+        monthTopGames.push([leaderboard[2][5][0][0].stringValue, leaderboard[2][5][0][1].stringValue, leaderboard[2][5][0][2].stringValue, leaderboard[2][5].length])
+        monthTopGames.push([leaderboard[2][6][0][0].stringValue, leaderboard[2][6][0][1].stringValue, leaderboard[2][6][0][2].stringValue, leaderboard[2][6].length])
+        monthTopGames.push([leaderboard[2][7][0][0].stringValue, leaderboard[2][7][0][1].stringValue, leaderboard[2][7][0][2].stringValue, leaderboard[2][7].length])
+        monthTopGames.push([leaderboard[2][8][0][0].stringValue, leaderboard[2][8][0][1].stringValue, leaderboard[2][8][0][2].stringValue, leaderboard[2][8].length])
+        monthTopGames.push([leaderboard[2][9][0][0].stringValue, leaderboard[2][9][0][1].stringValue, leaderboard[2][9][0][2].stringValue, leaderboard[2][9].length])
       } catch (e) {
 
       }
       try {
-        globalTopGames.push([leaderboard[0][0][0][0].stringValue, leaderboard[0][0][0][2].stringValue, leaderboard[0][0].length])
-        globalTopGames.push([leaderboard[0][1][0][0].stringValue, leaderboard[0][1][0][2].stringValue, leaderboard[0][1].length])
-        globalTopGames.push([leaderboard[0][2][0][0].stringValue, leaderboard[0][2][0][2].stringValue, leaderboard[0][2].length])
-        globalTopGames.push([leaderboard[0][3][0][0].stringValue, leaderboard[0][3][0][2].stringValue, leaderboard[0][3].length])
-        globalTopGames.push([leaderboard[0][4][0][0].stringValue, leaderboard[0][4][0][2].stringValue, leaderboard[0][4].length])
-        globalTopGames.push([leaderboard[0][5][0][0].stringValue, leaderboard[0][5][0][2].stringValue, leaderboard[0][5].length])
-        globalTopGames.push([leaderboard[0][6][0][0].stringValue, leaderboard[0][6][0][2].stringValue, leaderboard[0][6].length])
-        globalTopGames.push([leaderboard[0][7][0][0].stringValue, leaderboard[0][7][0][2].stringValue, leaderboard[0][7].length])
-        globalTopGames.push([leaderboard[0][8][0][0].stringValue, leaderboard[0][8][0][2].stringValue, leaderboard[0][8].length])
-        globalTopGames.push([leaderboard[0][9][0][0].stringValue, leaderboard[0][9][0][2].stringValue, leaderboard[0][9].length])
+        globalTopGames.push([leaderboard[3][0][0][0].stringValue, leaderboard[3][0][0][1].stringValue, leaderboard[3][0][0][2].stringValue, leaderboard[3][0].length])
+        globalTopGames.push([leaderboard[3][1][0][0].stringValue, leaderboard[3][1][0][1].stringValue, leaderboard[3][1][0][2].stringValue, leaderboard[3][1].length])
+        globalTopGames.push([leaderboard[3][2][0][0].stringValue, leaderboard[3][2][0][1].stringValue, leaderboard[3][2][0][2].stringValue, leaderboard[3][2].length])
+        globalTopGames.push([leaderboard[3][3][0][0].stringValue, leaderboard[3][3][0][1].stringValue, leaderboard[3][3][0][2].stringValue, leaderboard[3][3].length])
+        globalTopGames.push([leaderboard[3][4][0][0].stringValue, leaderboard[3][4][0][1].stringValue, leaderboard[3][4][0][2].stringValue, leaderboard[3][4].length])
+        globalTopGames.push([leaderboard[3][5][0][0].stringValue, leaderboard[3][5][0][1].stringValue, leaderboard[3][5][0][2].stringValue, leaderboard[3][5].length])
+        globalTopGames.push([leaderboard[3][6][0][0].stringValue, leaderboard[3][6][0][1].stringValue, leaderboard[3][6][0][2].stringValue, leaderboard[3][6].length])
+        globalTopGames.push([leaderboard[3][7][0][0].stringValue, leaderboard[3][7][0][1].stringValue, leaderboard[3][7][0][2].stringValue, leaderboard[3][7].length])
+        globalTopGames.push([leaderboard[3][8][0][0].stringValue, leaderboard[3][8][0][1].stringValue, leaderboard[3][8][0][2].stringValue, leaderboard[3][8].length])
+        globalTopGames.push([leaderboard[3][9][0][0].stringValue, leaderboard[3][9][0][1].stringValue, leaderboard[3][9][0][2].stringValue, leaderboard[3][9].length])
       } catch (e) {
 
       }
-      topGames.day = dayTopGames
-      topGames.week = weekTopGames
-      topGames.month = monthTopGames
-      topGames.global = globalTopGames
-      console.table(topGames.day.sort(((a, b) => b[2] - a[2])));
-      console.table(topGames.week.sort(((a, b) => b[2] - a[2])));
-      console.table(topGames.month.sort(((a, b) => b[2] - a[2])));
-      console.table(topGames.global.sort(((a, b) => b[2] - a[2])));
+      topGames.day = dayTopGames.sort(((a, b) => b[2] - a[2]));
+      topGames.week = weekTopGames.sort(((a, b) => b[2] - a[2]))
+      topGames.month = monthTopGames.sort(((a, b) => b[2] - a[2]))
+      topGames.global = globalTopGames.sort(((a, b) => b[2] - a[2]))
 
       let topAmount = {}
       let dayTopAmount = []
@@ -774,7 +769,7 @@ export default function Main() {
       let sumW9 = 0
 
       try {
-        leaderboard[0][0].forEach((amount) => {
+        leaderboard[1][0].forEach((amount) => {
           arrW0.push(parseInt(amount[3].integerValue))
         })
         for (let a = 0; a < arrW0.length; a++) {
@@ -784,7 +779,7 @@ export default function Main() {
 
       }
       try {
-        leaderboard[0][1].forEach((amount) => {
+        leaderboard[1][1].forEach((amount) => {
           arrW1.push(parseInt(amount[3].integerValue))
         })
         for (let b = 0; b < arrW1.length; b++) {
@@ -794,7 +789,7 @@ export default function Main() {
 
       }
       try {
-        leaderboard[0][2].forEach((amount) => {
+        leaderboard[1][2].forEach((amount) => {
           arrW2.push(parseInt(amount[3].integerValue))
         })
         for (let c = 0; c < arrW2.length; c++) {
@@ -804,7 +799,7 @@ export default function Main() {
 
       }
       try {
-        leaderboard[0][3].forEach((amount) => {
+        leaderboard[1][3].forEach((amount) => {
           arrW3.push(parseInt(amount[3].integerValue))
         })
         for (let d = 0; d < arrW3.length; d++) {
@@ -814,7 +809,7 @@ export default function Main() {
 
       }
       try {
-        leaderboard[0][4].forEach((amount) => {
+        leaderboard[1][4].forEach((amount) => {
           arrW4.push(parseInt(amount[3].integerValue))
         })
         for (let e = 0; e < arrW4.length; e++) {
@@ -824,7 +819,7 @@ export default function Main() {
 
       }
       try {
-        leaderboard[0][5].forEach((amount) => {
+        leaderboard[1][5].forEach((amount) => {
           arrW5.push(parseInt(amount[3].integerValue))
         })
         for (let f = 0; f < arrW5.length; f++) {
@@ -834,7 +829,7 @@ export default function Main() {
 
       }
       try {
-        leaderboard[0][6].forEach((amount) => {
+        leaderboard[1][6].forEach((amount) => {
           arrW6.push(parseInt(amount[3].integerValue))
         })
         for (let g = 0; g < arrW6.length; g++) {
@@ -844,7 +839,7 @@ export default function Main() {
 
       }
       try {
-        leaderboard[0][7].forEach((amount) => {
+        leaderboard[1][7].forEach((amount) => {
           arrW7.push(parseInt(amount[3].integerValue))
         })
         for (let h = 0; h < arrW7.length; h++) {
@@ -854,7 +849,7 @@ export default function Main() {
 
       }
       try {
-        leaderboard[0][8].forEach((amount) => {
+        leaderboard[1][8].forEach((amount) => {
           arrW8.push(parseInt(amount[3].integerValue))
         })
         for (let i = 0; i < arrW8.length; i++) {
@@ -864,7 +859,7 @@ export default function Main() {
 
       }
       try {
-        leaderboard[0][9].forEach((amount) => {
+        leaderboard[1][9].forEach((amount) => {
           arrW9.push(parseInt(amount[3].integerValue))
         })
         for (let j = 0; j < arrW9.length; j++) {
@@ -897,7 +892,7 @@ export default function Main() {
       let sumM9 = 0
 
       try {
-        leaderboard[0][0].forEach((amount) => {
+        leaderboard[2][0].forEach((amount) => {
           arrM0.push(parseInt(amount[3].integerValue))
         })
         for (let a = 0; a < arrM0.length; a++) {
@@ -907,7 +902,7 @@ export default function Main() {
 
       }
       try {
-        leaderboard[0][1].forEach((amount) => {
+        leaderboard[2][1].forEach((amount) => {
           arrM1.push(parseInt(amount[3].integerValue))
         })
         for (let b = 0; b < arrM1.length; b++) {
@@ -917,7 +912,7 @@ export default function Main() {
 
       }
       try {
-        leaderboard[0][2].forEach((amount) => {
+        leaderboard[2][2].forEach((amount) => {
           arrM2.push(parseInt(amount[3].integerValue))
         })
         for (let c = 0; c < arrM2.length; c++) {
@@ -927,7 +922,7 @@ export default function Main() {
 
       }
       try {
-        leaderboard[0][3].forEach((amount) => {
+        leaderboard[2][3].forEach((amount) => {
           arrM3.push(parseInt(amount[3].integerValue))
         })
         for (let d = 0; d < arrM3.length; d++) {
@@ -937,7 +932,7 @@ export default function Main() {
 
       }
       try {
-        leaderboard[0][4].forEach((amount) => {
+        leaderboard[2][4].forEach((amount) => {
           arrM4.push(parseInt(amount[3].integerValue))
         })
         for (let e = 0; e < arrM4.length; e++) {
@@ -947,7 +942,7 @@ export default function Main() {
 
       }
       try {
-        leaderboard[0][5].forEach((amount) => {
+        leaderboard[2][5].forEach((amount) => {
           arrM5.push(parseInt(amount[3].integerValue))
         })
         for (let f = 0; f < arrM5.length; f++) {
@@ -957,7 +952,7 @@ export default function Main() {
 
       }
       try {
-        leaderboard[0][6].forEach((amount) => {
+        leaderboard[2][6].forEach((amount) => {
           arrM6.push(parseInt(amount[3].integerValue))
         })
         for (let g = 0; g < arrM6.length; g++) {
@@ -967,7 +962,7 @@ export default function Main() {
 
       }
       try {
-        leaderboard[0][7].forEach((amount) => {
+        leaderboard[2][7].forEach((amount) => {
           arrM7.push(parseInt(amount[3].integerValue))
         })
         for (let h = 0; h < arrM7.length; h++) {
@@ -977,7 +972,7 @@ export default function Main() {
 
       }
       try {
-        leaderboard[0][8].forEach((amount) => {
+        leaderboard[2][8].forEach((amount) => {
           arrM8.push(parseInt(amount[3].integerValue))
         })
         for (let i = 0; i < arrM8.length; i++) {
@@ -987,7 +982,7 @@ export default function Main() {
 
       }
       try {
-        leaderboard[0][9].forEach((amount) => {
+        leaderboard[2][9].forEach((amount) => {
           arrM9.push(parseInt(amount[3].integerValue))
         })
         for (let j = 0; j < arrM9.length; j++) {
@@ -996,7 +991,6 @@ export default function Main() {
       } catch (e) {
 
       }
-
 
       let arrG0 = []
       let arrG1 = []
@@ -1021,7 +1015,7 @@ export default function Main() {
       let sumG9 = 0
 
       try {
-        leaderboard[0][0].forEach((amount) => {
+        leaderboard[3][0].forEach((amount) => {
           arrG0.push(parseInt(amount[3].integerValue))
         })
         for (let a = 0; a < arrG0.length; a++) {
@@ -1031,7 +1025,7 @@ export default function Main() {
 
       }
       try {
-        leaderboard[0][1].forEach((amount) => {
+        leaderboard[3][1].forEach((amount) => {
           arrG1.push(parseInt(amount[3].integerValue))
         })
         for (let b = 0; b < arrG1.length; b++) {
@@ -1041,7 +1035,7 @@ export default function Main() {
 
       }
       try {
-        leaderboard[0][2].forEach((amount) => {
+        leaderboard[3][2].forEach((amount) => {
           arrG2.push(parseInt(amount[3].integerValue))
         })
         for (let c = 0; c < arrG2.length; c++) {
@@ -1051,7 +1045,7 @@ export default function Main() {
 
       }
       try {
-        leaderboard[0][3].forEach((amount) => {
+        leaderboard[3][3].forEach((amount) => {
           arrG3.push(parseInt(amount[3].integerValue))
         })
         for (let d = 0; d < arrG3.length; d++) {
@@ -1061,7 +1055,7 @@ export default function Main() {
 
       }
       try {
-        leaderboard[0][4].forEach((amount) => {
+        leaderboard[3][4].forEach((amount) => {
           arrG4.push(parseInt(amount[3].integerValue))
         })
         for (let e = 0; e < arrG4.length; e++) {
@@ -1071,7 +1065,7 @@ export default function Main() {
 
       }
       try {
-        leaderboard[0][5].forEach((amount) => {
+        leaderboard[3][5].forEach((amount) => {
           arrG5.push(parseInt(amount[3].integerValue))
         })
         for (let f = 0; f < arrG5.length; f++) {
@@ -1081,7 +1075,7 @@ export default function Main() {
 
       }
       try {
-        leaderboard[0][6].forEach((amount) => {
+        leaderboard[3][6].forEach((amount) => {
           arrG6.push(parseInt(amount[3].integerValue))
         })
         for (let g = 0; g < arrG6.length; g++) {
@@ -1091,7 +1085,7 @@ export default function Main() {
 
       }
       try {
-        leaderboard[0][7].forEach((amount) => {
+        leaderboard[3][7].forEach((amount) => {
           arrG7.push(parseInt(amount[3].integerValue))
         })
         for (let h = 0; h < arrG7.length; h++) {
@@ -1101,7 +1095,7 @@ export default function Main() {
 
       }
       try {
-        leaderboard[0][8].forEach((amount) => {
+        leaderboard[3][8].forEach((amount) => {
           arrG8.push(parseInt(amount[3].integerValue))
         })
         for (let i = 0; i < arrG8.length; i++) {
@@ -1111,7 +1105,7 @@ export default function Main() {
 
       }
       try {
-        leaderboard[0][9].forEach((amount) => {
+        leaderboard[3][9].forEach((amount) => {
           arrG9.push(parseInt(amount[3].integerValue))
         })
         for (let j = 0; j < arrG9.length; j++) {
@@ -1122,69 +1116,70 @@ export default function Main() {
       }
 
       try {
-        dayTopAmount.push([leaderboard[0][0][0][0].stringValue, leaderboard[0][0][0][2].stringValue, sumD0])
-        dayTopAmount.push([leaderboard[0][1][0][0].stringValue, leaderboard[0][1][0][2].stringValue, sumD1])
-        dayTopAmount.push([leaderboard[0][2][0][0].stringValue, leaderboard[0][2][0][2].stringValue, sumD2])
-        dayTopAmount.push([leaderboard[0][3][0][0].stringValue, leaderboard[0][3][0][2].stringValue, sumD3])
-        dayTopAmount.push([leaderboard[0][4][0][0].stringValue, leaderboard[0][4][0][2].stringValue, sumD4])
-        dayTopAmount.push([leaderboard[0][5][0][0].stringValue, leaderboard[0][5][0][2].stringValue, sumD5])
-        dayTopAmount.push([leaderboard[0][6][0][0].stringValue, leaderboard[0][6][0][2].stringValue, sumD6])
-        dayTopAmount.push([leaderboard[0][7][0][0].stringValue, leaderboard[0][7][0][2].stringValue, sumD7])
-        dayTopAmount.push([leaderboard[0][8][0][0].stringValue, leaderboard[0][8][0][2].stringValue, sumD8])
-        dayTopAmount.push([leaderboard[0][9][0][0].stringValue, leaderboard[0][9][0][2].stringValue, sumD9])
+        dayTopAmount.push([leaderboard[0][0][0][0].stringValue, leaderboard[0][0][0][1].stringValue, leaderboard[0][0][0][2].stringValue, sumD0])
+        dayTopAmount.push([leaderboard[0][1][0][0].stringValue, leaderboard[0][1][0][1].stringValue, leaderboard[0][1][0][2].stringValue, sumD1])
+        dayTopAmount.push([leaderboard[0][2][0][0].stringValue, leaderboard[0][2][0][1].stringValue, leaderboard[0][2][0][2].stringValue, sumD2])
+        dayTopAmount.push([leaderboard[0][3][0][0].stringValue, leaderboard[0][3][0][1].stringValue, leaderboard[0][3][0][2].stringValue, sumD3])
+        dayTopAmount.push([leaderboard[0][4][0][0].stringValue, leaderboard[0][4][0][1].stringValue, leaderboard[0][4][0][2].stringValue, sumD4])
+        dayTopAmount.push([leaderboard[0][5][0][0].stringValue, leaderboard[0][5][0][1].stringValue, leaderboard[0][5][0][2].stringValue, sumD5])
+        dayTopAmount.push([leaderboard[0][6][0][0].stringValue, leaderboard[0][6][0][1].stringValue, leaderboard[0][6][0][2].stringValue, sumD6])
+        dayTopAmount.push([leaderboard[0][7][0][0].stringValue, leaderboard[0][7][0][1].stringValue, leaderboard[0][7][0][2].stringValue, sumD7])
+        dayTopAmount.push([leaderboard[0][8][0][0].stringValue, leaderboard[0][8][0][1].stringValue, leaderboard[0][8][0][2].stringValue, sumD8])
+        dayTopAmount.push([leaderboard[0][9][0][0].stringValue, leaderboard[0][9][0][1].stringValue, leaderboard[0][9][0][2].stringValue, sumD9])
       } catch (e) {
 
       }
       try {
-        weekTopAmount.push([leaderboard[1][0][0][0].stringValue, leaderboard[1][0][0][2].stringValue, sumW0])
-        weekTopAmount.push([leaderboard[1][1][0][0].stringValue, leaderboard[1][1][0][2].stringValue, sumW1])
-        weekTopAmount.push([leaderboard[1][2][0][0].stringValue, leaderboard[1][2][0][2].stringValue, sumW2])
-        weekTopAmount.push([leaderboard[1][3][0][0].stringValue, leaderboard[1][3][0][2].stringValue, sumW3])
-        weekTopAmount.push([leaderboard[1][4][0][0].stringValue, leaderboard[1][4][0][2].stringValue, sumW4])
-        weekTopAmount.push([leaderboard[1][5][0][0].stringValue, leaderboard[1][5][0][2].stringValue, sumW5])
-        weekTopAmount.push([leaderboard[1][6][0][0].stringValue, leaderboard[1][6][0][2].stringValue, sumW6])
-        weekTopAmount.push([leaderboard[1][7][0][0].stringValue, leaderboard[1][7][0][2].stringValue, sumW7])
-        weekTopAmount.push([leaderboard[1][8][0][0].stringValue, leaderboard[1][8][0][2].stringValue, sumW8])
-        weekTopAmount.push([leaderboard[1][9][0][0].stringValue, leaderboard[1][9][0][2].stringValue, sumW9])
+        weekTopAmount.push([leaderboard[1][0][0][0].stringValue, leaderboard[1][0][0][1].stringValue, leaderboard[1][0][0][2].stringValue, sumW0])
+        weekTopAmount.push([leaderboard[1][1][0][0].stringValue, leaderboard[1][1][0][1].stringValue, leaderboard[1][1][0][2].stringValue, sumW1])
+        weekTopAmount.push([leaderboard[1][2][0][0].stringValue, leaderboard[1][2][0][1].stringValue, leaderboard[1][2][0][2].stringValue, sumW2])
+        weekTopAmount.push([leaderboard[1][3][0][0].stringValue, leaderboard[1][3][0][1].stringValue, leaderboard[1][3][0][2].stringValue, sumW3])
+        weekTopAmount.push([leaderboard[1][4][0][0].stringValue, leaderboard[1][4][0][1].stringValue, leaderboard[1][4][0][2].stringValue, sumW4])
+        weekTopAmount.push([leaderboard[1][5][0][0].stringValue, leaderboard[1][5][0][1].stringValue, leaderboard[1][5][0][2].stringValue, sumW5])
+        weekTopAmount.push([leaderboard[1][6][0][0].stringValue, leaderboard[1][6][0][1].stringValue, leaderboard[1][6][0][2].stringValue, sumW6])
+        weekTopAmount.push([leaderboard[1][7][0][0].stringValue, leaderboard[1][7][0][1].stringValue, leaderboard[1][7][0][2].stringValue, sumW7])
+        weekTopAmount.push([leaderboard[1][8][0][0].stringValue, leaderboard[1][8][0][1].stringValue, leaderboard[1][8][0][2].stringValue, sumW8])
+        weekTopAmount.push([leaderboard[1][9][0][0].stringValue, leaderboard[1][9][0][1].stringValue, leaderboard[1][9][0][2].stringValue, sumW9])
       } catch (e) {
 
       }
       try {
-        monthTopAmount.push([leaderboard[2][0][0][0].stringValue, leaderboard[2][0][0][2].stringValue, sumM0])
-        monthTopAmount.push([leaderboard[2][1][0][0].stringValue, leaderboard[2][1][0][2].stringValue, sumM1])
-        monthTopAmount.push([leaderboard[2][2][0][0].stringValue, leaderboard[2][2][0][2].stringValue, sumM2])
-        monthTopAmount.push([leaderboard[2][3][0][0].stringValue, leaderboard[2][3][0][2].stringValue, sumM3])
-        monthTopAmount.push([leaderboard[2][4][0][0].stringValue, leaderboard[2][4][0][2].stringValue, sumM4])
-        monthTopAmount.push([leaderboard[2][5][0][0].stringValue, leaderboard[2][5][0][2].stringValue, sumM5])
-        monthTopAmount.push([leaderboard[2][6][0][0].stringValue, leaderboard[2][6][0][2].stringValue, sumM6])
-        monthTopAmount.push([leaderboard[2][7][0][0].stringValue, leaderboard[2][7][0][2].stringValue, sumM7])
-        monthTopAmount.push([leaderboard[2][8][0][0].stringValue, leaderboard[2][8][0][2].stringValue, sumM8])
-        monthTopAmount.push([leaderboard[2][9][0][0].stringValue, leaderboard[2][9][0][2].stringValue, sumM9])
+        monthTopAmount.push([leaderboard[2][0][0][0].stringValue, leaderboard[2][0][0][1].stringValue, leaderboard[2][0][0][2].stringValue, sumM0])
+        monthTopAmount.push([leaderboard[2][1][0][0].stringValue, leaderboard[2][1][0][1].stringValue, leaderboard[2][1][0][2].stringValue, sumM1])
+        monthTopAmount.push([leaderboard[2][2][0][0].stringValue, leaderboard[2][2][0][1].stringValue, leaderboard[2][2][0][2].stringValue, sumM2])
+        monthTopAmount.push([leaderboard[2][3][0][0].stringValue, leaderboard[2][3][0][1].stringValue, leaderboard[2][3][0][2].stringValue, sumM3])
+        monthTopAmount.push([leaderboard[2][4][0][0].stringValue, leaderboard[2][4][0][1].stringValue, leaderboard[2][4][0][2].stringValue, sumM4])
+        monthTopAmount.push([leaderboard[2][5][0][0].stringValue, leaderboard[2][5][0][1].stringValue, leaderboard[2][5][0][2].stringValue, sumM5])
+        monthTopAmount.push([leaderboard[2][6][0][0].stringValue, leaderboard[2][6][0][1].stringValue, leaderboard[2][6][0][2].stringValue, sumM6])
+        monthTopAmount.push([leaderboard[2][7][0][0].stringValue, leaderboard[2][7][0][1].stringValue, leaderboard[2][7][0][2].stringValue, sumM7])
+        monthTopAmount.push([leaderboard[2][8][0][0].stringValue, leaderboard[2][8][0][1].stringValue, leaderboard[2][8][0][2].stringValue, sumM8])
+        monthTopAmount.push([leaderboard[2][9][0][0].stringValue, leaderboard[2][9][0][1].stringValue, leaderboard[2][9][0][2].stringValue, sumM9])
       } catch (e) {
 
       }
       try {
-        globalTopAmount.push([leaderboard[3][0][0][0].stringValue, leaderboard[3][0][0][2].stringValue, sumG0])
-        globalTopAmount.push([leaderboard[3][1][0][0].stringValue, leaderboard[3][1][0][2].stringValue, sumG1])
-        globalTopAmount.push([leaderboard[3][2][0][0].stringValue, leaderboard[3][2][0][2].stringValue, sumG2])
-        globalTopAmount.push([leaderboard[3][3][0][0].stringValue, leaderboard[3][3][0][2].stringValue, sumG3])
-        globalTopAmount.push([leaderboard[3][4][0][0].stringValue, leaderboard[3][4][0][2].stringValue, sumG4])
-        globalTopAmount.push([leaderboard[3][5][0][0].stringValue, leaderboard[3][5][0][2].stringValue, sumG5])
-        globalTopAmount.push([leaderboard[3][6][0][0].stringValue, leaderboard[3][6][0][2].stringValue, sumG6])
-        globalTopAmount.push([leaderboard[3][7][0][0].stringValue, leaderboard[3][7][0][2].stringValue, sumG7])
-        globalTopAmount.push([leaderboard[3][8][0][0].stringValue, leaderboard[3][8][0][2].stringValue, sumG8])
-        globalTopAmount.push([leaderboard[3][9][0][0].stringValue, leaderboard[3][9][0][2].stringValue, sumG9])
+        globalTopAmount.push([leaderboard[3][0][0][0].stringValue, leaderboard[3][0][0][1].stringValue, leaderboard[3][0][0][2].stringValue, sumG0])
+        globalTopAmount.push([leaderboard[3][1][0][0].stringValue, leaderboard[3][1][0][1].stringValue, leaderboard[3][1][0][2].stringValue, sumG1])
+        globalTopAmount.push([leaderboard[3][2][0][0].stringValue, leaderboard[3][2][0][1].stringValue, leaderboard[3][2][0][2].stringValue, sumG2])
+        globalTopAmount.push([leaderboard[3][3][0][0].stringValue, leaderboard[3][3][0][1].stringValue, leaderboard[3][3][0][2].stringValue, sumG3])
+        globalTopAmount.push([leaderboard[3][4][0][0].stringValue, leaderboard[3][4][0][1].stringValue, leaderboard[3][4][0][2].stringValue, sumG4])
+        globalTopAmount.push([leaderboard[3][5][0][0].stringValue, leaderboard[3][5][0][1].stringValue, leaderboard[3][5][0][2].stringValue, sumG5])
+        globalTopAmount.push([leaderboard[3][6][0][0].stringValue, leaderboard[3][6][0][1].stringValue, leaderboard[3][6][0][2].stringValue, sumG6])
+        globalTopAmount.push([leaderboard[3][7][0][0].stringValue, leaderboard[3][7][0][1].stringValue, leaderboard[3][7][0][2].stringValue, sumG7])
+        globalTopAmount.push([leaderboard[3][8][0][0].stringValue, leaderboard[3][8][0][1].stringValue, leaderboard[3][8][0][2].stringValue, sumG8])
+        globalTopAmount.push([leaderboard[3][9][0][0].stringValue, leaderboard[3][9][0][1].stringValue, leaderboard[3][9][0][2].stringValue, sumG9])
       } catch (e) {
 
       }
-      topAmount.day = dayTopAmount
-      topAmount.week = weekTopAmount
-      topAmount.month = monthTopAmount
-      topAmount.global = globalTopAmount
-      console.table(topAmount.day.sort(((a, b) => b[2] - a[2])));
-      console.table(topAmount.week.sort(((a, b) => b[2] - a[2])));
-      console.table(topAmount.month.sort(((a, b) => b[2] - a[2])));
-      console.table(topAmount.global.sort(((a, b) => b[2] - a[2])));
+      topAmount.day = dayTopAmount.sort(((a, b) => b[2] - a[2]));
+      topAmount.week = weekTopAmount.sort(((a, b) => b[2] - a[2]));
+      topAmount.month = monthTopAmount.sort(((a, b) => b[2] - a[2]));
+      topAmount.global = globalTopAmount.sort(((a, b) => b[2] - a[2]));
+
+      let gameTops = {}
+      gameTops.game = topGames
+      gameTops.amount = topAmount
+      setLeaderboard(gameTops)
     }
 
     readLeaderboard()
@@ -1345,11 +1340,11 @@ export default function Main() {
         </ButtonGroup>
         {liveBets ?
           <>
+            <p className="d-flex justify-content-end mt-3 me-4">{globalGames + " Total Bets"}</p>
             <LiveBets
               historyPlays={historyPlays}
               unixTimeStamp={unixTimeStamp}
             />
-            <p className="d-flex justify-content-end mt-3 me-4">{globalGames + " Total Bets"}</p>
           </>
           : ""}
         {mostPlays ?
@@ -1360,31 +1355,31 @@ export default function Main() {
               <Button onClick={month} className={`btn-recurrence ${monthlyGame ? 'active' : ''}`}>Monthly</Button>
               <Button onClick={all} className={`btn-recurrence ${globalGame ? 'active' : ''}`}>Global</Button>
             </ButtonGroup>
-            {dailyGame ?
+            {dailyGame && leaderboard.game ?
               < MostPlays
-                leaderboard={leaderboard.day}
+                leaderboard={leaderboard.game.day}
               />
               : ""}
             {weeklyGame ?
               < MostPlays
-                leaderboard={leaderboard.week}
+                leaderboard={leaderboard.game.week}
               />
               : ""}
             {monthlyGame ?
               < MostPlays
-                leaderboard={leaderboard.month}
+                leaderboard={leaderboard.game.month}
               />
               : ""}
             {globalGame ?
               < MostPlays
-                leaderboard={leaderboard.all}
+                leaderboard={leaderboard.game.global}
               />
               : ""}
           </>
           :
           ""
         }
-        {/* {mostAmount ?
+        {mostAmount ?
           <>
             <ButtonGroup className='float-end'>
               <Button onClick={day} className={`btn-recurrence ${dailyAmount ? 'active' : ''}`}>Daily</Button>
@@ -1392,30 +1387,30 @@ export default function Main() {
               <Button onClick={month} className={`btn-recurrence ${monthlyAmount ? 'active' : ''}`}>Monthly</Button>
               <Button onClick={all} className={`btn-recurrence ${globalAmount ? 'active' : ''}`}>Global</Button>
             </ButtonGroup>
-            {dailyAmount ?
+            {dailyAmount && leaderboard.amount?
               < MostAmount
-                leaderboard={leaderboard.day}
+                leaderboard={leaderboard.amount.day}
               />
               : ""}
             {weeklyAmount ?
               < MostAmount
-                leaderboard={leaderboard.month}
+                leaderboard={leaderboard.amount.week}
               />
               : ""}
             {monthlyAmount ?
               < MostAmount
-                leaderboard={leaderboard.week}
+                leaderboard={leaderboard.amount.month}
               />
               : ""}
             {globalAmount ?
               < MostAmount
-                leaderboard={leaderboard.all}
+                leaderboard={leaderboard.amount.global}
               />
               : ""}
           </>
           :
           ""
-        } */}
+        }
       </div>
     </>
   );

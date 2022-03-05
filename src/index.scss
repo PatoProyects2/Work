@@ -1,5 +1,6 @@
 /* Generic CSS */
 
+@import url("https://fonts.googleapis.com/css?family=Nunito:400,900");
 body {
     margin: 0;
     padding: 0;
@@ -472,3 +473,55 @@ ul {
         width: 100%;
     }
 }
+
+
+/* ABOUT */
+
+.heading-black {
+    font-weight: 800;
+}
+
+
+/* END ABOUT */
+
+
+/* ROADMAP */
+
+.indexedStep {
+    color: white;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    font-size: 10px;
+    line-height: 120%;
+    background-color: rgb(216, 216, 216);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: .8s;
+}
+
+.indexedStep i {
+    position: absolute;
+}
+
+.indexedStep.accomplished {
+    transition: .8s;
+}
+
+.indexedStep.current {
+    font-weight: 600;
+}
+
+.roadmap {
+    max-width: 700px;
+    margin: 50px auto;
+}
+
+.roadmap-label {
+    position: relative;
+    text-align: center;
+    top: 30px;
+}
+
+//   #78350f

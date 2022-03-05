@@ -8,7 +8,7 @@ export function MainLayout() {
   return (
     <>
       <header>
-        <Navbar navType="main" />
+        <Navbar navType="rps" />
       </header>
       <main className="wrapper">
         <section>

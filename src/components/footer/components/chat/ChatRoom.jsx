@@ -1,11 +1,17 @@
 import React, { useEffect, useState, useRef } from "react"
 import { addDoc, onSnapshot, orderBy, collection, serverTimestamp, query } from "firebase/firestore";
+import { Dropdown, DropdownMenu, DropdownToggle } from 'reactstrap'
 import { auth, db } from "../../../../firebase/firesbaseConfig";
 import ChatMessage from './ChatMessage';
 
 function ChatRoom() {
+  const [dropdown, setDropdown] = useState(true);
   const [messages, setMessages] = useState([])
   const [formValue, setFormValue] = useState('')
+
+  const toggleMenu = () => {
+    setDropdown(!dropdown);
+  }
   // console.log(messages)
   useEffect(() => {
     const q = query(collection(db, "messages"), orderBy("createdAt", "asc"))
@@ -42,17 +48,24 @@ function ChatRoom() {
 
   return (
     <>
-      <main>
-        <div>
-          {messages && messages.map(msg => <ChatMessage key={msg.id} {...msg} auth={auth} />)}
-        </div>
-        <div ref={messagesEndRef}></div>
+      <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="lg" className="my-2">
+        <DropdownToggle caret color='danger'>
+          CHAT
+        </DropdownToggle>
+        <DropdownMenu >
+          <main>
+            <div>
+              {messages && messages.map(msg => <ChatMessage key={msg.id} {...msg} auth={auth} />)}
+            </div>
+            <div ref={messagesEndRef}></div>
 
-      </main>
-      <form onSubmit={sendMessage}>
-        <input value={formValue} onChange={(e) => setFormValue(e.target.value)} placeholder="Type something..." />
-        <button type="submit">🕊️</button>
-      </form>
+          </main>
+          <form onSubmit={sendMessage}>
+            <input value={formValue} onChange={(e) => setFormValue(e.target.value)} placeholder="Type something..." />
+            <button type="submit">🕊️</button>
+          </form>
+        </DropdownMenu>
+      </Dropdown>
     </>
   )
 }

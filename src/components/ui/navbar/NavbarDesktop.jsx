@@ -4,8 +4,17 @@ import AccountFirebase from '../../layout/Authentication';
 import { Navbar, Offcanvas, Nav, NavbarBrand, OffcanvasHeader, OffcanvasBody, Button } from 'reactstrap';
 import { ThemeSwitcher } from '../themeSwitcher/ThemeSwitcher';
 import { useMatchMedia } from '../../../hooks/useMatchMedia';
+import HomeIcon from '../../../assets/imgs/ic-home.png';
+import RPSGameIcon from '../../../assets/imgs/ic-rps-game.png';
+import NFTIcon from '../../../assets/imgs/ic-nfts.png';
+import FairPlayIcon from '../../../assets/imgs/ic-fair-play.png';
+import DemoIcon from '../../../assets/imgs/ic-demo.png';
+import FAQIcon from '../../../assets/imgs/ic-faq.png';
+import RewardsIcon from '../../../assets/imgs/ic-rewards.png';
+import TwitterIcon from '../../../assets/imgs/ic-twitter.png';
+import DiscordIcon from '../../../assets/imgs/ic-discord.png';
 
-export const NavbarDesktop = ({ handleFaqModal, handleHtpModal, navType }) => {
+export const NavbarDesktop = ({ handleFaqModal, handleHtpModal, handleRpsModal, navType }) => {
 
     const [visitors, setVisitors] = useState(0);
     const [showOffcanvas, setShowOffCanvas] = useState(false);
@@ -27,12 +36,10 @@ export const NavbarDesktop = ({ handleFaqModal, handleHtpModal, navType }) => {
                         className='mx-2'>
                         <i className="fas fa-bars"></i>
                     </Button>
-                    <NavbarBrand href='/'>
-                        CLUB GAMES
-                    </NavbarBrand>
+                    <NavLink className='d-flex align-items-center' to='/'>CLUB GAMES</NavLink>
                 </div>
 
-                <div className='d-flex align-items-center'>
+                <div className='d-flex align-items-center gap-2'>
                     <ThemeSwitcher />
                     {!isMobileResolution && <AccountFirebase />}
                 </div>
@@ -55,58 +62,57 @@ export const NavbarDesktop = ({ handleFaqModal, handleHtpModal, navType }) => {
                                 onClick={() => setShowOffCanvas(false)}
                                 style={{ margin: 'auto' }}
                                 className={({ isActive }) => "nav-item nav-link nav-link-primary" + (isActive ? ' active' : '')} to="/">
-                                Home
+                                <img src={HomeIcon} width='24' height='24' className='ic-color me-2' alt="Home" /> Home
                             </NavLink>
                             <NavLink
                                 onClick={() => setShowOffCanvas(false)}
                                 style={{ margin: 'auto' }}
                                 className={({ isActive }) => "nav-item nav-link nav-link-primary" + (isActive ? ' active' : '')} to="/rps">
-                                Rps Game
+                                <img src={RPSGameIcon} width='24' height='24' className='ic-color me-2' alt="RPS Game" /> RPS Game
                             </NavLink>
                             <NavLink
                                 onClick={() => setShowOffCanvas(false)}
                                 style={{ margin: 'auto' }}
                                 className={({ isActive }) => "nav-item nav-link nav-link-primary" + (isActive ? ' active' : '')} to="/nfts">
-                                NFTs
+                                <img src={NFTIcon} width='24' height='24' className='ic-color me-2' alt="NFTs" /> NFTs
                             </NavLink>
                             <NavLink
                                 onClick={() => setShowOffCanvas(false)}
                                 style={{ margin: 'auto' }}
                                 className={({ isActive }) => "nav-item nav-link nav-link-primary" + (isActive ? ' active' : '')} to="/fair-play">
-                                Fair Play
-                            </NavLink>
+                                <img src={FairPlayIcon} width='24' height='24' className='ic-color me-2' alt="Fair Play" /> Fair Play
+                            </NavLink>                                                     
+                            {
+                                navType === "main" && (
+                                    <NavLink
+                                        onClick={() => setShowOffCanvas(false)}
+                                        style={{ margin: 'auto' }}
+                                        className={({ isActive }) => "nav-item nav-link nav-link-primary" + (isActive ? ' active' : '')} to="/faq">
+                                        <img src={FAQIcon} width='24' height='24' className='ic-color me-1' alt="FAQ" /> FAQ
+                                    </NavLink>
+                                )                                   
+                            }
+                            {
+                                navType === "rps" && (
+                                    <>
+                                        <NavLink
+                                            onClick={() => setShowOffCanvas(false)}
+                                            style={{ margin: 'auto' }}
+                                            className={({ isActive }) => "nav-item nav-link nav-link-primary d-flex align-items-center" + (isActive ? ' active' : '')} to="/demo">
+                                            <img src={DemoIcon} width='24' height='24' className='ic-color me-2' alt="RPS Demo" /> DEMO
+                                        </NavLink>
+                                        <button className="btn btn-transparent nav-item nav-link nav-link-primary mx-auto" style={{ width: "100px"}} onClick={handleFaqModal}><img src={FAQIcon} width='24' height='24' className='ic-color me-1' alt="FAQ" /> FAQ</button>
+                                        <button className="btn btn-transparent nav-item nav-link nav-link-primary mx-auto" style={{ width: "150px"}} onClick={handleHtpModal}>How To Play</button>
+                                        <button className="btn btn-transparent nav-item nav-link nav-link-primary mx-auto" style={{ width: "200px"}} onClick={handleRpsModal}>RPS Responsibly</button>
+                                    </>
+                                )
+                            }
                             <NavLink
                                 onClick={() => setShowOffCanvas(false)}
                                 style={{ margin: 'auto' }}
                                 className={({ isActive }) => "nav-item nav-link nav-link-primary" + (isActive ? ' active' : '')} to="/about">
                                 About
-                            </NavLink>
-                            <NavLink
-                                onClick={() => setShowOffCanvas(false)}
-                                style={{ margin: 'auto' }}
-                                className={({ isActive }) => "nav-item nav-link nav-link-primary" + (isActive ? ' active' : '')} to="/demo">
-                                DEMO
-                            </NavLink>
-                            {
-                                navType === "main" ? (
-                                    <NavLink
-                                        onClick={() => setShowOffCanvas(false)}
-                                        style={{ margin: 'auto' }}
-                                        className={({ isActive }) => "nav-item nav-link nav-link-primary" + (isActive ? ' active' : '')} to="/faq">
-                                        FAQ
-                                    </NavLink>
-                                )
-                                    :
-                                    (
-                                        <button className="btn btn-transparent" onClick={handleFaqModal}>FAQ</button>
-                                    )
-                            }
-                            {
-                                navType === "rps" && (
-                                    <button className="btn btn-transparent" onClick={handleHtpModal}>FAQ</button>
-                                )
-                            }
-
+                            </NavLink>   
                             <NavLink
                                 onClick={() => setShowOffCanvas(false)}
                                 style={{ margin: 'auto' }}
@@ -117,7 +123,7 @@ export const NavbarDesktop = ({ handleFaqModal, handleHtpModal, navType }) => {
                                 onClick={() => setShowOffCanvas(false)}
                                 style={{ margin: 'auto' }}
                                 className={({ isActive }) => "nav-item nav-link nav-link-secondary" + (isActive ? ' active' : '')} to="/rewards">
-                                Rewards
+                                <img src={RewardsIcon} width='20' height='20' className='ic-color me-2' alt="Rewards" />Rewards
                             </NavLink>
                         </Nav>
                         <div className="d-flex flex-row gap-2 justify-content-center mt-3">

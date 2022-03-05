@@ -8,7 +8,7 @@ export default function HistoryGamesModal(props) {
                     <ul className="list-group">
                         {props.historyPlays[0] !== undefined && props.historyPlays[0].createdAt ?
                             <>
-                                {(props.unixTimeStamp - props.historyPlays[0].createdAt.seconds) < 60 ?
+                                {(props.unixTimeStamp - props.historyPlays[0].createdAt) < 60 ?
                                     <>
                                         <li className="d-flex list-group-item list-group-item-action">
                                             <div className="title mb-auto ms-2">
@@ -21,8 +21,8 @@ export default function HistoryGamesModal(props) {
                                                 {props.historyPlays[0].streak > 1 ? props.historyPlays[0].streak + " times " : ""}
                                             </div>
                                             <small className="ms-auto mt-auto time-in-row">
-                                                {(props.unixTimeStamp - props.historyPlays[0].createdAt.seconds) <= 0 ?
-                                                    " now" : (props.unixTimeStamp - props.historyPlays[0].createdAt.seconds) + " seconds ago"}
+                                                {(props.unixTimeStamp - props.historyPlays[0].createdAt) <= 0 ?
+                                                    " now" : (props.unixTimeStamp - props.historyPlays[0].createdAt) + " seconds ago"}
                                             </small>
                                         </li>
                                     </>
@@ -33,7 +33,7 @@ export default function HistoryGamesModal(props) {
                             : ""}
                         {props.historyPlays[1] !== undefined && props.historyPlays[1].createdAt ?
                             <>
-                                {(props.unixTimeStamp - props.historyPlays[1].createdAt.seconds) < 60 ?
+                                {(props.unixTimeStamp - props.historyPlays[1].createdAt) < 60 ?
                                     <>
                                         <li className="d-flex list-group-item list-group-item-action">
                                             <div className="title mb-auto ms-2">
@@ -46,8 +46,8 @@ export default function HistoryGamesModal(props) {
                                                 {props.historyPlays[1].streak > 1 ? props.historyPlays[1].streak + " times " : ""}
                                             </div>
                                             <small className="ms-auto mt-auto time-in-row">
-                                                {(props.unixTimeStamp - props.historyPlays[1].createdAt.seconds) <= 0 ?
-                                                    " now" : (props.unixTimeStamp - props.historyPlays[1].createdAt.seconds) + " seconds ago"}
+                                                {(props.unixTimeStamp - props.historyPlays[1].createdAt) <= 0 ?
+                                                    " now" : (props.unixTimeStamp - props.historyPlays[1].createdAt) + " seconds ago"}
                                             </small>
                                         </li>
                                     </>
@@ -58,7 +58,7 @@ export default function HistoryGamesModal(props) {
                             : ""}
                         {props.historyPlays[2] !== undefined && props.historyPlays[2].createdAt ?
                             <>
-                                {(props.unixTimeStamp - props.historyPlays[2].createdAt.seconds) < 60 ?
+                                {(props.unixTimeStamp - props.historyPlays[2].createdAt) < 60 ?
                                     <>
                                         <li className="d-flex list-group-item list-group-item-action">
                                             <div className="title mb-auto ms-2">
@@ -71,8 +71,8 @@ export default function HistoryGamesModal(props) {
                                                 {props.historyPlays[2].streak > 1 ? props.historyPlays[2].streak + " times " : ""}
                                             </div>
                                             <small className="ms-auto mt-auto time-in-row">
-                                                {(props.unixTimeStamp - props.historyPlays[2].createdAt.seconds) <= 0 ?
-                                                    " now" : (props.unixTimeStamp - props.historyPlays[2].createdAt.seconds) + " seconds ago"}
+                                                {(props.unixTimeStamp - props.historyPlays[2].createdAt) <= 0 ?
+                                                    " now" : (props.unixTimeStamp - props.historyPlays[2].createdAt) + " seconds ago"}
                                             </small>
                                         </li>
                                     </>
@@ -83,7 +83,7 @@ export default function HistoryGamesModal(props) {
                             : ""}
                         {props.historyPlays[3] !== undefined && props.historyPlays[3].createdAt ?
                             <>
-                                {(props.unixTimeStamp - props.historyPlays[3].createdAt.seconds) < 60 ?
+                                {(props.unixTimeStamp - props.historyPlays[3].createdAt) < 60 ?
                                     <>
                                         <li className="d-flex list-group-item list-group-item-action">
                                             <div className="title mb-auto ms-2">
@@ -96,8 +96,8 @@ export default function HistoryGamesModal(props) {
                                                 {props.historyPlays[3].streak > 1 ? props.historyPlays[3].streak + " times " : ""}
                                             </div>
                                             <small className="ms-auto mt-auto time-in-row">
-                                                {(props.unixTimeStamp - props.historyPlays[3].createdAt.seconds) <= 0 ?
-                                                    " now" : (props.unixTimeStamp - props.historyPlays[3].createdAt.seconds) + " seconds ago"}
+                                                {(props.unixTimeStamp - props.historyPlays[3].createdAt) <= 0 ?
+                                                    " now" : (props.unixTimeStamp - props.historyPlays[3].createdAt) + " seconds ago"}
                                             </small>
                                         </li>
                                     </>
@@ -108,7 +108,7 @@ export default function HistoryGamesModal(props) {
                             : ""}
                         {props.historyPlays[4] !== undefined && props.historyPlays[4].createdAt ?
                             <>
-                                {(props.unixTimeStamp - props.historyPlays[4].createdAt.seconds) < 60 ?
+                                {(props.unixTimeStamp - props.historyPlays[4].createdAt) < 60 ?
                                     <>
                                         <li className="d-flex list-group-item list-group-item-action">
                                             <div className="title mb-auto ms-2">
@@ -121,8 +121,8 @@ export default function HistoryGamesModal(props) {
                                                 {props.historyPlays[4].streak > 1 ? props.historyPlays[4].streak + " times " : ""}
                                             </div>
                                             <small className="ms-auto mt-auto time-in-row">
-                                                {(props.unixTimeStamp - props.historyPlays[4].createdAt.seconds) <= 0 ?
-                                                    " now" : (props.unixTimeStamp - props.historyPlays[4].createdAt.seconds) + " seconds ago"}
+                                                {(props.unixTimeStamp - props.historyPlays[4].createdAt) <= 0 ?
+                                                    " now" : (props.unixTimeStamp - props.historyPlays[4].createdAt) + " seconds ago"}
                                             </small>
                                         </li>
                                     </>
@@ -133,7 +133,7 @@ export default function HistoryGamesModal(props) {
                             : ""}
                         {props.historyPlays[5] !== undefined && props.historyPlays[5].createdAt ?
                             <>
-                                {(props.unixTimeStamp - props.historyPlays[5].createdAt.seconds) < 60 ?
+                                {(props.unixTimeStamp - props.historyPlays[5].createdAt) < 60 ?
                                     <>
                                         <li className="d-flex list-group-item list-group-item-action">
                                             <div className="title mb-auto ms-2">
@@ -146,8 +146,8 @@ export default function HistoryGamesModal(props) {
                                                 {props.historyPlays[5].streak > 1 ? props.historyPlays[5].streak + " times " : ""}
                                             </div>
                                             <small className="ms-auto mt-auto time-in-row">
-                                                {(props.unixTimeStamp - props.historyPlays[5].createdAt.seconds) <= 0 ?
-                                                    " now" : (props.unixTimeStamp - props.historyPlays[5].createdAt.seconds) + " seconds ago"}
+                                                {(props.unixTimeStamp - props.historyPlays[5].createdAt) <= 0 ?
+                                                    " now" : (props.unixTimeStamp - props.historyPlays[5].createdAt) + " seconds ago"}
                                             </small>
                                         </li>
                                     </>
@@ -158,7 +158,7 @@ export default function HistoryGamesModal(props) {
                             : ""}
                         {props.historyPlays[6] !== undefined && props.historyPlays[6].createdAt ?
                             <>
-                                {(props.unixTimeStamp - props.historyPlays[6].createdAt.seconds) < 60 ?
+                                {(props.unixTimeStamp - props.historyPlays[6].createdAt) < 60 ?
                                     <>
                                         <li className="d-flex list-group-item list-group-item-action">
                                             <div className="title mb-auto ms-2">
@@ -171,8 +171,8 @@ export default function HistoryGamesModal(props) {
                                                 {props.historyPlays[6].streak > 1 ? props.historyPlays[6].streak + " times " : ""}
                                             </div>
                                             <small className="ms-auto mt-auto time-in-row">
-                                                {(props.unixTimeStamp - props.historyPlays[6].createdAt.seconds) <= 0 ?
-                                                    " now" : (props.unixTimeStamp - props.historyPlays[6].createdAt.seconds) + " seconds ago"}
+                                                {(props.unixTimeStamp - props.historyPlays[6].createdAt) <= 0 ?
+                                                    " now" : (props.unixTimeStamp - props.historyPlays[6].createdAt) + " seconds ago"}
                                             </small>
                                         </li>
                                     </>
@@ -183,7 +183,7 @@ export default function HistoryGamesModal(props) {
                             : ""}
                         {props.historyPlays[7] !== undefined && props.historyPlays[7].createdAt ?
                             <>
-                                {(props.unixTimeStamp - props.historyPlays[7].createdAt.seconds) < 60 ?
+                                {(props.unixTimeStamp - props.historyPlays[7].createdAt) < 60 ?
                                     <>
                                         <li className="d-flex list-group-item list-group-item-action">
                                             <div className="title mb-auto ms-2">
@@ -196,8 +196,8 @@ export default function HistoryGamesModal(props) {
                                                 {props.historyPlays[7].streak > 1 ? props.historyPlays[7].streak + " times " : ""}
                                             </div>
                                             <small className="ms-auto mt-auto time-in-row">
-                                                {(props.unixTimeStamp - props.historyPlays[7].createdAt.seconds) <= 0 ?
-                                                    " now" : (props.unixTimeStamp - props.historyPlays[7].createdAt.seconds) + " seconds ago"}
+                                                {(props.unixTimeStamp - props.historyPlays[7].createdAt) <= 0 ?
+                                                    " now" : (props.unixTimeStamp - props.historyPlays[7].createdAt) + " seconds ago"}
                                             </small>
                                         </li>
                                     </>
@@ -208,7 +208,7 @@ export default function HistoryGamesModal(props) {
                             : ""}
                         {props.historyPlays[8] !== undefined && props.historyPlays[8].createdAt ?
                             <>
-                                {(props.unixTimeStamp - props.historyPlays[8].createdAt.seconds) < 60 ?
+                                {(props.unixTimeStamp - props.historyPlays[8].createdAt) < 60 ?
                                     <>
                                         <li className="d-flex list-group-item list-group-item-action">
                                             <div className="title mb-auto ms-2">
@@ -221,8 +221,8 @@ export default function HistoryGamesModal(props) {
                                                 {props.historyPlays[8].streak > 1 ? props.historyPlays[8].streak + " times " : ""}
                                             </div>
                                             <small className="ms-auto mt-auto time-in-row">
-                                                {(props.unixTimeStamp - props.historyPlays[8].createdAt.seconds) <= 0 ?
-                                                    " now" : (props.unixTimeStamp - props.historyPlays[8].createdAt.seconds) + " seconds ago"}
+                                                {(props.unixTimeStamp - props.historyPlays[8].createdAt) <= 0 ?
+                                                    " now" : (props.unixTimeStamp - props.historyPlays[8].createdAt) + " seconds ago"}
                                             </small>
                                         </li>
                                     </>
@@ -233,7 +233,7 @@ export default function HistoryGamesModal(props) {
                             : ""}
                         {props.historyPlays[9] !== undefined && props.historyPlays[9].createdAt ?
                             <>
-                                {(props.unixTimeStamp - props.historyPlays[9].createdAt.seconds) < 60 ?
+                                {(props.unixTimeStamp - props.historyPlays[9].createdAt) < 60 ?
                                     <>
                                         <li className="d-flex list-group-item list-group-item-action">
                                             <div className="title mb-auto ms-2">
@@ -246,8 +246,8 @@ export default function HistoryGamesModal(props) {
                                                 {props.historyPlays[9].streak > 1 ? props.historyPlays[9].streak + " times " : ""}
                                             </div>
                                             <small className="ms-auto mt-auto time-in-row">
-                                                {(props.unixTimeStamp - props.historyPlays[9].createdAt.seconds) <= 0 ?
-                                                    " now" : (props.unixTimeStamp - props.historyPlays[9].createdAt.seconds) + " seconds ago"}
+                                                {(props.unixTimeStamp - props.historyPlays[9].createdAt) <= 0 ?
+                                                    " now" : (props.unixTimeStamp - props.historyPlays[9].createdAt) + " seconds ago"}
                                             </small>
                                         </li>
                                     </>
@@ -258,7 +258,7 @@ export default function HistoryGamesModal(props) {
                             : ""}
                         {props.historyPlays[10] !== undefined && props.historyPlays[10].createdAt ?
                             <>
-                                {(props.unixTimeStamp - props.historyPlays[10].createdAt.seconds) < 60 ?
+                                {(props.unixTimeStamp - props.historyPlays[10].createdAt) < 60 ?
                                     <>
                                         <li className="d-flex list-group-item list-group-item-action">
                                             <div className="title mb-auto ms-2">
@@ -271,8 +271,8 @@ export default function HistoryGamesModal(props) {
                                                 {props.historyPlays[10].streak > 1 ? props.historyPlays[10].streak + " times " : ""}
                                             </div>
                                             <small className="ms-auto mt-auto time-in-row">
-                                                {(props.unixTimeStamp - props.historyPlays[10].createdAt.seconds) <= 0 ?
-                                                    " now" : (props.unixTimeStamp - props.historyPlays[10].createdAt.seconds) + " seconds ago"}
+                                                {(props.unixTimeStamp - props.historyPlays[10].createdAt) <= 0 ?
+                                                    " now" : (props.unixTimeStamp - props.historyPlays[10].createdAt) + " seconds ago"}
                                             </small>
                                         </li>
                                     </>
@@ -283,7 +283,7 @@ export default function HistoryGamesModal(props) {
                             : ""}
                         {props.historyPlays[11] !== undefined && props.historyPlays[11].createdAt ?
                             <>
-                                {(props.unixTimeStamp - props.historyPlays[11].createdAt.seconds) < 60 ?
+                                {(props.unixTimeStamp - props.historyPlays[11].createdAt) < 60 ?
                                     <>
                                         <li className="d-flex list-group-item list-group-item-action">
                                             <div className="title mb-auto ms-2">
@@ -296,8 +296,8 @@ export default function HistoryGamesModal(props) {
                                                 {props.historyPlays[11].streak > 1 ? props.historyPlays[11].streak + " times " : ""}
                                             </div>
                                             <small className="ms-auto mt-auto time-in-row">
-                                                {(props.unixTimeStamp - props.historyPlays[11].createdAt.seconds) <= 0 ?
-                                                    " now" : (props.unixTimeStamp - props.historyPlays[11].createdAt.seconds) + " seconds ago"}
+                                                {(props.unixTimeStamp - props.historyPlays[11].createdAt) <= 0 ?
+                                                    " now" : (props.unixTimeStamp - props.historyPlays[11].createdAt) + " seconds ago"}
                                             </small>
                                         </li>
                                     </>

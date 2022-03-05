@@ -13,7 +13,7 @@ export default function MostPlays(props) {
           </tr>
         </thead>
         <tbody>
-          {props.leaderboard.a ?
+          {props.leaderboard[0] ?
             <tr>
               <td>
                 1
@@ -33,7 +33,7 @@ export default function MostPlays(props) {
               </td>
             </tr>
           }
-          {props.leaderboarda.b ?
+          {props.leaderboard[1] ?
             <tr>
               <td>
                 2

@@ -19,7 +19,7 @@ import * as serviceWorker from './serviceWorker'
 import 'bootstrap/dist/css/bootstrap.css'
 import './index.scss'
 
-ReactDOM.render(
+ReactDOM.render( 
   <BrowserRouter>
     <ToastProvider newestOnTop={true} autoDismiss={true} autoDismissTimeout={7000} placement={'bottom-right'}>
       <Routes>
@@ -29,7 +29,7 @@ ReactDOM.render(
           <Route path="rewards" element={<MainRewards />} />
           <Route path="about" element={<MainAbout />} />
           <Route path="*" element={<Navigate replace to="/" />} />
-        </Route>
+        </Route> 
         <Route path="/rps" element={<RpsLayout />}>
           <Route index element={<Rps />} />
           <Route path="about" element={<RpsAbout />} />

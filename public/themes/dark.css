@@ -101,6 +101,7 @@ input[type=radio][name=pic1]:checked+img {
 .d-modal .btn-close,
 .oc-header .btn-close {
     background: #ffb74d !important;
+    -webkit-mask-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/%3e%3c/svg%3e") !important;
     mask-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/%3e%3c/svg%3e") !important;
     width: 0.65em;
     height: 0.65em;
@@ -229,3 +230,49 @@ input[type=radio][name=pic1]:checked+img {
     color: whitesmoke;
     background-color: #212529 !important;
 }
+
+/* ROADMAP */
+.indexedStep {
+    color:white;   
+    background-color: rgb(216, 216, 216);   
+  }
+  
+  .indexedStep.accomplished {
+    background-color: #ffc107;
+    border: 1px solid #ffc107;
+  }
+  
+  .indexedStep.current {
+    background-color: #fad47a;
+    border: 2px solid #ffc107;
+  }
+  
+  .roadmap {
+    max-width: 700px;
+    margin: 50px auto;
+  }
+  
+  .roadmap-label {
+    color: #565656;
+  }
+
+  .roadmap-label.accomplished,
+  .arrow-highlight {
+      color: #ffc107;
+  }
+
+  .RSPBprogressBar .RSPBprogression {
+    background-color: #fad47a !important;
+  }
+
+  .arrow-default {
+    color: #b4b4b4;
+  }
+
+  .roadmap-card {
+      background-color: #212529 !important;
+  }
+
+  .faq-border {
+      border-bottom: 2px solid whitesmoke;
+  }

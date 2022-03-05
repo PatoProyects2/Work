@@ -24,7 +24,6 @@ import Paper from '../../assets/imgs/paper.gif'
 import Scissors from '../../assets/imgs/scissors.gif'
 import RPSAnimation from '../../assets/imgs/animation.gif'
 
-
 export default function Rps() {
   const { addToast } = useToasts();
   const [user] = useAuthState(auth)
@@ -203,7 +202,6 @@ export default function Rps() {
               amountLoss: 0,
               totalGames: 0,
               totalMaticAmount: 0,
-              lastGameTime: 0,
               lastGameBlock: 0,
             },
           })
@@ -228,7 +226,6 @@ export default function Rps() {
               amountLoss: 0,
               totalGames: 0,
               totalMaticAmount: 0,
-              lastGameTime: 0,
               lastGameBlock: 0,
             },
           })
@@ -436,11 +433,10 @@ export default function Rps() {
           updateDoc(doc(db, "clubUsers", account), {
             "rps.totalGames": userDocument.rps.totalGames + 1,
             "rps.totalMaticAmount": userDocument.rps.totalMaticAmount + parseInt(userAmount),
-            "rps.lastGameTime": serverTimestamp(),
             "rps.lastGameBlock": myEvents[0].blockNumber
           })
           addDoc(collection(db, "allGames"), {
-            createdAt: serverTimestamp(),
+            createdAt: unixTimeStamp,
             uid: userDocument.uid,
             block: myEvents[0].blockNumber,
             name: userDocument.name,
@@ -550,10 +546,10 @@ export default function Rps() {
           }
         </div>
         :
-        <div className="d-flex flex-row justify-content-between align-items-center">
-          <div className="d-flex flex-row gap-3 mt-3">
-            {account !== '0x000000000000000000000000000000000000dEaD' ?
-              <>
+        <div className="d-flex flex-row justify-content-between mt-3">
+          {account !== '0x000000000000000000000000000000000000dEaD' ?
+            <>
+              <div className="d-flex flex-row gap-3">
                 <HistoryGames
                   isMobileVersion={false}
                   historyPlays={historyPlays}
@@ -574,17 +570,19 @@ export default function Rps() {
                   register={register}
                   user={user}
                 />
-              </>
-              :
-              ""
-            }
-          </div>
+              </div>
+
+              <h5 className="d-flex align-items-end">MATIC {(walletBalance / decimal).toFixed(4)}</h5>
+            </>
+            :
+            ""
+          }
         </div>
       }
       <article>
         {active === true ?
           <>
-            <h5 className="my-4 text-end me-3 me-lg-0">MATIC {(walletBalance / decimal).toFixed(4)}</h5>
+            {isMobileResolution && <h5 className="my-4 text-end me-3 me-lg-0">MATIC {(walletBalance / decimal).toFixed(4)}</h5>}
             <div className="game-container">
               {playing === true ?
                 <div className="mt-3">

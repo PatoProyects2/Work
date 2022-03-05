@@ -60,6 +60,16 @@
     background-color: rgba(255,255,255,0.95) !important;    
 }
 
+.btn-recurrence {
+    background-color: transparent !important;
+    color: whitesmoke !important;
+    border: none !important;
+}
+
+.btn-recurrence.active {
+    color: #78350f !important;
+}
+
 .tbl-ranking {
     background-color: white;
 }
@@ -95,6 +105,12 @@ input[type=radio][name=pic1]:checked+img {
 
 .nav-item.nav-link.active{
     border-bottom: 2px solid #78350f;
+}
+.ic-color {
+    color: rgba(28,31,35,0.5);
+}
+.ic-color:hover {
+    color: #78350f;
 }
 
 /* End Game styles */
@@ -132,3 +148,67 @@ input[type=radio][name=pic1]:checked+img {
     border: 1px solid #3B82F6;
 }
 /* End web3modal */
+
+/* ROADMAP */
+.indexedStep {
+    color:white;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    font-size: 10px;
+    line-height: 120%;
+    background-color: rgb(216, 216, 216);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: .8s;
+  }
+  
+  .indexedStep i {
+    position: absolute;
+  }
+  
+  .indexedStep.accomplished {
+    background-color: #78350f;
+    border: 1px solid #78350f;
+    transition: .8s;
+  }
+  
+  .indexedStep.current {
+    background-color: #ba7954;
+    border: 2px solid #78350f;
+    font-weight: 600;
+  }
+  
+  .roadmap {
+    max-width: 700px;
+    margin: 50px auto;
+  }
+  
+  .roadmap-label {
+    position: relative;
+    color: #565656;
+    text-align: center;
+    top: 30px;
+  }
+
+  .roadmap-label.accomplished,
+  .arrow-highlight {
+      color: #78350f;
+  }
+
+  .RSPBprogressBar .RSPBprogression {
+    background-color: #ba7954 !important;
+  }
+
+  .arrow-default {
+    color: #333333;
+  }
+
+  .roadmap-card {
+    background-color: rgba(255,255,255, 0.35) !important;
+}
+
+.faq-border {
+    border-bottom: 2px solid #212529;
+}
