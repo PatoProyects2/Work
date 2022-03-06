@@ -82,12 +82,39 @@ export default function Rps() {
     loadUserGame(account, user)
   }, [account, user])
 
+  useEffect(() => {
+    toast('Sign in if you want to save you game stats and ahievements', {
+      duration: 30000,
+      position: 'top-right',
+      // Styling
+      style: {},
+      className: 'pop-up',
+      // Custom Icon
+      icon: 'ℹ️',
+      // Change colors of success/error/loading icon
+      iconTheme: {
+        primary: '#000',
+        secondary: '#fff',
+      },
+      // Aria
+      ariaProps: {
+        role: 'status',
+        'aria-live': 'polite',
+      },
+    });
+  }, [])
+
   const loadUserGame = async (account, user) => {
     const query0 = doc(db, "clubUsers", account)
     const userDocument0 = await getDoc(query0)
     const userData = userDocument0.data()
     if (userData) {
       setUserData(userData)
+      if (userData.uid === '' && user) {
+        updateDoc(doc(db, "clubUsers", account), {
+          uid: user.uid
+        })
+      }
       try {
         fetch('https://showcase.api.linx.twenty57.net/UnixTime/fromunix?timestamp=' + `${userData.register.seconds}`)
           .then(response =>
@@ -257,6 +284,32 @@ export default function Rps() {
         }
         loadUserGame(account, user)
       }
+      if (!user && account !== '0x000000000000000000000000000000000000dEaD') {
+        setDoc(doc(db, "clubUsers", account), {
+          uid: "",
+          register: serverTimestamp(),
+          name: 'ClubUser',
+          photo: 'https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh',
+          account: account,
+          games: ['RPS'],
+          level: 1,
+          rps: {
+            rock: 0,
+            paper: 0,
+            scissors: 0,
+            dayWinStreak: 0,
+            winStreakTime: 0,
+            gameWon: 0,
+            gameLoss: 0,
+            amountWon: 0,
+            amountLoss: 0,
+            totalGames: 0,
+            totalMaticAmount: 0,
+            lastGameBlock: 0,
+          },
+        })
+        loadUserGame(account, user)
+      }
     }
   }
 
@@ -380,10 +433,6 @@ export default function Rps() {
   const openGame = () => {
     if (document.getElementById('age').checked === false) {
       toast.error("Confirm that your are at least 18 years old")
-      return false
-    }
-    if (!userData.uid) {
-      toast.error("Your are a new player, please sign in or sign up")
       return false
     }
     if (network !== 80001) {
