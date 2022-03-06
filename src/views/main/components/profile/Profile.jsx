@@ -4,7 +4,6 @@ import { sendEmailVerification, updateProfile } from 'firebase/auth';
 import { Button, Modal, ModalBody, ModalFooter, FormGroup, Input } from 'reactstrap'
 import { toast } from 'react-hot-toast';
 import { query, where, collection, limit, onSnapshot, updateDoc, doc } from "firebase/firestore";
-import { useToasts } from 'react-toast-notifications';
 import { auth, db } from '../../../../firebase/firesbaseConfig'
 import Stats from './Stats'
 export default function Profile() {

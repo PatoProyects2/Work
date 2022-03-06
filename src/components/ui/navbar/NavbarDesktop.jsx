@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import { Navbar, Offcanvas, Nav, OffcanvasHeader, OffcanvasBody, Button } from 'reactstrap';
+import Presence from '../../../firebase/ActiveUsers'
 import AccountFirebase from '../../layout/Authentication';
-import { Navbar, Offcanvas, Nav, NavbarBrand, OffcanvasHeader, OffcanvasBody, Button } from 'reactstrap';
 import { ThemeSwitcher } from '../themeSwitcher/ThemeSwitcher';
 import { useMatchMedia } from '../../../hooks/useMatchMedia';
 import HomeIcon from '../../../assets/imgs/ic-home.png';
@@ -15,20 +16,11 @@ import TwitterIcon from '../../../assets/imgs/ic-twitter.png';
 import DiscordIcon from '../../../assets/imgs/ic-discord.png';
 
 export const NavbarDesktop = ({ handleFaqModal, handleHtpModal, handleRpsModal, navType }) => {
-
-    const [visitors, setVisitors] = useState(0);
     const [showOffcanvas, setShowOffCanvas] = useState(false);
-
     const isMobileResolution = useMatchMedia('(max-width:768px)', false);
-
-    useEffect(() => {
-     
-    }, [])
-
     return (
         <>
             <Navbar className={`main-navbar ${!isMobileResolution ? 'fixed-top' : ''}`}>
-
                 <div className="d-flex">
                     <Button
                         onClick={() => setShowOffCanvas(true)}
@@ -38,7 +30,7 @@ export const NavbarDesktop = ({ handleFaqModal, handleHtpModal, handleRpsModal, 
                     </Button>
                     <NavLink className='d-flex align-items-center' to='/'>CLUB GAMES</NavLink>
                 </div>
-
+                <Presence />
                 <div className='d-flex align-items-center gap-2'>
                     <ThemeSwitcher />
                     {!isMobileResolution && <AccountFirebase />}
@@ -81,7 +73,7 @@ export const NavbarDesktop = ({ handleFaqModal, handleHtpModal, handleRpsModal, 
                                 style={{ margin: 'auto' }}
                                 className={({ isActive }) => "nav-item nav-link nav-link-primary" + (isActive ? ' active' : '')} to="/fair-play">
                                 <img src={FairPlayIcon} width='24' height='24' className='ic-color me-2' alt="Fair Play" /> Fair Play
-                            </NavLink>                                                     
+                            </NavLink>
                             {
                                 navType === "main" && (
                                     <NavLink
@@ -90,7 +82,7 @@ export const NavbarDesktop = ({ handleFaqModal, handleHtpModal, handleRpsModal, 
                                         className={({ isActive }) => "nav-item nav-link nav-link-primary" + (isActive ? ' active' : '')} to="/faq">
                                         <img src={FAQIcon} width='24' height='24' className='ic-color me-1' alt="FAQ" /> FAQ
                                     </NavLink>
-                                )                                   
+                                )
                             }
                             {
                                 navType === "rps" && (
@@ -101,9 +93,9 @@ export const NavbarDesktop = ({ handleFaqModal, handleHtpModal, handleRpsModal, 
                                             className={({ isActive }) => "nav-item nav-link nav-link-primary d-flex align-items-center" + (isActive ? ' active' : '')} to="/demo">
                                             <img src={DemoIcon} width='24' height='24' className='ic-color me-2' alt="RPS Demo" /> DEMO
                                         </NavLink>
-                                        <button className="btn btn-transparent nav-item nav-link nav-link-primary mx-auto" style={{ width: "100px"}} onClick={handleFaqModal}><img src={FAQIcon} width='24' height='24' className='ic-color me-1' alt="FAQ" /> FAQ</button>
-                                        <button className="btn btn-transparent nav-item nav-link nav-link-primary mx-auto" style={{ width: "150px"}} onClick={handleHtpModal}>How To Play</button>
-                                        <button className="btn btn-transparent nav-item nav-link nav-link-primary mx-auto" style={{ width: "200px"}} onClick={handleRpsModal}>RPS Responsibly</button>
+                                        <button className="btn btn-transparent nav-item nav-link nav-link-primary mx-auto" style={{ width: "100px" }} onClick={handleFaqModal}><img src={FAQIcon} width='24' height='24' className='ic-color me-1' alt="FAQ" /> FAQ</button>
+                                        <button className="btn btn-transparent nav-item nav-link nav-link-primary mx-auto" style={{ width: "150px" }} onClick={handleHtpModal}>How To Play</button>
+                                        <button className="btn btn-transparent nav-item nav-link nav-link-primary mx-auto" style={{ width: "200px" }} onClick={handleRpsModal}>RPS Responsibly</button>
                                     </>
                                 )
                             }
@@ -112,7 +104,7 @@ export const NavbarDesktop = ({ handleFaqModal, handleHtpModal, handleRpsModal, 
                                 style={{ margin: 'auto' }}
                                 className={({ isActive }) => "nav-item nav-link nav-link-primary" + (isActive ? ' active' : '')} to="/about">
                                 About
-                            </NavLink>   
+                            </NavLink>
                             <NavLink
                                 onClick={() => setShowOffCanvas(false)}
                                 style={{ margin: 'auto' }}
