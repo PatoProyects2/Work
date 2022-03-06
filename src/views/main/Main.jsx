@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
 import { collection, getDocs, query, limit, onSnapshot, orderBy, where } from "firebase/firestore";
-import { db } from '../../firebase/firesbaseConfig'
+import { useAuthState } from 'react-firebase-hooks/auth'
+import { db, auth } from '../../firebase/firesbaseConfig'
 import LiveBets from './components/LiveBets'
 import MostPlays from './components/MostPlays'
 import MostAmount from './components/MostAmount'
@@ -12,8 +13,10 @@ import DiscordImg from '../../assets/imgs/discord_card.png'
 import TwitterImg from '../../assets/imgs/twitter_card.png'
 import FairPlayImg from '../../assets/imgs/fair_play_hover_card.png'
 import NFTImg from '../../assets/imgs/nft_hover_card.png'
+import ChatRoom from './components/chat/ChatRoom'
 
 export default function Main() {
+  const [user] = useAuthState(auth)
   const [historyPlays, setHistoryPlays] = useState({});
   const [leaderboard, setLeaderboard] = useState({});
   const [globalGames, setGlobalGames] = useState(0);
@@ -1291,6 +1294,7 @@ export default function Main() {
 
   return (
     <>
+      {user ? <ChatRoom /> : ""}
       <div className='cards-container'>
         <div className='row text-center mb-2 mb-md-5'>
           <div className='game-card col-md-6 col-12 mx-auto'>

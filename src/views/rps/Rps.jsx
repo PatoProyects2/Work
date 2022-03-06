@@ -79,30 +79,36 @@ export default function Rps() {
   }, [])
 
   useEffect(() => {
-    loadUserGame(account, user)
-  }, [account, user])
+    readAccount(user)
+  }, [user])
+
+  const readAccount = async (user) => {
+    if (!user) {
+      toast('Sign in if you want to save you game stats and ahievements', {
+        duration: 30000,
+        position: 'top-right',
+        // Styling
+        style: {},
+        className: 'pop-up',
+        // Custom Icon
+        icon: 'ℹ️',
+        // Change colors of success/error/loading icon
+        iconTheme: {
+          primary: '#000',
+          secondary: '#fff',
+        },
+        // Aria
+        ariaProps: {
+          role: 'status',
+          'aria-live': 'polite',
+        },
+      });
+    }
+  }
 
   useEffect(() => {
-    toast('Sign in if you want to save you game stats and ahievements', {
-      duration: 30000,
-      position: 'top-right',
-      // Styling
-      style: {},
-      className: 'pop-up',
-      // Custom Icon
-      icon: 'ℹ️',
-      // Change colors of success/error/loading icon
-      iconTheme: {
-        primary: '#000',
-        secondary: '#fff',
-      },
-      // Aria
-      ariaProps: {
-        role: 'status',
-        'aria-live': 'polite',
-      },
-    });
-  }, [])
+    loadUserGame(account, user)
+  }, [account, user])
 
   const loadUserGame = async (account, user) => {
     const query0 = doc(db, "clubUsers", account)

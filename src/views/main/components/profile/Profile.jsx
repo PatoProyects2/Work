@@ -12,9 +12,6 @@ export default function Profile() {
     photoURL: 'https://ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh'
   });
   const [user] = useAuthState(auth)
-  const [log0, setLog0] = useState('')
-  const [rpsStats, setRpsStats] = useState(undefined);
-  const [rpsAchievements, setRpsAchievements] = useState(undefined);
   const [editProfile, setEditProfile] = useState(undefined);
   const [userData, setUserData] = useState({});
 
@@ -37,21 +34,6 @@ export default function Profile() {
         setUserData(clubData)
       });
       return unsub;
-    }
-  }
-
-  const rpsModalStats = () => {
-    if (rpsStats) {
-      setRpsStats(false)
-    } else {
-      setRpsStats(true)
-    }
-  }
-  const rpsModalAchievement = () => {
-    if (rpsAchievements) {
-      setRpsAchievements(false)
-    } else {
-      setRpsAchievements(true)
     }
   }
   const resendEmailVerification = () => {
@@ -133,8 +115,6 @@ export default function Profile() {
             }
           </p>
           <Button color="primary" onClick={editProfileModal}>Edit Profile</Button>
-          <Button color="secondary" onClick={rpsModalStats}>RPS Stats</Button>
-          <Button color="secondary" onClick={rpsModalAchievement}>RPS Achievements</Button>
           <Modal isOpen={editProfile} className="d-modal" size="sm">
             <ModalBody>
               <h4 className="text-center">Profile</h4>
@@ -160,25 +140,9 @@ export default function Profile() {
               <Button color="warning" type="submit" onClick={updateUserProfile}>Save</Button>
             </ModalFooter>
           </Modal>
-          <Modal isOpen={rpsStats} className="d-modal" size="xl">
-            <ModalBody>
-              <h3 className="text-center">RPS Stats</h3>
-              <button type="button" className="btn-close" aria-label="Close" onClick={rpsModalStats}></button>
-              <FormGroup className="pt-3 text-center">
-                <Stats
-                  userData={userData}
-                />
-              </FormGroup>
-            </ModalBody>
-          </Modal >
-          <Modal isOpen={rpsAchievements} className="d-modal" size="xl">
-            <ModalBody>
-              <h3 className="text-center">RPS Achievements</h3>
-              <button type="button" className="btn-close" aria-label="Close" onClick={rpsModalAchievement}></button>
-              <FormGroup className="pt-3 text-center">
-              </FormGroup>
-            </ModalBody>
-          </Modal>
+          <Stats
+            userData={userData}
+          />
         </>
         :
         "PLEASE SIGN IN"
