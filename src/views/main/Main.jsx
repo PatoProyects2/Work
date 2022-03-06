@@ -612,10 +612,10 @@ export default function Main() {
       } catch (e) {
 
       }
-      topGames.day = dayTopGames.sort(((a, b) => b[2] - a[2]));
-      topGames.week = weekTopGames.sort(((a, b) => b[2] - a[2]))
-      topGames.month = monthTopGames.sort(((a, b) => b[2] - a[2]))
-      topGames.global = globalTopGames.sort(((a, b) => b[2] - a[2]))
+      topGames.day = dayTopGames.sort(((a, b) => b[3] - a[3]));
+      topGames.week = weekTopGames.sort(((a, b) => b[3] - a[3]))
+      topGames.month = monthTopGames.sort(((a, b) => b[3] - a[3]))
+      topGames.global = globalTopGames.sort(((a, b) => b[3] - a[3]))
 
       let topAmount = {}
       let dayTopAmount = []
@@ -1171,10 +1171,10 @@ export default function Main() {
       } catch (e) {
 
       }
-      topAmount.day = dayTopAmount.sort(((a, b) => b[2] - a[2]));
-      topAmount.week = weekTopAmount.sort(((a, b) => b[2] - a[2]));
-      topAmount.month = monthTopAmount.sort(((a, b) => b[2] - a[2]));
-      topAmount.global = globalTopAmount.sort(((a, b) => b[2] - a[2]));
+      topAmount.day = dayTopAmount.sort(((a, b) => b[3] - a[3]));
+      topAmount.week = weekTopAmount.sort(((a, b) => b[3] - a[3]));
+      topAmount.month = monthTopAmount.sort(((a, b) => b[3] - a[3]));
+      topAmount.global = globalTopAmount.sort(((a, b) => b[3] - a[3]));
 
       let gameTops = {}
       gameTops.game = topGames
