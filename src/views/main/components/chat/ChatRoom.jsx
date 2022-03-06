@@ -1,39 +1,72 @@
 import React, { useEffect, useState, useRef } from "react"
-import { addDoc, onSnapshot, orderBy, collection, serverTimestamp, query } from "firebase/firestore";
+import { addDoc, onSnapshot, orderBy, collection, serverTimestamp, query, where } from "firebase/firestore";
 import { Dropdown, DropdownMenu, DropdownToggle } from 'reactstrap'
 import { auth, db } from "../../../../firebase/firesbaseConfig";
 import ChatMessage from './ChatMessage';
 
-function ChatRoom() {
-  const [dropdown, setDropdown] = useState(true);
+function ChatRoom(props) {
+  const [user, setUser] = useState({})
   const [messages, setMessages] = useState([])
   const [formValue, setFormValue] = useState('')
+  const [dropdown, setDropdown] = useState(true);
 
   const toggleMenu = () => {
     setDropdown(!dropdown);
   }
-  // console.log(messages)
+
   useEffect(() => {
     const q = query(collection(db, "messages"), orderBy("createdAt", "asc"))
     const unsub = onSnapshot(q, (doc) => {
-      const mes = doc.docs.map(message => (Object.assign({}, { id: message.id }, message.data())))
-      // console.log( "data: ", doc.docs[0].data());
-      setMessages(mes)
-      // console.log("setMessage" , mes)
+      const message = doc.docs.map(message => (Object.assign({}, { id: message.id }, message.data())))
+      setMessages(message)
+
     });
     return unsub;
   }, [])
 
+  useEffect(() => {
+    const readUserProfile = async (user) => {
+      try {
+        const q = query(collection(db, "clubUsers"), where("uid", "==", user.uid))
+        const unsub = onSnapshot(q, (doc) => {
+          const user = doc._snapshot.docChanges[0]
+          let datas = null
+          if (user) {
+            datas = user.doc.data.value.mapValue.fields
+          }
+          setUser(datas)
+        });
+        return unsub;
+      } catch (e) {
+
+      }
+    }
+    readUserProfile(props.user)
+  }, [props.user])
+
   const sendMessage = async (e) => {
     e.preventDefault()
     if (formValue === "") return
-    const { uid, photoURL } = auth.currentUser;
-    const docRef = await addDoc(collection(db, "messages"), {
-      text: formValue,
-      createdAt: serverTimestamp(),
-      uid,
-      photoURL
-    })
+    if (user) {
+      const docRef = await addDoc(collection(db, "messages"), {
+        text: formValue,
+        createdAt: serverTimestamp(),
+        uid: props.user.uid,
+        name: user.name.stringValue,
+        level: user.level.integerValue,
+        photo: user.photo.stringValue,
+      })
+    } else {
+      const docRef = await addDoc(collection(db, "messages"), {
+        text: formValue,
+        createdAt: serverTimestamp(),
+        uid: props.user.uid,
+        name: "ClubUser",
+        level: "1",
+        photo: "https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh",
+      })
+    }
+
     setFormValue('')
   }
   const messagesEndRef = useRef(null)
@@ -48,22 +81,29 @@ function ChatRoom() {
 
   return (
     <>
-      <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="lg" className="my-2">
+      <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="right" size="md" className="my-2">
         <DropdownToggle caret color='danger'>
           CHAT
         </DropdownToggle>
         <DropdownMenu >
           <main>
             <div>
-              {messages && messages.map(msg => <ChatMessage key={msg.id} {...msg} auth={auth} />)}
+              {messages && messages.map(msg => <ChatMessage key={msg.id} {...msg} auth={auth}/>)}
             </div>
             <div ref={messagesEndRef}></div>
 
           </main>
-          <form onSubmit={sendMessage}>
-            <input value={formValue} onChange={(e) => setFormValue(e.target.value)} placeholder="Type something..." />
-            <button type="submit">🕊️</button>
-          </form>
+          {props.user ?
+            <form onSubmit={sendMessage}>
+              <input value={formValue} onChange={(e) => setFormValue(e.target.value)} placeholder="Type something..." />
+              <button type="submit">🕊️</button>
+            </form>
+            :
+            <>
+              <input type="text" defaultValue="Sign in to start chatting..." disabled={true} />
+              <button type="submit">🕊️</button>
+            </>
+          }
         </DropdownMenu>
       </Dropdown>
     </>

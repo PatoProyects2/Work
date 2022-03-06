@@ -1,13 +1,15 @@
 import React from 'react'
+function ChatMessage({ text, uid, photo, name, level, auth }) {
+    const messageClass = null
+    try {
+        messageClass = uid === auth.currentUser.uid ? 'sent' : 'recieved';
+    } catch (e) {
 
-function ChatMessage( { text , uid ,photoURL, auth}) {
-   const messageClass = uid === auth.currentUser.uid ?'sent' : 'recieved' ;  
-  return (
-      <div className={`message ${messageClass}`}>
-          <img src={photoURL}/>
-          <p>{text}</p>
-      </div>
-  )
+    }
+    return (
+        <div className={`message ${messageClass}`}>
+            <p><img widht="25" height="25" src={photo} />{name + " " + level + " : " + text}</p>
+        </div>
+    )
 }
-
 export default ChatMessage
