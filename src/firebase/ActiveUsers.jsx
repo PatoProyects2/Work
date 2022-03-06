@@ -48,12 +48,9 @@ export default function Presence() {
             const d0 = await getDoc(q0)
             onValue(userStatusDatabaseRef, (snapshot) => {
                 const data = snapshot.val();
-                if (d0) {
-                    updateDoc(doc(db, "status", user.uid), data)
-                } else {
+                if (data) {
                     setDoc(doc(db, "status", user.uid), data)
                 }
-
             })
         }
         let lastHour = unixTimeStamp - 3600

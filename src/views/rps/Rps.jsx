@@ -234,7 +234,7 @@ export default function Rps() {
           setDoc(doc(db, "clubUsers", account), {
             uid: user.uid,
             register: serverTimestamp(),
-            name: 'Username',
+            name: 'ClubUser',
             photo: 'https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh',
             account: account,
             games: ['RPS'],
@@ -439,14 +439,15 @@ export default function Rps() {
         })
         .catch((err) => {
           if (err.code === 4001) {
-            setPlaying(false)
-            myEvents[0] = false
-
+            toast.error("User denied transaction signature")
           } else {
-            console.error(err);
-            setPlaying(false)
-            myEvents[0] = false
+            toast.error("Failed transaction")
           }
+          myEvents[0] = false
+          setDoubleOrNothingStatus(false)
+          setPlaying(false)
+          setAnimation(false)
+          return false
         });
       do {
         myEvents = await rpsgame.getPastEvents('Play', { filter: { _to: account }, fromBlock: actuallBlock, toBlock: 'latest' })
@@ -468,7 +469,7 @@ export default function Rps() {
             photo: userDocument.photo,
             account: myEvents[0].returnValues[0],
             maticAmount: parseInt(userAmount),
-            streak: myEvents[0].returnValues[2],
+            streak: parseInt(myEvents[0].returnValues[2]),
             result: myEvents[0].returnValues[3],
             game: 'RPS'
           })
@@ -486,7 +487,7 @@ export default function Rps() {
           }
           if (myEvents[0].returnValues[2] > userDocument.rps.dayWinStreak || dayBlock > userDocument.rps.winStreakTime) {
             updateDoc(doc(db, "clubUsers", account), {
-              "rps.dayWinStreak": myEvents[0].returnValues[2],
+              "rps.dayWinStreak": parseInt(myEvents[0].returnValues[2]),
               "rps.winStreakTime": serverTimestamp()
             })
           }
@@ -516,6 +517,7 @@ export default function Rps() {
       setDoubleOrNothingStatus(false)
       setPlaying(false)
       setAnimation(false)
+      return false
     }
   }
 

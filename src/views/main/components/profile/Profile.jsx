@@ -74,7 +74,7 @@ export default function Profile() {
     if (userData[0]) {
       if (userInfo.displayName.length >= 4 && userInfo.displayName.length <= 12) {
         toast.promise(
-          updateDoc(doc(db, "clubUsers", props.account), {
+          updateDoc(doc(db, "clubUsers", userData[0].account), {
             name: userInfo.displayName
           }),
           {
@@ -109,10 +109,8 @@ export default function Profile() {
           <h1>Profile</h1>
           {userData[0] ?
             <>
-              <p>
-                {userData[0].photo && <img width="150" height="150" className="rounded-circle me-2" src={userData[0].photo} alt="" />}
-              </p>
-              <p>{userData[0].name !== 'Username' ? userData[0].name : user.displayName}</p>
+              <p>{userData[0].photo && <img width="150" height="150" className="rounded-circle me-2" src={userData[0].photo} alt="" />}</p>
+              <p>{userData[0].name}</p>
             </>
             :
             <>
@@ -138,7 +136,6 @@ export default function Profile() {
           <Button color="secondary" onClick={rpsModalStats}>RPS Stats</Button>
           <Button color="secondary" onClick={rpsModalAchievement}>RPS Achievements</Button>
           <Modal isOpen={editProfile} className="d-modal" size="sm">
-            {log0 && (<span className="alert alert-danger mx-5 row justify-content-center mt-2">{log0}</span>)}
             <ModalBody>
               <h4 className="text-center">Profile</h4>
               <button type="button" className="btn-close" aria-label="Close" onClick={editProfileModal}></button>
@@ -153,7 +150,7 @@ export default function Profile() {
               </FormGroup>
               <FormGroup>
                 {userData[0] ?
-                  <Input name="displayName" className="d-modal-input" placeholder="ClubUser" onChange={handleInputChange} defaultValue={userData[0].name} type="text" />
+                  <Input name="displayName" className="d-modal-input" onChange={handleInputChange} defaultValue={userData[0].name} type="text" />
                   :
                   <Input name="displayName" className="d-modal-input" placeholder="ClubUser" onChange={handleInputChange} defaultValue={user.displayName} type="text" />
                 }
