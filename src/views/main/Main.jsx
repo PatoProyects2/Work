@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
-import { collection, getDocs, query, limit, onSnapshot, orderBy, where } from "firebase/firestore";
+import { collection, getDocs, query, orderBy, where } from "firebase/firestore";
+import { Button, ButtonGroup } from 'reactstrap';
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { db, auth } from '../../firebase/firesbaseConfig'
-import LiveBets from './components/LiveBets'
 import MostPlays from './components/MostPlays'
 import MostAmount from './components/MostAmount'
-import { Button, ButtonGroup } from 'reactstrap';
+import ReadAllGames from '../../firebase/ReadAllGames'
 import RPSGameImg from '../../assets/imgs/rps_card.png'
 import ComingSoonImg from '../../assets/imgs/coming_soon_hover_card.png'
 import DiscordImg from '../../assets/imgs/discord_card.png'
@@ -14,13 +14,11 @@ import TwitterImg from '../../assets/imgs/twitter_card.png'
 import FairPlayImg from '../../assets/imgs/fair_play_hover_card.png'
 import NFTImg from '../../assets/imgs/nft_hover_card.png'
 import ChatRoom from './components/chat/ChatRoom'
+import { ReadUnixTime } from '../../firebase/ReadUnixTime'
 
 export default function Main() {
   const [user] = useAuthState(auth)
-  const [historyPlays, setHistoryPlays] = useState({});
   const [leaderboard, setLeaderboard] = useState({});
-  const [globalGames, setGlobalGames] = useState(0);
-  const [unixTimeStamp, setUnixTimeStamp] = useState(1000000000000000000);
   const [liveBets, setLiveBets] = useState(true);
   const [mostPlays, setMostPlays] = useState(false);
   const [dailyGame, setDailyGame] = useState(false);
@@ -32,52 +30,17 @@ export default function Main() {
   const [weeklyAmount, setWeeklyAmount] = useState(false);
   const [monthlyAmount, setMonthlyAmount] = useState(false);
   const [globalAmount, setGlobalAmount] = useState(false);
+  const unixTimeStamp = ReadUnixTime()
 
   useEffect(() => {
-    const timer = setInterval(() => { getUnixTime() }, 4000);
-    return () => clearInterval(timer);
-  }, [])
 
-  const getUnixTime = async () => {
-    fetch('https://showcase.api.linx.twenty57.net/UnixTime/tounixtimestamp?datetime=now')
-      .then(response =>
-        response.json()
-      )
-      .then(data =>
-        setUnixTimeStamp(parseInt(data.UnixTimeStamp))
-      );
-  }
+    const readLeaderboard = async (unixTimeStamp) => {
+      var lastDay = unixTimeStamp - 86400
+      var lastWeek = unixTimeStamp - 604800
+      var lastMonth = unixTimeStamp - 259200
 
-  useEffect(() => {
-    const q = query(collection(db, "allGames"), orderBy("createdAt", "desc"), limit(10))
-    const unsub = onSnapshot(q, (doc) => {
-      const played = doc.docs.map(amountLeaderboard => amountLeaderboard.data())
-      setHistoryPlays(played)
-      setGlobalGames(played.length)
-    });
-    return unsub;
-  }, [])
-
-  useEffect(() => {
-    const readLeaderboard = async () => {
-      let unixTime = 0
-      let lastDay = 0
-      let lastWeek = 0
-      let lastMonth = 0
-      fetch('https://showcase.api.linx.twenty57.net/UnixTime/tounixtimestamp?datetime=now')
-        .then(response =>
-          response.json()
-        )
-        .then(data => {
-          unixTime = parseInt(data.UnixTimeStamp)
-          lastDay = parseInt(data.UnixTimeStamp) - 86400
-          lastWeek = parseInt(data.UnixTimeStamp) - 604800
-          lastMonth = parseInt(data.UnixTimeStamp) - 259200
-          setUnixTimeStamp(parseInt(data.UnixTimeStamp))
-        }
-        );
-      let leaderboard = []
       let dayGames = []
+      let leaderboard = []
       let weekGames = []
       let monthGames = []
       let globalGames = []
@@ -131,24 +94,25 @@ export default function Main() {
       const documentGames = await getDocs(queryGames)
       documentGames.forEach((doc) => {
         if (doc.data().createdAt > lastDay) {
-          dayGames.push([doc.data().account])
+          dayGames = dayGames.concat([doc.data().account])
         }
         if (doc.data().createdAt > lastWeek) {
-          weekGames.push([doc.data().account])
+          weekGames = weekGames.concat([doc.data().account])
         }
         if (doc.data().createdAt > lastMonth) {
-          monthGames.push([doc.data().account])
+          monthGames = monthGames.concat([doc.data().account])
         }
-        globalGames.push([doc.data().account])
+        globalGames = globalGames.concat([doc.data().account])
       });
       // ---------------------------------------------------------------------------------------------------------------------------------------
-      const arrDay = [... new Set(dayGames.map(data => data[0]))]
+      const arrDay = [... new Set(dayGames.map(data => data))]
       try {
         const q0 = query(collection(db, "allGames"), where("account", "==", arrDay[0]), where("createdAt", ">", lastDay))
         const d0 = await getDocs(q0)
         const data0 = d0._snapshot.docChanges
         data0.forEach((data) => {
-          aD.push([data.doc.data.value.mapValue.fields.account, data.doc.data.value.mapValue.fields.photo, data.doc.data.value.mapValue.fields.name, data.doc.data.value.mapValue.fields.maticAmount])
+          var user = data.doc.data.value.mapValue.fields
+          aD = aD.concat([[user.account, user.photo, user.name, user.maticAmount]])
         })
       } catch (e) {
 
@@ -158,7 +122,8 @@ export default function Main() {
         const d1 = await getDocs(q1)
         const data1 = d1._snapshot.docChanges
         data1.forEach((data) => {
-          bD.push([data.doc.data.value.mapValue.fields.account, data.doc.data.value.mapValue.fields.photo, data.doc.data.value.mapValue.fields.name, data.doc.data.value.mapValue.fields.maticAmount])
+          var user = data.doc.data.value.mapValue.fields
+          bD = bD.concat([[user.account, user.photo, user.name, user.maticAmount]])
         })
       } catch (e) {
 
@@ -168,7 +133,8 @@ export default function Main() {
         const d2 = await getDocs(q2)
         const data2 = d2._snapshot.docChanges
         data2.forEach((data) => {
-          cD.push([data.doc.data.value.mapValue.fields.account, data.doc.data.value.mapValue.fields.photo, data.doc.data.value.mapValue.fields.name, data.doc.data.value.mapValue.fields.maticAmount])
+          var user = data.doc.data.value.mapValue.fields
+          cD = cD.concat([[user.account, user.photo, user.name, user.maticAmount]])
         })
       } catch (e) {
 
@@ -178,7 +144,8 @@ export default function Main() {
         const d3 = await getDocs(q3)
         const data3 = d3._snapshot.docChanges
         data3.forEach((data) => {
-          dD.push([data.doc.data.value.mapValue.fields.account, data.doc.data.value.mapValue.fields.photo, data.doc.data.value.mapValue.fields.name, data.doc.data.value.mapValue.fields.maticAmount])
+          var user = data.doc.data.value.mapValue.fields
+          dD = dD.concat([[user.account, user.photo, user.name, user.maticAmount]])
         })
       } catch (e) {
 
@@ -188,7 +155,8 @@ export default function Main() {
         const d4 = await getDocs(q4)
         const data4 = d4._snapshot.docChanges
         data4.forEach((data) => {
-          eD.push([data.doc.data.value.mapValue.fields.account, data.doc.data.value.mapValue.fields.photo, data.doc.data.value.mapValue.fields.name, data.doc.data.value.mapValue.fields.maticAmount])
+          var user = data.doc.data.value.mapValue.fields
+          eD = eD.concat([[user.account, user.photo, user.name, user.maticAmount]])
         })
       } catch (e) {
 
@@ -198,7 +166,8 @@ export default function Main() {
         const d5 = await getDocs(q5)
         const data5 = d5._snapshot.docChanges
         data5.forEach((data) => {
-          fD.push([data.doc.data.value.mapValue.fields.account, data.doc.data.value.mapValue.fields.photo, data.doc.data.value.mapValue.fields.name, data.doc.data.value.mapValue.fields.maticAmount])
+          var user = data.doc.data.value.mapValue.fields
+          fD = fD.concat([[user.account, user.photo, user.name, user.maticAmount]])
         })
       } catch (e) {
 
@@ -208,7 +177,8 @@ export default function Main() {
         const d6 = await getDocs(q6)
         const data6 = d6._snapshot.docChanges
         data6.forEach((data) => {
-          gD.push([data.doc.data.value.mapValue.fields.account, data.doc.data.value.mapValue.fields.photo, data.doc.data.value.mapValue.fields.name, data.doc.data.value.mapValue.fields.maticAmount])
+          var user = data.doc.data.value.mapValue.fields
+          gD = gD.concat([[user.account, user.photo, user.name, user.maticAmount]])
         })
       } catch (e) {
 
@@ -218,7 +188,8 @@ export default function Main() {
         const d7 = await getDocs(q7)
         const data7 = d7._snapshot.docChanges
         data7.forEach((data) => {
-          hD.push([data.doc.data.value.mapValue.fields.account, data.doc.data.value.mapValue.fields.photo, data.doc.data.value.mapValue.fields.name, data.doc.data.value.mapValue.fields.maticAmount])
+          var user = data.doc.data.value.mapValue.fields
+          hD = hD.concat([[user.account, user.photo, user.name, user.maticAmount]])
         })
       } catch (e) {
 
@@ -228,7 +199,8 @@ export default function Main() {
         const d8 = await getDocs(q8)
         const data8 = d8._snapshot.docChanges
         data8.forEach((data) => {
-          iD.push([data.doc.data.value.mapValue.fields.account, data.doc.data.value.mapValue.fields.photo, data.doc.data.value.mapValue.fields.name, data.doc.data.value.mapValue.fields.maticAmount])
+          var user = data.doc.data.value.mapValue.fields
+          iD = iD.concat([[user.account, user.photo, user.name, user.maticAmount]])
         })
       } catch (e) {
 
@@ -238,19 +210,21 @@ export default function Main() {
         const d9 = await getDocs(q9)
         const data9 = d9._snapshot.docChanges
         data9.forEach((data) => {
-          jD.push([data.doc.data.value.mapValue.fields.account, data.doc.data.value.mapValue.fields.photo, data.doc.data.value.mapValue.fields.name, data.doc.data.value.mapValue.fields.maticAmount])
+          var user = data.doc.data.value.mapValue.fields
+          jD = jD.concat([[user.account, user.photo, user.name, user.maticAmount]])
         })
       } catch (e) {
 
       }
       // ------------------------------------------------------------------------------------------------------------
-      const arrWeek = [... new Set(weekGames.map(data => data[0]))]
+      const arrWeek = [... new Set(weekGames.map(data => data))]
       try {
         const q0 = query(collection(db, "allGames"), where("account", "==", arrWeek[0]), where("createdAt", ">", lastWeek))
         const d0 = await getDocs(q0)
         const data0 = d0._snapshot.docChanges
         data0.forEach((data) => {
-          aW.push([data.doc.data.value.mapValue.fields.account, data.doc.data.value.mapValue.fields.photo, data.doc.data.value.mapValue.fields.name, data.doc.data.value.mapValue.fields.maticAmount])
+          var user = data.doc.data.value.mapValue.fields
+          aW = aW.concat([[user.account, user.photo, user.name, user.maticAmount]])
         })
       } catch (e) {
 
@@ -260,7 +234,8 @@ export default function Main() {
         const d1 = await getDocs(q1)
         const data1 = d1._snapshot.docChanges
         data1.forEach((data) => {
-          bW.push([data.doc.data.value.mapValue.fields.account, data.doc.data.value.mapValue.fields.photo, data.doc.data.value.mapValue.fields.name, data.doc.data.value.mapValue.fields.maticAmount])
+          var user = data.doc.data.value.mapValue.fields
+          bW = bW.concat([[user.account, user.photo, user.name, user.maticAmount]])
         })
       } catch (e) {
 
@@ -270,7 +245,8 @@ export default function Main() {
         const d2 = await getDocs(q2)
         const data2 = d2._snapshot.docChanges
         data2.forEach((data) => {
-          cW.push([data.doc.data.value.mapValue.fields.account, data.doc.data.value.mapValue.fields.photo, data.doc.data.value.mapValue.fields.name, data.doc.data.value.mapValue.fields.maticAmount])
+          var user = data.doc.data.value.mapValue.fields
+          cW = cW.concat([[user.account, user.photo, user.name, user.maticAmount]])
         })
       } catch (e) {
 
@@ -280,7 +256,8 @@ export default function Main() {
         const d3 = await getDocs(q3)
         const data3 = d3._snapshot.docChanges
         data3.forEach((data) => {
-          dW.push([data.doc.data.value.mapValue.fields.account, data.doc.data.value.mapValue.fields.photo, data.doc.data.value.mapValue.fields.name, data.doc.data.value.mapValue.fields.maticAmount])
+          var user = data.doc.data.value.mapValue.fields
+          dW = dW.concat([[user.account, user.photo, user.name, user.maticAmount]])
         })
       } catch (e) {
 
@@ -290,7 +267,8 @@ export default function Main() {
         const d4 = await getDocs(q4)
         const data4 = d4._snapshot.docChanges
         data4.forEach((data) => {
-          eW.push([data.doc.data.value.mapValue.fields.account, data.doc.data.value.mapValue.fields.photo, data.doc.data.value.mapValue.fields.name, data.doc.data.value.mapValue.fields.maticAmount])
+          var user = data.doc.data.value.mapValue.fields
+          eW = eW.concat([[user.account, user.photo, user.name, user.maticAmount]])
         })
       } catch (e) {
 
@@ -300,7 +278,8 @@ export default function Main() {
         const d5 = await getDocs(q5)
         const data5 = d5._snapshot.docChanges
         data5.forEach((data) => {
-          fW.push([data.doc.data.value.mapValue.fields.account, data.doc.data.value.mapValue.fields.photo, data.doc.data.value.mapValue.fields.name, data.doc.data.value.mapValue.fields.maticAmount])
+          var user = data.doc.data.value.mapValue.fields
+          fW = fW.concat([[user.account, user.photo, user.name, user.maticAmount]])
         })
       } catch (e) {
 
@@ -310,7 +289,8 @@ export default function Main() {
         const d6 = await getDocs(q6)
         const data6 = d6._snapshot.docChanges
         data6.forEach((data) => {
-          gW.push([data.doc.data.value.mapValue.fields.account, data.doc.data.value.mapValue.fields.photo, data.doc.data.value.mapValue.fields.name, data.doc.data.value.mapValue.fields.maticAmount])
+          var user = data.doc.data.value.mapValue.fields
+          gW = gW.concat([[user.account, user.photo, user.name, user.maticAmount]])
         })
       } catch (e) {
 
@@ -320,7 +300,8 @@ export default function Main() {
         const d7 = await getDocs(q7)
         const data7 = d7._snapshot.docChanges
         data7.forEach((data) => {
-          hW.push([data.doc.data.value.mapValue.fields.account, data.doc.data.value.mapValue.fields.photo, data.doc.data.value.mapValue.fields.name, data.doc.data.value.mapValue.fields.maticAmount])
+          var user = data.doc.data.value.mapValue.fields
+          hW = hW.concat([[user.account, user.photo, user.name, user.maticAmount]])
         })
       } catch (e) {
 
@@ -330,7 +311,8 @@ export default function Main() {
         const d8 = await getDocs(q8)
         const data8 = d8._snapshot.docChanges
         data8.forEach((data) => {
-          iW.push([data.doc.data.value.mapValue.fields.account, data.doc.data.value.mapValue.fields.photo, data.doc.data.value.mapValue.fields.name, data.doc.data.value.mapValue.fields.maticAmount])
+          var user = data.doc.data.value.mapValue.fields
+          iW = iW.concat([[user.account, user.photo, user.name, user.maticAmount]])
         })
       } catch (e) {
 
@@ -340,19 +322,21 @@ export default function Main() {
         const d9 = await getDocs(q9)
         const data9 = d9._snapshot.docChanges
         data9.forEach((data) => {
-          jW.push([data.doc.data.value.mapValue.fields.account, data.doc.data.value.mapValue.fields.photo, data.doc.data.value.mapValue.fields.name, data.doc.data.value.mapValue.fields.maticAmount])
+          var user = data.doc.data.value.mapValue.fields
+          jW = jW.concat([[user.account, user.photo, user.name, user.maticAmount]])
         })
       } catch (e) {
 
       }
       // ------------------------------------------------------------------------------------------------------------
-      const arrMonth = [... new Set(monthGames.map(data => data[0]))]
+      const arrMonth = [... new Set(monthGames.map(data => data))]
       try {
         const q0 = query(collection(db, "allGames"), where("account", "==", arrMonth[0]), where("createdAt", ">", lastMonth))
         const d0 = await getDocs(q0)
         const data0 = d0._snapshot.docChanges
         data0.forEach((data) => {
-          aM.push([data.doc.data.value.mapValue.fields.account, data.doc.data.value.mapValue.fields.photo, data.doc.data.value.mapValue.fields.name, data.doc.data.value.mapValue.fields.maticAmount])
+          var user = data.doc.data.value.mapValue.fields
+          aM = aM.concat([[user.account, user.photo, user.name, user.maticAmount]])
         })
       } catch (e) {
 
@@ -362,7 +346,8 @@ export default function Main() {
         const d1 = await getDocs(q1)
         const data1 = d1._snapshot.docChanges
         data1.forEach((data) => {
-          bM.push([data.doc.data.value.mapValue.fields.account, data.doc.data.value.mapValue.fields.photo, data.doc.data.value.mapValue.fields.name, data.doc.data.value.mapValue.fields.maticAmount])
+          var user = data.doc.data.value.mapValue.fields
+          bM = bM.concat([[user.account, user.photo, user.name, user.maticAmount]])
         })
       } catch (e) {
 
@@ -372,7 +357,8 @@ export default function Main() {
         const d2 = await getDocs(q2)
         const data2 = d2._snapshot.docChanges
         data2.forEach((data) => {
-          cM.push([data.doc.data.value.mapValue.fields.account, data.doc.data.value.mapValue.fields.photo, data.doc.data.value.mapValue.fields.name, data.doc.data.value.mapValue.fields.maticAmount])
+          var user = data.doc.data.value.mapValue.fields
+          cM = cM.concat([[user.account, user.photo, user.name, user.maticAmount]])
         })
       } catch (e) {
 
@@ -382,7 +368,8 @@ export default function Main() {
         const d3 = await getDocs(q3)
         const data3 = d3._snapshot.docChanges
         data3.forEach((data) => {
-          dM.push([data.doc.data.value.mapValue.fields.account, data.doc.data.value.mapValue.fields.photo, data.doc.data.value.mapValue.fields.name, data.doc.data.value.mapValue.fields.maticAmount])
+          var user = data.doc.data.value.mapValue.fields
+          dM = dM.concat([[user.account, user.photo, user.name, user.maticAmount]])
         })
       } catch (e) {
 
@@ -392,7 +379,8 @@ export default function Main() {
         const d4 = await getDocs(q4)
         const data4 = d4._snapshot.docChanges
         data4.forEach((data) => {
-          eM.push([data.doc.data.value.mapValue.fields.account, data.doc.data.value.mapValue.fields.photo, data.doc.data.value.mapValue.fields.name, data.doc.data.value.mapValue.fields.maticAmount])
+          var user = data.doc.data.value.mapValue.fields
+          eM = eM.concat([[user.account, user.photo, user.name, user.maticAmount]])
         })
       } catch (e) {
 
@@ -402,7 +390,8 @@ export default function Main() {
         const d5 = await getDocs(q5)
         const data5 = d5._snapshot.docChanges
         data5.forEach((data) => {
-          fM.push([data.doc.data.value.mapValue.fields.account, data.doc.data.value.mapValue.fields.photo, data.doc.data.value.mapValue.fields.name, data.doc.data.value.mapValue.fields.maticAmount])
+          var user = data.doc.data.value.mapValue.fields
+          fM = fM.concat([[user.account, user.photo, user.name, user.maticAmount]])
         })
       } catch (e) {
 
@@ -412,7 +401,8 @@ export default function Main() {
         const d6 = await getDocs(q6)
         const data6 = d6._snapshot.docChanges
         data6.forEach((data) => {
-          gM.push([data.doc.data.value.mapValue.fields.account, data.doc.data.value.mapValue.fields.photo, data.doc.data.value.mapValue.fields.name, data.doc.data.value.mapValue.fields.maticAmount])
+          var user = data.doc.data.value.mapValue.fields
+          gM = gM.concat([[user.account, user.photo, user.name, user.maticAmount]])
         })
       } catch (e) {
 
@@ -422,7 +412,8 @@ export default function Main() {
         const d7 = await getDocs(q7)
         const data7 = d7._snapshot.docChanges
         data7.forEach((data) => {
-          hM.push([data.doc.data.value.mapValue.fields.account, data.doc.data.value.mapValue.fields.photo, data.doc.data.value.mapValue.fields.name, data.doc.data.value.mapValue.fields.maticAmount])
+          var user = data.doc.data.value.mapValue.fields
+          hM = hM.concat([[user.account, user.photo, user.name, user.maticAmount]])
         })
       } catch (e) {
 
@@ -432,7 +423,8 @@ export default function Main() {
         const d8 = await getDocs(q8)
         const data8 = d8._snapshot.docChanges
         data8.forEach((data) => {
-          iM.push([data.doc.data.value.mapValue.fields.account, data.doc.data.value.mapValue.fields.photo, data.doc.data.value.mapValue.fields.name, data.doc.data.value.mapValue.fields.maticAmount])
+          var user = data.doc.data.value.mapValue.fields
+          iM = iM.concat([[user.account, user.photo, user.name, user.maticAmount]])
         })
       } catch (e) {
 
@@ -442,19 +434,21 @@ export default function Main() {
         const d9 = await getDocs(q9)
         const data9 = d9._snapshot.docChanges
         data9.forEach((data) => {
-          jM.push([data.doc.data.value.mapValue.fields.account, data.doc.data.value.mapValue.fields.photo, data.doc.data.value.mapValue.fields.name, data.doc.data.value.mapValue.fields.maticAmount])
+          var user = data.doc.data.value.mapValue.fields
+          jM = jM.concat([[user.account, user.photo, user.name, user.maticAmount]])
         })
       } catch (e) {
 
       }
       // ------------------------------------------------------------------------------------------------------------
-      const arrAll = [... new Set(globalGames.map(data => data[0]))]
+      const arrAll = [... new Set(globalGames.map(data => data))]
       try {
         const q0 = query(collection(db, "allGames"), where("account", "==", arrAll[0]))
         const d0 = await getDocs(q0)
         const data0 = d0._snapshot.docChanges
         data0.forEach((data) => {
-          aA.push([data.doc.data.value.mapValue.fields.account, data.doc.data.value.mapValue.fields.photo, data.doc.data.value.mapValue.fields.name, data.doc.data.value.mapValue.fields.maticAmount])
+          var user = data.doc.data.value.mapValue.fields
+          aA = aA.concat([[user.account, user.photo, user.name, user.maticAmount]])
         })
       } catch (e) {
 
@@ -464,7 +458,8 @@ export default function Main() {
         const d1 = await getDocs(q1)
         const data1 = d1._snapshot.docChanges
         data1.forEach((data) => {
-          bA.push([data.doc.data.value.mapValue.fields.account, data.doc.data.value.mapValue.fields.photo, data.doc.data.value.mapValue.fields.name, data.doc.data.value.mapValue.fields.maticAmount])
+          var user = data.doc.data.value.mapValue.fields
+          bA = bA.concat([[user.account, user.photo, user.name, user.maticAmount]])
         })
       } catch (e) {
 
@@ -474,7 +469,8 @@ export default function Main() {
         const d2 = await getDocs(q2)
         const data2 = d2._snapshot.docChanges
         data2.forEach((data) => {
-          cA.push([data.doc.data.value.mapValue.fields.account, data.doc.data.value.mapValue.fields.photo, data.doc.data.value.mapValue.fields.name, data.doc.data.value.mapValue.fields.maticAmount])
+          var user = data.doc.data.value.mapValue.fields
+          cA = cA.concat([[user.account, user.photo, user.name, user.maticAmount]])
         })
       } catch (e) {
 
@@ -484,7 +480,8 @@ export default function Main() {
         const d3 = await getDocs(q3)
         const data3 = d3._snapshot.docChanges
         data3.forEach((data) => {
-          dA.push([data.doc.data.value.mapValue.fields.account, data.doc.data.value.mapValue.fields.photo, data.doc.data.value.mapValue.fields.name, data.doc.data.value.mapValue.fields.maticAmount])
+          var user = data.doc.data.value.mapValue.fields
+          dA = dA.concat([[user.account, user.photo, user.name, user.maticAmount]])
         })
       } catch (e) {
 
@@ -494,7 +491,8 @@ export default function Main() {
         const d4 = await getDocs(q4)
         const data4 = d4._snapshot.docChanges
         data4.forEach((data) => {
-          eA.push([data.doc.data.value.mapValue.fields.account, data.doc.data.value.mapValue.fields.photo, data.doc.data.value.mapValue.fields.name, data.doc.data.value.mapValue.fields.maticAmount])
+          var user = data.doc.data.value.mapValue.fields
+          eA = eA.concat([[user.account, user.photo, user.name, user.maticAmount]])
         })
       } catch (e) {
 
@@ -504,7 +502,8 @@ export default function Main() {
         const d5 = await getDocs(q5)
         const data5 = d5._snapshot.docChanges
         data5.forEach((data) => {
-          fA.push([data.doc.data.value.mapValue.fields.account, data.doc.data.value.mapValue.fields.photo, data.doc.data.value.mapValue.fields.name, data.doc.data.value.mapValue.fields.maticAmount])
+          var user = data.doc.data.value.mapValue.fields
+          fA = fA.concat([[user.account, user.photo, user.name, user.maticAmount]])
         })
       } catch (e) {
 
@@ -514,7 +513,8 @@ export default function Main() {
         const d6 = await getDocs(q6)
         const data6 = d6._snapshot.docChanges
         data6.forEach((data) => {
-          gA.push([data.doc.data.value.mapValue.fields.account, data.doc.data.value.mapValue.fields.photo, data.doc.data.value.mapValue.fields.name, data.doc.data.value.mapValue.fields.maticAmount])
+          var user = data.doc.data.value.mapValue.fields
+          gA = gA.concat([[user.account, user.photo, user.name, user.maticAmount]])
         })
       } catch (e) {
 
@@ -524,7 +524,8 @@ export default function Main() {
         const d7 = await getDocs(q7)
         const data7 = d7._snapshot.docChanges
         data7.forEach((data) => {
-          hA.push([data.doc.data.value.mapValue.fields.account, data.doc.data.value.mapValue.fields.photo, data.doc.data.value.mapValue.fields.name, data.doc.data.value.mapValue.fields.maticAmount])
+          var user = data.doc.data.value.mapValue.fields
+          hA = hA.concat([[user.account, user.photo, user.name, user.maticAmount]])
         })
       } catch (e) {
 
@@ -534,7 +535,8 @@ export default function Main() {
         const d8 = await getDocs(q8)
         const data8 = d8._snapshot.docChanges
         data8.forEach((data) => {
-          iA.push([data.doc.data.value.mapValue.fields.account, data.doc.data.value.mapValue.fields.photo, data.doc.data.value.mapValue.fields.name, data.doc.data.value.mapValue.fields.maticAmount])
+          var user = data.doc.data.value.mapValue.fields
+          iA = iA.concat([[user.account, user.photo, user.name, user.maticAmount]])
         })
       } catch (e) {
 
@@ -544,15 +546,18 @@ export default function Main() {
         const d9 = await getDocs(q9)
         const data9 = d9._snapshot.docChanges
         data9.forEach((data) => {
-          jA.push([data.doc.data.value.mapValue.fields.account, data.doc.data.value.mapValue.fields.photo, data.doc.data.value.mapValue.fields.name, data.doc.data.value.mapValue.fields.maticAmount])
+          var user = data.doc.data.value.mapValue.fields
+          jA = jA.concat([[user.account, user.photo, user.name, user.maticAmount]])
         })
       } catch (e) {
 
       }
-      leaderboard.push([aD, bD, cD, dD, eD, fD, gD, hD, iD, jD])
-      leaderboard.push([aW, bW, cW, dW, eW, fW, gW, hW, iW, jW])
-      leaderboard.push([aM, bM, cM, dM, eM, fM, gM, hM, iM, jM])
-      leaderboard.push([aA, bA, cA, dA, eA, fA, gA, hA, iA, jA])
+      leaderboard = leaderboard.concat(
+        [[aD, bD, cD, dD, eD, fD, gD, hD, iD, jD]],
+        [[aW, bW, cW, dW, eW, fW, gW, hW, iW, jW]],
+        [[aM, bM, cM, dM, eM, fM, gM, hM, iM, jM]],
+        [[aA, bA, cA, dA, eA, fA, gA, hA, iA, jA]]
+      )
       // ---------------------------------------------------------------------------------------------------------------------------------------
       let topGames = {}
       let dayTopGames = []
@@ -560,58 +565,66 @@ export default function Main() {
       let monthTopGames = []
       let globalTopGames = []
       try {
-        dayTopGames.push([leaderboard[0][0][0][0].stringValue, leaderboard[0][0][0][1].stringValue, leaderboard[0][0][0][2].stringValue, leaderboard[0][0].length])
-        dayTopGames.push([leaderboard[0][1][0][0].stringValue, leaderboard[0][1][0][1].stringValue, leaderboard[0][1][0][2].stringValue, leaderboard[0][1].length])
-        dayTopGames.push([leaderboard[0][2][0][0].stringValue, leaderboard[0][2][0][1].stringValue, leaderboard[0][2][0][2].stringValue, leaderboard[0][2].length])
-        dayTopGames.push([leaderboard[0][3][0][0].stringValue, leaderboard[0][3][0][1].stringValue, leaderboard[0][3][0][2].stringValue, leaderboard[0][3].length])
-        dayTopGames.push([leaderboard[0][4][0][0].stringValue, leaderboard[0][4][0][1].stringValue, leaderboard[0][4][0][2].stringValue, leaderboard[0][4].length])
-        dayTopGames.push([leaderboard[0][5][0][0].stringValue, leaderboard[0][5][0][1].stringValue, leaderboard[0][5][0][2].stringValue, leaderboard[0][5].length])
-        dayTopGames.push([leaderboard[0][6][0][0].stringValue, leaderboard[0][6][0][1].stringValue, leaderboard[0][6][0][2].stringValue, leaderboard[0][6].length])
-        dayTopGames.push([leaderboard[0][7][0][0].stringValue, leaderboard[0][7][0][1].stringValue, leaderboard[0][7][0][2].stringValue, leaderboard[0][7].length])
-        dayTopGames.push([leaderboard[0][8][0][0].stringValue, leaderboard[0][8][0][1].stringValue, leaderboard[0][8][0][2].stringValue, leaderboard[0][8].length])
-        dayTopGames.push([leaderboard[0][9][0][0].stringValue, leaderboard[0][9][0][1].stringValue, leaderboard[0][9][0][2].stringValue, leaderboard[0][9].length])
+        dayTopGames = dayTopGames.concat(
+          [[leaderboard[0][0][0][0].stringValue, leaderboard[0][0][0][1].stringValue, leaderboard[0][0][0][2].stringValue, leaderboard[0][0].length]],
+          [[leaderboard[0][1][0][0].stringValue, leaderboard[0][1][0][1].stringValue, leaderboard[0][1][0][2].stringValue, leaderboard[0][1].length]],
+          [[leaderboard[0][2][0][0].stringValue, leaderboard[0][2][0][1].stringValue, leaderboard[0][2][0][2].stringValue, leaderboard[0][2].length]],
+          [[leaderboard[0][3][0][0].stringValue, leaderboard[0][3][0][1].stringValue, leaderboard[0][3][0][2].stringValue, leaderboard[0][3].length]],
+          [[leaderboard[0][4][0][0].stringValue, leaderboard[0][4][0][1].stringValue, leaderboard[0][4][0][2].stringValue, leaderboard[0][4].length]],
+          [[leaderboard[0][5][0][0].stringValue, leaderboard[0][5][0][1].stringValue, leaderboard[0][5][0][2].stringValue, leaderboard[0][5].length]],
+          [[leaderboard[0][6][0][0].stringValue, leaderboard[0][6][0][1].stringValue, leaderboard[0][6][0][2].stringValue, leaderboard[0][6].length]],
+          [[leaderboard[0][7][0][0].stringValue, leaderboard[0][7][0][1].stringValue, leaderboard[0][7][0][2].stringValue, leaderboard[0][7].length]],
+          [[leaderboard[0][8][0][0].stringValue, leaderboard[0][8][0][1].stringValue, leaderboard[0][8][0][2].stringValue, leaderboard[0][8].length]],
+          [[leaderboard[0][9][0][0].stringValue, leaderboard[0][9][0][1].stringValue, leaderboard[0][9][0][2].stringValue, leaderboard[0][9].length]]
+        )
       } catch (e) {
 
       }
       try {
-        weekTopGames.push([leaderboard[1][0][0][0].stringValue, leaderboard[1][0][0][1].stringValue, leaderboard[1][0][0][2].stringValue, leaderboard[1][0].length])
-        weekTopGames.push([leaderboard[1][1][0][0].stringValue, leaderboard[1][1][0][1].stringValue, leaderboard[1][1][0][2].stringValue, leaderboard[1][1].length])
-        weekTopGames.push([leaderboard[1][2][0][0].stringValue, leaderboard[1][2][0][1].stringValue, leaderboard[1][2][0][2].stringValue, leaderboard[1][2].length])
-        weekTopGames.push([leaderboard[1][3][0][0].stringValue, leaderboard[1][3][0][1].stringValue, leaderboard[1][3][0][2].stringValue, leaderboard[1][3].length])
-        weekTopGames.push([leaderboard[1][4][0][0].stringValue, leaderboard[1][4][0][1].stringValue, leaderboard[1][4][0][2].stringValue, leaderboard[1][4].length])
-        weekTopGames.push([leaderboard[1][5][0][0].stringValue, leaderboard[1][5][0][1].stringValue, leaderboard[1][5][0][2].stringValue, leaderboard[1][5].length])
-        weekTopGames.push([leaderboard[1][6][0][0].stringValue, leaderboard[1][6][0][1].stringValue, leaderboard[1][6][0][2].stringValue, leaderboard[1][6].length])
-        weekTopGames.push([leaderboard[1][7][0][0].stringValue, leaderboard[1][7][0][1].stringValue, leaderboard[1][7][0][2].stringValue, leaderboard[1][7].length])
-        weekTopGames.push([leaderboard[1][8][0][0].stringValue, leaderboard[1][8][0][1].stringValue, leaderboard[1][8][0][2].stringValue, leaderboard[1][8].length])
-        weekTopGames.push([leaderboard[1][9][0][0].stringValue, leaderboard[1][9][0][1].stringValue, leaderboard[1][9][0][2].stringValue, leaderboard[1][9].length])
+        weekTopGames = weekTopGames.concat(
+          [[leaderboard[1][0][0][0].stringValue, leaderboard[1][0][0][1].stringValue, leaderboard[1][0][0][2].stringValue, leaderboard[1][0].length]],
+          [[leaderboard[1][1][0][0].stringValue, leaderboard[1][1][0][1].stringValue, leaderboard[1][1][0][2].stringValue, leaderboard[1][1].length]],
+          [[leaderboard[1][2][0][0].stringValue, leaderboard[1][2][0][1].stringValue, leaderboard[1][2][0][2].stringValue, leaderboard[1][2].length]],
+          [[leaderboard[1][3][0][0].stringValue, leaderboard[1][3][0][1].stringValue, leaderboard[1][3][0][2].stringValue, leaderboard[1][3].length]],
+          [[leaderboard[1][4][0][0].stringValue, leaderboard[1][4][0][1].stringValue, leaderboard[1][4][0][2].stringValue, leaderboard[1][4].length]],
+          [[leaderboard[1][5][0][0].stringValue, leaderboard[1][5][0][1].stringValue, leaderboard[1][5][0][2].stringValue, leaderboard[1][5].length]],
+          [[leaderboard[1][6][0][0].stringValue, leaderboard[1][6][0][1].stringValue, leaderboard[1][6][0][2].stringValue, leaderboard[1][6].length]],
+          [[leaderboard[1][7][0][0].stringValue, leaderboard[1][7][0][1].stringValue, leaderboard[1][7][0][2].stringValue, leaderboard[1][7].length]],
+          [[leaderboard[1][8][0][0].stringValue, leaderboard[1][8][0][1].stringValue, leaderboard[1][8][0][2].stringValue, leaderboard[1][8].length]],
+          [[leaderboard[1][9][0][0].stringValue, leaderboard[1][9][0][1].stringValue, leaderboard[1][9][0][2].stringValue, leaderboard[1][9].length]]
+        )
       } catch (e) {
 
       }
       try {
-        monthTopGames.push([leaderboard[2][0][0][0].stringValue, leaderboard[2][0][0][1].stringValue, leaderboard[2][0][0][2].stringValue, leaderboard[2][0].length])
-        monthTopGames.push([leaderboard[2][1][0][0].stringValue, leaderboard[2][1][0][1].stringValue, leaderboard[2][1][0][2].stringValue, leaderboard[2][1].length])
-        monthTopGames.push([leaderboard[2][2][0][0].stringValue, leaderboard[2][2][0][1].stringValue, leaderboard[2][2][0][2].stringValue, leaderboard[2][2].length])
-        monthTopGames.push([leaderboard[2][3][0][0].stringValue, leaderboard[2][3][0][1].stringValue, leaderboard[2][3][0][2].stringValue, leaderboard[2][3].length])
-        monthTopGames.push([leaderboard[2][4][0][0].stringValue, leaderboard[2][4][0][1].stringValue, leaderboard[2][4][0][2].stringValue, leaderboard[2][4].length])
-        monthTopGames.push([leaderboard[2][5][0][0].stringValue, leaderboard[2][5][0][1].stringValue, leaderboard[2][5][0][2].stringValue, leaderboard[2][5].length])
-        monthTopGames.push([leaderboard[2][6][0][0].stringValue, leaderboard[2][6][0][1].stringValue, leaderboard[2][6][0][2].stringValue, leaderboard[2][6].length])
-        monthTopGames.push([leaderboard[2][7][0][0].stringValue, leaderboard[2][7][0][1].stringValue, leaderboard[2][7][0][2].stringValue, leaderboard[2][7].length])
-        monthTopGames.push([leaderboard[2][8][0][0].stringValue, leaderboard[2][8][0][1].stringValue, leaderboard[2][8][0][2].stringValue, leaderboard[2][8].length])
-        monthTopGames.push([leaderboard[2][9][0][0].stringValue, leaderboard[2][9][0][1].stringValue, leaderboard[2][9][0][2].stringValue, leaderboard[2][9].length])
+        monthTopGames = monthTopGames.concat(
+          [[leaderboard[2][0][0][0].stringValue, leaderboard[2][0][0][1].stringValue, leaderboard[2][0][0][2].stringValue, leaderboard[2][0].length]],
+          [[leaderboard[2][1][0][0].stringValue, leaderboard[2][1][0][1].stringValue, leaderboard[2][1][0][2].stringValue, leaderboard[2][1].length]],
+          [[leaderboard[2][2][0][0].stringValue, leaderboard[2][2][0][1].stringValue, leaderboard[2][2][0][2].stringValue, leaderboard[2][2].length]],
+          [[leaderboard[2][3][0][0].stringValue, leaderboard[2][3][0][1].stringValue, leaderboard[2][3][0][2].stringValue, leaderboard[2][3].length]],
+          [[leaderboard[2][4][0][0].stringValue, leaderboard[2][4][0][1].stringValue, leaderboard[2][4][0][2].stringValue, leaderboard[2][4].length]],
+          [[leaderboard[2][5][0][0].stringValue, leaderboard[2][5][0][1].stringValue, leaderboard[2][5][0][2].stringValue, leaderboard[2][5].length]],
+          [[leaderboard[2][6][0][0].stringValue, leaderboard[2][6][0][1].stringValue, leaderboard[2][6][0][2].stringValue, leaderboard[2][6].length]],
+          [[leaderboard[2][7][0][0].stringValue, leaderboard[2][7][0][1].stringValue, leaderboard[2][7][0][2].stringValue, leaderboard[2][7].length]],
+          [[leaderboard[2][8][0][0].stringValue, leaderboard[2][8][0][1].stringValue, leaderboard[2][8][0][2].stringValue, leaderboard[2][8].length]],
+          [[leaderboard[2][9][0][0].stringValue, leaderboard[2][9][0][1].stringValue, leaderboard[2][9][0][2].stringValue, leaderboard[2][9].length]]
+        )
       } catch (e) {
 
       }
       try {
-        globalTopGames.push([leaderboard[3][0][0][0].stringValue, leaderboard[3][0][0][1].stringValue, leaderboard[3][0][0][2].stringValue, leaderboard[3][0].length])
-        globalTopGames.push([leaderboard[3][1][0][0].stringValue, leaderboard[3][1][0][1].stringValue, leaderboard[3][1][0][2].stringValue, leaderboard[3][1].length])
-        globalTopGames.push([leaderboard[3][2][0][0].stringValue, leaderboard[3][2][0][1].stringValue, leaderboard[3][2][0][2].stringValue, leaderboard[3][2].length])
-        globalTopGames.push([leaderboard[3][3][0][0].stringValue, leaderboard[3][3][0][1].stringValue, leaderboard[3][3][0][2].stringValue, leaderboard[3][3].length])
-        globalTopGames.push([leaderboard[3][4][0][0].stringValue, leaderboard[3][4][0][1].stringValue, leaderboard[3][4][0][2].stringValue, leaderboard[3][4].length])
-        globalTopGames.push([leaderboard[3][5][0][0].stringValue, leaderboard[3][5][0][1].stringValue, leaderboard[3][5][0][2].stringValue, leaderboard[3][5].length])
-        globalTopGames.push([leaderboard[3][6][0][0].stringValue, leaderboard[3][6][0][1].stringValue, leaderboard[3][6][0][2].stringValue, leaderboard[3][6].length])
-        globalTopGames.push([leaderboard[3][7][0][0].stringValue, leaderboard[3][7][0][1].stringValue, leaderboard[3][7][0][2].stringValue, leaderboard[3][7].length])
-        globalTopGames.push([leaderboard[3][8][0][0].stringValue, leaderboard[3][8][0][1].stringValue, leaderboard[3][8][0][2].stringValue, leaderboard[3][8].length])
-        globalTopGames.push([leaderboard[3][9][0][0].stringValue, leaderboard[3][9][0][1].stringValue, leaderboard[3][9][0][2].stringValue, leaderboard[3][9].length])
+        globalTopGames = globalTopGames.concat(
+          [[leaderboard[3][0][0][0].stringValue, leaderboard[3][0][0][1].stringValue, leaderboard[3][0][0][2].stringValue, leaderboard[3][0].length]],
+          [[leaderboard[3][1][0][0].stringValue, leaderboard[3][1][0][1].stringValue, leaderboard[3][1][0][2].stringValue, leaderboard[3][1].length]],
+          [[leaderboard[3][2][0][0].stringValue, leaderboard[3][2][0][1].stringValue, leaderboard[3][2][0][2].stringValue, leaderboard[3][2].length]],
+          [[leaderboard[3][3][0][0].stringValue, leaderboard[3][3][0][1].stringValue, leaderboard[3][3][0][2].stringValue, leaderboard[3][3].length]],
+          [[leaderboard[3][4][0][0].stringValue, leaderboard[3][4][0][1].stringValue, leaderboard[3][4][0][2].stringValue, leaderboard[3][4].length]],
+          [[leaderboard[3][5][0][0].stringValue, leaderboard[3][5][0][1].stringValue, leaderboard[3][5][0][2].stringValue, leaderboard[3][5].length]],
+          [[leaderboard[3][6][0][0].stringValue, leaderboard[3][6][0][1].stringValue, leaderboard[3][6][0][2].stringValue, leaderboard[3][6].length]],
+          [[leaderboard[3][7][0][0].stringValue, leaderboard[3][7][0][1].stringValue, leaderboard[3][7][0][2].stringValue, leaderboard[3][7].length]],
+          [[leaderboard[3][8][0][0].stringValue, leaderboard[3][8][0][1].stringValue, leaderboard[3][8][0][2].stringValue, leaderboard[3][8].length]],
+          [[leaderboard[3][9][0][0].stringValue, leaderboard[3][9][0][1].stringValue, leaderboard[3][9][0][2].stringValue, leaderboard[3][9].length]]
+        )
       } catch (e) {
 
       }
@@ -1185,8 +1198,8 @@ export default function Main() {
       setLeaderboard(gameTops)
     }
 
-    readLeaderboard()
-  }, [])
+    readLeaderboard(unixTimeStamp)
+  }, [unixTimeStamp])
 
   const liveBetsModal = () => {
     if (!liveBets) {
@@ -1294,8 +1307,8 @@ export default function Main() {
 
   return (
     <>
-      <ChatRoom 
-      user={user}
+      <ChatRoom
+        user={user}
       />
       <div className='cards-container'>
         <div className='row text-center mb-2 mb-md-5'>
@@ -1346,8 +1359,11 @@ export default function Main() {
             <Button onClick={leaderboardsModalAmount} className={mostAmount ? 'active btn-rank' : 'btn-rank'}>Most Amount</Button>
           </ButtonGroup>
 
+
           {liveBets &&
-            <p className="d-flex justify-content-end me-4">{globalGames + " Total Bets"}</p>
+            <>
+              <ReadAllGames />
+            </>
           }
           {mostPlays &&
             <ButtonGroup>
@@ -1367,12 +1383,6 @@ export default function Main() {
           }
         </div>
 
-        {liveBets &&
-          <LiveBets
-            historyPlays={historyPlays}
-            unixTimeStamp={unixTimeStamp}
-          />
-        }
         {mostPlays && leaderboard.game &&
           <>
             {dailyGame &&

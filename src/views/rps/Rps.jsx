@@ -12,11 +12,12 @@ import { doc, getDoc, setDoc, updateDoc, collection, query, limit, addDoc, serve
 import toast from 'react-hot-toast';
 import RpsGame from '../../abis/rpsGame/rpsGame.json'
 import { rpsGameContract } from '../../components/blockchain/Contracts'
-import HistoryGamesModal from './components/HistoryGamesModal'
 import HistoryGames from './components/HistoryGames'
 import ConnectWallet from './components/ConnectWallet'
 import ConnectChain from './components/ConnectChain'
 import WinStreakLeaderboard from './components/WinStreakLeaderboard'
+import ReadAllGames from '../../firebase/ReadAllGames'
+import { ReadUnixTime } from '../../firebase/ReadUnixTime'
 import { auth, db } from '../../firebase/firesbaseConfig'
 import { useMatchMedia } from '../../hooks/useMatchMedia'
 import Rock from '../../assets/imgs/rock.gif'
@@ -30,7 +31,6 @@ export default function Rps() {
   const [rpsgame, setRpsgame] = useState({});
   const [userData, setUserData] = useState({});
   const [web3ModalInfo, setWeb3ModalInfo] = useState({});
-  const [historyPlays, setHistoryPlays] = useState({});
   const [usergame, setUsergame] = useState({
     hand: '',
     amount: 0
@@ -43,7 +43,6 @@ export default function Rps() {
   const [userGameStreak, setUserGameStreak] = useState(0);
   const [userhand, setUserhand] = useState(0);
   const [useramount, setUseramount] = useState(0);
-  const [unixTimeStamp, setUnixTimeStamp] = useState(1000000000000000000);
   const [active, setActive] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [animation, setAnimation] = useState(false);
@@ -52,31 +51,7 @@ export default function Rps() {
   const [doubleOrNothingStatus, setDoubleOrNothingStatus] = useState(undefined);
   const [showGameResult, setShowGameResult] = useState(false);
   const isMobileResolution = useMatchMedia('(max-width:650px)', false);
-
-
-  useEffect(() => {
-    const timer = setInterval(() => { getUnixTime() }, 4000);
-    return () => clearInterval(timer);
-  }, [])
-
-  const getUnixTime = async () => {
-    fetch('https://showcase.api.linx.twenty57.net/UnixTime/tounixtimestamp?datetime=now')
-      .then(response =>
-        response.json()
-      )
-      .then(data =>
-        setUnixTimeStamp(parseInt(data.UnixTimeStamp))
-      );
-  }
-
-  useEffect(() => {
-    const q = query(collection(db, "allGames"), orderBy("createdAt", "desc"), limit(12))
-    const unsub = onSnapshot(q, (doc) => {
-      const played = doc.docs.map(historyPlays => historyPlays.data())
-      setHistoryPlays(played)
-    });
-    return unsub;
-  }, [])
+  const unixTimeStamp = ReadUnixTime();
 
   useEffect(() => {
     readAccount(user)
@@ -604,7 +579,6 @@ export default function Rps() {
             <>
               <HistoryGames
                 isMobileVersion={true}
-                historyPlays={historyPlays}
                 unixTimeStamp={unixTimeStamp}
               />
               <WinStreakLeaderboard
@@ -635,7 +609,6 @@ export default function Rps() {
               <div className="d-flex flex-row gap-3">
                 <HistoryGames
                   isMobileVersion={false}
-                  historyPlays={historyPlays}
                   unixTimeStamp={unixTimeStamp}
                 />
                 <WinStreakLeaderboard
@@ -791,10 +764,7 @@ export default function Rps() {
                 </p>
                 <button className="btn-hover btn-start" onClick={openGame}>DOUBLE OR NOTHING</button>
                 <p>CLICK TO SEE OPTIONS</p>
-                <HistoryGamesModal
-                  historyPlays={historyPlays}
-                  unixTimeStamp={unixTimeStamp}
-                />
+                <ReadAllGames />
               </>
               :
               <>
