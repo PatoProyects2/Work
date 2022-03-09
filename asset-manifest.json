@@ -1,17 +1,23 @@
 {
   "files": {
     "main.css": "/Work/static/css/main.4ee74598.chunk.css",
-    "main.js": "/Work/static/js/main.ab5d6df1.chunk.js",
-    "main.js.map": "/Work/static/js/main.ab5d6df1.chunk.js.map",
+    "main.js": "/Work/static/js/main.570e38a6.chunk.js",
+    "main.js.map": "/Work/static/js/main.570e38a6.chunk.js.map",
     "runtime-main.js": "/Work/static/js/runtime-main.9471df77.js",
     "runtime-main.js.map": "/Work/static/js/runtime-main.9471df77.js.map",
     "static/css/2.4615dd22.chunk.css": "/Work/static/css/2.4615dd22.chunk.css",
-    "static/js/2.9e2a1bca.chunk.js": "/Work/static/js/2.9e2a1bca.chunk.js",
-    "static/js/2.9e2a1bca.chunk.js.map": "/Work/static/js/2.9e2a1bca.chunk.js.map",
+    "static/js/2.de94f617.chunk.js": "/Work/static/js/2.de94f617.chunk.js",
+    "static/js/2.de94f617.chunk.js.map": "/Work/static/js/2.de94f617.chunk.js.map",
     "index.html": "/Work/index.html",
     "static/css/2.4615dd22.chunk.css.map": "/Work/static/css/2.4615dd22.chunk.css.map",
     "static/css/main.4ee74598.chunk.css.map": "/Work/static/css/main.4ee74598.chunk.css.map",
-    "static/js/2.9e2a1bca.chunk.js.LICENSE.txt": "/Work/static/js/2.9e2a1bca.chunk.js.LICENSE.txt",
+    "static/js/2.de94f617.chunk.js.LICENSE.txt": "/Work/static/js/2.de94f617.chunk.js.LICENSE.txt",
+    "static/media/Paper_Lose.9b3e6bbb.gif": "/Work/static/media/Paper_Lose.9b3e6bbb.gif",
+    "static/media/Paper_Win.0f056330.gif": "/Work/static/media/Paper_Win.0f056330.gif",
+    "static/media/Rock_Lose.7c23c600.gif": "/Work/static/media/Rock_Lose.7c23c600.gif",
+    "static/media/Rock_Win.d81d089c.gif": "/Work/static/media/Rock_Win.d81d089c.gif",
+    "static/media/Scissors_Lose.575ddc25.gif": "/Work/static/media/Scissors_Lose.575ddc25.gif",
+    "static/media/Scissors_Win.1f0a7653.gif": "/Work/static/media/Scissors_Win.1f0a7653.gif",
     "static/media/animation.8586eafd.gif": "/Work/static/media/animation.8586eafd.gif",
     "static/media/coming_soon_hover_card.2ef38cd2.png": "/Work/static/media/coming_soon_hover_card.2ef38cd2.png",
     "static/media/discord_card.9c902417.png": "/Work/static/media/discord_card.9c902417.png",
@@ -24,8 +30,8 @@
   "entrypoints": [
     "static/js/runtime-main.9471df77.js",
     "static/css/2.4615dd22.chunk.css",
-    "static/js/2.9e2a1bca.chunk.js",
+    "static/js/2.de94f617.chunk.js",
     "static/css/main.4ee74598.chunk.css",
-    "static/js/main.ab5d6df1.chunk.js"
+    "static/js/main.570e38a6.chunk.js"
   ]
 }
