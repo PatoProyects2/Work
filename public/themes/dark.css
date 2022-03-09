@@ -1,5 +1,8 @@
 /* DARK THEME */
+
+
 /* MAIN PAGE */
+
 .wrapper {
     background: url('./bg_dark.png') no-repeat;
     background-size: cover;
@@ -7,8 +10,9 @@
 }
 
 .main-navbar {
-    background-color: rgba(28,31,35,1);
+    background-color: rgba(28, 31, 35, 1);
     color: #fff;
+    fill: #fff;
 }
 
 .main-navbar a {
@@ -29,7 +33,7 @@
 }
 
 .btn-signin:hover {
-    background-color: rgba(28,31,35,1) !important;
+    background-color: rgba(28, 31, 35, 1) !important;
     color: whitesmoke !important;
 }
 
@@ -43,7 +47,7 @@
 }
 
 .dd-toggle,
-.btn-menu-bars  {
+.btn-menu-bars {
     background-color: #292b2c !important;
     color: whitesmoke !important;
 }
@@ -59,12 +63,12 @@
 }
 
 .btn-rank {
-    background-color: rgba(28,31,35,1) !important;
+    background-color: rgba(28, 31, 35, 1) !important;
     color: whitesmoke!important;
 }
 
 .btn-rank.active {
-    background-color: #292b2c !important;    
+    background-color: #292b2c !important;
 }
 
 .btn-recurrence {
@@ -78,19 +82,21 @@
 }
 
 .list-group {
-    background-color: rgba(28,31,35,1);
+    background-color: rgba(28, 31, 35, 1);
     color: whitesmoke;
 }
+
 .list-group-item.list-group-item-action {
-    background-color: rgba(28,31,35,1);
+    background-color: rgba(28, 31, 35, 1);
     color: whitesmoke;
 }
 
 .tbl-ranking {
-    background-color: rgba(28,31,35,1);
+    background-color: rgba(28, 31, 35, 1);
 }
 
-th, td {
+th,
+td {
     color: whitesmoke;
 }
 
@@ -118,10 +124,13 @@ input[type=radio][name=pic1]:checked+img {
     color: whitesmoke;
 }
 
+
 /* Offcanvas */
+
 .oc-header .offcanvas-title {
     color: #ffb74d !important;
 }
+
 .oc-menu {
     background: url('./bg_dark.png') no-repeat;
     background-size: cover;
@@ -133,12 +142,13 @@ input[type=radio][name=pic1]:checked+img {
 
 .nav-link-secondary {
     color: #adb5bd !important;
-    font-size: 0.9rem;;
+    font-size: 0.9rem;
+    ;
 }
 
 .nav-link-primary:hover,
 .nav-link-secondary:hover {
-    color:#ffb74d !important;
+    color: #ffb74d !important;
     border-bottom: 2px solid #ffb74d;
 }
 
@@ -146,7 +156,7 @@ input[type=radio][name=pic1]:checked+img {
     background-color: #292b2c !important;
 }
 
-.d-modal .btn.btn-transparent{
+.d-modal .btn.btn-transparent {
     color: #ffb74d !important;
 }
 
@@ -163,7 +173,7 @@ input[type=radio][name=pic1]:checked+img {
     background-color: #292b2c !important;
 }
 
-.dd-profile .dropdown-item{
+.dd-profile .dropdown-item {
     color: whitesmoke !important;
 }
 
@@ -171,7 +181,7 @@ input[type=radio][name=pic1]:checked+img {
     background-color: #52525B !important;
 }
 
-.nav-item.nav-link.active{
+.nav-item.nav-link.active {
     border-bottom: 2px solid #ffb74d;
 }
 
@@ -197,13 +207,13 @@ input[type=radio][name=pic1]:checked+img {
 }
 
 @media (max-width: 767px) {
-    .btn-auth-group{
+    .btn-auth-group {
         background-color: transparent;
     }
 }
 
 .web3modal-provider-container {
-    border: 1px solid #52525B;    
+    border: 1px solid #52525B;
 }
 
 .web3modal-provider-container:hover {
@@ -216,7 +226,6 @@ input[type=radio][name=pic1]:checked+img {
 
 .web3modal-provider-container {
     background-color: #212529 !important;
-    
 }
 
 .web3modal-provider-container:hover {
@@ -226,53 +235,56 @@ input[type=radio][name=pic1]:checked+img {
 .web3modal-provider-name {
     color: whitesmoke !important;
 }
+
 .modal-content {
     color: whitesmoke;
     background-color: #212529 !important;
 }
 
+
 /* ROADMAP */
+
 .indexedStep {
-    color:white;   
-    background-color: rgb(216, 216, 216);   
-  }
-  
-  .indexedStep.accomplished {
+    color: white;
+    background-color: rgb(216, 216, 216);
+}
+
+.indexedStep.accomplished {
     background-color: #ffc107;
     border: 1px solid #ffc107;
-  }
-  
-  .indexedStep.current {
+}
+
+.indexedStep.current {
     background-color: #fad47a;
     border: 2px solid #ffc107;
-  }
-  
-  .roadmap {
+}
+
+.roadmap {
     max-width: 700px;
     margin: 50px auto;
-  }
-  
-  .roadmap-label {
+}
+
+.roadmap-label {
     color: #565656;
-  }
+}
 
-  .roadmap-label.accomplished,
-  .arrow-highlight {
-      color: #ffc107;
-  }
+.roadmap-label.accomplished,
+.arrow-highlight {
+    color: #ffc107;
+}
 
-  .RSPBprogressBar .RSPBprogression {
+.RSPBprogressBar .RSPBprogression {
     background-color: #fad47a !important;
-  }
+}
 
-  .arrow-default {
+.arrow-default {
     color: #b4b4b4;
-  }
+}
 
-  .roadmap-card {
-      background-color: #212529 !important;
-  }
+.roadmap-card {
+    background-color: #212529 !important;
+}
 
-  .faq-border {
-      border-bottom: 2px solid whitesmoke;
-  }
+.faq-border {
+    border-bottom: 2px solid whitesmoke;
+}
