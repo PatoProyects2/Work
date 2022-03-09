@@ -18,10 +18,7 @@ import ChatRoom from './components/chat/ChatRoom'
 
 export default function Main() {
   const [user] = useAuthState(auth)
-  const [topDay, setTopDay] = useState({});
-  const [topWeek, setTopWeek] = useState({});
-  const [topMonth, setTopMonth] = useState({});
-  const [topGlobal, setTopGlobal] = useState({});
+  const [leaderboard, setLeaderboard] = useState({});
   const [liveBets, setLiveBets] = useState(true);
   const [mostPlays, setMostPlays] = useState(false);
   const [dailyGame, setDailyGame] = useState(false);
@@ -68,106 +65,109 @@ export default function Main() {
 
       const arrDay = [... new Set(dayGames.map(data => data))]
       var dayTop = arrDay.map(account => query(collection(db, "allGames"), where("account", "==", account), where("createdAt", ">", lastDay)))
-      dayTop.forEach(async query => {
-        let leaderboard = {}
-        let data = []
-        let top = []
-        const d = await getDocs(query)
-        data = data.concat([d._snapshot.docChanges])
-        data.forEach(users => {
-          let amounts = users.map(amount => parseInt(amount.doc.data.value.mapValue.fields.maticAmount.integerValue))
-          let amount = lodash.sum(amounts)
-          top = top.concat([[
-            users[0].doc.data.value.mapValue.fields.account.stringValue,
-            users[0].doc.data.value.mapValue.fields.photo.stringValue,
-            users[0].doc.data.value.mapValue.fields.name.stringValue,
-            users.length,
-            amount
-          ]])
+      const array0 = await Promise.all(
+        dayTop.map(async query => {
+          return await getDocs(query)
         })
-        leaderboard.games = top.sort(((a, b) => b[3] - a[3]))
-        leaderboard.amount = top.sort(((a, b) => b[4] - a[4]))
-        setTopDay(leaderboard)
-      })
+      )
 
       const arrWeek = [... new Set(weekGames.map(data => data))]
       var weekTop = arrWeek.map(account => query(collection(db, "allGames"), where("account", "==", account), where("createdAt", ">", lastWeek)))
-      weekTop.forEach(async query => {
-        let leaderboard = {}
-        let data = []
-        let top = []
-        const d = await getDocs(query)
-        data = data.concat([d._snapshot.docChanges])
-        data.forEach(users => {
-          let amounts = users.map(amount => parseInt(amount.doc.data.value.mapValue.fields.maticAmount.integerValue))
-          let amount = lodash.sum(amounts)
-          top = top.concat([[
-            users[0].doc.data.value.mapValue.fields.account.stringValue,
-            users[0].doc.data.value.mapValue.fields.photo.stringValue,
-            users[0].doc.data.value.mapValue.fields.name.stringValue,
-            users.length,
-            amount
-          ]])
+      const array1 = await Promise.all(
+        weekTop.map(async query => {
+          return await getDocs(query)
         })
-        leaderboard.games = top.sort(((a, b) => b[3] - a[3]))
-        leaderboard.amount = top.sort(((a, b) => b[4] - a[4]))
-        setTopWeek(leaderboard)
-      })
+      )
 
       const arrMonth = [... new Set(monthGames.map(data => data))]
       var monthTop = arrMonth.map(account => query(collection(db, "allGames"), where("account", "==", account), where("createdAt", ">", lastMonth)))
-      monthTop.forEach(async query => {
-        let leaderboard = {}
-        let data = []
-        let top = []
-        const d = await getDocs(query)
-        data = data.concat([d._snapshot.docChanges])
-        data.forEach(users => {
-          let amounts = users.map(amount => parseInt(amount.doc.data.value.mapValue.fields.maticAmount.integerValue))
-          let amount = lodash.sum(amounts)
-          top = top.concat([[
-            users[0].doc.data.value.mapValue.fields.account.stringValue,
-            users[0].doc.data.value.mapValue.fields.photo.stringValue,
-            users[0].doc.data.value.mapValue.fields.name.stringValue,
-            users.length,
-            amount
-          ]])
+      const array2 = await Promise.all(
+        monthTop.map(async query => {
+          return await getDocs(query)
         })
-        leaderboard.games = top.sort(((a, b) => b[3] - a[3]))
-        leaderboard.amount = top.sort(((a, b) => b[4] - a[4]))
-        setTopMonth(leaderboard)
-      })
-
+      )
       const arrGlobal = [... new Set(globalGames.map(data => data))]
       var globalTop = arrGlobal.map(account => query(collection(db, "allGames"), where("account", "==", account)))
-      globalTop.forEach(async query => {
-        let leaderboard = {}
-        let data = []
-        let top = []
-        const d = await getDocs(query)
-        data = data.concat([d._snapshot.docChanges])
-        data.forEach(users => {
-          let amounts = users.map(amount => parseInt(amount.doc.data.value.mapValue.fields.maticAmount.integerValue))
-          let amount = lodash.sum(amounts)
-          top = top.concat([[
-            users[0].doc.data.value.mapValue.fields.account.stringValue,
-            users[0].doc.data.value.mapValue.fields.photo.stringValue,
-            users[0].doc.data.value.mapValue.fields.name.stringValue,
-            users.length,
-            amount
-          ]])
+      const array3 = await Promise.all(
+        globalTop.map(async query => {
+          return await getDocs(query)
         })
-        leaderboard.games = top.sort(((a, b) => b[3] - a[3]))
-        leaderboard.amount = top.sort(((a, b) => b[4] - a[4]))
-        setTopGlobal(leaderboard)
+      )
+
+      const arrayDay = [... new Set(array0.map(data => data._snapshot.docChanges))]
+      const arrayWeek = [... new Set(array1.map(data => data._snapshot.docChanges))]
+      const arrayMonth = [... new Set(array2.map(data => data._snapshot.docChanges))]
+      const arrayGlobal = [... new Set(array3.map(data => data._snapshot.docChanges))]
+
+      var data0 = arrayDay.map(users => {
+        let amounts = users.map(amount => parseInt(amount.doc.data.value.mapValue.fields.maticAmount.integerValue))
+        let amount = lodash.sum(amounts)
+        let top = [
+          users[0].doc.data.value.mapValue.fields.account.stringValue,
+          users[0].doc.data.value.mapValue.fields.photo.stringValue,
+          users[0].doc.data.value.mapValue.fields.name.stringValue,
+          users.length,
+          amount
+        ]
+        return top
       })
+      var data1 = arrayWeek.map(users => {
+        let amounts = users.map(amount => parseInt(amount.doc.data.value.mapValue.fields.maticAmount.integerValue))
+        let amount = lodash.sum(amounts)
+        let top = [
+          users[0].doc.data.value.mapValue.fields.account.stringValue,
+          users[0].doc.data.value.mapValue.fields.photo.stringValue,
+          users[0].doc.data.value.mapValue.fields.name.stringValue,
+          users.length,
+          amount
+        ]
+        return top
+      })
+      var data2 = arrayMonth.map(users => {
+        let amounts = users.map(amount => parseInt(amount.doc.data.value.mapValue.fields.maticAmount.integerValue))
+        let amount = lodash.sum(amounts)
+        let top = [
+          users[0].doc.data.value.mapValue.fields.account.stringValue,
+          users[0].doc.data.value.mapValue.fields.photo.stringValue,
+          users[0].doc.data.value.mapValue.fields.name.stringValue,
+          users.length,
+          amount
+        ]
+        return top
+      })
+      var data3 = arrayGlobal.map(users => {
+        let amounts = users.map(amount => parseInt(amount.doc.data.value.mapValue.fields.maticAmount.integerValue))
+        let amount = lodash.sum(amounts)
+        let top = [
+          users[0].doc.data.value.mapValue.fields.account.stringValue,
+          users[0].doc.data.value.mapValue.fields.photo.stringValue,
+          users[0].doc.data.value.mapValue.fields.name.stringValue,
+          users.length,
+          amount
+        ]
+        return top
+      })
+
+      var leaderboard = {
+        games: {},
+        amount: {},
+      }
+
+      leaderboard.games.day = data0.sort(((a, b) => b[3] - a[3]))
+      leaderboard.games.week = data1.sort(((a, b) => b[3] - a[3]))
+      leaderboard.games.month = data2.sort(((a, b) => b[3] - a[3]))
+      leaderboard.games.global = data3.sort(((a, b) => b[3] - a[3]))
+
+      leaderboard.amount.day = data0.sort(((a, b) => b[4] - a[4]))
+      leaderboard.amount.week = data1.sort(((a, b) => b[4] - a[4]))
+      leaderboard.amount.month = data2.sort(((a, b) => b[4] - a[4]))
+      leaderboard.amount.global = data3.sort(((a, b) => b[4] - a[4]))
+
+      setLeaderboard(leaderboard)
     }
     readLeaderboard()
     return () => {
-      setTopDay({});
-      setTopWeek({});
-      setTopMonth({});
-      setTopGlobal({});
+      setLeaderboard({});
     };
   }, [])
 
@@ -356,32 +356,32 @@ export default function Main() {
         {mostPlays &&
           <>
             {dailyGame &&
-              <MostPlays leaderboard={topDay.games} />
+              <MostPlays leaderboard={leaderboard.games.day} />
             }
             {weeklyGame &&
-              <MostPlays leaderboard={topWeek.games} />
+              <MostPlays leaderboard={leaderboard.games.week} />
             }
             {monthlyGame &&
-              <MostPlays leaderboard={topMonth.games} />
+              <MostPlays leaderboard={leaderboard.games.month} />
             }
             {globalGame &&
-              <MostPlays leaderboard={topGlobal.games} />
+              <MostPlays leaderboard={leaderboard.games.global} />
             }
           </>
         }
         {mostAmount &&
           <>
             {dailyAmount &&
-              <MostAmount leaderboard={topDay.amount} />
+              <MostAmount leaderboard={leaderboard.amount.day} />
             }
             {weeklyAmount &&
-              <MostAmount leaderboard={topWeek.amount} />
+              <MostAmount leaderboard={leaderboard.amount.week} />
             }
             {monthlyAmount &&
-              <MostAmount leaderboard={topMonth.amount} />
+              <MostAmount leaderboard={leaderboard.amount.month} />
             }
             {globalAmount &&
-              <MostAmount leaderboard={topGlobal.amount} />
+              <MostAmount leaderboard={leaderboard.amount.global} />
             }
           </>
         }

@@ -48,7 +48,7 @@ export default function Presence() {
                 }
             })
         }
-        let lastHour = unixTimeStamp - 3600
+        let lastHour = unixTimeStamp - 86400
         const q1 = query(collection(db, 'status'), where('state', '==', 'online'), where('time', '>', lastHour))
         const d1 = await getDocs(q1)
         setActive(d1._snapshot.docChanges.length)

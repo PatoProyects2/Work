@@ -47,8 +47,9 @@ export const NavbarDesktop = ({ handleFaqModal, handleHtpModal, handleRpsModal, 
                             </g>
                         </svg>
                     </NavLink>
+                    <Presence />
                 </div>
-                <Presence />
+                
                 <div className='d-flex align-items-center gap-2'>
                     <ThemeSwitcher />
                     {!isMobileResolution && <AccountFirebase />}
