@@ -1,13 +1,17 @@
 /* LIGHT THEME */
+
+
 /* MAIN PAGE */
+
 .wrapper {
     background: url('./bg_light.png') no-repeat;
     background-size: cover;
 }
 
 .main-navbar {
-    background-color: rgba(255,255,255, 0.35);
+    background-color: rgba(255, 255, 255, 0.35);
     color: #000;
+    fill: #000;
 }
 
 .main-navbar a {
@@ -19,17 +23,17 @@
 }
 
 .btn-auth-group {
-    background-color: rgba(255,255,255, 0.65);
+    background-color: rgba(255, 255, 255, 0.65);
 }
 
 .btn-signin,
 .btn-menu-bars {
-    background-color: rgba(28,31,35,1) !important;
+    background-color: rgba(28, 31, 35, 1) !important;
     color: white !important;
 }
 
 .btn-signin:hover {
-    background-color: rgba(28,31,35,0.6);
+    background-color: rgba(28, 31, 35, 0.6);
 }
 
 .btn-signup {
@@ -42,22 +46,22 @@
 }
 
 .dd-toggle {
-    background-color: rgba(255,255,255,0.8) !important;
+    background-color: rgba(255, 255, 255, 0.8) !important;
     color: #212529 !important;
 }
 
 .dd-menu,
 .dd-menu-item {
-    background-color: rgba(255,255,255,1) !important;
+    background-color: rgba(255, 255, 255, 1) !important;
 }
 
 .btn-rank {
-    background-color: rgba(255,255,255,0.5) !important;
-    color: rgba(28,31,35,1) !important;
+    background-color: rgba(255, 255, 255, 0.5) !important;
+    color: rgba(28, 31, 35, 1) !important;
 }
 
 .btn-rank.active {
-    background-color: rgba(255,255,255,0.95) !important;    
+    background-color: rgba(255, 255, 255, 0.95) !important;
 }
 
 .btn-recurrence {
@@ -82,36 +86,42 @@ input[type=radio][name=pic1]:checked+img {
     background-color: white;
 }
 
+
 /* Offcanvas */
+
 .oc-menu {
     background: url('./bg_light.png') no-repeat;
     background-size: cover;
 }
 
 .nav-link-primary {
-    color: rgba(28,31,35,1) !important;
+    color: rgba(28, 31, 35, 1) !important;
 }
 
 .nav-link-secondary {
-    color: rgba(28,31,35,0.5) !important;
-    font-size: 0.9rem;;
+    color: rgba(28, 31, 35, 0.5) !important;
+    font-size: 0.9rem;
+    ;
 }
 
 .nav-link-primary:hover,
 .nav-link-secondary:hover {
-    color:#78350f !important;
+    color: #78350f !important;
     border-bottom: 2px solid #78350f;
 }
 
-.nav-item.nav-link.active{
+.nav-item.nav-link.active {
     border-bottom: 2px solid #78350f;
 }
+
 .ic-color {
-    color: rgba(28,31,35,0.5);
+    color: rgba(28, 31, 35, 0.5);
 }
+
 .ic-color:hover {
     color: #78350f;
 }
+
 
 /* End Game styles */
 
@@ -133,25 +143,27 @@ input[type=radio][name=pic1]:checked+img {
     .main-navbar {
         background-color: #e2d4c2;
     }
-
-    .btn-auth-group{
+    .btn-auth-group {
         background-color: transparent;
     }
 }
 
-
 .web3modal-provider-container {
-    border: 1px solid #52525B;    
+    border: 1px solid #52525B;
 }
 
 .web3modal-provider-container:hover {
     border: 1px solid #3B82F6;
 }
+
+
 /* End web3modal */
 
+
 /* ROADMAP */
+
 .indexedStep {
-    color:white;
+    color: white;
     width: 18px;
     height: 18px;
     border-radius: 50%;
@@ -162,51 +174,51 @@ input[type=radio][name=pic1]:checked+img {
     justify-content: center;
     align-items: center;
     transition: .8s;
-  }
-  
-  .indexedStep i {
+}
+
+.indexedStep i {
     position: absolute;
-  }
-  
-  .indexedStep.accomplished {
+}
+
+.indexedStep.accomplished {
     background-color: #78350f;
     border: 1px solid #78350f;
     transition: .8s;
-  }
-  
-  .indexedStep.current {
+}
+
+.indexedStep.current {
     background-color: #ba7954;
     border: 2px solid #78350f;
     font-weight: 600;
-  }
-  
-  .roadmap {
+}
+
+.roadmap {
     max-width: 700px;
     margin: 50px auto;
-  }
-  
-  .roadmap-label {
+}
+
+.roadmap-label {
     position: relative;
     color: #565656;
     text-align: center;
     top: 30px;
-  }
+}
 
-  .roadmap-label.accomplished,
-  .arrow-highlight {
-      color: #78350f;
-  }
+.roadmap-label.accomplished,
+.arrow-highlight {
+    color: #78350f;
+}
 
-  .RSPBprogressBar .RSPBprogression {
+.RSPBprogressBar .RSPBprogression {
     background-color: #ba7954 !important;
-  }
+}
 
-  .arrow-default {
+.arrow-default {
     color: #333333;
-  }
+}
 
-  .roadmap-card {
-    background-color: rgba(255,255,255, 0.35) !important;
+.roadmap-card {
+    background-color: rgba(255, 255, 255, 0.35) !important;
 }
 
 .faq-border {
