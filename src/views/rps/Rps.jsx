@@ -8,7 +8,7 @@ import Torus from "@toruslabs/torus-embed";
 import Portis from "@portis/web3";
 import ethProvider from "eth-provider";
 import WalletLink from "walletlink";
-import { doc, getDoc, setDoc, updateDoc, collection, query, limit, addDoc, serverTimestamp, onSnapshot, orderBy } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc, collection, addDoc, serverTimestamp } from "firebase/firestore";
 import toast from 'react-hot-toast';
 import RpsGame from '../../abis/rpsGame/rpsGame.json'
 import { rpsGameContract } from '../../components/blockchain/Contracts'
@@ -24,6 +24,13 @@ import Rock from '../../assets/imgs/rock.gif'
 import Paper from '../../assets/imgs/paper.gif'
 import Scissors from '../../assets/imgs/scissors.gif'
 import RPSAnimation from '../../assets/imgs/animation.gif'
+import PaperLose from '../../assets/imgs/animations/Paper_Lose.gif'
+import PaperWin from '../../assets/imgs/animations/Paper_Win.gif'
+import RockLose from '../../assets/imgs/animations/Rock_Lose.gif'
+import RockWin from '../../assets/imgs/animations/Rock_Win.gif'
+import ScissorsWin from '../../assets/imgs/animations/Scissors_Lose.gif'
+import ScissorsLose from '../../assets/imgs/animations/Scissors_Win.gif'
+
 
 export default function Rps() {
   const [user] = useAuthState(auth)
@@ -83,6 +90,10 @@ export default function Rps() {
 
   useEffect(() => {
     loadUserGame(account, user)
+    return () => {
+      setUserData({});
+      setRegister('');
+    };
   }, [account, user])
 
   const loadUserGame = async (account, user) => {
@@ -431,6 +442,7 @@ export default function Rps() {
   }
 
   const doubleOrNothing = async () => {
+    var time = unixTimeStamp
     setDoubleOrNothingStatus(true)
     const sleep = (milliseconds) => {
       return new Promise(resolve => setTimeout(resolve, milliseconds))
@@ -492,7 +504,7 @@ export default function Rps() {
             "rps.lastGameBlock": myEvents[0].blockNumber
           })
           addDoc(collection(db, "allGames"), {
-            createdAt: unixTimeStamp,
+            createdAt: time,
             uid: userDocument.uid,
             block: myEvents[0].blockNumber,
             name: userDocument.name,
@@ -663,12 +675,12 @@ export default function Rps() {
                         :
                         ""
                       }
-                      {userhand === 'ROCK' && userGameResult === true ? <img width="240" height="240" src={Scissors} alt="" /> : ""}
-                      {userhand === 'PAPER' && userGameResult === true ? <img width="240" height="240" src={Rock} alt="" /> : ""}
-                      {userhand === 'SCISSORS' && userGameResult === true ? <img width="240" height="240" src={Paper} alt="" /> : ""}
-                      {userhand === 'ROCK' && userGameResult === false ? <img width="240" height="240" src={Paper} alt="" /> : ""}
-                      {userhand === 'PAPER' && userGameResult === false ? <img width="240" height="240" src={Scissors} alt="" /> : ""}
-                      {userhand === 'SCISSORS' && userGameResult === false ? <img width="240" height="240" src={Rock} alt="" /> : ""}
+                      {userhand === 'ROCK' && userGameResult === true ? <img width="640" height="360" src={RockWin} alt="" /> : ""}
+                      {userhand === 'PAPER' && userGameResult === true ? <img width="640" height="360" src={PaperWin} alt="" /> : ""}
+                      {userhand === 'SCISSORS' && userGameResult === true ? <img width="640" height="360" src={ScissorsWin} alt="" /> : ""}
+                      {userhand === 'ROCK' && userGameResult === false ? <img width="640" height="360" src={RockLose} alt="" /> : ""}
+                      {userhand === 'PAPER' && userGameResult === false ? <img width="640" height="360" src={PaperLose} alt="" /> : ""}
+                      {userhand === 'SCISSORS' && userGameResult === false ? <img width="640" height="360" src={ScissorsLose} alt="" /> : ""}
                       <br></br>
                       <br></br>
                       <h3>{userGameResult === true ? " YOU WON " : ""}{userGameResult === false ? " YOU LOST " : ""}</h3>

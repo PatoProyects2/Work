@@ -3,7 +3,7 @@ export const ReadUnixTime = () => {
     const [unixTimeStamp, setUnixTimeStamp] = useState(0);
 
     useEffect(() => {
-        const timer = setInterval(() => { getUnixTime() }, 4000);
+        const timer = setInterval(() => { getUnixTime() }, 1000);
         return () => clearInterval(timer);
     }, [])
 

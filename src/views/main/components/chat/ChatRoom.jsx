@@ -25,7 +25,7 @@ function ChatRoom(props) {
   }, [])
 
   useEffect(() => {
-    const readUserProfile = async (user) => {
+    const readUserProfile = (user) => {
       try {
         const q = query(collection(db, "clubUsers"), where("uid", "==", user.uid))
         const unsub = onSnapshot(q, (doc) => {
@@ -40,6 +40,9 @@ function ChatRoom(props) {
       } catch (e) {
 
       }
+      return () => {
+        setUser({});
+      };
     }
     readUserProfile(props.user)
   }, [props.user])

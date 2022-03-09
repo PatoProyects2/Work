@@ -9,6 +9,9 @@ export default function ConnectChain(props) {
 
     useEffect(() => {
         readNetworkData(props.network)
+        return () => {
+            setActualNetwork('');
+          };
     }, [props.network])
 
     const readNetworkData = (network) => {

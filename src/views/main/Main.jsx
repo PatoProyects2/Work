@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
+import lodash from 'lodash'
 import { collection, getDocs, query, orderBy, where } from "firebase/firestore";
 import { Button, ButtonGroup } from 'reactstrap';
 import { useAuthState } from 'react-firebase-hooks/auth'
@@ -14,11 +15,13 @@ import TwitterImg from '../../assets/imgs/twitter_card.png'
 import FairPlayImg from '../../assets/imgs/fair_play_hover_card.png'
 import NFTImg from '../../assets/imgs/nft_hover_card.png'
 import ChatRoom from './components/chat/ChatRoom'
-import { ReadUnixTime } from '../../firebase/ReadUnixTime'
 
 export default function Main() {
   const [user] = useAuthState(auth)
-  const [leaderboard, setLeaderboard] = useState({});
+  const [topDay, setTopDay] = useState({});
+  const [topWeek, setTopWeek] = useState({});
+  const [topMonth, setTopMonth] = useState({});
+  const [topGlobal, setTopGlobal] = useState({});
   const [liveBets, setLiveBets] = useState(true);
   const [mostPlays, setMostPlays] = useState(false);
   const [dailyGame, setDailyGame] = useState(false);
@@ -30,1176 +33,143 @@ export default function Main() {
   const [weeklyAmount, setWeeklyAmount] = useState(false);
   const [monthlyAmount, setMonthlyAmount] = useState(false);
   const [globalAmount, setGlobalAmount] = useState(false);
-  const unixTimeStamp = ReadUnixTime()
 
   useEffect(() => {
+    const readLeaderboard = async () => {
+      const response = await fetch('https://showcase.api.linx.twenty57.net/UnixTime/tounixtimestamp?datetime=now');
+      const time = await response.json();
+      var unixTimeStamp = parseInt(time.UnixTimeStamp)
 
-    const readLeaderboard = async (unixTimeStamp) => {
       var lastDay = unixTimeStamp - 86400
       var lastWeek = unixTimeStamp - 604800
       var lastMonth = unixTimeStamp - 259200
 
-      let dayGames = []
-      let leaderboard = []
-      let weekGames = []
-      let monthGames = []
-      let globalGames = []
-
-      let aD = []
-      let bD = []
-      let cD = []
-      let dD = []
-      let eD = []
-      let fD = []
-      let gD = []
-      let hD = []
-      let iD = []
-      let jD = []
-
-      let aW = []
-      let bW = []
-      let cW = []
-      let dW = []
-      let eW = []
-      let fW = []
-      let gW = []
-      let hW = []
-      let iW = []
-      let jW = []
-
-      let aM = []
-      let bM = []
-      let cM = []
-      let dM = []
-      let eM = []
-      let fM = []
-      let gM = []
-      let hM = []
-      let iM = []
-      let jM = []
-
-      let aA = []
-      let bA = []
-      let cA = []
-      let dA = []
-      let eA = []
-      let fA = []
-      let gA = []
-      let hA = []
-      let iA = []
-      let jA = []
+      var dayGames = []
+      var weekGames = []
+      var monthGames = []
+      var globalGames = []
 
       const clubCollection = collection(db, "allGames")
       const queryGames = query(clubCollection, orderBy("createdAt", "desc"))
       const documentGames = await getDocs(queryGames)
-      documentGames.forEach((doc) => {
-        if (doc.data().createdAt > lastDay) {
+      documentGames.forEach(doc => {
+        let created = doc.data().createdAt
+        if (created > lastDay) {
           dayGames = dayGames.concat([doc.data().account])
         }
-        if (doc.data().createdAt > lastWeek) {
+        if (created > lastWeek) {
           weekGames = weekGames.concat([doc.data().account])
         }
-        if (doc.data().createdAt > lastMonth) {
+        if (created > lastMonth) {
           monthGames = monthGames.concat([doc.data().account])
         }
         globalGames = globalGames.concat([doc.data().account])
       });
-      // ---------------------------------------------------------------------------------------------------------------------------------------
+
       const arrDay = [... new Set(dayGames.map(data => data))]
-      try {
-        const q0 = query(collection(db, "allGames"), where("account", "==", arrDay[0]), where("createdAt", ">", lastDay))
-        const d0 = await getDocs(q0)
-        const data0 = d0._snapshot.docChanges
-        data0.forEach((data) => {
-          var user = data.doc.data.value.mapValue.fields
-          aD = aD.concat([[user.account, user.photo, user.name, user.maticAmount]])
+      var dayTop = arrDay.map(account => query(collection(db, "allGames"), where("account", "==", account), where("createdAt", ">", lastDay)))
+      dayTop.forEach(async query => {
+        let leaderboard = {}
+        let data = []
+        let top = []
+        const d = await getDocs(query)
+        data = data.concat([d._snapshot.docChanges])
+        data.forEach(users => {
+          let amounts = users.map(amount => parseInt(amount.doc.data.value.mapValue.fields.maticAmount.integerValue))
+          let amount = lodash.sum(amounts)
+          top = top.concat([[
+            users[0].doc.data.value.mapValue.fields.account.stringValue,
+            users[0].doc.data.value.mapValue.fields.photo.stringValue,
+            users[0].doc.data.value.mapValue.fields.name.stringValue,
+            users.length,
+            amount
+          ]])
         })
-      } catch (e) {
+        leaderboard.games = top.sort(((a, b) => b[3] - a[3]))
+        leaderboard.amount = top.sort(((a, b) => b[4] - a[4]))
+        setTopDay(leaderboard)
+      })
 
-      }
-      try {
-        const q1 = query(collection(db, "allGames"), where("account", "==", arrDay[1]), where("createdAt", ">", lastDay))
-        const d1 = await getDocs(q1)
-        const data1 = d1._snapshot.docChanges
-        data1.forEach((data) => {
-          var user = data.doc.data.value.mapValue.fields
-          bD = bD.concat([[user.account, user.photo, user.name, user.maticAmount]])
-        })
-      } catch (e) {
-
-      }
-      try {
-        const q2 = query(collection(db, "allGames"), where("account", "==", arrDay[2]), where("createdAt", ">", lastDay))
-        const d2 = await getDocs(q2)
-        const data2 = d2._snapshot.docChanges
-        data2.forEach((data) => {
-          var user = data.doc.data.value.mapValue.fields
-          cD = cD.concat([[user.account, user.photo, user.name, user.maticAmount]])
-        })
-      } catch (e) {
-
-      }
-      try {
-        const q3 = query(collection(db, "allGames"), where("account", "==", arrDay[3]), where("createdAt", ">", lastDay))
-        const d3 = await getDocs(q3)
-        const data3 = d3._snapshot.docChanges
-        data3.forEach((data) => {
-          var user = data.doc.data.value.mapValue.fields
-          dD = dD.concat([[user.account, user.photo, user.name, user.maticAmount]])
-        })
-      } catch (e) {
-
-      }
-      try {
-        const q4 = query(collection(db, "allGames"), where("account", "==", arrDay[4]), where("createdAt", ">", lastDay))
-        const d4 = await getDocs(q4)
-        const data4 = d4._snapshot.docChanges
-        data4.forEach((data) => {
-          var user = data.doc.data.value.mapValue.fields
-          eD = eD.concat([[user.account, user.photo, user.name, user.maticAmount]])
-        })
-      } catch (e) {
-
-      }
-      try {
-        const q5 = query(collection(db, "allGames"), where("account", "==", arrDay[5]), where("createdAt", ">", lastDay))
-        const d5 = await getDocs(q5)
-        const data5 = d5._snapshot.docChanges
-        data5.forEach((data) => {
-          var user = data.doc.data.value.mapValue.fields
-          fD = fD.concat([[user.account, user.photo, user.name, user.maticAmount]])
-        })
-      } catch (e) {
-
-      }
-      try {
-        const q6 = query(collection(db, "allGames"), where("account", "==", arrDay[6]), where("createdAt", ">", lastDay))
-        const d6 = await getDocs(q6)
-        const data6 = d6._snapshot.docChanges
-        data6.forEach((data) => {
-          var user = data.doc.data.value.mapValue.fields
-          gD = gD.concat([[user.account, user.photo, user.name, user.maticAmount]])
-        })
-      } catch (e) {
-
-      }
-      try {
-        const q7 = query(collection(db, "allGames"), where("account", "==", arrDay[7]), where("createdAt", ">", lastDay))
-        const d7 = await getDocs(q7)
-        const data7 = d7._snapshot.docChanges
-        data7.forEach((data) => {
-          var user = data.doc.data.value.mapValue.fields
-          hD = hD.concat([[user.account, user.photo, user.name, user.maticAmount]])
-        })
-      } catch (e) {
-
-      }
-      try {
-        const q8 = query(collection(db, "allGames"), where("account", "==", arrDay[8]), where("createdAt", ">", lastDay))
-        const d8 = await getDocs(q8)
-        const data8 = d8._snapshot.docChanges
-        data8.forEach((data) => {
-          var user = data.doc.data.value.mapValue.fields
-          iD = iD.concat([[user.account, user.photo, user.name, user.maticAmount]])
-        })
-      } catch (e) {
-
-      }
-      try {
-        const q9 = query(collection(db, "allGames"), where("account", "==", arrDay[9]), where("createdAt", ">", lastDay))
-        const d9 = await getDocs(q9)
-        const data9 = d9._snapshot.docChanges
-        data9.forEach((data) => {
-          var user = data.doc.data.value.mapValue.fields
-          jD = jD.concat([[user.account, user.photo, user.name, user.maticAmount]])
-        })
-      } catch (e) {
-
-      }
-      // ------------------------------------------------------------------------------------------------------------
       const arrWeek = [... new Set(weekGames.map(data => data))]
-      try {
-        const q0 = query(collection(db, "allGames"), where("account", "==", arrWeek[0]), where("createdAt", ">", lastWeek))
-        const d0 = await getDocs(q0)
-        const data0 = d0._snapshot.docChanges
-        data0.forEach((data) => {
-          var user = data.doc.data.value.mapValue.fields
-          aW = aW.concat([[user.account, user.photo, user.name, user.maticAmount]])
+      var weekTop = arrWeek.map(account => query(collection(db, "allGames"), where("account", "==", account), where("createdAt", ">", lastWeek)))
+      weekTop.forEach(async query => {
+        let leaderboard = {}
+        let data = []
+        let top = []
+        const d = await getDocs(query)
+        data = data.concat([d._snapshot.docChanges])
+        data.forEach(users => {
+          let amounts = users.map(amount => parseInt(amount.doc.data.value.mapValue.fields.maticAmount.integerValue))
+          let amount = lodash.sum(amounts)
+          top = top.concat([[
+            users[0].doc.data.value.mapValue.fields.account.stringValue,
+            users[0].doc.data.value.mapValue.fields.photo.stringValue,
+            users[0].doc.data.value.mapValue.fields.name.stringValue,
+            users.length,
+            amount
+          ]])
         })
-      } catch (e) {
+        leaderboard.games = top.sort(((a, b) => b[3] - a[3]))
+        leaderboard.amount = top.sort(((a, b) => b[4] - a[4]))
+        setTopWeek(leaderboard)
+      })
 
-      }
-      try {
-        const q1 = query(collection(db, "allGames"), where("account", "==", arrWeek[1]), where("createdAt", ">", lastWeek))
-        const d1 = await getDocs(q1)
-        const data1 = d1._snapshot.docChanges
-        data1.forEach((data) => {
-          var user = data.doc.data.value.mapValue.fields
-          bW = bW.concat([[user.account, user.photo, user.name, user.maticAmount]])
-        })
-      } catch (e) {
-
-      }
-      try {
-        const q2 = query(collection(db, "allGames"), where("account", "==", arrWeek[2]), where("createdAt", ">", lastWeek))
-        const d2 = await getDocs(q2)
-        const data2 = d2._snapshot.docChanges
-        data2.forEach((data) => {
-          var user = data.doc.data.value.mapValue.fields
-          cW = cW.concat([[user.account, user.photo, user.name, user.maticAmount]])
-        })
-      } catch (e) {
-
-      }
-      try {
-        const q3 = query(collection(db, "allGames"), where("account", "==", arrWeek[3]), where("createdAt", ">", lastWeek))
-        const d3 = await getDocs(q3)
-        const data3 = d3._snapshot.docChanges
-        data3.forEach((data) => {
-          var user = data.doc.data.value.mapValue.fields
-          dW = dW.concat([[user.account, user.photo, user.name, user.maticAmount]])
-        })
-      } catch (e) {
-
-      }
-      try {
-        const q4 = query(collection(db, "allGames"), where("account", "==", arrWeek[4]), where("createdAt", ">", lastWeek))
-        const d4 = await getDocs(q4)
-        const data4 = d4._snapshot.docChanges
-        data4.forEach((data) => {
-          var user = data.doc.data.value.mapValue.fields
-          eW = eW.concat([[user.account, user.photo, user.name, user.maticAmount]])
-        })
-      } catch (e) {
-
-      }
-      try {
-        const q5 = query(collection(db, "allGames"), where("account", "==", arrWeek[5]), where("createdAt", ">", lastWeek))
-        const d5 = await getDocs(q5)
-        const data5 = d5._snapshot.docChanges
-        data5.forEach((data) => {
-          var user = data.doc.data.value.mapValue.fields
-          fW = fW.concat([[user.account, user.photo, user.name, user.maticAmount]])
-        })
-      } catch (e) {
-
-      }
-      try {
-        const q6 = query(collection(db, "allGames"), where("account", "==", arrWeek[6]), where("createdAt", ">", lastWeek))
-        const d6 = await getDocs(q6)
-        const data6 = d6._snapshot.docChanges
-        data6.forEach((data) => {
-          var user = data.doc.data.value.mapValue.fields
-          gW = gW.concat([[user.account, user.photo, user.name, user.maticAmount]])
-        })
-      } catch (e) {
-
-      }
-      try {
-        const q7 = query(collection(db, "allGames"), where("account", "==", arrWeek[7]), where("createdAt", ">", lastWeek))
-        const d7 = await getDocs(q7)
-        const data7 = d7._snapshot.docChanges
-        data7.forEach((data) => {
-          var user = data.doc.data.value.mapValue.fields
-          hW = hW.concat([[user.account, user.photo, user.name, user.maticAmount]])
-        })
-      } catch (e) {
-
-      }
-      try {
-        const q8 = query(collection(db, "allGames"), where("account", "==", arrWeek[8]), where("createdAt", ">", lastWeek))
-        const d8 = await getDocs(q8)
-        const data8 = d8._snapshot.docChanges
-        data8.forEach((data) => {
-          var user = data.doc.data.value.mapValue.fields
-          iW = iW.concat([[user.account, user.photo, user.name, user.maticAmount]])
-        })
-      } catch (e) {
-
-      }
-      try {
-        const q9 = query(collection(db, "allGames"), where("account", "==", arrWeek[9]), where("createdAt", ">", lastWeek))
-        const d9 = await getDocs(q9)
-        const data9 = d9._snapshot.docChanges
-        data9.forEach((data) => {
-          var user = data.doc.data.value.mapValue.fields
-          jW = jW.concat([[user.account, user.photo, user.name, user.maticAmount]])
-        })
-      } catch (e) {
-
-      }
-      // ------------------------------------------------------------------------------------------------------------
       const arrMonth = [... new Set(monthGames.map(data => data))]
-      try {
-        const q0 = query(collection(db, "allGames"), where("account", "==", arrMonth[0]), where("createdAt", ">", lastMonth))
-        const d0 = await getDocs(q0)
-        const data0 = d0._snapshot.docChanges
-        data0.forEach((data) => {
-          var user = data.doc.data.value.mapValue.fields
-          aM = aM.concat([[user.account, user.photo, user.name, user.maticAmount]])
+      var monthTop = arrMonth.map(account => query(collection(db, "allGames"), where("account", "==", account), where("createdAt", ">", lastMonth)))
+      monthTop.forEach(async query => {
+        let leaderboard = {}
+        let data = []
+        let top = []
+        const d = await getDocs(query)
+        data = data.concat([d._snapshot.docChanges])
+        data.forEach(users => {
+          let amounts = users.map(amount => parseInt(amount.doc.data.value.mapValue.fields.maticAmount.integerValue))
+          let amount = lodash.sum(amounts)
+          top = top.concat([[
+            users[0].doc.data.value.mapValue.fields.account.stringValue,
+            users[0].doc.data.value.mapValue.fields.photo.stringValue,
+            users[0].doc.data.value.mapValue.fields.name.stringValue,
+            users.length,
+            amount
+          ]])
         })
-      } catch (e) {
+        leaderboard.games = top.sort(((a, b) => b[3] - a[3]))
+        leaderboard.amount = top.sort(((a, b) => b[4] - a[4]))
+        setTopMonth(leaderboard)
+      })
 
-      }
-      try {
-        const q1 = query(collection(db, "allGames"), where("account", "==", arrMonth[1]), where("createdAt", ">", lastMonth))
-        const d1 = await getDocs(q1)
-        const data1 = d1._snapshot.docChanges
-        data1.forEach((data) => {
-          var user = data.doc.data.value.mapValue.fields
-          bM = bM.concat([[user.account, user.photo, user.name, user.maticAmount]])
+      const arrGlobal = [... new Set(globalGames.map(data => data))]
+      var globalTop = arrGlobal.map(account => query(collection(db, "allGames"), where("account", "==", account)))
+      globalTop.forEach(async query => {
+        let leaderboard = {}
+        let data = []
+        let top = []
+        const d = await getDocs(query)
+        data = data.concat([d._snapshot.docChanges])
+        data.forEach(users => {
+          let amounts = users.map(amount => parseInt(amount.doc.data.value.mapValue.fields.maticAmount.integerValue))
+          let amount = lodash.sum(amounts)
+          top = top.concat([[
+            users[0].doc.data.value.mapValue.fields.account.stringValue,
+            users[0].doc.data.value.mapValue.fields.photo.stringValue,
+            users[0].doc.data.value.mapValue.fields.name.stringValue,
+            users.length,
+            amount
+          ]])
         })
-      } catch (e) {
-
-      }
-      try {
-        const q2 = query(collection(db, "allGames"), where("account", "==", arrMonth[2]), where("createdAt", ">", lastMonth))
-        const d2 = await getDocs(q2)
-        const data2 = d2._snapshot.docChanges
-        data2.forEach((data) => {
-          var user = data.doc.data.value.mapValue.fields
-          cM = cM.concat([[user.account, user.photo, user.name, user.maticAmount]])
-        })
-      } catch (e) {
-
-      }
-      try {
-        const q3 = query(collection(db, "allGames"), where("account", "==", arrMonth[3]), where("createdAt", ">", lastMonth))
-        const d3 = await getDocs(q3)
-        const data3 = d3._snapshot.docChanges
-        data3.forEach((data) => {
-          var user = data.doc.data.value.mapValue.fields
-          dM = dM.concat([[user.account, user.photo, user.name, user.maticAmount]])
-        })
-      } catch (e) {
-
-      }
-      try {
-        const q4 = query(collection(db, "allGames"), where("account", "==", arrMonth[4]), where("createdAt", ">", lastMonth))
-        const d4 = await getDocs(q4)
-        const data4 = d4._snapshot.docChanges
-        data4.forEach((data) => {
-          var user = data.doc.data.value.mapValue.fields
-          eM = eM.concat([[user.account, user.photo, user.name, user.maticAmount]])
-        })
-      } catch (e) {
-
-      }
-      try {
-        const q5 = query(collection(db, "allGames"), where("account", "==", arrMonth[5]), where("createdAt", ">", lastMonth))
-        const d5 = await getDocs(q5)
-        const data5 = d5._snapshot.docChanges
-        data5.forEach((data) => {
-          var user = data.doc.data.value.mapValue.fields
-          fM = fM.concat([[user.account, user.photo, user.name, user.maticAmount]])
-        })
-      } catch (e) {
-
-      }
-      try {
-        const q6 = query(collection(db, "allGames"), where("account", "==", arrMonth[6]), where("createdAt", ">", lastMonth))
-        const d6 = await getDocs(q6)
-        const data6 = d6._snapshot.docChanges
-        data6.forEach((data) => {
-          var user = data.doc.data.value.mapValue.fields
-          gM = gM.concat([[user.account, user.photo, user.name, user.maticAmount]])
-        })
-      } catch (e) {
-
-      }
-      try {
-        const q7 = query(collection(db, "allGames"), where("account", "==", arrMonth[7]), where("createdAt", ">", lastMonth))
-        const d7 = await getDocs(q7)
-        const data7 = d7._snapshot.docChanges
-        data7.forEach((data) => {
-          var user = data.doc.data.value.mapValue.fields
-          hM = hM.concat([[user.account, user.photo, user.name, user.maticAmount]])
-        })
-      } catch (e) {
-
-      }
-      try {
-        const q8 = query(collection(db, "allGames"), where("account", "==", arrMonth[8]), where("createdAt", ">", lastMonth))
-        const d8 = await getDocs(q8)
-        const data8 = d8._snapshot.docChanges
-        data8.forEach((data) => {
-          var user = data.doc.data.value.mapValue.fields
-          iM = iM.concat([[user.account, user.photo, user.name, user.maticAmount]])
-        })
-      } catch (e) {
-
-      }
-      try {
-        const q9 = query(collection(db, "allGames"), where("account", "==", arrMonth[9]), where("createdAt", ">", lastMonth))
-        const d9 = await getDocs(q9)
-        const data9 = d9._snapshot.docChanges
-        data9.forEach((data) => {
-          var user = data.doc.data.value.mapValue.fields
-          jM = jM.concat([[user.account, user.photo, user.name, user.maticAmount]])
-        })
-      } catch (e) {
-
-      }
-      // ------------------------------------------------------------------------------------------------------------
-      const arrAll = [... new Set(globalGames.map(data => data))]
-      try {
-        const q0 = query(collection(db, "allGames"), where("account", "==", arrAll[0]))
-        const d0 = await getDocs(q0)
-        const data0 = d0._snapshot.docChanges
-        data0.forEach((data) => {
-          var user = data.doc.data.value.mapValue.fields
-          aA = aA.concat([[user.account, user.photo, user.name, user.maticAmount]])
-        })
-      } catch (e) {
-
-      }
-      try {
-        const q1 = query(collection(db, "allGames"), where("account", "==", arrAll[1]))
-        const d1 = await getDocs(q1)
-        const data1 = d1._snapshot.docChanges
-        data1.forEach((data) => {
-          var user = data.doc.data.value.mapValue.fields
-          bA = bA.concat([[user.account, user.photo, user.name, user.maticAmount]])
-        })
-      } catch (e) {
-
-      }
-      try {
-        const q2 = query(collection(db, "allGames"), where("account", "==", arrAll[2]))
-        const d2 = await getDocs(q2)
-        const data2 = d2._snapshot.docChanges
-        data2.forEach((data) => {
-          var user = data.doc.data.value.mapValue.fields
-          cA = cA.concat([[user.account, user.photo, user.name, user.maticAmount]])
-        })
-      } catch (e) {
-
-      }
-      try {
-        const q3 = query(collection(db, "allGames"), where("account", "==", arrAll[3]))
-        const d3 = await getDocs(q3)
-        const data3 = d3._snapshot.docChanges
-        data3.forEach((data) => {
-          var user = data.doc.data.value.mapValue.fields
-          dA = dA.concat([[user.account, user.photo, user.name, user.maticAmount]])
-        })
-      } catch (e) {
-
-      }
-      try {
-        const q4 = query(collection(db, "allGames"), where("account", "==", arrAll[4]))
-        const d4 = await getDocs(q4)
-        const data4 = d4._snapshot.docChanges
-        data4.forEach((data) => {
-          var user = data.doc.data.value.mapValue.fields
-          eA = eA.concat([[user.account, user.photo, user.name, user.maticAmount]])
-        })
-      } catch (e) {
-
-      }
-      try {
-        const q5 = query(collection(db, "allGames"), where("account", "==", arrAll[5]))
-        const d5 = await getDocs(q5)
-        const data5 = d5._snapshot.docChanges
-        data5.forEach((data) => {
-          var user = data.doc.data.value.mapValue.fields
-          fA = fA.concat([[user.account, user.photo, user.name, user.maticAmount]])
-        })
-      } catch (e) {
-
-      }
-      try {
-        const q6 = query(collection(db, "allGames"), where("account", "==", arrAll[6]))
-        const d6 = await getDocs(q6)
-        const data6 = d6._snapshot.docChanges
-        data6.forEach((data) => {
-          var user = data.doc.data.value.mapValue.fields
-          gA = gA.concat([[user.account, user.photo, user.name, user.maticAmount]])
-        })
-      } catch (e) {
-
-      }
-      try {
-        const q7 = query(collection(db, "allGames"), where("account", "==", arrAll[7]))
-        const d7 = await getDocs(q7)
-        const data7 = d7._snapshot.docChanges
-        data7.forEach((data) => {
-          var user = data.doc.data.value.mapValue.fields
-          hA = hA.concat([[user.account, user.photo, user.name, user.maticAmount]])
-        })
-      } catch (e) {
-
-      }
-      try {
-        const q8 = query(collection(db, "allGames"), where("account", "==", arrAll[8]))
-        const d8 = await getDocs(q8)
-        const data8 = d8._snapshot.docChanges
-        data8.forEach((data) => {
-          var user = data.doc.data.value.mapValue.fields
-          iA = iA.concat([[user.account, user.photo, user.name, user.maticAmount]])
-        })
-      } catch (e) {
-
-      }
-      try {
-        const q9 = query(collection(db, "allGames"), where("account", "==", arrAll[9]))
-        const d9 = await getDocs(q9)
-        const data9 = d9._snapshot.docChanges
-        data9.forEach((data) => {
-          var user = data.doc.data.value.mapValue.fields
-          jA = jA.concat([[user.account, user.photo, user.name, user.maticAmount]])
-        })
-      } catch (e) {
-
-      }
-      leaderboard = leaderboard.concat(
-        [[aD, bD, cD, dD, eD, fD, gD, hD, iD, jD]],
-        [[aW, bW, cW, dW, eW, fW, gW, hW, iW, jW]],
-        [[aM, bM, cM, dM, eM, fM, gM, hM, iM, jM]],
-        [[aA, bA, cA, dA, eA, fA, gA, hA, iA, jA]]
-      )
-      // ---------------------------------------------------------------------------------------------------------------------------------------
-      let topGames = {}
-      let dayTopGames = []
-      let weekTopGames = []
-      let monthTopGames = []
-      let globalTopGames = []
-      try {
-        dayTopGames = dayTopGames.concat(
-          [[leaderboard[0][0][0][0].stringValue, leaderboard[0][0][0][1].stringValue, leaderboard[0][0][0][2].stringValue, leaderboard[0][0].length]],
-          [[leaderboard[0][1][0][0].stringValue, leaderboard[0][1][0][1].stringValue, leaderboard[0][1][0][2].stringValue, leaderboard[0][1].length]],
-          [[leaderboard[0][2][0][0].stringValue, leaderboard[0][2][0][1].stringValue, leaderboard[0][2][0][2].stringValue, leaderboard[0][2].length]],
-          [[leaderboard[0][3][0][0].stringValue, leaderboard[0][3][0][1].stringValue, leaderboard[0][3][0][2].stringValue, leaderboard[0][3].length]],
-          [[leaderboard[0][4][0][0].stringValue, leaderboard[0][4][0][1].stringValue, leaderboard[0][4][0][2].stringValue, leaderboard[0][4].length]],
-          [[leaderboard[0][5][0][0].stringValue, leaderboard[0][5][0][1].stringValue, leaderboard[0][5][0][2].stringValue, leaderboard[0][5].length]],
-          [[leaderboard[0][6][0][0].stringValue, leaderboard[0][6][0][1].stringValue, leaderboard[0][6][0][2].stringValue, leaderboard[0][6].length]],
-          [[leaderboard[0][7][0][0].stringValue, leaderboard[0][7][0][1].stringValue, leaderboard[0][7][0][2].stringValue, leaderboard[0][7].length]],
-          [[leaderboard[0][8][0][0].stringValue, leaderboard[0][8][0][1].stringValue, leaderboard[0][8][0][2].stringValue, leaderboard[0][8].length]],
-          [[leaderboard[0][9][0][0].stringValue, leaderboard[0][9][0][1].stringValue, leaderboard[0][9][0][2].stringValue, leaderboard[0][9].length]]
-        )
-      } catch (e) {
-
-      }
-      try {
-        weekTopGames = weekTopGames.concat(
-          [[leaderboard[1][0][0][0].stringValue, leaderboard[1][0][0][1].stringValue, leaderboard[1][0][0][2].stringValue, leaderboard[1][0].length]],
-          [[leaderboard[1][1][0][0].stringValue, leaderboard[1][1][0][1].stringValue, leaderboard[1][1][0][2].stringValue, leaderboard[1][1].length]],
-          [[leaderboard[1][2][0][0].stringValue, leaderboard[1][2][0][1].stringValue, leaderboard[1][2][0][2].stringValue, leaderboard[1][2].length]],
-          [[leaderboard[1][3][0][0].stringValue, leaderboard[1][3][0][1].stringValue, leaderboard[1][3][0][2].stringValue, leaderboard[1][3].length]],
-          [[leaderboard[1][4][0][0].stringValue, leaderboard[1][4][0][1].stringValue, leaderboard[1][4][0][2].stringValue, leaderboard[1][4].length]],
-          [[leaderboard[1][5][0][0].stringValue, leaderboard[1][5][0][1].stringValue, leaderboard[1][5][0][2].stringValue, leaderboard[1][5].length]],
-          [[leaderboard[1][6][0][0].stringValue, leaderboard[1][6][0][1].stringValue, leaderboard[1][6][0][2].stringValue, leaderboard[1][6].length]],
-          [[leaderboard[1][7][0][0].stringValue, leaderboard[1][7][0][1].stringValue, leaderboard[1][7][0][2].stringValue, leaderboard[1][7].length]],
-          [[leaderboard[1][8][0][0].stringValue, leaderboard[1][8][0][1].stringValue, leaderboard[1][8][0][2].stringValue, leaderboard[1][8].length]],
-          [[leaderboard[1][9][0][0].stringValue, leaderboard[1][9][0][1].stringValue, leaderboard[1][9][0][2].stringValue, leaderboard[1][9].length]]
-        )
-      } catch (e) {
-
-      }
-      try {
-        monthTopGames = monthTopGames.concat(
-          [[leaderboard[2][0][0][0].stringValue, leaderboard[2][0][0][1].stringValue, leaderboard[2][0][0][2].stringValue, leaderboard[2][0].length]],
-          [[leaderboard[2][1][0][0].stringValue, leaderboard[2][1][0][1].stringValue, leaderboard[2][1][0][2].stringValue, leaderboard[2][1].length]],
-          [[leaderboard[2][2][0][0].stringValue, leaderboard[2][2][0][1].stringValue, leaderboard[2][2][0][2].stringValue, leaderboard[2][2].length]],
-          [[leaderboard[2][3][0][0].stringValue, leaderboard[2][3][0][1].stringValue, leaderboard[2][3][0][2].stringValue, leaderboard[2][3].length]],
-          [[leaderboard[2][4][0][0].stringValue, leaderboard[2][4][0][1].stringValue, leaderboard[2][4][0][2].stringValue, leaderboard[2][4].length]],
-          [[leaderboard[2][5][0][0].stringValue, leaderboard[2][5][0][1].stringValue, leaderboard[2][5][0][2].stringValue, leaderboard[2][5].length]],
-          [[leaderboard[2][6][0][0].stringValue, leaderboard[2][6][0][1].stringValue, leaderboard[2][6][0][2].stringValue, leaderboard[2][6].length]],
-          [[leaderboard[2][7][0][0].stringValue, leaderboard[2][7][0][1].stringValue, leaderboard[2][7][0][2].stringValue, leaderboard[2][7].length]],
-          [[leaderboard[2][8][0][0].stringValue, leaderboard[2][8][0][1].stringValue, leaderboard[2][8][0][2].stringValue, leaderboard[2][8].length]],
-          [[leaderboard[2][9][0][0].stringValue, leaderboard[2][9][0][1].stringValue, leaderboard[2][9][0][2].stringValue, leaderboard[2][9].length]]
-        )
-      } catch (e) {
-
-      }
-      try {
-        globalTopGames = globalTopGames.concat(
-          [[leaderboard[3][0][0][0].stringValue, leaderboard[3][0][0][1].stringValue, leaderboard[3][0][0][2].stringValue, leaderboard[3][0].length]],
-          [[leaderboard[3][1][0][0].stringValue, leaderboard[3][1][0][1].stringValue, leaderboard[3][1][0][2].stringValue, leaderboard[3][1].length]],
-          [[leaderboard[3][2][0][0].stringValue, leaderboard[3][2][0][1].stringValue, leaderboard[3][2][0][2].stringValue, leaderboard[3][2].length]],
-          [[leaderboard[3][3][0][0].stringValue, leaderboard[3][3][0][1].stringValue, leaderboard[3][3][0][2].stringValue, leaderboard[3][3].length]],
-          [[leaderboard[3][4][0][0].stringValue, leaderboard[3][4][0][1].stringValue, leaderboard[3][4][0][2].stringValue, leaderboard[3][4].length]],
-          [[leaderboard[3][5][0][0].stringValue, leaderboard[3][5][0][1].stringValue, leaderboard[3][5][0][2].stringValue, leaderboard[3][5].length]],
-          [[leaderboard[3][6][0][0].stringValue, leaderboard[3][6][0][1].stringValue, leaderboard[3][6][0][2].stringValue, leaderboard[3][6].length]],
-          [[leaderboard[3][7][0][0].stringValue, leaderboard[3][7][0][1].stringValue, leaderboard[3][7][0][2].stringValue, leaderboard[3][7].length]],
-          [[leaderboard[3][8][0][0].stringValue, leaderboard[3][8][0][1].stringValue, leaderboard[3][8][0][2].stringValue, leaderboard[3][8].length]],
-          [[leaderboard[3][9][0][0].stringValue, leaderboard[3][9][0][1].stringValue, leaderboard[3][9][0][2].stringValue, leaderboard[3][9].length]]
-        )
-      } catch (e) {
-
-      }
-      topGames.day = dayTopGames.sort(((a, b) => b[3] - a[3]));
-      topGames.week = weekTopGames.sort(((a, b) => b[3] - a[3]))
-      topGames.month = monthTopGames.sort(((a, b) => b[3] - a[3]))
-      topGames.global = globalTopGames.sort(((a, b) => b[3] - a[3]))
-
-      let topAmount = {}
-      let dayTopAmount = []
-      let weekTopAmount = []
-      let monthTopAmount = []
-      let globalTopAmount = []
-
-      let arrD0 = []
-      let arrD1 = []
-      let arrD2 = []
-      let arrD3 = []
-      let arrD4 = []
-      let arrD5 = []
-      let arrD6 = []
-      let arrD7 = []
-      let arrD8 = []
-      let arrD9 = []
-
-      let sumD0 = 0
-      let sumD1 = 0
-      let sumD2 = 0
-      let sumD3 = 0
-      let sumD4 = 0
-      let sumD5 = 0
-      let sumD6 = 0
-      let sumD7 = 0
-      let sumD8 = 0
-      let sumD9 = 0
-
-      try {
-        leaderboard[0][0].forEach((amount) => {
-          arrD0.push(parseInt(amount[3].integerValue))
-        })
-        for (let a = 0; a < arrD0.length; a++) {
-          sumD0 += arrD0[a];
-        }
-      } catch (e) {
-
-      }
-      try {
-        leaderboard[0][1].forEach((amount) => {
-          arrD1.push(parseInt(amount[3].integerValue))
-        })
-        for (let b = 0; b < arrD1.length; b++) {
-          sumD1 += arrD1[b];
-        }
-      } catch (e) {
-
-      }
-      try {
-        leaderboard[0][2].forEach((amount) => {
-          arrD2.push(parseInt(amount[3].integerValue))
-        })
-        for (let c = 0; c < arrD2.length; c++) {
-          sumD2 += arrD2[c];
-        }
-      } catch (e) {
-
-      }
-      try {
-        leaderboard[0][3].forEach((amount) => {
-          arrD3.push(parseInt(amount[3].integerValue))
-        })
-        for (let d = 0; d < arrD3.length; d++) {
-          sumD3 += arrD3[d];
-        }
-      } catch (e) {
-
-      }
-      try {
-        leaderboard[0][4].forEach((amount) => {
-          arrD4.push(parseInt(amount[3].integerValue))
-        })
-        for (let e = 0; e < arrD4.length; e++) {
-          sumD4 += arrD4[e];
-        }
-      } catch (e) {
-
-      }
-      try {
-        leaderboard[0][5].forEach((amount) => {
-          arrD5.push(parseInt(amount[3].integerValue))
-        })
-        for (let f = 0; f < arrD5.length; f++) {
-          sumD5 += arrD5[f];
-        }
-      } catch (e) {
-
-      }
-      try {
-        leaderboard[0][6].forEach((amount) => {
-          arrD6.push(parseInt(amount[3].integerValue))
-        })
-        for (let g = 0; g < arrD6.length; g++) {
-          sumD6 += arrD6[g];
-        }
-      } catch (e) {
-
-      }
-      try {
-        leaderboard[0][7].forEach((amount) => {
-          arrD7.push(parseInt(amount[3].integerValue))
-        })
-        for (let h = 0; h < arrD7.length; h++) {
-          sumD7 += arrD7[h];
-        }
-      } catch (e) {
-
-      }
-      try {
-        leaderboard[0][8].forEach((amount) => {
-          arrD8.push(parseInt(amount[3].integerValue))
-        })
-        for (let i = 0; i < arrD8.length; i++) {
-          sumD8 += arrD8[i];
-        }
-      } catch (e) {
-
-      }
-      try {
-        leaderboard[0][9].forEach((amount) => {
-          arrD9.push(parseInt(amount[3].integerValue))
-        })
-        for (let j = 0; j < arrD9.length; j++) {
-          sumD9 += arrD9[j];
-        }
-      } catch (e) {
-
-      }
-
-      let arrW0 = []
-      let arrW1 = []
-      let arrW2 = []
-      let arrW3 = []
-      let arrW4 = []
-      let arrW5 = []
-      let arrW6 = []
-      let arrW7 = []
-      let arrW8 = []
-      let arrW9 = []
-
-      let sumW0 = 0
-      let sumW1 = 0
-      let sumW2 = 0
-      let sumW3 = 0
-      let sumW4 = 0
-      let sumW5 = 0
-      let sumW6 = 0
-      let sumW7 = 0
-      let sumW8 = 0
-      let sumW9 = 0
-
-      try {
-        leaderboard[1][0].forEach((amount) => {
-          arrW0.push(parseInt(amount[3].integerValue))
-        })
-        for (let a = 0; a < arrW0.length; a++) {
-          sumW0 += arrW0[a];
-        }
-      } catch (e) {
-
-      }
-      try {
-        leaderboard[1][1].forEach((amount) => {
-          arrW1.push(parseInt(amount[3].integerValue))
-        })
-        for (let b = 0; b < arrW1.length; b++) {
-          sumW1 += arrW1[b];
-        }
-      } catch (e) {
-
-      }
-      try {
-        leaderboard[1][2].forEach((amount) => {
-          arrW2.push(parseInt(amount[3].integerValue))
-        })
-        for (let c = 0; c < arrW2.length; c++) {
-          sumW2 += arrW2[c];
-        }
-      } catch (e) {
-
-      }
-      try {
-        leaderboard[1][3].forEach((amount) => {
-          arrW3.push(parseInt(amount[3].integerValue))
-        })
-        for (let d = 0; d < arrW3.length; d++) {
-          sumW3 += arrW3[d];
-        }
-      } catch (e) {
-
-      }
-      try {
-        leaderboard[1][4].forEach((amount) => {
-          arrW4.push(parseInt(amount[3].integerValue))
-        })
-        for (let e = 0; e < arrW4.length; e++) {
-          sumW4 += arrW4[e];
-        }
-      } catch (e) {
-
-      }
-      try {
-        leaderboard[1][5].forEach((amount) => {
-          arrW5.push(parseInt(amount[3].integerValue))
-        })
-        for (let f = 0; f < arrW5.length; f++) {
-          sumW5 += arrW5[f];
-        }
-      } catch (e) {
-
-      }
-      try {
-        leaderboard[1][6].forEach((amount) => {
-          arrW6.push(parseInt(amount[3].integerValue))
-        })
-        for (let g = 0; g < arrW6.length; g++) {
-          sumW6 += arrW6[g];
-        }
-      } catch (e) {
-
-      }
-      try {
-        leaderboard[1][7].forEach((amount) => {
-          arrW7.push(parseInt(amount[3].integerValue))
-        })
-        for (let h = 0; h < arrW7.length; h++) {
-          sumW7 += arrW7[h];
-        }
-      } catch (e) {
-
-      }
-      try {
-        leaderboard[1][8].forEach((amount) => {
-          arrW8.push(parseInt(amount[3].integerValue))
-        })
-        for (let i = 0; i < arrW8.length; i++) {
-          sumW8 += arrW8[i];
-        }
-      } catch (e) {
-
-      }
-      try {
-        leaderboard[1][9].forEach((amount) => {
-          arrW9.push(parseInt(amount[3].integerValue))
-        })
-        for (let j = 0; j < arrW9.length; j++) {
-          sumW9 += arrW9[j];
-        }
-      } catch (e) {
-
-      }
-
-      let arrM0 = []
-      let arrM1 = []
-      let arrM2 = []
-      let arrM3 = []
-      let arrM4 = []
-      let arrM5 = []
-      let arrM6 = []
-      let arrM7 = []
-      let arrM8 = []
-      let arrM9 = []
-
-      let sumM0 = 0
-      let sumM1 = 0
-      let sumM2 = 0
-      let sumM3 = 0
-      let sumM4 = 0
-      let sumM5 = 0
-      let sumM6 = 0
-      let sumM7 = 0
-      let sumM8 = 0
-      let sumM9 = 0
-
-      try {
-        leaderboard[2][0].forEach((amount) => {
-          arrM0.push(parseInt(amount[3].integerValue))
-        })
-        for (let a = 0; a < arrM0.length; a++) {
-          sumM0 += arrM0[a];
-        }
-      } catch (e) {
-
-      }
-      try {
-        leaderboard[2][1].forEach((amount) => {
-          arrM1.push(parseInt(amount[3].integerValue))
-        })
-        for (let b = 0; b < arrM1.length; b++) {
-          sumM1 += arrM1[b];
-        }
-      } catch (e) {
-
-      }
-      try {
-        leaderboard[2][2].forEach((amount) => {
-          arrM2.push(parseInt(amount[3].integerValue))
-        })
-        for (let c = 0; c < arrM2.length; c++) {
-          sumM2 += arrM2[c];
-        }
-      } catch (e) {
-
-      }
-      try {
-        leaderboard[2][3].forEach((amount) => {
-          arrM3.push(parseInt(amount[3].integerValue))
-        })
-        for (let d = 0; d < arrM3.length; d++) {
-          sumM3 += arrM3[d];
-        }
-      } catch (e) {
-
-      }
-      try {
-        leaderboard[2][4].forEach((amount) => {
-          arrM4.push(parseInt(amount[3].integerValue))
-        })
-        for (let e = 0; e < arrM4.length; e++) {
-          sumM4 += arrM4[e];
-        }
-      } catch (e) {
-
-      }
-      try {
-        leaderboard[2][5].forEach((amount) => {
-          arrM5.push(parseInt(amount[3].integerValue))
-        })
-        for (let f = 0; f < arrM5.length; f++) {
-          sumM5 += arrM5[f];
-        }
-      } catch (e) {
-
-      }
-      try {
-        leaderboard[2][6].forEach((amount) => {
-          arrM6.push(parseInt(amount[3].integerValue))
-        })
-        for (let g = 0; g < arrM6.length; g++) {
-          sumM6 += arrM6[g];
-        }
-      } catch (e) {
-
-      }
-      try {
-        leaderboard[2][7].forEach((amount) => {
-          arrM7.push(parseInt(amount[3].integerValue))
-        })
-        for (let h = 0; h < arrM7.length; h++) {
-          sumM7 += arrM7[h];
-        }
-      } catch (e) {
-
-      }
-      try {
-        leaderboard[2][8].forEach((amount) => {
-          arrM8.push(parseInt(amount[3].integerValue))
-        })
-        for (let i = 0; i < arrM8.length; i++) {
-          sumM8 += arrM8[i];
-        }
-      } catch (e) {
-
-      }
-      try {
-        leaderboard[2][9].forEach((amount) => {
-          arrM9.push(parseInt(amount[3].integerValue))
-        })
-        for (let j = 0; j < arrM9.length; j++) {
-          sumM9 += arrM9[j];
-        }
-      } catch (e) {
-
-      }
-
-      let arrG0 = []
-      let arrG1 = []
-      let arrG2 = []
-      let arrG3 = []
-      let arrG4 = []
-      let arrG5 = []
-      let arrG6 = []
-      let arrG7 = []
-      let arrG8 = []
-      let arrG9 = []
-
-      let sumG0 = 0
-      let sumG1 = 0
-      let sumG2 = 0
-      let sumG3 = 0
-      let sumG4 = 0
-      let sumG5 = 0
-      let sumG6 = 0
-      let sumG7 = 0
-      let sumG8 = 0
-      let sumG9 = 0
-
-      try {
-        leaderboard[3][0].forEach((amount) => {
-          arrG0.push(parseInt(amount[3].integerValue))
-        })
-        for (let a = 0; a < arrG0.length; a++) {
-          sumG0 += arrG0[a];
-        }
-      } catch (e) {
-
-      }
-      try {
-        leaderboard[3][1].forEach((amount) => {
-          arrG1.push(parseInt(amount[3].integerValue))
-        })
-        for (let b = 0; b < arrG1.length; b++) {
-          sumG1 += arrG1[b];
-        }
-      } catch (e) {
-
-      }
-      try {
-        leaderboard[3][2].forEach((amount) => {
-          arrG2.push(parseInt(amount[3].integerValue))
-        })
-        for (let c = 0; c < arrG2.length; c++) {
-          sumG2 += arrG2[c];
-        }
-      } catch (e) {
-
-      }
-      try {
-        leaderboard[3][3].forEach((amount) => {
-          arrG3.push(parseInt(amount[3].integerValue))
-        })
-        for (let d = 0; d < arrG3.length; d++) {
-          sumG3 += arrG3[d];
-        }
-      } catch (e) {
-
-      }
-      try {
-        leaderboard[3][4].forEach((amount) => {
-          arrG4.push(parseInt(amount[3].integerValue))
-        })
-        for (let e = 0; e < arrG4.length; e++) {
-          sumG4 += arrG4[e];
-        }
-      } catch (e) {
-
-      }
-      try {
-        leaderboard[3][5].forEach((amount) => {
-          arrG5.push(parseInt(amount[3].integerValue))
-        })
-        for (let f = 0; f < arrG5.length; f++) {
-          sumG5 += arrG5[f];
-        }
-      } catch (e) {
-
-      }
-      try {
-        leaderboard[3][6].forEach((amount) => {
-          arrG6.push(parseInt(amount[3].integerValue))
-        })
-        for (let g = 0; g < arrG6.length; g++) {
-          sumG6 += arrG6[g];
-        }
-      } catch (e) {
-
-      }
-      try {
-        leaderboard[3][7].forEach((amount) => {
-          arrG7.push(parseInt(amount[3].integerValue))
-        })
-        for (let h = 0; h < arrG7.length; h++) {
-          sumG7 += arrG7[h];
-        }
-      } catch (e) {
-
-      }
-      try {
-        leaderboard[3][8].forEach((amount) => {
-          arrG8.push(parseInt(amount[3].integerValue))
-        })
-        for (let i = 0; i < arrG8.length; i++) {
-          sumG8 += arrG8[i];
-        }
-      } catch (e) {
-
-      }
-      try {
-        leaderboard[3][9].forEach((amount) => {
-          arrG9.push(parseInt(amount[3].integerValue))
-        })
-        for (let j = 0; j < arrG9.length; j++) {
-          sumG9 += arrG9[j];
-        }
-      } catch (e) {
-
-      }
-
-      try {
-        dayTopAmount.push([leaderboard[0][0][0][0].stringValue, leaderboard[0][0][0][1].stringValue, leaderboard[0][0][0][2].stringValue, sumD0])
-        dayTopAmount.push([leaderboard[0][1][0][0].stringValue, leaderboard[0][1][0][1].stringValue, leaderboard[0][1][0][2].stringValue, sumD1])
-        dayTopAmount.push([leaderboard[0][2][0][0].stringValue, leaderboard[0][2][0][1].stringValue, leaderboard[0][2][0][2].stringValue, sumD2])
-        dayTopAmount.push([leaderboard[0][3][0][0].stringValue, leaderboard[0][3][0][1].stringValue, leaderboard[0][3][0][2].stringValue, sumD3])
-        dayTopAmount.push([leaderboard[0][4][0][0].stringValue, leaderboard[0][4][0][1].stringValue, leaderboard[0][4][0][2].stringValue, sumD4])
-        dayTopAmount.push([leaderboard[0][5][0][0].stringValue, leaderboard[0][5][0][1].stringValue, leaderboard[0][5][0][2].stringValue, sumD5])
-        dayTopAmount.push([leaderboard[0][6][0][0].stringValue, leaderboard[0][6][0][1].stringValue, leaderboard[0][6][0][2].stringValue, sumD6])
-        dayTopAmount.push([leaderboard[0][7][0][0].stringValue, leaderboard[0][7][0][1].stringValue, leaderboard[0][7][0][2].stringValue, sumD7])
-        dayTopAmount.push([leaderboard[0][8][0][0].stringValue, leaderboard[0][8][0][1].stringValue, leaderboard[0][8][0][2].stringValue, sumD8])
-        dayTopAmount.push([leaderboard[0][9][0][0].stringValue, leaderboard[0][9][0][1].stringValue, leaderboard[0][9][0][2].stringValue, sumD9])
-      } catch (e) {
-
-      }
-      try {
-        weekTopAmount.push([leaderboard[1][0][0][0].stringValue, leaderboard[1][0][0][1].stringValue, leaderboard[1][0][0][2].stringValue, sumW0])
-        weekTopAmount.push([leaderboard[1][1][0][0].stringValue, leaderboard[1][1][0][1].stringValue, leaderboard[1][1][0][2].stringValue, sumW1])
-        weekTopAmount.push([leaderboard[1][2][0][0].stringValue, leaderboard[1][2][0][1].stringValue, leaderboard[1][2][0][2].stringValue, sumW2])
-        weekTopAmount.push([leaderboard[1][3][0][0].stringValue, leaderboard[1][3][0][1].stringValue, leaderboard[1][3][0][2].stringValue, sumW3])
-        weekTopAmount.push([leaderboard[1][4][0][0].stringValue, leaderboard[1][4][0][1].stringValue, leaderboard[1][4][0][2].stringValue, sumW4])
-        weekTopAmount.push([leaderboard[1][5][0][0].stringValue, leaderboard[1][5][0][1].stringValue, leaderboard[1][5][0][2].stringValue, sumW5])
-        weekTopAmount.push([leaderboard[1][6][0][0].stringValue, leaderboard[1][6][0][1].stringValue, leaderboard[1][6][0][2].stringValue, sumW6])
-        weekTopAmount.push([leaderboard[1][7][0][0].stringValue, leaderboard[1][7][0][1].stringValue, leaderboard[1][7][0][2].stringValue, sumW7])
-        weekTopAmount.push([leaderboard[1][8][0][0].stringValue, leaderboard[1][8][0][1].stringValue, leaderboard[1][8][0][2].stringValue, sumW8])
-        weekTopAmount.push([leaderboard[1][9][0][0].stringValue, leaderboard[1][9][0][1].stringValue, leaderboard[1][9][0][2].stringValue, sumW9])
-      } catch (e) {
-
-      }
-      try {
-        monthTopAmount.push([leaderboard[2][0][0][0].stringValue, leaderboard[2][0][0][1].stringValue, leaderboard[2][0][0][2].stringValue, sumM0])
-        monthTopAmount.push([leaderboard[2][1][0][0].stringValue, leaderboard[2][1][0][1].stringValue, leaderboard[2][1][0][2].stringValue, sumM1])
-        monthTopAmount.push([leaderboard[2][2][0][0].stringValue, leaderboard[2][2][0][1].stringValue, leaderboard[2][2][0][2].stringValue, sumM2])
-        monthTopAmount.push([leaderboard[2][3][0][0].stringValue, leaderboard[2][3][0][1].stringValue, leaderboard[2][3][0][2].stringValue, sumM3])
-        monthTopAmount.push([leaderboard[2][4][0][0].stringValue, leaderboard[2][4][0][1].stringValue, leaderboard[2][4][0][2].stringValue, sumM4])
-        monthTopAmount.push([leaderboard[2][5][0][0].stringValue, leaderboard[2][5][0][1].stringValue, leaderboard[2][5][0][2].stringValue, sumM5])
-        monthTopAmount.push([leaderboard[2][6][0][0].stringValue, leaderboard[2][6][0][1].stringValue, leaderboard[2][6][0][2].stringValue, sumM6])
-        monthTopAmount.push([leaderboard[2][7][0][0].stringValue, leaderboard[2][7][0][1].stringValue, leaderboard[2][7][0][2].stringValue, sumM7])
-        monthTopAmount.push([leaderboard[2][8][0][0].stringValue, leaderboard[2][8][0][1].stringValue, leaderboard[2][8][0][2].stringValue, sumM8])
-        monthTopAmount.push([leaderboard[2][9][0][0].stringValue, leaderboard[2][9][0][1].stringValue, leaderboard[2][9][0][2].stringValue, sumM9])
-      } catch (e) {
-
-      }
-      try {
-        globalTopAmount.push([leaderboard[3][0][0][0].stringValue, leaderboard[3][0][0][1].stringValue, leaderboard[3][0][0][2].stringValue, sumG0])
-        globalTopAmount.push([leaderboard[3][1][0][0].stringValue, leaderboard[3][1][0][1].stringValue, leaderboard[3][1][0][2].stringValue, sumG1])
-        globalTopAmount.push([leaderboard[3][2][0][0].stringValue, leaderboard[3][2][0][1].stringValue, leaderboard[3][2][0][2].stringValue, sumG2])
-        globalTopAmount.push([leaderboard[3][3][0][0].stringValue, leaderboard[3][3][0][1].stringValue, leaderboard[3][3][0][2].stringValue, sumG3])
-        globalTopAmount.push([leaderboard[3][4][0][0].stringValue, leaderboard[3][4][0][1].stringValue, leaderboard[3][4][0][2].stringValue, sumG4])
-        globalTopAmount.push([leaderboard[3][5][0][0].stringValue, leaderboard[3][5][0][1].stringValue, leaderboard[3][5][0][2].stringValue, sumG5])
-        globalTopAmount.push([leaderboard[3][6][0][0].stringValue, leaderboard[3][6][0][1].stringValue, leaderboard[3][6][0][2].stringValue, sumG6])
-        globalTopAmount.push([leaderboard[3][7][0][0].stringValue, leaderboard[3][7][0][1].stringValue, leaderboard[3][7][0][2].stringValue, sumG7])
-        globalTopAmount.push([leaderboard[3][8][0][0].stringValue, leaderboard[3][8][0][1].stringValue, leaderboard[3][8][0][2].stringValue, sumG8])
-        globalTopAmount.push([leaderboard[3][9][0][0].stringValue, leaderboard[3][9][0][1].stringValue, leaderboard[3][9][0][2].stringValue, sumG9])
-      } catch (e) {
-
-      }
-      topAmount.day = dayTopAmount.sort(((a, b) => b[3] - a[3]));
-      topAmount.week = weekTopAmount.sort(((a, b) => b[3] - a[3]));
-      topAmount.month = monthTopAmount.sort(((a, b) => b[3] - a[3]));
-      topAmount.global = globalTopAmount.sort(((a, b) => b[3] - a[3]));
-
-      let gameTops = {}
-      gameTops.game = topGames
-      gameTops.amount = topAmount
-      setLeaderboard(gameTops)
+        leaderboard.games = top.sort(((a, b) => b[3] - a[3]))
+        leaderboard.amount = top.sort(((a, b) => b[4] - a[4]))
+        setTopGlobal(leaderboard)
+      })
     }
-
-    readLeaderboard(unixTimeStamp)
-  }, [unixTimeStamp])
+    readLeaderboard()
+    return () => {
+      setTopDay({});
+      setTopWeek({});
+      setTopMonth({});
+      setTopGlobal({});
+    };
+  }, [])
 
   const liveBetsModal = () => {
     if (!liveBets) {
@@ -1383,35 +353,35 @@ export default function Main() {
           }
         </div>
 
-        {mostPlays && leaderboard.game &&
+        {mostPlays &&
           <>
             {dailyGame &&
-              <MostPlays leaderboard={leaderboard.game.day} />
+              <MostPlays leaderboard={topDay.games} />
             }
             {weeklyGame &&
-              <MostPlays leaderboard={leaderboard.game.week} />
+              <MostPlays leaderboard={topWeek.games} />
             }
             {monthlyGame &&
-              <MostPlays leaderboard={leaderboard.game.month} />
+              <MostPlays leaderboard={topMonth.games} />
             }
             {globalGame &&
-              <MostPlays leaderboard={leaderboard.game.global} />
+              <MostPlays leaderboard={topGlobal.games} />
             }
           </>
         }
-        {mostAmount && leaderboard.amount &&
+        {mostAmount &&
           <>
             {dailyAmount &&
-              <MostAmount leaderboard={leaderboard.amount.day} />
+              <MostAmount leaderboard={topDay.amount} />
             }
             {weeklyAmount &&
-              <MostAmount leaderboard={leaderboard.amount.week} />
+              <MostAmount leaderboard={topWeek.amount} />
             }
             {monthlyAmount &&
-              <MostAmount leaderboard={leaderboard.amount.month} />
+              <MostAmount leaderboard={topMonth.amount} />
             }
             {globalAmount &&
-              <MostAmount leaderboard={leaderboard.amount.global} />
+              <MostAmount leaderboard={topGlobal.amount} />
             }
           </>
         }

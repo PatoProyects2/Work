@@ -1,7 +1,6 @@
 import React from 'react'
 import { Table } from 'reactstrap';
 export default function MostAmount(props) {
-
   return (
     <>
       <Table className='tbl-ranking' borderless responsive>
@@ -23,7 +22,7 @@ export default function MostAmount(props) {
                 {props.leaderboard[0][2] !== 'Username' ? props.leaderboard[0][2] : props.leaderboard[0][0].substring(0, 5)}
               </td>
               <td>
-                {props.leaderboard[0][3]}
+                {props.leaderboard[0][4]}
               </td>
             </tr>
             :
