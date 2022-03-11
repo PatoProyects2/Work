@@ -30,12 +30,10 @@ export default function Main() {
   const [weeklyAmount, setWeeklyAmount] = useState(false);
   const [monthlyAmount, setMonthlyAmount] = useState(false);
   const [globalAmount, setGlobalAmount] = useState(false);
-
   useEffect(() => {
     const readLeaderboard = async () => {
-      const response = await fetch('https://showcase.api.linx.twenty57.net/UnixTime/tounixtimestamp?datetime=now');
-      const time = await response.json();
-      var unixTimeStamp = parseInt(time.UnixTimeStamp)
+
+      var unixTimeStamp = Math.round((new Date()).getTime() / 1000);
 
       var lastDay = unixTimeStamp - 86400
       var lastWeek = unixTimeStamp - 604800
@@ -62,7 +60,6 @@ export default function Main() {
         }
         globalGames = globalGames.concat([doc.data().account])
       });
-
       const arrDay = [... new Set(dayGames.map(data => data))]
       var dayTop = arrDay.map(account => query(collection(db, "allGames"), where("account", "==", account), where("createdAt", ">", lastDay)))
       const array0 = await Promise.all(
@@ -353,7 +350,7 @@ export default function Main() {
           }
         </div>
 
-        {mostPlays &&
+        {mostPlays && leaderboard.games &&
           <>
             {dailyGame &&
               <MostPlays leaderboard={leaderboard.games.day} />
@@ -369,7 +366,7 @@ export default function Main() {
             }
           </>
         }
-        {mostAmount &&
+        {mostAmount && leaderboard.amount &&
           <>
             {dailyAmount &&
               <MostAmount leaderboard={leaderboard.amount.day} />

@@ -8,13 +8,7 @@ export const ReadUnixTime = () => {
     }, [])
 
     const getUnixTime = async () => {
-        fetch('https://showcase.api.linx.twenty57.net/UnixTime/tounixtimestamp?datetime=now')
-            .then(response =>
-                response.json()
-            )
-            .then(data =>
-                setUnixTimeStamp(parseInt(data.UnixTimeStamp))
-            );
+        setUnixTimeStamp(Math.round((new Date()).getTime() / 1000))
     }
 
     return unixTimeStamp

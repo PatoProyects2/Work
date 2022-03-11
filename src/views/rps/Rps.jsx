@@ -24,13 +24,12 @@ import Rock from '../../assets/imgs/rock.gif'
 import Paper from '../../assets/imgs/paper.gif'
 import Scissors from '../../assets/imgs/scissors.gif'
 import RPSAnimation from '../../assets/imgs/animation.gif'
-import PaperLose from '../../assets/imgs/animations/Paper_Lose.gif'
-import PaperWin from '../../assets/imgs/animations/Paper_Win.gif'
-import RockLose from '../../assets/imgs/animations/Rock_Lose.gif'
-import RockWin from '../../assets/imgs/animations/Rock_Win.gif'
-import ScissorsWin from '../../assets/imgs/animations/Scissors_Lose.gif'
-import ScissorsLose from '../../assets/imgs/animations/Scissors_Win.gif'
-
+import RockLose from '../../assets/imgs/animations/RockLose.gif'
+import RockWin from '../../assets/imgs/animations/RockWin.gif'
+import PaperLose from '../../assets/imgs/animations/PaperLose.gif'
+import PaperWin from '../../assets/imgs/animations/PaperWin.gif'
+import ScissorsLose from '../../assets/imgs/animations/ScissorsLose.gif'
+import ScissorsWin from '../../assets/imgs/animations/ScissorsWin.gif'
 
 export default function Rps() {
   const [user] = useAuthState(auth)
@@ -107,18 +106,10 @@ export default function Rps() {
           uid: user.uid
         })
       }
-      try {
-        fetch('https://showcase.api.linx.twenty57.net/UnixTime/fromunix?timestamp=' + `${userData.register.seconds}`)
-          .then(response =>
-            response.json()
-          )
-          .then(data => {
-            setRegister(data)
-          }
-          );
-      } catch (e) {
 
-      }
+      var date = new Date(userData.register.seconds * 1000);
+      setRegister(date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear());
+
       if (userData.rps.totalGames > 5 && userData.rps.totalGames < 10 && userData.level !== 2) {
         updateDoc(doc(db, "clubUsers", account), {
           level: 2
@@ -274,7 +265,7 @@ export default function Rps() {
             },
           })
         }
-        loadUserGame(account, user)
+        window.location.reload()
       }
       if (!user && account !== '0x000000000000000000000000000000000000dEaD') {
         setDoc(doc(db, "clubUsers", account), {
@@ -300,7 +291,7 @@ export default function Rps() {
             lastGameBlock: 0,
           },
         })
-        loadUserGame(account, user)
+        window.location.reload()
       }
     }
   }

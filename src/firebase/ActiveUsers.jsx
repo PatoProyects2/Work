@@ -12,9 +12,7 @@ export default function Presence() {
     }, [user])
 
     const readData = async (user) => {
-        const response = await fetch('https://showcase.api.linx.twenty57.net/UnixTime/tounixtimestamp?datetime=now');
-        const time = await response.json();
-        var unixTimeStamp = parseInt(time.UnixTimeStamp)
+        var unixTimeStamp = Math.round((new Date()).getTime() / 1000);
         if (user) {
             var uid = user.uid;
             var isOfflineForDatabase = {
@@ -48,8 +46,8 @@ export default function Presence() {
                 }
             })
         }
-        let lastHour = unixTimeStamp - 86400
-        const q1 = query(collection(db, 'status'), where('state', '==', 'online'), where('time', '>', lastHour))
+        let lastDay = unixTimeStamp - 86400
+        const q1 = query(collection(db, 'status'), where('state', '==', 'online'), where('time', '>', lastDay))
         const d1 = await getDocs(q1)
         setActive(d1._snapshot.docChanges.length)
     }
