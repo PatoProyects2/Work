@@ -5,13 +5,6 @@ import Presence from '../../../firebase/ActiveUsers'
 import AccountFirebase from '../../layout/Authentication';
 import { ThemeSwitcher } from '../themeSwitcher/ThemeSwitcher';
 import { useMatchMedia } from '../../../hooks/useMatchMedia';
-import HomeIcon from '../../../assets/imgs/ic-home.png';
-import RPSGameIcon from '../../../assets/imgs/ic-rps-game.png';
-import NFTIcon from '../../../assets/imgs/ic-nfts.png';
-import FairPlayIcon from '../../../assets/imgs/ic-fair-play.png';
-import DemoIcon from '../../../assets/imgs/ic-demo.png';
-import FAQIcon from '../../../assets/imgs/ic-faq.png';
-import RewardsIcon from '../../../assets/imgs/ic-rewards.png';
 import TwitterIcon from '../../../assets/imgs/ic-twitter.png';
 import DiscordIcon from '../../../assets/imgs/ic-discord.png';
 import GamesClub from '../../../assets/imgs/Games_Club.png';
