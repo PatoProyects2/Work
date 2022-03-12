@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react"
-import { addDoc, onSnapshot, orderBy, collection, serverTimestamp, query, where } from "firebase/firestore";
+import { addDoc, onSnapshot, orderBy, collection, serverTimestamp, query, where, limit } from "firebase/firestore";
 import { Dropdown, DropdownMenu, DropdownToggle } from 'reactstrap'
 import { auth, db } from "../../../../firebase/firesbaseConfig";
 import ChatMessage from './ChatMessage';
@@ -15,7 +15,8 @@ function ChatRoom(props) {
   }
 
   useEffect(() => {
-    const q = query(collection(db, "messages"), orderBy("createdAt", "asc"))
+
+    const q = query(collection(db, "messages"), orderBy("createdAt", "asc"), limit(50))
     const unsub = onSnapshot(q, (doc) => {
       const message = doc.docs.map(message => (Object.assign({}, { id: message.id }, message.data())))
       setMessages(message)
