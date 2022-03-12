@@ -34,7 +34,34 @@ export default function dayWinStreakLeaderboard(props) {
     }
     useEffect(() => {
         readActuallTime(props.unixTimeStamp)
+        return () => {
+            setHour0(0);
+            setHour1(0);
+            setHour2(0);
+            setHour3(0);
+            setHour4(0);
+            setHour5(0);
+            setHour6(0);
+            setHour7(0);
+            setMinute0(0);
+            setMinute1(0);
+            setMinute2(0);
+            setMinute3(0);
+            setMinute4(0);
+            setMinute5(0);
+            setMinute6(0);
+            setMinute7(0);
+            second0(0);
+            second1(0);
+            second2(0);
+            second3(0);
+            second4(0);
+            second5(0);
+            second6(0);
+            second7(0);
+          };
     }, [props.unixTimeStamp])
+
     const readActuallTime = async (unixTimeStamp) => {
         let winStreakDay = []
         const unixSeconds = parseInt(unixTimeStamp)
