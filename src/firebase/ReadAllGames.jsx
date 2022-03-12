@@ -188,19 +188,19 @@ export default function ReadAllGames() {
             setMinute9(0);
             setMinute10(0);
             setMinute11(0);
-            second0(0);
-            second1(0);
-            second2(0);
-            second3(0);
-            second4(0);
-            second5(0);
-            second6(0);
-            second7(0);
-            second8(0);
-            second9(0);
-            second10(0);
-            second11(0);
-          };
+            setSecond0(0);
+            setSecond1(0);
+            setSecond2(0);
+            setSecond3(0);
+            setSecond4(0);
+            setSecond5(0);
+            setSecond6(0);
+            setSecond7(0);
+            setSecond8(0);
+            setSecond9(0);
+            setSecond10(0);
+            setSecond11(0);
+        };
     }, [unixTimeStamp])
 
     return (
@@ -221,7 +221,7 @@ export default function ReadAllGames() {
                                         </span>
                                         {historyPlays[0].streak > 1 ? historyPlays[0].streak + " times " : ""}
                                     </div>
-                                  <small className="ms-auto mt-auto time-in-row">
+                                    <small className="ms-auto mt-auto time-in-row">
                                         {second0 < 0 || second0 === 0 ? "now" : ""}
                                         {second0 > 0 && second0 < 60 ? second0 + " seconds ago" : ""}
                                         {second0 > 59 && second0 < 120 ? minute0 + " minute ago" : ""}
@@ -244,7 +244,7 @@ export default function ReadAllGames() {
                                         </span>
                                         {historyPlays[1].streak > 1 ? historyPlays[1].streak + " times " : ""}
                                     </div>
-                                  <small className="ms-auto mt-auto time-in-row">
+                                    <small className="ms-auto mt-auto time-in-row">
                                         {second1 < 0 || second1 === 0 ? "now" : ""}
                                         {second1 > 0 && second1 < 60 ? second1 + " seconds ago" : ""}
                                         {second1 > 59 && second1 < 120 ? minute1 + " minute ago" : ""}
@@ -267,7 +267,7 @@ export default function ReadAllGames() {
                                         </span>
                                         {historyPlays[2].streak > 1 ? historyPlays[2].streak + " times " : ""}
                                     </div>
-                                  <small className="ms-auto mt-auto time-in-row">
+                                    <small className="ms-auto mt-auto time-in-row">
                                         {second2 < 0 || second2 === 0 ? "now" : ""}
                                         {second2 > 0 && second2 < 60 ? second2 + " seconds ago" : ""}
                                         {second2 > 59 && second2 < 120 ? minute2 + " minute ago" : ""}
@@ -290,7 +290,7 @@ export default function ReadAllGames() {
                                         </span>
                                         {historyPlays[3].streak > 1 ? historyPlays[3].streak + " times " : ""}
                                     </div>
-                                  <small className="ms-auto mt-auto time-in-row">
+                                    <small className="ms-auto mt-auto time-in-row">
                                         {second3 < 0 || second3 === 0 ? "now" : ""}
                                         {second3 > 0 && second3 < 60 ? second3 + " seconds ago" : ""}
                                         {second3 > 59 && second3 < 120 ? minute3 + " minute ago" : ""}
@@ -313,7 +313,7 @@ export default function ReadAllGames() {
                                         </span>
                                         {historyPlays[4].streak > 1 ? historyPlays[4].streak + " times " : ""}
                                     </div>
-                                  <small className="ms-auto mt-auto time-in-row">
+                                    <small className="ms-auto mt-auto time-in-row">
                                         {second4 < 0 || second4 === 0 ? "now" : ""}
                                         {second4 > 0 && second4 < 60 ? second4 + " seconds ago" : ""}
                                         {second4 > 59 && second4 < 120 ? minute4 + " minute ago" : ""}
@@ -336,7 +336,7 @@ export default function ReadAllGames() {
                                         </span>
                                         {historyPlays[5].streak > 1 ? historyPlays[5].streak + " times " : ""}
                                     </div>
-                                  <small className="ms-auto mt-auto time-in-row">
+                                    <small className="ms-auto mt-auto time-in-row">
                                         {second5 < 0 || second5 === 0 ? "now" : ""}
                                         {second5 > 0 && second5 < 60 ? second5 + " seconds ago" : ""}
                                         {second5 > 59 && second5 < 120 ? minute5 + " minute ago" : ""}
@@ -359,7 +359,7 @@ export default function ReadAllGames() {
                                         </span>
                                         {historyPlays[6].streak > 1 ? historyPlays[6].streak + " times " : ""}
                                     </div>
-                                  <small className="ms-auto mt-auto time-in-row">
+                                    <small className="ms-auto mt-auto time-in-row">
                                         {second6 < 0 || second6 === 0 ? "now" : ""}
                                         {second6 > 0 && second6 < 60 ? second6 + " seconds ago" : ""}
                                         {second6 > 59 && second6 < 120 ? minute6 + " minute ago" : ""}
@@ -382,7 +382,7 @@ export default function ReadAllGames() {
                                         </span>
                                         {historyPlays[7].streak > 1 ? historyPlays[7].streak + " times " : ""}
                                     </div>
-                                  <small className="ms-auto mt-auto time-in-row">
+                                    <small className="ms-auto mt-auto time-in-row">
                                         {second7 < 0 || second7 === 0 ? "now" : ""}
                                         {second7 > 0 && second7 < 60 ? second7 + " seconds ago" : ""}
                                         {second7 > 59 && second7 < 120 ? minute7 + " minute ago" : ""}
@@ -405,7 +405,7 @@ export default function ReadAllGames() {
                                         </span>
                                         {historyPlays[8].streak > 1 ? historyPlays[8].streak + " times " : ""}
                                     </div>
-                                  <small className="ms-auto mt-auto time-in-row">
+                                    <small className="ms-auto mt-auto time-in-row">
                                         {second8 < 0 || second8 === 0 ? "now" : ""}
                                         {second8 > 0 && second8 < 60 ? second8 + " seconds ago" : ""}
                                         {second8 > 59 && second8 < 120 ? minute8 + " minute ago" : ""}
@@ -428,7 +428,7 @@ export default function ReadAllGames() {
                                         </span>
                                         {historyPlays[9].streak > 1 ? historyPlays[9].streak + " times " : ""}
                                     </div>
-                                  <small className="ms-auto mt-auto time-in-row">
+                                    <small className="ms-auto mt-auto time-in-row">
                                         {second9 < 0 || second9 === 0 ? "now" : ""}
                                         {second9 > 0 && second9 < 60 ? second9 + " seconds ago" : ""}
                                         {second9 > 59 && second9 < 120 ? minute9 + " minute ago" : ""}
@@ -451,7 +451,7 @@ export default function ReadAllGames() {
                                         </span>
                                         {historyPlays[10].streak > 1 ? historyPlays[10].streak + " times " : ""}
                                     </div>
-                                  <small className="ms-auto mt-auto time-in-row">
+                                    <small className="ms-auto mt-auto time-in-row">
                                         {second10 < 0 || second10 === 0 ? "now" : ""}
                                         {second10 > 0 && second10 < 60 ? second10 + " seconds ago" : ""}
                                         {second10 > 59 && second10 < 120 ? minute10 + " minute ago" : ""}

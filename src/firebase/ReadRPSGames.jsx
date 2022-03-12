@@ -189,18 +189,18 @@ export default function ReadRPSGames() {
             setMinute9(0);
             setMinute10(0);
             setMinute11(0);
-            second0(0);
-            second1(0);
-            second2(0);
-            second3(0);
-            second4(0);
-            second5(0);
-            second6(0);
-            second7(0);
-            second8(0);
-            second9(0);
-            second10(0);
-            second11(0);
+            setSecond0(0);
+            setSecond1(0);
+            setSecond2(0);
+            setSecond3(0);
+            setSecond4(0);
+            setSecond5(0);
+            setSecond6(0);
+            setSecond7(0);
+            setSecond8(0);
+            setSecond9(0);
+            setSecond10(0);
+            setSecond11(0);
         };
     }, [unixTimeStamp])
 

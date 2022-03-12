@@ -51,14 +51,14 @@ export default function dayWinStreakLeaderboard(props) {
             setMinute5(0);
             setMinute6(0);
             setMinute7(0);
-            second0(0);
-            second1(0);
-            second2(0);
-            second3(0);
-            second4(0);
-            second5(0);
-            second6(0);
-            second7(0);
+            setSecond0(0);
+            setSecond1(0);
+            setSecond2(0);
+            setSecond3(0);
+            setSecond4(0);
+            setSecond5(0);
+            setSecond6(0);
+            setSecond7(0);
           };
     }, [props.unixTimeStamp])
 
