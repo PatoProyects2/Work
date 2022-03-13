@@ -1,11 +1,24 @@
 /* DARK THEME */
 
+.toast-modal {
+    background:  rgba(28, 31, 35, 1) !important;
+    color: whitesmoke !important;
+}
+
+.toast-close {
+    color: #ffb74d !important;
+}
+
+.toast-close:hover {
+    color:rgba(255, 193, 7, 0.8) !important;
+}
 
 /* MAIN PAGE */
 
 .wrapper {
-    background: url('./bg_dark.png') no-repeat;
-    background-size: cover;
+    /* background: url('./bg_dark.png') no-repeat;
+    background-size: cover; */
+    background: #232c31;
     color: whitesmoke;
 }
 
@@ -43,7 +56,7 @@
 }
 
 .btn-signup:hover {
-    background-color: rgba(255, 193, 7, 0.6);
+    background-color: rgba(255, 193, 7, 0.8);
 }
 
 .dd-toggle,
@@ -132,8 +145,9 @@ input[type=radio][name=pic1]:checked+img {
 }
 
 .oc-menu {
-    background: url('./bg_dark.png') no-repeat;
-    background-size: cover;
+    /* background: url('./bg_dark.png') no-repeat;
+    background-size: cover; */
+    background-color: rgba(28, 31, 35, 1) !important;
 }
 
 .nav-link-primary {
@@ -149,7 +163,7 @@ input[type=radio][name=pic1]:checked+img {
 .nav-link-primary:hover,
 .nav-link-secondary:hover {
     color: #ffb74d !important;
-    border-bottom: 2px solid #ffb74d;
+    border-left: 2px solid #ffb74d;
 }
 
 .d-modal .modal-content {
@@ -182,7 +196,7 @@ input[type=radio][name=pic1]:checked+img {
 }
 
 .nav-item.nav-link.active {
-    border-bottom: 2px solid #ffb74d;
+    border-left: 2px solid #ffb74d;
 }
 
 .btn-wallet {
@@ -287,4 +301,29 @@ input[type=radio][name=pic1]:checked+img {
 
 .faq-border {
     border-bottom: 2px solid whitesmoke;
+}
+
+.profile-card {
+    background-color: #212529 !important;
+    color: whitesmoke;
+}
+
+.result-rps-image {
+    -webkit-box-shadow:
+        0px 0px 0px 2px #fff,
+        0px 0px 0px 14px rgba(28, 31, 35, 1),
+        0px 0px 0px 18px rgba(0,0,0,0.6),
+        6px 6px 8px 14px #555;
+  
+    -moz-box-shadow:
+        0px 0px 0px 2px #fff,
+        0px 0px 0px 14px rgba(28, 31, 35, 1),
+        0px 0px 0px 18px rgba(0,0,0,0.6),
+        6px 6px 8px 14px #555;
+  
+    box-shadow:
+        0px 0px 0px 2px #fff,
+        0px 0px 0px 14px rgba(28, 31, 35, 1),
+        0px 0px 0px 18px rgba(0,0,0,0.6),
+        6px 6px 8px 14px #555;
 }

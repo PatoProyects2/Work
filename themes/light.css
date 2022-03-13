@@ -1,5 +1,17 @@
 /* LIGHT THEME */
 
+.toast-modal {
+    background: whitesmoke !important;
+    color: #000 !important;
+}
+
+.toast-close {
+    color:whitesmoke !important;
+}
+
+.toast-close:hover {
+    color:rgba(255,255,255,0.8) !important;
+}
 
 /* MAIN PAGE */
 
@@ -101,17 +113,16 @@ input[type=radio][name=pic1]:checked+img {
 .nav-link-secondary {
     color: rgba(28, 31, 35, 0.5) !important;
     font-size: 0.9rem;
-    ;
 }
 
 .nav-link-primary:hover,
 .nav-link-secondary:hover {
     color: #78350f !important;
-    border-bottom: 2px solid #78350f;
+    border-left: 2px solid #78350f;
 }
 
 .nav-item.nav-link.active {
-    border-bottom: 2px solid #78350f;
+    border-left: 2px solid #78350f;
 }
 
 .ic-color {
@@ -223,4 +234,29 @@ input[type=radio][name=pic1]:checked+img {
 
 .faq-border {
     border-bottom: 2px solid #212529;
+}
+
+.profile-card {
+    background-color: whitesmoke !important;
+    color: black;
+}
+
+.result-rps-image {
+    -webkit-box-shadow:
+        0px 0px 0px 2px rgba(0,0,0,0.6),
+        0px 0px 0px 14px #fff,
+        0px 0px 0px 18px rgba(0,0,0,0.2),
+        6px 6px 8px 17px #555;
+  
+    -moz-box-shadow:
+        0px 0px 0px 2px rgba(0,0,0,0.6),
+        0px 0px 0px 14px #fff,
+        0px 0px 0px 18px rgba(0,0,0,0.2),
+        6px 6px 8px 17px #555;
+  
+    box-shadow:
+        0px 0px 0px 2px rgba(0,0,0,0.6),
+        0px 0px 0px 14px #fff,
+        0px 0px 0px 18px rgba(0,0,0,0.2),
+        6px 6px 8px 17px #555;
 }
