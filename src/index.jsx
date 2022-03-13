@@ -27,13 +27,14 @@ ReactDOM.render(
       gutter={8}
       containerClassName=""
       containerStyle={{}}
+      className='toast-modal'
       toastOptions={{
         // Define default options
         className: '',
-        duration: 5000,
+        duration: 55000,
         style: {
-          background: '#363636',
-          color: '#fff',
+          background: 'rgba(28, 31, 35, 1)',
+          color: 'whitesmoke'
         },
         // Default options for specific types
         success: {
@@ -52,13 +53,13 @@ ReactDOM.render(
               {icon}
               {message}
               {t.type !== 'loading' && (
-                <button onClick={() => toast.dismiss(t.id)}>X</button>
+                <span className='toast-close' onClick={() => toast.dismiss(t.id)}><i className='fa-solid fa-xmark fa-lg'></i></span>  
               )}
             </>
           )}
         </ToastBar>
       )}
-    </Toaster>;
+    </Toaster>
     <Routes>
       <Route path="/" element={<MainLayout />}>
         <Route index element={<Main />} />
@@ -81,4 +82,3 @@ ReactDOM.render(
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.unregister();
-

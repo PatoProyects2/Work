@@ -140,8 +140,7 @@ export default function ConnectWallet(props) {
           </Dropdown>
           <Modal isOpen={edit} className="d-modal" size="sm">
             <ModalBody>
-              <h4 className="text-center">Profile</h4>
-              <button type="button" className="btn-close" aria-label="Close" onClick={editProfile}></button>
+              <h4 className="text-center">USER PROFILE</h4>
               <FormGroup className="pt-3 text-center">
                 {props.userData.photo && <img className="rounded-circle me-2" src={props.userData.photo} width="105" height="105" alt="" />}
               </FormGroup>
@@ -160,12 +159,12 @@ export default function ConnectWallet(props) {
             </ModalBody>
             <ModalFooter>
               <Button color="warning" type="submit" onClick={updateUserProfile}>SAVE</Button>
+              <Button color="secondary" onClick={editProfile}>CLOSE</Button>
             </ModalFooter>
           </Modal>
           <Modal isOpen={send} className="d-modal" size="sm">
             <ModalBody>
-              <h4 className="text-center">Send to a friend</h4>
-              <button type="button" className="btn-close" aria-label="Close" onClick={sendMatic}></button>
+              <h4 className="text-center">SEND MATIC</h4>
               <FormGroup>
                 <Label>ADDRESS</Label>
                 <Input name="account1" className="d-modal-input" placeholder="0x00..." onChange={handleInputChange} type="text" />
@@ -177,6 +176,7 @@ export default function ConnectWallet(props) {
             </ModalBody>
             <ModalFooter>
               <Button color="warning" type="submit" onClick={sendToFriend}>SEND</Button>
+              <Button color="secondary" onClick={sendMatic}>CLOSE</Button>
             </ModalFooter>
           </Modal>
         </>

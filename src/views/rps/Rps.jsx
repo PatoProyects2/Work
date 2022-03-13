@@ -70,9 +70,9 @@ export default function Rps() {
         position: 'top-right',
         // Styling
         style: {},
-        className: 'pop-up',
+        className: 'pop-up toast-modal',
         // Custom Icon
-        icon: 'ℹ️',
+        icon: <i className='fa-solid fa-circle-info text-primary'></i>,
         // Change colors of success/error/loading icon
         iconTheme: {
           primary: '#000',
@@ -666,12 +666,12 @@ export default function Rps() {
                         :
                         ""
                       }
-                      {userhand === 'ROCK' && userGameResult === true ? <img width="640" height="360" src={RockWin} alt="" /> : ""}
-                      {userhand === 'PAPER' && userGameResult === true ? <img width="640" height="360" src={PaperWin} alt="" /> : ""}
-                      {userhand === 'SCISSORS' && userGameResult === true ? <img width="640" height="360" src={ScissorsWin} alt="" /> : ""}
-                      {userhand === 'ROCK' && userGameResult === false ? <img width="640" height="360" src={RockLose} alt="" /> : ""}
-                      {userhand === 'PAPER' && userGameResult === false ? <img width="640" height="360" src={PaperLose} alt="" /> : ""}
-                      {userhand === 'SCISSORS' && userGameResult === false ? <img width="640" height="360" src={ScissorsLose} alt="" /> : ""}
+                      {userhand === 'ROCK' && userGameResult === true ? <img className="result-rps-image" width="640" height="360" src={RockWin} alt="Rock Wins" /> : ""}
+                      {userhand === 'PAPER' && userGameResult === true ? <img className="result-rps-image" width="640" height="360" src={PaperWin} alt="Paper Wins" /> : ""}
+                      {userhand === 'SCISSORS' && userGameResult === true ? <img className="result-rps-image" width="640" height="360" src={ScissorsWin} alt="Scissors Wins" /> : ""}
+                      {userhand === 'ROCK' && userGameResult === false ? <img className="result-rps-image" width="640" height="360" src={RockLose} alt="Rock Loses" /> : ""}
+                      {userhand === 'PAPER' && userGameResult === false ? <img className="result-rps-image" width="640" height="360" src={PaperLose} alt="Paper Loses" /> : ""}
+                      {userhand === 'SCISSORS' && userGameResult === false ? <img className="result-rps-image" width="640" height="360" src={ScissorsLose} alt="Scissors Loses" /> : ""}
                       <br></br>
                       <br></br>
                       <h3>{userGameResult === true ? " YOU WON " : ""}{userGameResult === false ? " YOU LOST " : ""}</h3>

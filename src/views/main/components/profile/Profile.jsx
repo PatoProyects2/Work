@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { sendEmailVerification, updateProfile } from 'firebase/auth';
-import { Button, Modal, ModalBody, ModalFooter, FormGroup, Input } from 'reactstrap'
+import { Button, FormGroup, Input, Row, Col, Card, CardImg, CardBody, CardTitle, Label } from 'reactstrap'
 import { toast } from 'react-hot-toast';
 import { query, where, collection, limit, onSnapshot, updateDoc, doc } from "firebase/firestore";
 import { auth, db } from '../../../../firebase/firesbaseConfig'
 import Stats from './Stats'
+
 export default function Profile() {
   const [userInfo, setUserInfo] = useState({
     displayName: '',
@@ -45,13 +46,7 @@ export default function Profile() {
         error: <b>Wait a few minutes to resend the email verification</b>,
       })
   }
-  const editProfileModal = () => {
-    if (editProfile) {
-      setEditProfile(false)
-    } else {
-      setEditProfile(true)
-    }
-  }
+
   const updateUserProfile = () => {
     if (userData[0]) {
       if (userInfo.displayName.length >= 4 && userInfo.displayName.length <= 12) {
@@ -85,68 +80,52 @@ export default function Profile() {
   }
 
   return (
-    <>
-      {user ?
-        <>
-          <h1>Profile</h1>
-          {userData[0] ?
-            <>
-              <p>{userData[0].photo && <img width="150" height="150" className="rounded-circle me-2" src={userData[0].photo} alt="" />}</p>
-              <p>{userData[0].name}</p>
-            </>
-            :
-            <>
-              <p> <img width="150" height="150" className="rounded-circle me-2" src="https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh" alt="" /></p>
-              <p>{user.displayName ? user.displayName : "ClubUser"}</p>
-            </>
-          }
-          <p>
-            {user.email}
-            {user.emailVerified ?
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-check" viewBox="0 0 16 16">
-                <path
-                  d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"
-                />
-              </svg>
-              :
-              <button onClick={resendEmailVerification}>
-                Resend email verification
-              </button>
-            }
-          </p>
-          <Button color="primary" onClick={editProfileModal}>Edit Profile</Button>
-          <Modal isOpen={editProfile} className="d-modal" size="sm">
-            <ModalBody>
-              <h4 className="text-center">Profile</h4>
-              <button type="button" className="btn-close" aria-label="Close" onClick={editProfileModal}></button>
-              <FormGroup className="pt-3 text-center">
-                <p>
-                  {userData[0] ?
-                    <img width="105" height="105" className="rounded-circle me-2" src={userData[0].photo} alt="" />
-                    :
-                    <img width="150" height="150" className="rounded-circle me-2" src="https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh" alt="" />
-                  }
-                </p>
-              </FormGroup>
-              <FormGroup>
-                {userData[0] ?
-                  <Input name="displayName" className="d-modal-input" onChange={handleInputChange} defaultValue={userData[0].name} type="text" />
-                  :
-                  <Input name="displayName" className="d-modal-input" placeholder="ClubUser" onChange={handleInputChange} defaultValue={user.displayName} type="text" />
-                }
-              </FormGroup>
-            </ModalBody>
-            <ModalFooter>
-              <Button color="warning" type="submit" onClick={updateUserProfile}>Save</Button>
-            </ModalFooter>
-          </Modal>
-          <Stats
-            userData={userData}
-          />
-        </>
-        :
-        "PLEASE SIGN IN"
+    <div className="container">
+      {
+        user ?
+          <>
+            <Row>
+              <Col lg="6" className="mx-auto">
+                <Card className='profile-card'>
+                  <CardBody>
+                    <CardTitle className="text-center profile-title" tag="h2">
+                      User Profile
+                    </CardTitle>
+                    <CardImg
+                      alt={userData[0] ? userData[0].name : user.displayName ? user.displayName : "ClubUser"}
+                      className="rounded-circle profile-img"
+                      src={(userData[0] && userData[0].photo) ? userData[0].photo : "https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh"}
+                      top
+                    />
+
+                    <FormGroup floating>
+                      <Input id="displayName" name="displayName" className="d-modal-input"
+                        placeholder="ClubUser" onChange={handleInputChange} type="text" defaultValue={userData[0] ? userData[0].name : user.displayName} />
+                      <Label for="displayName">Username</Label>
+                    </FormGroup>
+
+                    <FormGroup floating>
+                      <Input id="email" name="email" className={`d-modal-input ${user.emailVerified ? "is-valid" : "is-invalid"}`}
+                        type="email" defaultValue={user.email} disabled />
+                      <Label for="email">Email</Label>
+                      {!user.emailVerified &&
+                        <Button color="primary" type="button" className="mt-3" onClick={resendEmailVerification}>Resend email verification</Button>
+                      }
+                    </FormGroup>
+
+                    <FormGroup className="d-flex justify-content-end">
+                      <Button color="warning" type="submit" onClick={updateUserProfile}>Save</Button>
+                    </FormGroup>
+
+                  </CardBody>
+                </Card>
+              </Col>
+            </Row>
+            <Stats userData={userData} />
+          </>
+          :
+          <h2 className='text-center'>PLEASE SIGN IN</h2>
       }
-    </>
+    </div>
   );
 }

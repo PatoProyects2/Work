@@ -29,13 +29,30 @@ ul {
     cursor: pointer;
 }
 
+.c-pointer {
+    cursor: pointer;
+}
+
 .wrapper {
     min-height: 100vh;
     padding-left: 10px;
 }
 
+.toast-close {
+    padding: 0.5rem;
+    // position: absolute;
+    // top: 0;
+    // right: 0;
+    cursor: pointer;
+}
+
 
 /* NavBar Offcanvas */
+
+.rps-logo {
+    width: 12rem;
+    margin-left: 1rem;
+}
 
 .btn-auth-group {
     border-radius: 5px;
@@ -334,7 +351,7 @@ ul {
 .cards-container {
     display: flex;
     flex-direction: column;
-    width: 75%;
+    width: 100%;
     margin: 0 auto;
     padding-top: 1rem;
 }
@@ -374,8 +391,8 @@ ul {
     transform: scale(1.6, 1.2);
     transition: all 0.3s ease-in-out 0s;
     position: absolute;
-    left: 0px;
-    width: 100%;
+    left: 25%;
+    width: 50%;
     height: 100%;
     z-index: 0;
     pointer-events: none;
@@ -386,7 +403,8 @@ ul {
     transform: matrix(1, -0.05, 0.05, 1, 0, 0);
 }
 
-.game-card:hover .card-bg {
+.game-card:hover .card-bg,
+.social-card:hover .card-bg {
     opacity: 1;
     transform: scale(1.5);
 }
@@ -396,8 +414,47 @@ ul {
     background-position: center center;
 }
 
+.card-bg.soon-bg,
+.card-bg.nfts-bg,
+.card-bg.fair-bg,
+.card-bg.twitter-bg,
+.card-bg.discord-bg {
+    background-size: cover;
+    background-position: center center;
+}
+
 .rps-bg {
     background: url('./assets/imgs/slots_hover.png') no-repeat;
+    margin-top: 5%;
+    top: 1%;
+}
+
+.soon-bg {
+    background: url('./assets/imgs/soon_hover.png') no-repeat;
+    margin-top: 5%;
+    top: 1%;
+}
+
+.nfts-bg {
+    background: url('./assets/imgs/nft_hover.png') no-repeat;
+    margin-top: 5%;
+    top: 1%;
+}
+
+.fair-bg {
+    background: url('./assets/imgs/fair_hover.png') no-repeat;
+    margin-top: 5%;
+    top: 1%;
+}
+
+.twitter-bg {
+    background: url('./assets/imgs/twitter_hover.png') no-repeat;
+    margin-top: 5%;
+    top: 1%;
+}
+
+.discord-bg {
+    background: url('./assets/imgs/discord_hover.png') no-repeat;
     margin-top: 5%;
     top: 1%;
 }
@@ -417,12 +474,12 @@ ul {
 .table-list-container {
     width: 50%;
     margin: 0 auto;
-    margin-top: .75rem;
+    margin-top: 3rem;
 }
 
 @media (min-width: 1400px) {
     .cards-container {
-        width: 50%;
+        width: 80%;
     }
 }
 
@@ -451,10 +508,13 @@ ul {
 
 @media (max-width: 767px) {
     .cards-container {
-        width: 70%;
+        width: 90%;
     }
     .game-card {
         max-width: 50%;
+    }
+    .game-card.rps {
+        max-width: 100%;
     }
     .social-card {
         max-width: calc(50% - 10px);
@@ -470,6 +530,10 @@ ul {
     }
     .table-list-container {
         width: 100%;
+    }
+    .rps-logo {
+        width: 8rem;
+        margin-left: 0.2rem;
     }
 }
 
@@ -525,5 +589,15 @@ ul {
 
 //   #78350f
 .pop-up {
-    margin-top: 40px;
+    margin-top: 45px;
+}
+
+
+/* PROFILE */
+
+.profile-img {
+    width: 150px;
+    height: 150px;
+    margin: 2rem auto;
+    display: flex;
 }

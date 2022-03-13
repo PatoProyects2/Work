@@ -56,7 +56,7 @@ const Roadmap = () => {
     }    
 
     return (
-        <>
+        <div className="roadmap">
             <h3 className='heading-black text-capitalize text-center my-5'>Roadmap</h3>
             <ProgressBar
                 percent={percent}
@@ -117,7 +117,7 @@ const Roadmap = () => {
                     Next&nbsp;<i className='fa-solid fa-arrow-right'></i>
                 </Button> */}
             </div>
-        </>
+        </div>
     );
 }
 

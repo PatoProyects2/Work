@@ -1,5 +1,5 @@
 import React from 'react'
-import FAQ from '../../FAQ';
+import FAQ from '../FAQ';
 import Roadmap from '../Roadmap';
 
 import "react-step-progress-bar/styles.css";
@@ -17,10 +17,8 @@ export default function About() {
           <button className='btn btn-warning d-inline-flex flex-row align-items-center'>Get Started Now &nbsp;<i className='fa-solid fa-arrow-right'></i></button>
         </div>
       </div>
-
-      <div className="roadmap">      
-        <Roadmap />
-      </div>
+            
+      <Roadmap />
       
       <FAQ />
     </div>

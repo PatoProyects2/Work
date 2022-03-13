@@ -5,6 +5,14 @@ import { db } from '../../../firebase/firesbaseConfig'
 export default function dayWinStreakLeaderboard(props) {
     const [dropdown, setDropdown] = useState(false);
     const [dayWinStreak, setDayWinStreak] = useState(0);
+    const [day0, setDay0] = useState(0);
+    const [day1, setDay1] = useState(0);
+    const [day2, setDay2] = useState(0);
+    const [day3, setDay3] = useState(0);
+    const [day4, setDay4] = useState(0);
+    const [day5, setDay5] = useState(0);
+    const [day6, setDay6] = useState(0);
+    const [day7, setDay7] = useState(0);
     const [hour0, setHour0] = useState(0);
     const [hour1, setHour1] = useState(0);
     const [hour2, setHour2] = useState(0);
@@ -34,34 +42,7 @@ export default function dayWinStreakLeaderboard(props) {
     }
     useEffect(() => {
         readActuallTime(props.unixTimeStamp)
-        return () => {
-            setHour0(0);
-            setHour1(0);
-            setHour2(0);
-            setHour3(0);
-            setHour4(0);
-            setHour5(0);
-            setHour6(0);
-            setHour7(0);
-            setMinute0(0);
-            setMinute1(0);
-            setMinute2(0);
-            setMinute3(0);
-            setMinute4(0);
-            setMinute5(0);
-            setMinute6(0);
-            setMinute7(0);
-            setSecond0(0);
-            setSecond1(0);
-            setSecond2(0);
-            setSecond3(0);
-            setSecond4(0);
-            setSecond5(0);
-            setSecond6(0);
-            setSecond7(0);
-          };
     }, [props.unixTimeStamp])
-
     const readActuallTime = async (unixTimeStamp) => {
         let winStreakDay = []
         const unixSeconds = parseInt(unixTimeStamp)
@@ -80,6 +61,7 @@ export default function dayWinStreakLeaderboard(props) {
             var day = Math.floor(seg / (24 * 3600));
             var hour = Math.floor((seg - day * 24 * 3600) / 3600);
             var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
+            setDay0(day)
             setHour0(hour)
             setMinute0(minute)
             setSecond0(seg)
@@ -89,6 +71,7 @@ export default function dayWinStreakLeaderboard(props) {
             var day = Math.floor(seg / (24 * 3600));
             var hour = Math.floor((seg - day * 24 * 3600) / 3600);
             var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
+            setDay1(day)
             setHour1(hour)
             setMinute1(minute)
             setSecond1(seg)
@@ -98,6 +81,7 @@ export default function dayWinStreakLeaderboard(props) {
             var day = Math.floor(seg / (24 * 3600));
             var hour = Math.floor((seg - day * 24 * 3600) / 3600);
             var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
+            setDay2(day)
             setHour2(hour)
             setMinute2(minute)
             setSecond2(seg)
@@ -107,6 +91,7 @@ export default function dayWinStreakLeaderboard(props) {
             var day = Math.floor(seg / (24 * 3600));
             var hour = Math.floor((seg - day * 24 * 3600) / 3600);
             var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
+            setDay3(day)
             setHour3(hour)
             setMinute3(minute)
             setSecond3(seg)
@@ -116,6 +101,7 @@ export default function dayWinStreakLeaderboard(props) {
             var day = Math.floor(seg / (24 * 3600));
             var hour = Math.floor((seg - day * 24 * 3600) / 3600);
             var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
+            setDay4(day)
             setHour4(hour)
             setMinute4(minute)
             setSecond4(seg)
@@ -125,6 +111,7 @@ export default function dayWinStreakLeaderboard(props) {
             var day = Math.floor(seg / (24 * 3600));
             var hour = Math.floor((seg - day * 24 * 3600) / 3600);
             var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
+            setDay5(day)
             setHour5(hour)
             setMinute5(minute)
             setSecond5(seg)
@@ -134,6 +121,7 @@ export default function dayWinStreakLeaderboard(props) {
             var day = Math.floor(seg / (24 * 3600));
             var hour = Math.floor((seg - day * 24 * 3600) / 3600);
             var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
+            setDay6(day)
             setHour6(hour)
             setMinute6(minute)
             setSecond6(seg)
@@ -143,11 +131,11 @@ export default function dayWinStreakLeaderboard(props) {
             var day = Math.floor(seg / (24 * 3600));
             var hour = Math.floor((seg - day * 24 * 3600) / 3600);
             var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
+            setDay7(day)
             setHour7(hour)
             setMinute7(minute)
             setSecond7(seg)
         }
-
     }
     return (
         <>
@@ -166,7 +154,7 @@ export default function dayWinStreakLeaderboard(props) {
                     {dayWinStreak[0] ?
                         <DropdownItem className="dd-menu-item">
                             <img width="35" height="35" className="rounded-circle" alt="" src={`${dayWinStreak[0][0]}`} />
-                            {dayWinStreak[0][1] !== 'Username' ? dayWinStreak[0][1] : dayWinStreak[0][2].substring(0, 5)}
+                            {dayWinStreak[0][1] !== 'Username' ? " " + dayWinStreak[0][1] : " " + dayWinStreak[0][2].substring(0, 5)}
                             {" is on a " + dayWinStreak[0][3] + " win streak"}
                             <small className="d-flex justify-content-end">
                                 {second0 < 0 || second0 === 0 ? "now" : ""}
@@ -174,7 +162,9 @@ export default function dayWinStreakLeaderboard(props) {
                                 {second0 > 59 && second0 < 120 ? minute0 + " minute ago" : ""}
                                 {second0 > 119 && second0 < 3600 ? minute0 + " minutes ago" : ""}
                                 {second0 > 3599 && second0 < 7200 ? hour0 + " hour ago" : ""}
-                                {second0 > 7199 ? hour0 + " hours ago" : ""}
+                                {second0 > 7199 && second0 < 86400 ? hour0 + " hours ago" : ""}
+                                {second0 > 86399 && second0 < 172800 ? day0 + " day ago" : ""}
+                                {second0 > 172799 ? day0 + " days ago" : ""}
                             </small>
                         </DropdownItem>
                         :
@@ -191,7 +181,9 @@ export default function dayWinStreakLeaderboard(props) {
                                 {second1 > 59 && second1 < 120 ? minute1 + " minute ago" : ""}
                                 {second1 > 119 && second1 < 3600 ? minute1 + " minutes ago" : ""}
                                 {second1 > 3599 && second1 < 7200 ? hour1 + " hour ago" : ""}
-                                {second1 > 7199 ? hour1 + " hours ago" : ""}
+                                {second1 > 7199 && second1 < 86400 ? hour1 + " hours ago" : ""}
+                                {second1 > 86399 && second1 < 172800 ? day1 + " day ago" : ""}
+                                {second1 > 172799 ? day1 + " days ago" : ""}
                             </small>
                         </DropdownItem>
                         :
@@ -208,7 +200,9 @@ export default function dayWinStreakLeaderboard(props) {
                                 {second2 > 59 && second2 < 120 ? minute2 + " minute ago" : ""}
                                 {second2 > 119 && second2 < 3600 ? minute2 + " minutes ago" : ""}
                                 {second2 > 3599 && second2 < 7200 ? hour2 + " hour ago" : ""}
-                                {second2 > 7199 ? hour2 + " hours ago" : ""}
+                                {second2 > 7199 && second2 < 86400 ? hour2 + " hours ago" : ""}
+                                {second2 > 86399 && second2 < 172800 ? day2 + " day ago" : ""}
+                                {second2 > 172799 ? day2 + " days ago" : ""}
                             </small>
                         </DropdownItem>
                         :
@@ -225,7 +219,9 @@ export default function dayWinStreakLeaderboard(props) {
                                 {second3 > 59 && second3 < 120 ? minute3 + " minute ago" : ""}
                                 {second3 > 119 && second3 < 3600 ? minute3 + " minutes ago" : ""}
                                 {second3 > 3599 && second3 < 7200 ? hour3 + " hour ago" : ""}
-                                {second3 > 7199 ? hour3 + " hours ago" : ""}
+                                {second3 > 7199 && second3 < 86400 ? hour3 + " hours ago" : ""}
+                                {second3 > 86399 && second3 < 172800 ? day3 + " day ago" : ""}
+                                {second3 > 172799 ? day3 + " days ago" : ""}
                             </small>
                         </DropdownItem>
                         :
@@ -242,7 +238,9 @@ export default function dayWinStreakLeaderboard(props) {
                                 {second4 > 59 && second4 < 120 ? minute4 + " minute ago" : ""}
                                 {second4 > 119 && second4 < 3600 ? minute4 + " minutes ago" : ""}
                                 {second4 > 3599 && second4 < 7200 ? hour4 + " hour ago" : ""}
-                                {second4 > 7199 ? hour4 + " hours ago" : ""}
+                                {second4 > 7199 && second4 < 86400 ? hour4 + " hours ago" : ""}
+                                {second4 > 86399 && second4 < 172800 ? day4 + " day ago" : ""}
+                                {second4 > 172799 ? day4 + " days ago" : ""}
                             </small>
                         </DropdownItem>
                         :
@@ -255,11 +253,13 @@ export default function dayWinStreakLeaderboard(props) {
                             {" is on a " + dayWinStreak[5][3] + " win streak"}
                             <small className="d-flex justify-content-end">
                                 {second5 < 0 || second5 === 0 ? "now" : ""}
-                                {second5 > 0 && second5 < 60 ? second5 + " seconds ago" : ""}
+                                {second5 > 0 && second5 < 60 ? second0 + " seconds ago" : ""}
                                 {second5 > 59 && second5 < 120 ? minute5 + " minute ago" : ""}
                                 {second5 > 119 && second5 < 3600 ? minute5 + " minutes ago" : ""}
                                 {second5 > 3599 && second5 < 7200 ? hour5 + " hour ago" : ""}
-                                {second5 > 7199 ? hour5 + " hours ago" : ""}
+                                {second5 > 7199 && second5 < 86400 ? hour5 + " hours ago" : ""}
+                                {second5 > 86399 && second5 < 172800 ? day5 + " day ago" : ""}
+                                {second5 > 172799 ? day5 + " days ago" : ""}
                             </small>
                         </DropdownItem>
                         :
@@ -276,7 +276,9 @@ export default function dayWinStreakLeaderboard(props) {
                                 {second6 > 59 && second6 < 120 ? minute6 + " minute ago" : ""}
                                 {second6 > 119 && second6 < 3600 ? minute6 + " minutes ago" : ""}
                                 {second6 > 3599 && second6 < 7200 ? hour6 + " hour ago" : ""}
-                                {second6 > 7199 ? hour6 + " hours ago" : ""}
+                                {second6 > 7199 && second6 < 86400 ? hour6 + " hours ago" : ""}
+                                {second6 > 86399 && second6 < 172800 ? day6 + " day ago" : ""}
+                                {second6 > 172799 ? day6 + " days ago" : ""}
                             </small>
                         </DropdownItem>
                         :
@@ -293,7 +295,9 @@ export default function dayWinStreakLeaderboard(props) {
                                 {second7 > 59 && second7 < 120 ? minute7 + " minute ago" : ""}
                                 {second7 > 119 && second7 < 3600 ? minute7 + " minutes ago" : ""}
                                 {second7 > 3599 && second7 < 7200 ? hour7 + " hour ago" : ""}
-                                {second7 > 7199 ? hour7 + " hours ago" : ""}
+                                {second7 > 7199 && second7 < 86400 ? hour7 + " hours ago" : ""}
+                                {second7 > 86399 && second7 < 172800 ? day7 + " day ago" : ""}
+                                {second7 > 172799 ? day7 + " days ago" : ""}
                             </small>
                         </DropdownItem>
                         :

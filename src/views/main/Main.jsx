@@ -273,13 +273,10 @@ export default function Main() {
   }
 
   return (
-    <>
-      <ChatRoom
-        user={user}
-      />
+    <>     
       <div className='cards-container'>
         <div className='row text-center mb-2 mb-md-5'>
-          <div className='game-card col-md-6 col-12 mx-auto'>
+          <div className='game-card rps col-md-6 col-12 mx-auto'>
             <NavLink to='/rps'>
               <div className='card-bg rps-bg'></div>
               <img src={RPSGameImg} width='400' />
@@ -289,28 +286,30 @@ export default function Main() {
         <div className='row text-center mb-2 mb-md-5'>
           <div className='game-card col-md-4 mx-auto'>
             <NavLink to='/'>
-              {/* <div className='card-bg rps-bg'></div> */}
+              <div className='card-bg soon-bg'></div>
               <img src={ComingSoonImg} width='400' />
             </NavLink>
           </div>
           <div className='game-card col-md-4 mx-auto'>
             <NavLink to='/nfts'>
-              {/* <div className='card-bg rps-bg'></div> */}
+              <div className='card-bg nfts-bg'></div>
               <img src={NFTImg} width='400' />
             </NavLink>
           </div>
           <div className='game-card last col-md-4 mx-auto'>
             <NavLink to='/fair-play'>
-              {/* <div className='card-bg rps-bg'></div> */}
+              <div className='card-bg fair-bg'></div>
               <img src={FairPlayImg} width='400' />
             </NavLink>
           </div>
         </div>
         <div className='row text-center mb-2'>
           <div className='social-card col-6 mx-auto'>
+            <div className='card-bg twitter-bg'></div>
             <a href='https://twitter.com/RPSGameClub' target="_blank" rel="noreferrer"><img src={TwitterImg} width='400' /></a>
           </div>
           <div className='social-card col-6 mx-auto'>
+            <div className='card-bg discord-bg'></div>
             <a href="https://discord.gg/Ygk58VR4" target="_blank" rel="noreferrer"><img src={DiscordImg} width='400' /></a>
           </div>
         </div>

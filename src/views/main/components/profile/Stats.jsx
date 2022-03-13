@@ -1,11 +1,12 @@
 import React from 'react'
-import { Table } from 'reactstrap';
+import { Table } from 'reactstrap'
+
 export default function Stats(props) {
 
   return (
     <>
       <Table className="tbl-ranking" borderless responsive size="">
-        <thead>
+        <thead className="border-bottom">
           <tr>
             <th>
               Wallet
