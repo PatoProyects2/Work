@@ -14,7 +14,7 @@ export const NavbarDesktop = ({ handleFaqModal, handleHtpModal, handleRpsModal, 
     const isMobileResolution = useMatchMedia('(max-width:768px)', false);
     return (
         <>
-            <Navbar className={`main-navbar ${!isMobileResolution ? 'fixed-top' : ''}`}>
+            <Navbar className="main-navbar fixed-top">
                 <div className="d-flex">
                     <Button
                         onClick={() => setShowOffCanvas(true)}

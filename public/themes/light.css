@@ -14,7 +14,7 @@
 }
 
 /* MAIN PAGE */
-
+.wrapper-main,
 .wrapper {
     background: url('./bg_light.png') no-repeat;
     background-size: cover;
@@ -259,4 +259,48 @@ input[type=radio][name=pic1]:checked+img {
         0px 0px 0px 14px #fff,
         0px 0px 0px 18px rgba(0,0,0,0.2),
         6px 6px 8px 17px #555;
+}
+
+/* CHAT */
+.chat-section {    
+    /* background-color: rgba(28, 31, 35, 1); */
+    background-color: rgba(255, 255, 255, 0.35);
+}
+.chatting_chat_msgs .top-gradient {
+    background-image: linear-gradient(rgb(215, 227, 233) 0%,rgba(215, 227, 233, 0));
+}
+.messages li:nth-child(odd){
+    background-color: #565656;;
+}
+.chatting_chat_msgs {
+    /* background-color: #2f3e45; */
+    background-color: rgba(255, 255, 255, 0.35);
+}
+.chat_msgs {
+    /* background-color: #2f3e45;    */
+    background-color: rgba(255, 255, 255, 0.35);
+}
+.messages .colorbar {  
+    background-color: #fff;
+}
+.chat_cont {   
+    color: #fff;   
+}
+.chat_user_name {
+    color: #acbfc6;
+}
+.chat_input[type=text] {
+    background-color: rgba(255, 255, 255, 0.35);
+    color: black;    
+}
+.xp-user {   
+    background-color: #71abfd;   
+    color: black;   
+}
+.chat_input_contain .chat_send {
+    color: #23d160;
+}
+.chat_collapse_ico {
+    background-image: url(./chat_ico_light.png);
+    background-size: contain;
 }

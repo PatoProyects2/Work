@@ -37,7 +37,7 @@ export default function Main() {
 
       var lastDay = unixTimeStamp - 86400
       var lastWeek = unixTimeStamp - 604800
-      var lastMonth = unixTimeStamp - 259200
+      var lastMonth = unixTimeStamp - 2592000
 
       var dayGames = []
       var weekGames = []
@@ -49,6 +49,7 @@ export default function Main() {
       const documentGames = await getDocs(queryGames)
       documentGames.forEach(doc => {
         let created = doc.data().createdAt
+  
         if (created > lastDay) {
           dayGames = dayGames.concat([doc.data().account])
         }
@@ -60,6 +61,7 @@ export default function Main() {
         }
         globalGames = globalGames.concat([doc.data().account])
       });
+
       const arrDay = [... new Set(dayGames.map(data => data))]
       var dayTop = arrDay.map(account => query(collection(db, "allGames"), where("account", "==", account), where("createdAt", ">", lastDay)))
       const array0 = await Promise.all(
@@ -83,6 +85,7 @@ export default function Main() {
           return await getDocs(query)
         })
       )
+
       const arrGlobal = [... new Set(globalGames.map(data => data))]
       var globalTop = arrGlobal.map(account => query(collection(db, "allGames"), where("account", "==", account)))
       const array3 = await Promise.all(
@@ -163,6 +166,7 @@ export default function Main() {
       setLeaderboard(leaderboard)
     }
     readLeaderboard()
+
     return () => {
       setLeaderboard({});
     };
@@ -273,7 +277,10 @@ export default function Main() {
   }
 
   return (
-    <>     
+    <>
+      <ChatRoom
+        user={user}
+      />
       <div className='cards-container'>
         <div className='row text-center mb-2 mb-md-5'>
           <div className='game-card rps col-md-6 col-12 mx-auto'>

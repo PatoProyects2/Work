@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from "react"
 import { addDoc, onSnapshot, orderBy, collection, serverTimestamp, query, where } from "firebase/firestore";
-import { Dropdown, DropdownMenu, DropdownToggle } from 'reactstrap'
 import { auth, db } from "../../../../firebase/firesbaseConfig";
 import ChatMessage from './ChatMessage';
 
@@ -9,10 +8,6 @@ function ChatRoom(props) {
   const [messages, setMessages] = useState([])
   const [formValue, setFormValue] = useState('')
   const [dropdown, setDropdown] = useState(true);
-
-  const toggleMenu = () => {
-    setDropdown(!dropdown);
-  }
 
   useEffect(() => {
     const q = query(collection(db, "messages"), orderBy("createdAt", "asc"))
@@ -83,33 +78,31 @@ function ChatRoom(props) {
   }, [messages]);
 
   return (
-    <>
-      <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="right" size="md" className="py-2">
-        <DropdownToggle caret color='danger'>
-          CHAT
-        </DropdownToggle>
-        <DropdownMenu >
-          <main>
-            <div>
-              {messages && messages.map(msg => <ChatMessage key={msg.id} {...msg} auth={auth}/>)}
-            </div>
+    <div className="chatting_chat_msgs">
+      <div className="top-gradient"></div>
+      <div className="chat_input_hold">
+        <div className="chat_msgs">
+          <ul className="messages">
+            {messages && messages.map(msg => <ChatMessage key={msg.id} {...msg} auth={auth} />)}
             <div ref={messagesEndRef}></div>
+          </ul>
+        </div>
+        {props.user ?
+          <form onSubmit={sendMessage}>
+            <div className="chat_input_contain">
+              <input type="text" className="chat_input" maxLength="500" placeholder="Type something..." value={formValue} onChange={(e) => setFormValue(e.target.value)} />
+              <button className="btn btn-transparent chat_send" type="submit"><i className="fa-solid fa-paper-plane"></i></button>
+            </div>
+          </form>
+          :
+          <div className="chat_input_contain disabled">
+            <input type="text" className="chat_input" maxLength="500" placeholder="Sign in to start chatting..." disabled="" />
+            <span className="chat_send"><i className="fa-solid fa-paper-plane"></i></span>
+          </div>
+        }
 
-          </main>
-          {props.user ?
-            <form onSubmit={sendMessage}>
-              <input value={formValue} onChange={(e) => setFormValue(e.target.value)} placeholder="Type something..." />
-              <button type="submit">🕊️</button>
-            </form>
-            :
-            <>
-              <input type="text" defaultValue="Sign in to start chatting..." disabled={true} />
-              <button type="submit">🕊️</button>
-            </>
-          }
-        </DropdownMenu>
-      </Dropdown>
-    </>
+      </div>
+    </div>
   )
 }
 
