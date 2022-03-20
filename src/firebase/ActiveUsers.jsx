@@ -54,7 +54,7 @@ export default function Presence() {
 
     return (
         <>
-            {active > 0 && active + " online"}
+            { active > 0 && <span className="d-flex align-items-center ms-3">{active} online</span>  }
         </>
     );
 }

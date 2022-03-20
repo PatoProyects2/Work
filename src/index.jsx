@@ -15,9 +15,13 @@ import MainProfile from './views/main/components/profile/Profile'
 import { RpsLayout } from './components/layout/RpsLayout'
 import Rps from './views/rps/Rps'
 import RpsAbout from './views/rps/components/about/About'
+import Nfts from './views/main/components/nfts/Nfts';
+import FairPlay from './views/main/components/fairplay/Fairplay';
 import * as serviceWorker from './serviceWorker'
 import 'bootstrap/dist/css/bootstrap.css'
 import './index.scss'
+import Fairplay from './views/main/components/fairplay/Fairplay';
+
 
 ReactDOM.render(
   <BrowserRouter>
@@ -66,6 +70,8 @@ ReactDOM.render(
         <Route path="profile" element={<MainProfile />} />
         <Route path="rewards" element={<MainRewards />} />
         <Route path="about" element={<MainAbout />} />
+        <Route path="nfts" element={<Nfts />} />
+        <Route path="fair-play" element={<Fairplay />} />
         <Route path="*" element={<Navigate replace to="/" />} />
       </Route>
       <Route path="/rps" element={<RpsLayout />}>

@@ -14,7 +14,6 @@ import DiscordImg from '../../assets/imgs/discord_card.png'
 import TwitterImg from '../../assets/imgs/twitter_card.png'
 import FairPlayImg from '../../assets/imgs/fair_play_hover_card.png'
 import NFTImg from '../../assets/imgs/nft_hover_card.png'
-import ChatRoom from './components/chat/ChatRoom'
 
 export default function Main() {
   const [user] = useAuthState(auth)
@@ -277,10 +276,7 @@ export default function Main() {
   }
 
   return (
-    <>
-      <ChatRoom
-        user={user}
-      />
+    <>      
       <div className='cards-container'>
         <div className='row text-center mb-2 mb-md-5'>
           <div className='game-card rps col-md-6 col-12 mx-auto'>
