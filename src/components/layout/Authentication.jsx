@@ -171,7 +171,7 @@ export default function AccountFirebase(props) {
         :
         <>
           <div className="d-flex btn-auth-group">
-            <button className="btn-auth btn-signin me-2" onClick={modalLogin}>Sign In</button>
+            <button className="btn-auth btn-signin me-2" onClick={modalLogin}>Log In</button>
             <button className="btn-auth btn-signup" onClick={modalRegister}>Sign Up</button>
           </div>
           <Modal className='d-modal' isOpen={signInModal} size="md">

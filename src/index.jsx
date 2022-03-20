@@ -35,7 +35,7 @@ ReactDOM.render(
       toastOptions={{
         // Define default options
         className: '',
-        duration: 55000,
+        duration: 5000,
         style: {
           background: 'rgba(28, 31, 35, 1)',
           color: 'whitesmoke'

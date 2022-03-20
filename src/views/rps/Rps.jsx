@@ -65,7 +65,7 @@ export default function Rps() {
 
   const readAccount = async (user) => {
     if (!user) {
-      toast('Sign in if you want to save you game stats and ahievements', {
+      toast('Log in if you want to save you game stats and ahievements', {
         duration: 30000,
         position: 'top-right',
         // Styling
@@ -110,7 +110,7 @@ export default function Rps() {
       var date = new Date(userData.register.seconds * 1000);
       setRegister(date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear());
 
-      if (userData.rps.totalGames > 5 && userData.rps.totalGames < 10 && userData.level !== 2) {
+      if (userData.rps.totalGames > 9 && userData.rps.totalGames < 20 && userData.level < 2) {
         updateDoc(doc(db, "clubUsers", account), {
           level: 2
         })
@@ -118,7 +118,7 @@ export default function Rps() {
           icon: '🆙',
         });
       }
-      if (userData.rps.totalGames > 9 && userData.rps.totalGames < 20 && userData.level !== 3) {
+      if (userData.rps.totalGames > 19 && userData.rps.totalGames < 30 && userData.level < 3) {
         updateDoc(doc(db, "clubUsers", account), {
           level: 3
         })
@@ -126,7 +126,7 @@ export default function Rps() {
           icon: '🆙',
         });
       }
-      if (userData.rps.totalGames > 19 && userData.rps.totalGames < 30 && userData.level !== 4) {
+      if (userData.rps.totalGames > 29 && userData.rps.totalGames < 40 && userData.level < 4) {
         updateDoc(doc(db, "clubUsers", account), {
           level: 4
         })
@@ -134,7 +134,7 @@ export default function Rps() {
           icon: '🆙',
         });
       }
-      if (userData.rps.totalGames > 29 && userData.rps.totalGames < 40 && userData.level !== 5) {
+      if (userData.rps.totalGames > 39 && userData.rps.totalGames < 50 && userData.level < 5) {
         updateDoc(doc(db, "clubUsers", account), {
           level: 5
         })
@@ -142,7 +142,7 @@ export default function Rps() {
           icon: '🆙',
         });
       }
-      if (userData.rps.totalGames > 39 && userData.rps.totalGames < 50 && userData.level !== 6) {
+      if (userData.rps.totalGames > 55 && userData.rps.totalGames < 70 && userData.level < 6) {
         updateDoc(doc(db, "clubUsers", account), {
           level: 6
         })
@@ -150,7 +150,7 @@ export default function Rps() {
           icon: '🆙',
         });
       }
-      if (userData.rps.totalGames > 49 && userData.rps.totalGames < 60 && userData.level !== 7) {
+      if (userData.rps.totalGames > 69 && userData.rps.totalGames < 85 && userData.level < 7) {
         updateDoc(doc(db, "clubUsers", account), {
           level: 7
         })
@@ -158,7 +158,7 @@ export default function Rps() {
           icon: '🆙',
         });
       }
-      if (userData.rps.totalGames > 59 && userData.rps.totalGames < 70 && userData.level !== 8) {
+      if (userData.rps.totalGames > 84 && userData.rps.totalGames < 70 && userData.level < 8) {
         updateDoc(doc(db, "clubUsers", account), {
           level: 8
         })
@@ -166,7 +166,7 @@ export default function Rps() {
           icon: '🆙',
         });
       }
-      if (userData.rps.totalGames > 69 && userData.rps.totalGames < 90 && userData.level !== 9) {
+      if (userData.rps.totalGames > 99 && userData.rps.totalGames < 90 && userData.level < 9) {
         updateDoc(doc(db, "clubUsers", account), {
           level: 9
         })
@@ -174,7 +174,7 @@ export default function Rps() {
           icon: '🆙',
         });
       }
-      if (userData.rps.totalGames > 89 && userData.rps.totalGames < 110 && userData.level !== 10) {
+      if (userData.rps.totalGames > 114 && userData.rps.totalGames < 110 && userData.level < 10) {
         updateDoc(doc(db, "clubUsers", account), {
           level: 10
         })
@@ -182,7 +182,7 @@ export default function Rps() {
           icon: '🆙',
         });
       }
-      if (userData.rps.totalGames > 109 && userData.rps.totalGames < 140 && userData.level !== 11) {
+      if (userData.rps.totalGames > 139 && userData.rps.totalGames < 140 && userData.level < 11) {
         updateDoc(doc(db, "clubUsers", account), {
           level: 11
         })
@@ -190,7 +190,7 @@ export default function Rps() {
           icon: '🆙',
         });
       }
-      if (userData.rps.totalGames > 139 && userData.rps.totalGames < 170 && userData.level !== 12) {
+      if (userData.rps.totalGames > 164 && userData.rps.totalGames < 170 && userData.level < 12) {
         updateDoc(doc(db, "clubUsers", account), {
           level: 12
         })
@@ -198,7 +198,7 @@ export default function Rps() {
           icon: '🆙',
         });
       }
-      if (userData.rps.totalGames > 169 && userData.rps.totalGames < 200 && userData.level !== 13) {
+      if (userData.rps.totalGames > 189 && userData.rps.totalGames < 200 && userData.level < 13) {
         updateDoc(doc(db, "clubUsers", account), {
           level: 13
         })
@@ -206,11 +206,99 @@ export default function Rps() {
           icon: '🆙',
         });
       }
-      if (userData.rps.totalGames > 199 && userData.level !== 14) {
+      if (userData.rps.totalGames > 214 && userData.rps.totalGames < 240 && userData.level < 14) {
         updateDoc(doc(db, "clubUsers", account), {
           level: 14
         })
         toast('You reach level 14, congrats!', {
+          icon: '🆙',
+        });
+      }
+      if (userData.rps.totalGames > 239 && userData.rps.totalGames < 290 && userData.level < 15) {
+        updateDoc(doc(db, "clubUsers", account), {
+          level: 15
+        })
+        toast('You reach level 15, congrats!', {
+          icon: '🆙',
+        });
+      }
+      if (userData.rps.totalGames > 279 && userData.rps.totalGames < 350 && userData.level < 16) {
+        updateDoc(doc(db, "clubUsers", account), {
+          level: 16
+        })
+        toast('You reach level 16, congrats!', {
+          icon: '🆙',
+        });
+      }
+      if (userData.rps.totalGames > 319 && userData.rps.totalGames < 350 && userData.level < 17) {
+        updateDoc(doc(db, "clubUsers", account), {
+          level: 17
+        })
+        toast('You reach level 17, congrats!', {
+          icon: '🆙',
+        });
+      }
+      if (userData.rps.totalGames > 359 && userData.rps.totalGames < 350 && userData.level < 18) {
+        updateDoc(doc(db, "clubUsers", account), {
+          level: 18
+        })
+        toast('You reach level 18, congrats!', {
+          icon: '🆙',
+        });
+      }
+      if (userData.rps.totalGames > 399 && userData.rps.totalGames < 350 && userData.level < 19) {
+        updateDoc(doc(db, "clubUsers", account), {
+          level: 19
+        })
+        toast('You reach level 19, congrats!', {
+          icon: '🆙',
+        });
+      }
+      if (userData.rps.totalGames > 439 && userData.rps.totalGames < 350 && userData.level < 20) {
+        updateDoc(doc(db, "clubUsers", account), {
+          level: 20
+        })
+        toast('You reach level 20, congrats!', {
+          icon: '🆙',
+        });
+      }
+      if (userData.rps.totalGames > 489 && userData.rps.totalGames < 350 && userData.level < 21) {
+        updateDoc(doc(db, "clubUsers", account), {
+          level: 21
+        })
+        toast('You reach level 21, congrats!', {
+          icon: '🆙',
+        });
+      }
+      if (userData.rps.totalGames > 539 && userData.rps.totalGames < 350 && userData.level < 22) {
+        updateDoc(doc(db, "clubUsers", account), {
+          level: 22
+        })
+        toast('You reach level 22, congrats!', {
+          icon: '🆙',
+        });
+      }
+      if (userData.rps.totalGames > 589 && userData.rps.totalGames < 350 && userData.level < 23) {
+        updateDoc(doc(db, "clubUsers", account), {
+          level: 23
+        })
+        toast('You reach level 23, congrats!', {
+          icon: '🆙',
+        });
+      }
+      if (userData.rps.totalGames > 639 && userData.rps.totalGames < 350 && userData.level < 24) {
+        updateDoc(doc(db, "clubUsers", account), {
+          level: 24
+        })
+        toast('You reach level 24, congrats!', {
+          icon: '🆙',
+        });
+      }
+      if (userData.rps.totalGames > 689 && userData.rps.totalGames < 350 && userData.level < 25) {
+        updateDoc(doc(db, "clubUsers", account), {
+          level: 25
+        })
+        toast('You reach level 25, congrats!', {
           icon: '🆙',
         });
       }

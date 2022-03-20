@@ -66,12 +66,18 @@ export default function Profile() {
       }
     } else {
       if (userInfo.displayName.length >= 4 && userInfo.displayName.length <= 12) {
-        updateProfile(auth.currentUser, userInfo)
-          .then(() => {
-            setEditProfile(false)
-          }).catch((error) => {
-            toast.error("Invalid Username")
-          });
+        toast.promise(
+          updateProfile(auth.currentUser, userInfo)
+            .then(() => {
+              setEditProfile(false)
+            }).catch((error) => {
+              toast.error("Invalid Username")
+            }),
+          {
+            loading: 'Updating...',
+            success: <b>Profile updated</b>,
+            error: <b>Profile not updated</b>,
+          })
       } else {
         toast.error("The name must be between 4 and 12 characters")
         return false

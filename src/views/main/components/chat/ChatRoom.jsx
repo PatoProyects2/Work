@@ -1,19 +1,18 @@
 import React, { useEffect, useState, useRef } from "react"
-import { addDoc, onSnapshot, orderBy, collection, serverTimestamp, query, where } from "firebase/firestore";
+import { addDoc, onSnapshot, orderBy, collection, serverTimestamp, query, where, limit } from "firebase/firestore";
 import { auth, db } from "../../../../firebase/firesbaseConfig";
 import ChatMessage from './ChatMessage';
 
 function ChatRoom(props) {
-  const [user, setUser] = useState({})
+  const [userClub, setUserClub] = useState({})
   const [messages, setMessages] = useState([])
   const [formValue, setFormValue] = useState('')
-  const [dropdown, setDropdown] = useState(true);
 
   useEffect(() => {
-    const q = query(collection(db, "messages"), orderBy("createdAt", "asc"))
+    const q = query(collection(db, "messages"), orderBy("createdAt", "desc"), limit(50))
     const unsub = onSnapshot(q, (doc) => {
       const message = doc.docs.map(message => (Object.assign({}, { id: message.id }, message.data())))
-      setMessages(message)
+      setMessages(message.reverse())
 
     });
     return unsub;
@@ -24,19 +23,18 @@ function ChatRoom(props) {
       try {
         const q = query(collection(db, "clubUsers"), where("uid", "==", user.uid))
         const unsub = onSnapshot(q, (doc) => {
-          const user = doc._snapshot.docChanges[0]
-          let datas = null
-          if (user) {
-            datas = user.doc.data.value.mapValue.fields
+          const userData = doc._snapshot.docChanges[0]
+          if (userData) {
+            let datas = userData.doc.data.value.mapValue.fields
+            setUserClub(datas)
           }
-          setUser(datas)
         });
         return unsub;
       } catch (e) {
 
       }
       return () => {
-        setUser({});
+        setUserClub({});
       };
     }
     readUserProfile(props.user)
@@ -45,21 +43,21 @@ function ChatRoom(props) {
   const sendMessage = async (e) => {
     e.preventDefault()
     if (formValue === "") return
-    if (user) {
+    if (userClub.name) {
       const docRef = await addDoc(collection(db, "messages"), {
         text: formValue,
         createdAt: serverTimestamp(),
         uid: props.user.uid,
-        name: user.name.stringValue,
-        level: user.level.integerValue,
-        photo: user.photo.stringValue,
+        name: userClub.name.stringValue,
+        level: userClub.level.integerValue,
+        photo: userClub.photo.stringValue,
       })
     } else {
       const docRef = await addDoc(collection(db, "messages"), {
         text: formValue,
         createdAt: serverTimestamp(),
         uid: props.user.uid,
-        name: "ClubUser",
+        name: props.user.displayName,
         level: "1",
         photo: "https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh",
       })
