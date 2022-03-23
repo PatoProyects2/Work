@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from "react"
 import { addDoc, onSnapshot, orderBy, collection, serverTimestamp, query, where, limit } from "firebase/firestore";
 import { auth, db } from "../../../../firebase/firesbaseConfig";
 import ChatMessage from './ChatMessage';
-import { confirmPasswordReset } from "firebase/auth";
 
 function ChatRoom(props) {
   const [userClub, setUserClub] = useState({})
@@ -112,11 +111,10 @@ function ChatRoom(props) {
           </form>
           :
           <div className="chat_input_contain disabled">
-            <input type="text" className="chat_input" maxLength="500" placeholder="Sign in to start chatting..." disabled="" />
+            <input type="text" className="chat_input" maxLength="500" placeholder="Log in to start chatting..." disabled="" />
             <span className="chat_send"><i className="fa-solid fa-paper-plane"></i></span>
           </div>
         }
-
       </div>
     </div>
   )

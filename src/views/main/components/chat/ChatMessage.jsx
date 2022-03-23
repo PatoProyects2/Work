@@ -49,7 +49,11 @@ function ChatMessage({ text, uid, photo, name, level, auth, userClub }) {
                     <div className="chat_cont">{text}</div>
                     <DropdownMenu >
                         <DropdownItem onClick={OpenStatModal}>Stats</DropdownItem>
-                        {uid === auth.currentUser.uid ? '' : <DropdownItem onClick={IgnoreUser}>Ignore</DropdownItem>}
+                        {auth.currentUser ?
+                            <>
+                                {uid === auth.currentUser.uid ? '' : <DropdownItem onClick={IgnoreUser}>Ignore</DropdownItem>}
+                            </>
+                            : ""}
                     </DropdownMenu>
                 </li>
             </Dropdown>
