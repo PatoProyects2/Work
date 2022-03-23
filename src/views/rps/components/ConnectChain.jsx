@@ -6,7 +6,7 @@ export default function ConnectChain(props) {
     const toggleMenu = () => {
         setDropdown(!dropdown);
     }
-
+ 
     useEffect(() => {
         readNetworkData(props.network)
         return () => {

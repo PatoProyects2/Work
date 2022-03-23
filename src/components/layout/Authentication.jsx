@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, setPersistence, browserSessionPersistence } from 'firebase/auth';
-import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Button, Modal, ModalBody, ModalFooter, FormGroup, Input, Label } from 'reactstrap'
+import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Button, Modal, ModalBody, ModalFooter, FormGroup, Input } from 'reactstrap'
 import { query, where, collection, limit, onSnapshot } from "firebase/firestore";
 import { toast } from 'react-hot-toast';
 import { useAuthState } from 'react-firebase-hooks/auth'
-import { NavLink, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { auth, db } from "../../firebase/firesbaseConfig"
 
 export default function AccountFirebase(props) {

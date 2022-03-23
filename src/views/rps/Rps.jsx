@@ -313,6 +313,7 @@ export default function Rps() {
             account: account,
             games: ['RPS'],
             level: 1,
+            ignored: [],
             rps: {
               rock: 0,
               paper: 0,
@@ -337,6 +338,7 @@ export default function Rps() {
             account: account,
             games: ['RPS'],
             level: 1,
+            ignored: [],
             rps: {
               rock: 0,
               paper: 0,
@@ -800,29 +802,29 @@ export default function Rps() {
                   <div className="d-flex justify-content-center my-4">
                     <label className="amount">
                       <input type="radio" name="amount" id="amount1" onChange={handleInputChange} value="1" />
+                      <span>1 MATIC</span>
+                    </label>
+                    <label className="amount">
+                      <input type="radio" name="amount" id="amount2" onChange={handleInputChange} value="2" />
                       <span>2 MATIC</span>
                     </label>
                     <label className="amount">
-                      <input type="radio" name="amount" id="amount2" onChange={handleInputChange} value="4" />
-                      <span>4 MATIC</span>
-                    </label>
-                    <label className="amount">
-                      <input type="radio" name="amount" id="amount3" onChange={handleInputChange} value="10" />
-                      <span>10 MATIC</span>
+                      <input type="radio" name="amount" id="amount3" onChange={handleInputChange} value="5" />
+                      <span>5 MATIC</span>
                     </label>
                   </div>
                   <div className="d-flex justify-content-center mb-4">
                     <label className="amount">
-                      <input type="radio" name="amount" id="amount4" onChange={handleInputChange} value="20" />
-                      <span>20 MATIC</span>
+                      <input type="radio" name="amount" id="amount4" onChange={handleInputChange} value="10" />
+                      <span>10 MATIC</span>
                     </label>
                     <label className="amount">
-                      <input type="radio" name="amount" id="amount5" onChange={handleInputChange} value="50" />
+                      <input type="radio" name="amount" id="amount5" onChange={handleInputChange} value="25" />
+                      <span>25 MATIC</span>
+                    </label>
+                    <label className="amount">
+                      <input type="radio" name="amount" id="amount6" onChange={handleInputChange} value="50" />
                       <span>50 MATIC</span>
-                    </label>
-                    <label className="amount">
-                      <input type="radio" name="amount" id="amount6" onChange={handleInputChange} value="100" />
-                      <span>100 MATIC</span>
                     </label>
                   </div>
                   <button onClick={doubleOrNothing} className="btn-hover btn-green" disabled={doubleOrNothingStatus}>DOUBLE OR NOTHING</button>
