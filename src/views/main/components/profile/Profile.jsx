@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { sendEmailVerification, updateProfile } from 'firebase/auth';
-import { Button, FormGroup, Input, Row, Col, Card, CardImg, CardBody, CardTitle, Label } from 'reactstrap'
+import { Button, FormGroup, Input, Row, Col, Card, CardImg, CardBody, CardTitle, Label, Modal, ModalBody } from 'reactstrap'
 import { toast } from 'react-hot-toast';
 import { query, where, collection, limit, onSnapshot, updateDoc, doc } from "firebase/firestore";
 import { auth, db } from '../../../../firebase/firesbaseConfig'
@@ -13,8 +13,8 @@ export default function Profile() {
     photoURL: 'https://ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh'
   });
   const [user] = useAuthState(auth)
-  const [editProfile, setEditProfile] = useState(undefined);
   const [userData, setUserData] = useState({});
+  const [nftPicture, setNftPicture] = useState(false);
 
   const handleInputChange = (event) => {
     setUserInfo({
@@ -59,7 +59,6 @@ export default function Profile() {
             success: <b>Profile updated</b>,
             error: <b>Profile not updated</b>,
           })
-          .then(() => setEditProfile(false))
       } else {
         toast.error("The name must be between 4 and 12 characters")
         return false
@@ -68,9 +67,7 @@ export default function Profile() {
       if (userInfo.displayName.length >= 4 && userInfo.displayName.length <= 12) {
         toast.promise(
           updateProfile(auth.currentUser, userInfo)
-            .then(() => {
-              setEditProfile(false)
-            }).catch((error) => {
+            .catch((error) => {
               toast.error("Invalid Username")
             }),
           {
@@ -86,58 +83,72 @@ export default function Profile() {
   }
 
   const selectPicture = () => {
-    if (userData[0].level < 5) {
-      toast.error("You need level 5 to unlock this function")
+    if (userData[0].level > 4) {
+      if (nftPicture) {
+        setNftPicture(false)
+      } else {
+        setNftPicture(true)
+      }
     } else {
-
+      toast.error("You need level 5 to unlock this function")
     }
   }
 
   return (
     <div className="container">
-      {
-        user ?
-          <>
-            <Row>
-              <Col lg="6" className="mx-auto">
-                <Card className='profile-card'>
-                  <CardBody>
-                    <CardTitle className="text-center profile-title" tag="h2">
-                      Profile
-                    </CardTitle>
-                    <CardImg
-                      alt={userData[0] ? userData[0].name : user.displayName ? user.displayName : "ClubUser"}
-                      className="rounded-circle profile-img"
-                      src={(userData[0] && userData[0].photo) ? userData[0].photo : "https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh"}
-                      top
-                    />
-                    <FormGroup floating>
-                      {userData[0] ? <Button onClick={selectPicture} color="danger" type="button" className="mt-3">Select NFT</Button> : ""}
-                    </FormGroup>
-                    <FormGroup floating>
-                      <Input id="displayName" name="displayName" className="d-modal-input"
-                        placeholder="ClubUser" onChange={handleInputChange} type="text" defaultValue={userData[0] ? userData[0].name : user.displayName} />
-                      <Label for="displayName">Username</Label>
-                    </FormGroup>
-                    <FormGroup floating>
-                      <Input id="email" name="email" className={`d-modal-input ${user.emailVerified ? "is-valid" : "is-invalid"}`}
-                        type="email" defaultValue={user.email} disabled />
-                      <Label for="email">Email</Label>
-                      {!user.emailVerified &&
-                        <Button color="primary" type="button" className="mt-3" onClick={resendEmailVerification}>Resend email verification</Button>
-                      }
-                    </FormGroup>
-                    <FormGroup className="d-flex justify-content-end">
-                      <Button color="warning" type="submit" onClick={updateUserProfile}>Save</Button>
-                    </FormGroup>
-                  </CardBody>
-                </Card>
-              </Col>
-            </Row>
-            <Stats userData={userData} />
-          </>
-          :
-          <h2 className='text-center'>PLEASE LOG IN OR SIGN UP</h2>
+      {user ?
+        <>
+          <Row>
+            <Col lg="6" className="mx-auto">
+              <Card className='profile-card'>
+                <CardBody>
+                  <CardTitle className="text-center profile-title" tag="h2">
+                    Profile
+                  </CardTitle>
+                  <CardImg
+                    alt={userData[0] ? userData[0].name : user.displayName ? user.displayName : "ClubUser"}
+                    className="rounded-circle profile-img"
+                    src={(userData[0] && userData[0].photo) ? userData[0].photo : "https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh"}
+                    top
+                  />
+                  <FormGroup floating>
+                    {userData[0] ? <Button onClick={selectPicture} color="danger" type="button" className="mt-3">Select NFT</Button> : ""}
+                  </FormGroup>
+                  <FormGroup floating>
+                    <Input id="displayName" name="displayName" className="d-modal-input"
+                      placeholder="ClubUser" onChange={handleInputChange} type="text" defaultValue={userData[0] ? userData[0].name : user.displayName} />
+                    <Label for="displayName">Username</Label>
+                  </FormGroup>
+                  <FormGroup floating>
+                    <Input id="email" name="email" className={`d-modal-input ${user.emailVerified ? "is-valid" : "is-invalid"}`}
+                      type="email" defaultValue={user.email} disabled />
+                    <Label for="email">Email</Label>
+                    {!user.emailVerified &&
+                      <Button color="primary" type="button" className="mt-3" onClick={resendEmailVerification}>Resend email verification</Button>
+                    }
+                  </FormGroup>
+                  <FormGroup className="d-flex justify-content-end">
+                    <Button color="warning" type="submit" onClick={updateUserProfile}>Save</Button>
+                  </FormGroup>
+                </CardBody>
+              </Card>
+            </Col>
+          </Row>
+          <Modal isOpen={nftPicture} className="d-modal" size="lg">
+            <ModalBody>
+              <div className='d-flex justify-content-end'>
+                <button type="button" className="btn-close" aria-label="Close" onClick={selectPicture}></button>
+              </div>
+              <h4 className="text-center">NFT Picture</h4>
+              <FormGroup className="pt-3 text-center">
+                {/* DETECTAR SI LA WALLET QUE SE CONECTA HA MINTEADO EL NFT DESDE EL SMART CONTRACT*/}
+              </FormGroup>
+            </ModalBody>
+          </Modal>
+          <Stats userData={userData} />
+        </>
+        :
+        <h2 className='text-center'>PLEASE LOG IN OR SIGN UP</h2>
       }
     </div>
   );

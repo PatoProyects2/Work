@@ -163,9 +163,6 @@ function ChatMessage({ text, uid, photo, name, level, auth, userClub }) {
                             </>}
                     </FormGroup>
                 </ModalBody>
-                <ModalFooter>
-
-                </ModalFooter>
             </Modal>
 
 
