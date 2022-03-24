@@ -85,6 +85,14 @@ export default function Profile() {
     }
   }
 
+  const selectPicture = () => {
+    if (userData[0].level < 5) {
+      toast.error("You need level 5 to unlock this function")
+    } else {
+
+    }
+  }
+
   return (
     <div className="container">
       {
@@ -95,7 +103,7 @@ export default function Profile() {
                 <Card className='profile-card'>
                   <CardBody>
                     <CardTitle className="text-center profile-title" tag="h2">
-                      User Profile
+                      Profile
                     </CardTitle>
                     <CardImg
                       alt={userData[0] ? userData[0].name : user.displayName ? user.displayName : "ClubUser"}
@@ -103,13 +111,14 @@ export default function Profile() {
                       src={(userData[0] && userData[0].photo) ? userData[0].photo : "https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh"}
                       top
                     />
-
+                    <FormGroup floating>
+                      {userData[0] ? <Button onClick={selectPicture} color="danger" type="button" className="mt-3">Select NFT</Button> : ""}
+                    </FormGroup>
                     <FormGroup floating>
                       <Input id="displayName" name="displayName" className="d-modal-input"
                         placeholder="ClubUser" onChange={handleInputChange} type="text" defaultValue={userData[0] ? userData[0].name : user.displayName} />
                       <Label for="displayName">Username</Label>
                     </FormGroup>
-
                     <FormGroup floating>
                       <Input id="email" name="email" className={`d-modal-input ${user.emailVerified ? "is-valid" : "is-invalid"}`}
                         type="email" defaultValue={user.email} disabled />
@@ -118,11 +127,9 @@ export default function Profile() {
                         <Button color="primary" type="button" className="mt-3" onClick={resendEmailVerification}>Resend email verification</Button>
                       }
                     </FormGroup>
-
                     <FormGroup className="d-flex justify-content-end">
                       <Button color="warning" type="submit" onClick={updateUserProfile}>Save</Button>
                     </FormGroup>
-
                   </CardBody>
                 </Card>
               </Col>
@@ -130,7 +137,7 @@ export default function Profile() {
             <Stats userData={userData} />
           </>
           :
-          <h2 className='text-center'>PLEASE SIGN IN</h2>
+          <h2 className='text-center'>PLEASE LOG IN OR SIGN UP</h2>
       }
     </div>
   );

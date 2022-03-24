@@ -17,6 +17,8 @@ function ChatRoom(props) {
           if (userData) {
             let datas = userData.doc.data.value.mapValue.fields
             setUserClub(datas)
+          } else {
+            setUserClub(userData)
           }
         });
         return unsub;
@@ -41,7 +43,7 @@ function ChatRoom(props) {
               if (value !== undefined) {
                 const idsNotAllowed = value.map(doc => doc.stringValue);
                 var userMessages = message.filter(data => !idsNotAllowed.includes(data.uid))
-                setMessages(userMessages.reverse())
+                setMessages(userMessages)
               }
             }
           } catch (e) {

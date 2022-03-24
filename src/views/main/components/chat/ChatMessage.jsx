@@ -51,9 +51,11 @@ function ChatMessage({ text, uid, photo, name, level, auth, userClub }) {
                         <DropdownItem onClick={OpenStatModal}>Stats</DropdownItem>
                         {auth.currentUser ?
                             <>
-                                {uid === auth.currentUser.uid ? '' : <DropdownItem onClick={IgnoreUser}>Ignore</DropdownItem>}
+                                {uid !== auth.currentUser.uid && userClub ? <DropdownItem onClick={IgnoreUser}>Ignore</DropdownItem> : <DropdownItem disabled={true}>Ignore</DropdownItem>}
                             </>
-                            : ""}
+                            :
+                            ""
+                        }
                     </DropdownMenu>
                 </li>
             </Dropdown>
@@ -66,10 +68,12 @@ function ChatMessage({ text, uid, photo, name, level, auth, userClub }) {
                     <h4 className="text-center">{name} Stats</h4>
                     <FormGroup className="pt-3 text-center">
                         <div>
+                            <p>
+                                <img className="rounded-circle" width="100" height="100" src={photo} alt={name} />
+                            </p>
                             <span className="xp-user games-logo">
                                 <span className="level_val">Lvl: {level}</span>
                             </span>
-                            <img className="rounded-circle" width="50" height="50" src={photo} alt={name} />
                         </div>
                         {userData[0] ?
                             <>
@@ -152,7 +156,11 @@ function ChatMessage({ text, uid, photo, name, level, auth, userClub }) {
                                     </Table>
                                     : ""}
                             </>
-                            : "No games found"}
+                            :
+                            <>
+                                <br></br>
+                                {"No games found"}
+                            </>}
                     </FormGroup>
                 </ModalBody>
                 <ModalFooter>
