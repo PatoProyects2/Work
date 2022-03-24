@@ -133,14 +133,17 @@ export default function ConnectWallet(props) {
               </DropdownItem>
               <DropdownItem divider />
               <DropdownItem onClick={editProfile}>Edit profile</DropdownItem>
-              <DropdownItem onClick={sendMatic}>Send matic</DropdownItem>
+              <DropdownItem onClick={sendMatic}>Tip coins</DropdownItem>
               <DropdownItem onClick={manageWallets}>Accounts</DropdownItem>
               <DropdownItem onClick={props.disconnectWallet}>Disconnect</DropdownItem>
             </DropdownMenu>
           </Dropdown>
           <Modal isOpen={edit} className="d-modal" size="sm">
             <ModalBody>
-              <h4 className="text-center">USER PROFILE</h4>
+              <div className='d-flex justify-content-end'>
+                <button type="button" className="btn-close" aria-label="Close" onClick={editProfile}></button>
+              </div>
+              <h4 className="text-center">Profile</h4>
               <FormGroup className="pt-3 text-center">
                 {props.userData.photo && <img className="rounded-circle me-2" src={props.userData.photo} width="105" height="105" alt="" />}
               </FormGroup>
@@ -158,25 +161,26 @@ export default function ConnectWallet(props) {
               </FormGroup>
             </ModalBody>
             <ModalFooter>
-              <Button color="warning" type="submit" onClick={updateUserProfile}>SAVE</Button>
-              <Button color="secondary" onClick={editProfile}>CLOSE</Button>
+              <Button color="warning" type="submit" onClick={updateUserProfile}>Save</Button>
             </ModalFooter>
           </Modal>
           <Modal isOpen={send} className="d-modal" size="sm">
             <ModalBody>
-              <h4 className="text-center">SEND MATIC</h4>
+              <div className='d-flex justify-content-end'>
+                <button type="button" className="btn-close" aria-label="Close" onClick={sendMatic}></button>
+              </div>
+              <h4 className="text-center">Tip</h4>
               <FormGroup>
-                <Label>ADDRESS</Label>
+                <Label>Address</Label>
                 <Input name="account1" className="d-modal-input" placeholder="0x00..." onChange={handleInputChange} type="text" />
               </FormGroup>
               <FormGroup>
-                <Label>AMOUNT</Label>
+                <Label>Amount</Label>
                 <Input name="amount1" className="d-modal-input" placeholder="1" onChange={handleInputChange} type="number" />
               </FormGroup>
             </ModalBody>
             <ModalFooter>
-              <Button color="warning" type="submit" onClick={sendToFriend}>SEND</Button>
-              <Button color="secondary" onClick={sendMatic}>CLOSE</Button>
+              <Button color="warning" type="submit" onClick={sendToFriend}>Send</Button>
             </ModalFooter>
           </Modal>
         </>

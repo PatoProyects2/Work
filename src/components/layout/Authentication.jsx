@@ -153,13 +153,33 @@ export default function AccountFirebase(props) {
       setSignInModal(true)
     }
   }
+
+  const xpClass = ( level ) => {
+    if (level <= 4) {
+      return 'badge-white lvl-badge me-2';
+    } else if (level > 4 && level < 10) {
+      return 'badge-yellow lvl-badge me-2';
+    } else if (level > 9 && level < 15) {
+      return 'badge-orange lvl-badge me-2';
+    } else if (level > 14 && level < 20) {
+      return 'badge-green lvl-badge me-2';
+    } else if (level > 19 && level < 24) {
+      return 'badge-blue lvl-badge me-2';
+    } else {
+      return 'badge-brown lvl-badge me-2';
+    }
+  }
+
   return (
     <>
       {auth.currentUser ?
         <>
           <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="md" className="dd-profile">
             <DropdownToggle color='transparent' className='dd-toggle' caret>
-              {userData[0] ? userData[0].name + " LVL " + userData[0].level : <>{user.displayName ? user.displayName : "ClubUser"}{" LVL 1"}</>}
+              {/* {userData[0] ? userData[0].name + " LVL " + userData[0].level : <>{user.displayName ? user.displayName : "ClubUser"}{" LVL 1"}</>} */}
+              {userData[0] 
+                ? <span><span className={ xpClass(userData[0].level)}>{userData[0].level}</span> {userData[0].name}</span>
+                : <span><span className={ xpClass(0) }>0</span> {user.displayName ? user.displayName : "ClubUser"}</span>}
             </DropdownToggle>
             <DropdownMenu >
               <DropdownItem onClick={() => navigate('/profile')}>Profile</DropdownItem>

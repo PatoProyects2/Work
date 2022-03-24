@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { NavLink } from 'react-router-dom'
 import Web3 from 'web3'
 import Web3Modal from "web3modal";
@@ -30,8 +30,10 @@ import PaperLose from '../../assets/imgs/animations/PaperLose.gif'
 import PaperWin from '../../assets/imgs/animations/PaperWin.gif'
 import ScissorsLose from '../../assets/imgs/animations/ScissorsLose.gif'
 import ScissorsWin from '../../assets/imgs/animations/ScissorsWin.gif'
+import { BalanceContext } from '../../context/BalanceContext';
 
 export default function Rps() {
+  const { setBalance } = useContext(BalanceContext);
   const [user] = useAuthState(auth)
   const [web3, setWeb3] = useState({});
   const [rpsgame, setRpsgame] = useState({});
@@ -466,7 +468,8 @@ export default function Rps() {
         window.location.reload()
       });
       const balance = await web3.eth.getBalance(accounts[0]);
-      setWalletBalance(balance)
+      setWalletBalance(balance);
+      setBalance(balance);
       const chainId = await web3.eth.getChainId();
       setNetwork(chainId)
       ethereum.on('chainChanged', () => {
@@ -654,6 +657,7 @@ export default function Rps() {
     setGameResult(true)
     const balance = await web3.eth.getBalance(account)
     setWalletBalance(balance)
+    setBalance(balance)
   }
 
   const backGame = () => {
@@ -721,8 +725,6 @@ export default function Rps() {
                   toast={toast}
                 />
               </div>
-
-              <h5 className="d-flex align-items-end">MATIC {(walletBalance / decimal).toFixed(4)}</h5>
             </>
             :
             ""
@@ -732,7 +734,6 @@ export default function Rps() {
       <article>
         {active === true ?
           <>
-            {isMobileResolution && <h5 className="my-4 text-end me-3 me-lg-0">MATIC {(walletBalance / decimal).toFixed(4)}</h5>}
             <div className="game-container">
               {playing === true ?
                 <div className="mt-3">

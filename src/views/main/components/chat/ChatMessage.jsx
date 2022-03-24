@@ -35,13 +35,29 @@ function ChatMessage({ text, uid, photo, name, level, auth, userClub }) {
             })
         }
     }
+
+    const xpClass = () => {
+        if (level <= 4) {
+            return 'xp-user-white games-logo';
+        } else if (level > 4 && level < 10) {
+            return 'xp-user-yellow games-logo';
+        } else if (level > 9 && level < 15) {
+            return 'xp-user-orange games-logo';
+        } else if (level > 14 && level < 20) {
+            return 'xp-user-green games-logo';
+        } else if (level > 19 && level < 24) {
+            return 'xp-user-blue games-logo';
+        } else {
+            return 'xp-user-brown games-logo';
+        }
+    }
     return (
         <>
             <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="xs" className="my-2">
                 <li className={`message ${messageClass} d-flex align-items-center mt-2`}>
                     <DropdownToggle>
                         <img className="chat_user_img" src={photo} alt={name} />
-                        <span className="xp-user games-logo">
+                        <span className={xpClass()}>
                             <span className="level_val">Lvl: {level}</span>
                         </span>
                         <span className="chat_user_name">{name}:</span>

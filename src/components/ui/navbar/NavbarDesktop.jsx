@@ -3,11 +3,9 @@ import { NavLink } from 'react-router-dom';
 import { Navbar, Offcanvas, Nav, OffcanvasHeader, OffcanvasBody, Button } from 'reactstrap';
 import Presence from '../../../firebase/ActiveUsers'
 import AccountFirebase from '../../layout/Authentication';
-import { ThemeSwitcher } from '../themeSwitcher/ThemeSwitcher';
 import { useMatchMedia } from '../../../hooks/useMatchMedia';
-import TwitterIcon from '../../../assets/imgs/ic-twitter.png';
-import DiscordIcon from '../../../assets/imgs/ic-discord.png';
 import GamesClub from '../../../assets/imgs/Games_Club.png';
+import MaticBalance from '../../../views/rps/components/MaticBalance';
 
 export const NavbarDesktop = ({ handleFaqModal, handleHtpModal, handleRpsModal, navType }) => {
     const [showOffcanvas, setShowOffCanvas] = useState(false);
@@ -40,8 +38,9 @@ export const NavbarDesktop = ({ handleFaqModal, handleHtpModal, handleRpsModal, 
                     <Presence />
                 </div>
 
+                <MaticBalance />
+
                 <div className='d-flex align-items-center gap-2'>
-                    <ThemeSwitcher />
                     {!isMobileResolution && <AccountFirebase />}
                 </div>
 
@@ -57,7 +56,7 @@ export const NavbarDesktop = ({ handleFaqModal, handleHtpModal, handleRpsModal, 
                         Games Club
                     </OffcanvasHeader>
 
-                    <OffcanvasBody>
+                    <OffcanvasBody className='d-flex flex-column'>
                         <Nav className="d-flex flex-column flex-grow-1">
                             <NavLink
                                 onClick={() => setShowOffCanvas(false)}
@@ -238,7 +237,6 @@ export const NavbarDesktop = ({ handleFaqModal, handleHtpModal, handleRpsModal, 
                             </NavLink>
                             <NavLink
                                 onClick={() => setShowOffCanvas(false)}
-                                // style={{ margin: 'auto' }}
                                 className={({ isActive }) => "nav-item nav-link nav-link-secondary" + (isActive ? ' active' : '')} to="/rewards">
                                 <svg
                                     width="20"
@@ -256,6 +254,7 @@ export const NavbarDesktop = ({ handleFaqModal, handleHtpModal, handleRpsModal, 
                                 Rewards
                             </NavLink>
                         </Nav>
+                        {isMobileResolution && <div className="d-flex justify-content-center mt-3"><AccountFirebase /></div>}
                         <div className="d-flex flex-row gap-2 justify-content-center mt-3">
                             <a href="https://twitter.com/RPSGameClub" className="twitter-icon" target="_blank" rel="noopener noreferrer">
                                 <i className="fab fa-2x fa-twitter"></i>
@@ -264,7 +263,6 @@ export const NavbarDesktop = ({ handleFaqModal, handleHtpModal, handleRpsModal, 
                                 <i className="fab fa-2x fa-discord"></i>
                             </a>
                         </div>
-                        {isMobileResolution && <div className="d-flex justify-content-center mt-3"><AccountFirebase /></div>}
                     </OffcanvasBody>
                 </Offcanvas>
             </Navbar>

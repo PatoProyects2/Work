@@ -1,19 +1,20 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '../../firebase/firesbaseConfig'
 import { Outlet } from 'react-router-dom'
 import ChatRoom from '../../views/main/components/chat/ChatRoom';
 import Footer from '../footer/Footer'
 import { Navbar } from '../ui/navbar/Navbar';
-import { useMatchMedia } from '../../hooks/useMatchMedia';
+import { BalanceContext } from '../../context/BalanceContext';
 
 export function MainLayout() {
   const [user] = useAuthState(auth);
   const [showChat, setShowChat] = useState(false);
-  const isMobileResolution = useMatchMedia('(max-width:480px)', false);
+
+  const [balance, setBalance] = useState('-');
 
   return (
-    <>
+    <BalanceContext.Provider value={{ balance, setBalance }}>
       <header>
         <Navbar navType="main" />
       </header>
@@ -35,6 +36,6 @@ export function MainLayout() {
       <footer>
         <Footer />
       </footer>
-    </>
+    </BalanceContext.Provider>
   );
 }
