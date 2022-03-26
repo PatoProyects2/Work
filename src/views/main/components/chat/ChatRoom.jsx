@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react"
-import { addDoc, onSnapshot, orderBy, collection, serverTimestamp, query, where, limit } from "firebase/firestore";
+import { addDoc, onSnapshot, orderBy, collection, serverTimestamp, where, limit, getDocs, query, arrayRemove, updateDoc, doc } from "firebase/firestore";
 import { Modal, ModalBody, FormGroup } from 'reactstrap'
 import { auth, db } from "../../../../firebase/firesbaseConfig";
 import ChatMessage from './ChatMessage';
@@ -7,6 +7,7 @@ import ChatMessage from './ChatMessage';
 function ChatRoom(props) {
   const [userClub, setUserClub] = useState({})
   const [messages, setMessages] = useState([])
+  const [ignoredUsers, setIgnoredUsers] = useState([])
   const [formValue, setFormValue] = useState('')
   const [chatHistory, setChatHistory] = useState(50)
   const [settings, setSettings] = useState(false)
@@ -18,20 +19,42 @@ function ChatRoom(props) {
         const unsub = onSnapshot(q, (doc) => {
           const userData = doc._snapshot.docChanges[0]
           if (userData) {
-            let datas = userData.doc.data.value.mapValue.fields
-            setUserClub(datas)
-          } else {
-            setUserClub(userData)
+            setUserClub(userData.doc.data.value.mapValue.fields)
           }
         });
         return unsub;
       } catch (e) {
 
       }
-
     }
+
     readUserProfile(props.user)
   }, [props.user])
+
+
+  useEffect(() => {
+    const readIgnoredUser = async (userClub) => {
+      try {
+        var q = userClub.ignored.arrayValue.values.map(ignored => query(collection(db, "clubUsers"), where("uid", "==", ignored.stringValue)))
+        const array = await Promise.all(
+          q.map(async query => {
+            return await getDocs(query)
+          })
+        )
+        const ignored = array.map(data => {
+          const field = data._snapshot.docChanges[0].doc.data.value.mapValue.fields
+          const result = [field.name.stringValue, field.uid.stringValue]
+          return result
+        })
+        setIgnoredUsers(ignored)
+      } catch (e) {
+
+      }
+    }
+
+    readIgnoredUser(userClub)
+  }, [userClub])
+
 
   useEffect(() => {
     const readUserMessages = (userClub, chatHistory) => {
@@ -91,6 +114,14 @@ function ChatRoom(props) {
       setSettings(false)
     } else {
       setSettings(true)
+    }
+  }
+
+  const removeIgnoredUsers = (event) => {
+    if (userClub) {
+      updateDoc(doc(db, "clubUsers", userClub.account.stringValue), {
+        ignored: arrayRemove(event)
+      })
     }
   }
 
@@ -166,6 +197,20 @@ function ChatRoom(props) {
             <FormGroup className="pt-3 text-center">
               {"Chat history duration: "}
               <button type="button" onClick={setHistoryChat}>{chatHistory}</button>
+            </FormGroup>
+            <FormGroup className="pt-3 text-center">
+              {userClub ?
+                <>
+                  {"Ignored Users: " + ignoredUsers.length}
+                  <ul>
+                    {ignoredUsers.map(users => (
+                      <li role="button" onClick={(event) => removeIgnoredUsers(users[1])} key={users[0]}>{users[0]}</li>
+                    ))}
+                  </ul>
+                </>
+                :
+                ""
+              }
             </FormGroup>
           </ModalBody>
         </Modal>

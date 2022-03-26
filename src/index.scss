@@ -256,14 +256,28 @@ ul {
             transition: all .4s ease-in-out;
         }
     }
+    .selected-option {
+        display: none;
+        color: #ffc107;
+        margin-top: 1rem;
+    }
     input[type=radio][name=hand]:checked+.rock-img {
         background-image: url('./assets/imgs/rock.gif');
+    }
+    input[type=radio][name=hand]:checked~.selected-option {
+        display: block;
     }
     input[type=radio][name=hand]:checked+.paper-img {
         background-image: url('./assets/imgs/paper.gif');
     }
+    input[type=radio][name=hand]:checked~.selected-option {
+        display: block;
+    }
     input[type=radio][name=hand]:checked+.scissors-img {
         background-image: url('./assets/imgs/scissors.gif');
+    }
+    input[type=radio][name=hand]:checked~.selected-option {
+        display: block;
     }
     input[type=radio][name=amount]:checked+span {
         border: 3px solid white;
@@ -887,6 +901,7 @@ ul.messages {
     border-radius: 5px;
     display: flex;
     align-items: center;
+    margin-right: 150px;
 }
 
 .lvl-badge {
@@ -899,4 +914,29 @@ ul.messages {
     text-align: center;
     font-size: 0.8rem;
     font-weight: 800;
+}
+
+@media (max-width: 600px) {
+    .matic-balance-wrapper {
+        margin-right: 0;
+    }
+    .fa-2xl {
+        font-size: 1rem !important;
+    }
+}
+
+@media (max-width: 767px) {
+    .result-rps-image {
+        width: 80%;
+    }
+}
+
+@media (min-width: 768px) {
+    .result-rps-image {
+        width: 70%;
+    }
+}
+
+.result-rps-image {
+    margin-bottom: 1rem;
 }

@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { NavLink } from 'react-router-dom'
 import Web3 from 'web3'
 import Web3Modal from "web3modal";
 import { useAuthState } from 'react-firebase-hooks/auth'
@@ -11,7 +10,8 @@ import WalletLink from "walletlink";
 import { doc, getDoc, setDoc, updateDoc, collection, addDoc, serverTimestamp } from "firebase/firestore";
 import toast from 'react-hot-toast';
 import RpsGame from '../../abis/rpsGame/rpsGame.json'
-import { rpsGameContract } from '../../components/blockchain/Contracts'
+import swapV2 from '../../abis/swap/IUniswapV2Router02.json'
+import { rpsGameContract, polygonSwapContract, maticContract, usdcContract } from '../../components/blockchain/Contracts'
 import HistoryGames from './components/HistoryGames'
 import ConnectWallet from './components/ConnectWallet'
 import ConnectChain from './components/ConnectChain'
@@ -37,6 +37,7 @@ export default function Rps() {
   const [user] = useAuthState(auth)
   const [web3, setWeb3] = useState({});
   const [rpsgame, setRpsgame] = useState({});
+  const [swapPolygon, setSwapPolygon] = useState({});
   const [userData, setUserData] = useState({});
   const [web3ModalInfo, setWeb3ModalInfo] = useState({});
   const [usergame, setUsergame] = useState({
@@ -51,6 +52,7 @@ export default function Rps() {
   const [userGameStreak, setUserGameStreak] = useState(0);
   const [userhand, setUserhand] = useState(0);
   const [useramount, setUseramount] = useState(0);
+  const [maticPrice, setMaticPrice] = useState(0);
   const [active, setActive] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [animation, setAnimation] = useState(false);
@@ -327,7 +329,7 @@ export default function Rps() {
               amountWon: 0,
               amountLoss: 0,
               totalGames: 0,
-              totalMaticAmount: 0,
+              totalAmount: 0,
               lastGameBlock: 0,
             },
           })
@@ -352,7 +354,7 @@ export default function Rps() {
               amountWon: 0,
               amountLoss: 0,
               totalGames: 0,
-              totalMaticAmount: 0,
+              totalAmount: 0,
               lastGameBlock: 0,
             },
           })
@@ -462,6 +464,8 @@ export default function Rps() {
       setWeb3(web3)
       const rpsgame = new web3.eth.Contract(RpsGame.abi, rpsGameContract)
       setRpsgame(rpsgame)
+      const polygonSwap = new web3.eth.Contract(swapV2.abi, polygonSwapContract)
+      setSwapPolygon(polygonSwap)
       const accounts = await web3.eth.getAccounts();
       setAccount(accounts[0].toLowerCase())
       ethereum.on('accountsChanged', () => {
@@ -472,6 +476,10 @@ export default function Rps() {
       setBalance(balance);
       const chainId = await web3.eth.getChainId();
       setNetwork(chainId)
+      if (chainId === 137) {
+        let maticPrice = await polygonSwap.methods.getAmountsOut(decimal.toString(), [maticContract, usdcContract]).call()
+        setMaticPrice(maticPrice[1])
+      }
       ethereum.on('chainChanged', () => {
         window.location.reload()
       });
@@ -581,10 +589,10 @@ export default function Rps() {
       } while (myEvents[0] === undefined);
       if (myEvents[0]) {
         if (myEvents[0].blockNumber > userDocument.rps.lastGameBlock) {
-          const userAmount = web3.utils.fromWei(myEvents[0].returnValues[1], 'ether')
+          const userAmount = parseInt(web3.utils.fromWei(myEvents[0].returnValues[1], 'ether')) * maticPrice
           updateDoc(doc(db, "clubUsers", account), {
             "rps.totalGames": userDocument.rps.totalGames + 1,
-            "rps.totalMaticAmount": userDocument.rps.totalMaticAmount + parseInt(userAmount),
+            "rps.totalAmount": userDocument.rps.totalMaticAmount + userAmount,
             "rps.lastGameBlock": myEvents[0].blockNumber
           })
           addDoc(collection(db, "allGames"), {
@@ -594,7 +602,7 @@ export default function Rps() {
             name: userDocument.name,
             photo: userDocument.photo,
             account: myEvents[0].returnValues[0],
-            maticAmount: parseInt(userAmount),
+            maticAmount: userAmount,
             streak: parseInt(myEvents[0].returnValues[2]),
             result: myEvents[0].returnValues[3],
             game: 'RPS'
@@ -602,13 +610,13 @@ export default function Rps() {
           if (myEvents[0].returnValues[3] === true) {
             updateDoc(doc(db, "clubUsers", account), {
               "rps.gameWon": userDocument.rps.gameWon + 1,
-              "rps.amountWon": userDocument.rps.amountWon + parseInt(userAmount),
+              "rps.amountWon": userDocument.rps.amountWon + userAmount,
             })
           }
           if (myEvents[0].returnValues[3] === false) {
             updateDoc(doc(db, "clubUsers", account), {
               "rps.gameLoss": userDocument.rps.gameLoss + 1,
-              "rps.amountLoss": userDocument.rps.amountLoss + parseInt(userAmount)
+              "rps.amountLoss": userDocument.rps.amountLoss + userAmount
             })
           }
           if (myEvents[0].returnValues[2] > userDocument.rps.dayWinStreak || dayBlock > userDocument.rps.winStreakTime) {
@@ -660,7 +668,7 @@ export default function Rps() {
     setBalance(balance)
   }
 
-  const backGame = () => {
+  const backGame = (images) => {
     setPlaying(false)
     setUserGameStreak(0)
     setUserGameResult(undefined)
@@ -682,7 +690,6 @@ export default function Rps() {
                 isMobileVersion={true}
                 unixTimeStamp={unixTimeStamp}
               />
-              <NavLink className="btn btn-danger" to="/leaderboard">LEADERBOARD</NavLink>
               <ConnectWallet
                 decimal={decimal}
                 web3={web3}
@@ -712,7 +719,6 @@ export default function Rps() {
                   isMobileVersion={false}
                   unixTimeStamp={unixTimeStamp}
                 />
-                <NavLink className="btn btn-danger" to="/leaderboard">LEADERBOARD <i className="d-none d-sm-inline-flex fas fa-external-link-alt fa-xs"></i></NavLink>
                 <ConnectWallet
                   decimal={decimal}
                   web3={web3}
@@ -732,7 +738,7 @@ export default function Rps() {
         </div>
       }
       <article>
-        {active === true ?
+        {active ?
           <>
             <div className="game-container">
               {playing === true ?
@@ -757,12 +763,36 @@ export default function Rps() {
                         :
                         ""
                       }
-                      {userhand === 'ROCK' && userGameResult === true ? <img className="result-rps-image" width="640" height="360" src={RockWin} alt="Rock Wins" /> : ""}
-                      {userhand === 'PAPER' && userGameResult === true ? <img className="result-rps-image" width="640" height="360" src={PaperWin} alt="Paper Wins" /> : ""}
-                      {userhand === 'SCISSORS' && userGameResult === true ? <img className="result-rps-image" width="640" height="360" src={ScissorsWin} alt="Scissors Wins" /> : ""}
-                      {userhand === 'ROCK' && userGameResult === false ? <img className="result-rps-image" width="640" height="360" src={RockLose} alt="Rock Loses" /> : ""}
-                      {userhand === 'PAPER' && userGameResult === false ? <img className="result-rps-image" width="640" height="360" src={PaperLose} alt="Paper Loses" /> : ""}
-                      {userhand === 'SCISSORS' && userGameResult === false ? <img className="result-rps-image" width="640" height="360" src={ScissorsLose} alt="Scissors Loses" /> : ""}
+                      {userhand === 'ROCK' && userGameResult === true &&
+                        <div className="d-flex justify-content-center">
+                          <img className="result-rps-image" src={RockWin} alt="Rock Wins" />
+                        </div>
+                      }
+                      {userhand === 'PAPER' && userGameResult === true &&
+                        <div className="d-flex justify-content-center">
+                          <img className="result-rps-image" src={PaperWin} alt="Paper Wins" />
+                        </div>
+                      }
+                      {userhand === 'SCISSORS' && userGameResult === true &&
+                        <div className="d-flex justify-content-center">
+                          <img className="result-rps-image" src={ScissorsWin} alt="Scissors Wins" />
+                        </div>
+                      }
+                      {userhand === 'ROCK' && userGameResult === false &&
+                        <div className="d-flex justify-content-center">
+                          <img className="result-rps-image" src={RockLose} alt="Rock Loses" />
+                        </div>
+                      }
+                      {userhand === 'PAPER' && userGameResult === false &&
+                        <div className="d-flex justify-content-center">
+                          <img className="result-rps-image" src={PaperLose} alt="Paper Loses" />
+                        </div>
+                      }
+                      {userhand === 'SCISSORS' && userGameResult === false &&
+                        <div className="d-flex justify-content-center">
+                          <img className="result-rps-image" src={ScissorsLose} alt="Scissors Loses" />
+                        </div>
+                      }
                       <br></br>
                       <br></br>
                       <h3>{userGameResult === true ? " YOU WON " : ""}{userGameResult === false ? " YOU LOST " : ""}</h3>
@@ -789,14 +819,17 @@ export default function Rps() {
                     <label>
                       <input type="radio" name="hand" id="rock" onChange={handleInputChange} value="ROCK"></input>
                       <div className="rps-img rock-img"></div>
+                      <i className="fa-regular fa-circle-check fa-2xl fa-beat selected-option"></i>
                     </label>
                     <label>
                       <input type="radio" name="hand" id="paper" onChange={handleInputChange} value="PAPER"></input>
                       <div className="rps-img paper-img"></div>
+                      <i className="fa-regular fa-circle-check fa-2xl fa-beat selected-option"></i>
                     </label>
                     <label>
                       <input type="radio" name="hand" id="scissors" onChange={handleInputChange} value="SCISSORS"></input>
                       <div className="rps-img scissors-img"></div>
+                      <i className="fa-regular fa-circle-check fa-2xl fa-beat selected-option"></i>
                     </label>
                   </div>
                   <h5 className="mt-5">FOR</h5>
@@ -835,8 +868,6 @@ export default function Rps() {
           </>
           :
           <div>
-            <br></br>
-            <br></br>
             <div className="row g-0 my-5 justify-content-center">
               <div className="col-3 col-md-2">
                 <img className="my-3 img-fluid" src={Rock} alt="Rock" />

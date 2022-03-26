@@ -154,7 +154,7 @@ export default function AccountFirebase(props) {
     }
   }
 
-  const xpClass = ( level ) => {
+  const xpClass = (level) => {
     if (level <= 4) {
       return 'badge-white lvl-badge me-2';
     } else if (level > 4 && level < 10) {
@@ -176,14 +176,13 @@ export default function AccountFirebase(props) {
         <>
           <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="md" className="dd-profile">
             <DropdownToggle color='transparent' className='dd-toggle' caret>
-              {/* {userData[0] ? userData[0].name + " LVL " + userData[0].level : <>{user.displayName ? user.displayName : "ClubUser"}{" LVL 1"}</>} */}
-              {userData[0] 
-                ? <span><span className={ xpClass(userData[0].level)}>{userData[0].level}</span> {userData[0].name}</span>
-                : <span><span className={ xpClass(0) }>0</span> {user.displayName ? user.displayName : "ClubUser"}</span>}
+              {userData[0]
+                ? <span><span className={xpClass(userData[0].level)}>{userData[0].level}</span> {userData[0].name}</span>
+                : <span><span className={xpClass(0)}>1</span> {user.displayName ? user.displayName : "ClubUser"}</span>
+              }
             </DropdownToggle>
             <DropdownMenu >
               <DropdownItem onClick={() => navigate('/profile')}>Profile</DropdownItem>
-              <DropdownItem onClick={() => navigate('/rewards')}>Rewards</DropdownItem>
               <DropdownItem onClick={() => auth.signOut()}>Sign Out</DropdownItem>
             </DropdownMenu>
           </Dropdown>

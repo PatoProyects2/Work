@@ -10,13 +10,12 @@ import { BalanceContext } from '../../context/BalanceContext';
 export function MainLayout() {
   const [user] = useAuthState(auth);
   const [showChat, setShowChat] = useState(false);
-
   const [balance, setBalance] = useState('-');
 
   return (
     <BalanceContext.Provider value={{ balance, setBalance }}>
       <header>
-        <Navbar navType="main" />
+        <Navbar navType="rps" />
       </header>
       <main className="wrapper-main">
         <section>

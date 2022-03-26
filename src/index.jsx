@@ -14,12 +14,14 @@ import MainRewards from './views/main/components/rewards/Rewards'
 import MainProfile from './views/main/components/profile/Profile'
 import { RpsLayout } from './components/layout/RpsLayout'
 import Rps from './views/rps/Rps'
+import Demo from './views/rps/Demo'
 import RpsAbout from './views/rps/components/about/About'
 import Nfts from './views/main/components/nfts/Nfts';
 import Fairplay from './views/main/components/fairplay/Fairplay';
 import * as serviceWorker from './serviceWorker'
 import 'bootstrap/dist/css/bootstrap.css'
 import './index.scss'
+
 
 ReactDOM.render(
   <BrowserRouter>
@@ -55,7 +57,7 @@ ReactDOM.render(
               {icon}
               {message}
               {t.type !== 'loading' && (
-                <span className='toast-close' onClick={() => toast.dismiss(t.id)}><i className='fa-solid fa-xmark fa-lg'></i></span>  
+                <span className='toast-close' onClick={() => toast.dismiss(t.id)}><i className='fa-solid fa-xmark fa-lg'></i></span>
               )}
             </>
           )}
@@ -65,11 +67,11 @@ ReactDOM.render(
     <Routes>
       <Route path="/" element={<MainLayout />}>
         <Route index element={<Main />} />
-        <Route path="profile" element={<MainProfile />} />
-        <Route path="rewards" element={<MainRewards />} />
-        <Route path="about" element={<MainAbout />} />
         <Route path="nfts" element={<Nfts />} />
         <Route path="fair-play" element={<Fairplay />} />
+        <Route path="demo-rps" element={<Demo />} />
+        <Route path="about" element={<MainAbout />} />
+        <Route path="profile" element={<MainProfile />} />
         <Route path="*" element={<Navigate replace to="/" />} />
       </Route>
       <Route path="/rps" element={<RpsLayout />}>

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { sendEmailVerification, updateProfile } from 'firebase/auth';
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { Button, FormGroup, Input, Row, Col, Card, CardImg, CardBody, CardTitle, Label, Modal, ModalBody } from 'reactstrap'
 import { toast } from 'react-hot-toast';
 import { query, where, collection, limit, onSnapshot, updateDoc, doc } from "firebase/firestore";
-import { auth, db } from '../../../../firebase/firesbaseConfig'
+import { auth, db, storage } from '../../../../firebase/firesbaseConfig'
 import Stats from './Stats'
 
 export default function Profile() {
@@ -15,6 +16,65 @@ export default function Profile() {
   const [user] = useAuthState(auth)
   const [userData, setUserData] = useState({});
   const [nftPicture, setNftPicture] = useState(false);
+
+  const [log, setLog] = useState('');
+  const [uploadValue, setUploadValue] = useState(0);
+  const [picture, setPicture] = useState(null);
+
+  const handleInputUpload = (event) => {
+    const file = event.target.files[0]
+    if (file.type === 'image/png' || file.type === 'image/jpeg') {
+      let reader = new FileReader();
+      reader.onload = function (e) {
+        setPicture(e.target.result)
+      };
+      reader.readAsDataURL(file)
+      const storageRef = ref(storage, `profile/${auth.currentUser.uid}`);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+      uploadTask.on('state_changed',
+        (snapshot) => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setUploadValue(progress)
+          switch (snapshot.state) {
+            case 'paused':
+              setLog('Upload is paused');
+              break;
+            case 'running':
+              setLog('Uploading...');
+              break;
+          }
+        },
+        (error) => {
+          toast.error('File not upload')
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            if (userData[0]) {
+              toast.promise(
+                updateDoc(doc(db, "clubUsers", userData[0].account), { photo: downloadURL })
+                  .then(() => setNftPicture(false)),
+                {
+                  loading: 'Updating...',
+                  success: <b>Profile updated</b>,
+                  error: <b>Profile not updated</b>,
+                })
+            } else {
+              toast.promise(
+                updateProfile(auth.currentUser, { photoURL: downloadURL })
+                  .then(() => setNftPicture(false)),
+                {
+                  loading: 'Updating...',
+                  success: <b>Profile updated</b>,
+                  error: <b>Profile not updated</b>,
+                })
+            }
+          });
+        }
+      );
+    } else {
+      toast.error('Invalid profile picture selected')
+    }
+  }
 
   const handleInputChange = (event) => {
     setUserInfo({
@@ -51,9 +111,7 @@ export default function Profile() {
     if (userData[0]) {
       if (userInfo.displayName.length >= 4 && userInfo.displayName.length <= 12) {
         toast.promise(
-          updateDoc(doc(db, "clubUsers", userData[0].account), {
-            name: userInfo.displayName
-          }),
+          updateDoc(doc(db, "clubUsers", userData[0].account), { name: userInfo.displayName }),
           {
             loading: 'Updating...',
             success: <b>Profile updated</b>,
@@ -66,10 +124,7 @@ export default function Profile() {
     } else {
       if (userInfo.displayName.length >= 4 && userInfo.displayName.length <= 12) {
         toast.promise(
-          updateProfile(auth.currentUser, userInfo)
-            .catch((error) => {
-              toast.error("Invalid Username")
-            }),
+          updateProfile(auth.currentUser, userInfo),
           {
             loading: 'Updating...',
             success: <b>Profile updated</b>,
@@ -106,14 +161,13 @@ export default function Profile() {
                     Profile
                   </CardTitle>
                   <CardImg
+                    onClick={selectPicture}
                     alt={userData[0] ? userData[0].name : user.displayName ? user.displayName : "ClubUser"}
                     className="rounded-circle profile-img"
                     src={(userData[0] && userData[0].photo) ? userData[0].photo : "https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh"}
                     top
+
                   />
-                  <FormGroup floating>
-                    {userData[0] ? <Button onClick={selectPicture} color="danger" type="button" className="mt-3">Select NFT</Button> : ""}
-                  </FormGroup>
                   <FormGroup floating>
                     <Input id="displayName" name="displayName" className="d-modal-input"
                       placeholder="ClubUser" onChange={handleInputChange} type="text" defaultValue={userData[0] ? userData[0].name : user.displayName} />
@@ -139,9 +193,25 @@ export default function Profile() {
               <div className='d-flex justify-content-end'>
                 <button type="button" className="btn-close" aria-label="Close" onClick={selectPicture}></button>
               </div>
-              <h4 className="text-center">NFT Picture</h4>
+              <h4 className="text-center">Picture</h4>
               <FormGroup className="pt-3 text-center">
-                {/* DETECTAR SI LA WALLET QUE SE CONECTA HA MINTEADO EL NFT DESDE EL SMART CONTRACT*/}
+                <div>
+                  {uploadValue === 0 ?
+                    <input type="file" accept="image/png, image/jpeg" onChange={handleInputUpload} />
+                    :
+                    <>
+                      {uploadValue > 0 && uploadValue < 100 ?
+                        <>
+                          {log + " " + uploadValue + "%"}
+                          <br></br>
+                          <progress value={uploadValue} max="100"></progress>
+                        </>
+                        :
+                        <img src={picture} height="150" alt="" />
+                      }
+                    </>
+                  }
+                </div>
               </FormGroup>
             </ModalBody>
           </Modal>
