@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Modal, ModalBody, FormGroup, Table } from 'reactstrap'
 import { query, where, collection, limit, onSnapshot, updateDoc, arrayUnion, doc } from "firebase/firestore";
 import { db } from '../../../../firebase/firesbaseConfig'
@@ -12,19 +12,25 @@ function ChatMessage({ text, uid, photo, name, level, auth, userClub }) {
         setDropdown(!dropdown);
     }
 
+    useEffect(() => {
+        const readUserById = (uid) => {
+            if (uid) {
+                const q = query(collection(db, "clubUsers"), where("uid", "==", uid), limit(3))
+                const unsub = onSnapshot(q, (doc) => {
+                    const clubData = doc.docs.map(userData => userData.data())
+                    setUserData(clubData)
+                });
+                return unsub;
+            }
+        }
+        readUserById(uid)
+    }, [uid])
+
     const OpenStatModal = () => {
         if (!stats) {
             setStats(true)
         } else {
             setStats(false)
-        }
-        if (uid) {
-            const q = query(collection(db, "clubUsers"), where("uid", "==", uid), limit(3))
-            const unsub = onSnapshot(q, (doc) => {
-                const clubData = doc.docs.map(userData => userData.data())
-                setUserData(clubData)
-            });
-            return unsub;
         }
     }
 
@@ -170,13 +176,10 @@ function ChatMessage({ text, uid, photo, name, level, auth, userClub }) {
                                             </tr>
                                         </tbody>
                                     </Table>
-                                    : ""}
+                                    : "No games found"}
                             </>
                             :
-                            <>
-                                <br></br>
-                                {"No games found"}
-                            </>}
+                            ""}
                     </FormGroup>
                 </ModalBody>
             </Modal>

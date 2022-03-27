@@ -102,10 +102,11 @@ export default function Main() {
       var data0 = arrayDay.map(users => {
         let amounts = users.map(amount => parseInt(amount.doc.data.value.mapValue.fields.amount.integerValue))
         let amount = lodash.sum(amounts)
+        let user = users[users.length - 1].doc.data.value.mapValue.fields
         let top = [
-          users[0].doc.data.value.mapValue.fields.account.stringValue,
-          users[0].doc.data.value.mapValue.fields.photo.stringValue,
-          users[0].doc.data.value.mapValue.fields.name.stringValue,
+          user.account.stringValue,
+          user.photo.stringValue,
+          user.name.stringValue,
           users.length,
           amount
         ]
@@ -114,10 +115,11 @@ export default function Main() {
       var data1 = arrayWeek.map(users => {
         let amounts = users.map(amount => parseInt(amount.doc.data.value.mapValue.fields.amount.integerValue))
         let amount = lodash.sum(amounts)
+        let user = users[users.length - 1].doc.data.value.mapValue.fields
         let top = [
-          users[0].doc.data.value.mapValue.fields.account.stringValue,
-          users[0].doc.data.value.mapValue.fields.photo.stringValue,
-          users[0].doc.data.value.mapValue.fields.name.stringValue,
+          user.account.stringValue,
+          user.photo.stringValue,
+          user.name.stringValue,
           users.length,
           amount
         ]
@@ -126,10 +128,11 @@ export default function Main() {
       var data2 = arrayMonth.map(users => {
         let amounts = users.map(amount => parseInt(amount.doc.data.value.mapValue.fields.amount.integerValue))
         let amount = lodash.sum(amounts)
+        let user = users[users.length - 1].doc.data.value.mapValue.fields
         let top = [
-          users[0].doc.data.value.mapValue.fields.account.stringValue,
-          users[0].doc.data.value.mapValue.fields.photo.stringValue,
-          users[0].doc.data.value.mapValue.fields.name.stringValue,
+          user.account.stringValue,
+          user.photo.stringValue,
+          user.name.stringValue,
           users.length,
           amount
         ]
@@ -138,10 +141,11 @@ export default function Main() {
       var data3 = arrayGlobal.map(users => {
         let amounts = users.map(amount => parseInt(amount.doc.data.value.mapValue.fields.amount.integerValue))
         let amount = lodash.sum(amounts)
+        let user = users[users.length - 1].doc.data.value.mapValue.fields
         let top = [
-          users[0].doc.data.value.mapValue.fields.account.stringValue,
-          users[0].doc.data.value.mapValue.fields.photo.stringValue,
-          users[0].doc.data.value.mapValue.fields.name.stringValue,
+          user.account.stringValue,
+          user.photo.stringValue,
+          user.name.stringValue,
           users.length,
           amount
         ]

@@ -248,7 +248,7 @@ export default function ReadRPSGames() {
                         <DropdownItem className="dd-menu-item">
                             <img width="35" height="35" className="rounded-circle" alt="" src={`${historyPlays[0].photo}`} />
                             {historyPlays[0].name !== 'Username' ? " " + historyPlays[0].name : " " + historyPlays[0].account.substring(0, 5).toLowerCase()}
-                            {" played " + historyPlays[0].maticAmount + " MATIC and"}
+                            {" played " + historyPlays[0].amount + " MATIC and"}
                             <span style={{ color: historyPlays[0].result ? "mediumseagreen" : "crimson" }}>
                                 {historyPlays[0].result === false ? " lost all " : ""}{historyPlays[0].result === true ? " doubled " : ""}
                             </span>
@@ -271,7 +271,7 @@ export default function ReadRPSGames() {
                         <DropdownItem className="dd-menu-item">
                             <img width="35" height="35" className="rounded-circle" alt="" src={`${historyPlays[1].photo}`} />
                             {historyPlays[1].name !== 'Username' ? " " + historyPlays[1].name : " " + historyPlays[1].account.substring(0, 5).toLowerCase()}
-                            {" played " + historyPlays[1].maticAmount + " MATIC and"}
+                            {" played " + historyPlays[1].amount + " MATIC and"}
                             <span style={{ color: historyPlays[1].result ? "mediumseagreen" : "crimson" }}>
                                 {historyPlays[1].result === false ? " lost all " : ""}{historyPlays[1].result === true ? " doubled " : ""}
                             </span>
@@ -294,7 +294,7 @@ export default function ReadRPSGames() {
                         <DropdownItem className="dd-menu-item">
                             <img width="35" height="35" className="rounded-circle" alt="" src={`${historyPlays[2].photo}`} />
                             {historyPlays[2].name !== 'Username' ? " " + historyPlays[2].name : " " + historyPlays[2].account.substring(0, 5).toLowerCase()}
-                            {" played " + historyPlays[2].maticAmount + " MATIC and"}
+                            {" played " + historyPlays[2].amount + " MATIC and"}
                             <span style={{ color: historyPlays[2].result ? "mediumseagreen" : "crimson" }}>
                                 {historyPlays[2].result === false ? " lost all " : ""}{historyPlays[2].result === true ? " doubled " : ""}
                             </span>
@@ -317,7 +317,7 @@ export default function ReadRPSGames() {
                         <DropdownItem className="dd-menu-item">
                             <img width="35" height="35" className="rounded-circle" alt="" src={`${historyPlays[3].photo}`} />
                             {historyPlays[3].name !== 'Username' ? " " + historyPlays[3].name : " " + historyPlays[3].account.substring(0, 5).toLowerCase()}
-                            {" played " + historyPlays[3].maticAmount + " MATIC and"}
+                            {" played " + historyPlays[3].amount + " MATIC and"}
                             <span style={{ color: historyPlays[3].result ? "mediumseagreen" : "crimson" }}>
                                 {historyPlays[3].result === false ? " lost all " : ""}{historyPlays[3].result === true ? " doubled " : ""}
                             </span>
@@ -340,7 +340,7 @@ export default function ReadRPSGames() {
                         <DropdownItem className="dd-menu-item">
                             <img width="35" height="35" className="rounded-circle" alt="" src={`${historyPlays[4].photo}`} />
                             {historyPlays[4].name !== 'Username' ? " " + historyPlays[4].name : " " + historyPlays[4].account.substring(0, 5).toLowerCase()}
-                            {" played " + historyPlays[4].maticAmount + " MATIC and"}
+                            {" played " + historyPlays[4].amount + " MATIC and"}
                             <span style={{ color: historyPlays[4].result ? "mediumseagreen" : "crimson" }}>
                                 {historyPlays[4].result === false ? " lost all " : ""}{historyPlays[4].result === true ? " doubled " : ""}
                             </span>
@@ -363,7 +363,7 @@ export default function ReadRPSGames() {
                         <DropdownItem className="dd-menu-item">
                             <img width="35" height="35" className="rounded-circle" alt="" src={`${historyPlays[5].photo}`} />
                             {historyPlays[5].name !== 'Username' ? " " + historyPlays[5].name : " " + historyPlays[5].account.substring(0, 5).toLowerCase()}
-                            {" played " + historyPlays[5].maticAmount + " MATIC and"}
+                            {" played " + historyPlays[5].amount + " MATIC and"}
                             <span style={{ color: historyPlays[5].result ? "mediumseagreen" : "crimson" }}>
                                 {historyPlays[5].result === false ? " lost all " : ""}{historyPlays[5].result === true ? " doubled " : ""}
                             </span>
@@ -386,7 +386,7 @@ export default function ReadRPSGames() {
                         <DropdownItem className="dd-menu-item">
                             <img width="35" height="35" className="rounded-circle" alt="" src={`${historyPlays[6].photo}`} />
                             {historyPlays[6].name !== 'Username' ? " " + historyPlays[6].name : " " + historyPlays[6].account.substring(0, 5).toLowerCase()}
-                            {" played " + historyPlays[6].maticAmount + " MATIC and"}
+                            {" played " + historyPlays[6].amount + " MATIC and"}
                             <span style={{ color: historyPlays[6].result ? "mediumseagreen" : "crimson" }}>
                                 {historyPlays[6].result === false ? " lost all " : ""}{historyPlays[6].result === true ? " doubled " : ""}
                             </span>
@@ -409,7 +409,7 @@ export default function ReadRPSGames() {
                         <DropdownItem className="dd-menu-item">
                             <img width="35" height="35" className="rounded-circle" alt="" src={`${historyPlays[7].photo}`} />
                             {historyPlays[7].name !== 'Username' ? " " + historyPlays[7].name : " " + historyPlays[7].account.substring(0, 5).toLowerCase()}
-                            {" played " + historyPlays[7].maticAmount + " MATIC and"}
+                            {" played " + historyPlays[7].amount + " MATIC and"}
                             <span style={{ color: historyPlays[7].result ? "mediumseagreen" : "crimson" }}>
                                 {historyPlays[7].result === false ? " lost all " : ""}{historyPlays[7].result === true ? " doubled " : ""}
                             </span>
@@ -432,7 +432,7 @@ export default function ReadRPSGames() {
                         <DropdownItem className="dd-menu-item">
                             <img width="35" height="35" className="rounded-circle" alt="" src={`${historyPlays[8].photo}`} />
                             {historyPlays[8].name !== 'Username' ? " " + historyPlays[8].name : " " + historyPlays[8].account.substring(0, 5).toLowerCase()}
-                            {" played " + historyPlays[8].maticAmount + " MATIC and"}
+                            {" played " + historyPlays[8].amount + " MATIC and"}
                             <span style={{ color: historyPlays[8].result ? "mediumseagreen" : "crimson" }}>
                                 {historyPlays[8].result === false ? " lost all " : ""}{historyPlays[8].result === true ? " doubled " : ""}
                             </span>
@@ -455,7 +455,7 @@ export default function ReadRPSGames() {
                         <DropdownItem className="dd-menu-item">
                             <img width="35" height="35" className="rounded-circle" alt="" src={`${historyPlays[9].photo}`} />
                             {historyPlays[9].name !== 'Username' ? " " + historyPlays[9].name : " " + historyPlays[9].account.substring(0, 5).toLowerCase()}
-                            {" played " + historyPlays[9].maticAmount + " MATIC and"}
+                            {" played " + historyPlays[9].amount + " MATIC and"}
                             <span style={{ color: historyPlays[9].result ? "mediumseagreen" : "crimson" }}>
                                 {historyPlays[9].result === false ? " lost all " : ""}{historyPlays[9].result === true ? " doubled " : ""}
                             </span>
@@ -478,7 +478,7 @@ export default function ReadRPSGames() {
                         <DropdownItem className="dd-menu-item">
                             <img width="35" height="35" className="rounded-circle" alt="" src={`${historyPlays[10].photo}`} />
                             {historyPlays[10].name !== 'Username' ? " " + historyPlays[10].name : " " + historyPlays[10].account.substring(0, 5).toLowerCase()}
-                            {" played " + historyPlays[10].maticAmount + " MATIC and"}
+                            {" played " + historyPlays[10].amount + " MATIC and"}
                             <span style={{ color: historyPlays[10].result ? "mediumseagreen" : "crimson" }}>
                                 {historyPlays[10].result === false ? " lost all " : ""}{historyPlays[10].result === true ? " doubled " : ""}
                             </span>
@@ -501,7 +501,7 @@ export default function ReadRPSGames() {
                         <DropdownItem className="dd-menu-item">
                             <img width="35" height="35" className="rounded-circle" alt="" src={`${historyPlays[11].photo}`} />
                             {historyPlays[11].name !== 'Username' ? " " + historyPlays[11].name : " " + historyPlays[11].account.substring(0, 5).toLowerCase()}
-                            {" played " + historyPlays[11].maticAmount + " MATIC and"}
+                            {" played " + historyPlays[11].amount + " MATIC and"}
                             <span style={{ color: historyPlays[11].result ? "mediumseagreen" : "crimson" }}>
                                 {historyPlays[11].result === false ? " lost all " : ""}{historyPlays[11].result === true ? " doubled " : ""}
                             </span>
