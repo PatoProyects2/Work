@@ -43,7 +43,7 @@ export default function Nfts() {
     <div className='container'>
       <div className='row pt-5'>
         <div className='col-md-8 col-sm-10 col-12 mx-auto my-auto'>
-          <h1 className='d-inline heading-black text-capitalize border-bottom border-4'>NFTs RPS</h1>
+          <h1 className='d-inline heading-black text-capitalize'>NFTs</h1>
           <p className='lead py-3'>
             Rock, Paper, Scissors is a <a href="https://en.wikipedia.org/wiki/Hand_game" target="_blank" rel="noreferrer noopener">traditional game</a> that thanks to the power of Web3 and BlockChain services, we have managed to develop a digitalized version via SmartContracts. <br/>
             It is usually played between two opponents; each player simultaneosly selects one of three possible outcomes. These outcomes are "rock" ( a closed fist), "paper" (a flat hand), and "scissors" (a fist with the index and middle finger extended, forming a V).<br/>

@@ -5,7 +5,6 @@ import { db } from '../../../../firebase/firesbaseConfig'
 function ChatMessage({ text, uid, photo, name, level, auth, userClub }) {
     const [userData, setUserData] = useState({});
     const [dropdown, setDropdown] = useState(false);
-    const [messageClass, setMessageClass] = useState(undefined);
     const [stats, setStats] = useState(false);
 
     const toggleMenu = () => {
@@ -44,29 +43,32 @@ function ChatMessage({ text, uid, photo, name, level, auth, userClub }) {
 
     const xpClass = () => {
         if (level <= 4) {
-            return 'xp-user-white games-logo';
+            return 'xp-user-badge badge-white';
         } else if (level > 4 && level < 10) {
-            return 'xp-user-yellow games-logo';
+            return 'xp-user-badge badge-yellow';
         } else if (level > 9 && level < 15) {
-            return 'xp-user-orange games-logo';
+            return 'xp-user-badge badge-orange';
         } else if (level > 14 && level < 20) {
-            return 'xp-user-green games-logo';
+            return 'xp-user-badge badge-green';
         } else if (level > 19 && level < 24) {
-            return 'xp-user-blue games-logo';
+            return 'xp-user-badge badge-blue';
         } else {
-            return 'xp-user-brown games-logo';
+            return 'xp-user-badge badge-brown';
         }
     }
+
     return (
         <>
             <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="xs" className="my-2">
-                <li className={`message ${messageClass} d-flex align-items-center mt-2`}>
+                <li className={`message d-flex align-items-center mt-2`}>
                     <DropdownToggle>
-                        <img className="chat_user_img" src={photo} alt={name} />
-                        <span className={xpClass()}>
-                            <span className="level_val">Lvl: {level}</span>
-                        </span>
-                        <span className="chat_user_name">{name}:</span>
+                        <div className="d-flex">
+                            <img className="chat_user_img" src={photo} alt={name} />
+                            <div className={xpClass()}>
+                                <div className="circle"><span>{level}</span></div>
+                            </div>
+                            <span className="chat_user_name">{name}:</span>
+                        </div>
                     </DropdownToggle>
                     <div className="chat_cont">{text}</div>
                     <DropdownMenu >

@@ -498,7 +498,7 @@ ul {
 
 @media (min-width: 1400px) {
     .cards-container {
-        width: 80%;
+        width: 70%;
     }
 }
 
@@ -562,9 +562,6 @@ ul {
 .heading-black {
     font-weight: 800;
 }
-
-
-/* END ABOUT */
 
 
 /* ROADMAP */
@@ -705,8 +702,9 @@ ul {
     height: calc(100% - 48px);
     position: relative;
     z-index: 1;
-    flex: 1;
+    // flex: 1;
     display: flex;
+    justify-content: space-between;
     flex-direction: column;
     box-shadow: 0 0 10px 0 #141a1d;
 }
@@ -716,7 +714,7 @@ ul {
     overflow-y: scroll;
     overflow-wrap: break-word;
     display: flex;
-    flex: 1;
+    // flex: 1;
     position: relative;
     flex-direction: column;
     -webkit-overflow-scrolling: touch;
@@ -767,7 +765,7 @@ ul {
 }
 
 .chat_input_contain {
-    padding: 10px 20px 20px;
+    padding: 10px 20px 20px 5px;
     position: relative;
     display: flex;
 }
@@ -792,6 +790,24 @@ ul {
     padding: 10px;
 }
 
+.chat_input_contain .chat_emoji {
+    position: absolute;
+    right: 65px;
+    bottom: 26px;
+}
+
+.chat_emoji_btn {
+    background: transparent;
+    border: none;
+}
+
+.chat_emoji_btn:hover,
+.chat_emoji_btn:focus {
+    color: #ffc107;
+    background: transparent;
+    border: none;
+}
+
 ul.messages {
     padding: 0;
     margin: 0;
@@ -813,6 +829,94 @@ ul.messages {
     font-size: 12px;
     font-weight: 400;
     margin-right: .5rem;
+}
+
+
+/* XP user badge */
+
+.xp-user-badge {
+    position: relative;
+    width: 18px;
+    height: 24px;
+    display: flex;
+    border-radius: 5px;
+    margin: 0 .5rem;
+}
+
+.xp-user-badge::before,
+.xp-user-badge::after {
+    position: absolute;
+    width: inherit;
+    height: inherit;
+    border-radius: inherit;
+    background: inherit;
+    content: "";
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+}
+
+.xp-user-badge::before {
+    transform: rotate(60deg);
+}
+
+.xp-user-badge::after {
+    transform: rotate(-60deg);
+}
+
+.xp-user-badge .circle {
+    width: 18px;
+    height: 18px;
+    background: #fff;
+    z-index: 10;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+}
+
+.xp-user-badge .circle span {
+    font-size: 0.8em;
+    font-weight: 800;
+}
+
+.badge-white {
+    background-color: white;
+    color: black;
+}
+
+.badge-yellow {
+    background: linear-gradient(to bottom right, #ffeb3b 0%, #fbc02d 100%);
+    color: #facc15;
+}
+
+.badge-orange {
+    background: linear-gradient(to bottom right, #f68401 0%, #f57c00 100%);
+    color: #ea580c;
+}
+
+.badge-green {
+    background: linear-gradient(to bottom right, #cddc39 0%, #8bc34a 100%);
+    color: #7cb342;
+}
+
+.badge-blue {
+    background: linear-gradient(to bottom right, #4FC3F7 0%, #2196F3 100%);
+    color: #259af3;
+}
+
+.badge-brown {
+    background: linear-gradient(to bottom right, #e6ce6a 0%, #b7892b 100%);
+    color: #7c2d12;
+}
+
+.ignored-list {
+    max-height: 280px;
+    overflow: hidden;
+    overflow-y: scroll;
 }
 
 @media (max-width: 480px) {
@@ -901,7 +1005,8 @@ ul.messages {
     border-radius: 5px;
     display: flex;
     align-items: center;
-    margin-right: 150px;
+    position: absolute;
+    left: calc(50vw - 50px);
 }
 
 .lvl-badge {
@@ -928,6 +1033,10 @@ ul.messages {
 @media (max-width: 767px) {
     .result-rps-image {
         width: 80%;
+    }
+    .matic-balance-wrapper {
+        right: .5rem;
+        left: auto;
     }
 }
 

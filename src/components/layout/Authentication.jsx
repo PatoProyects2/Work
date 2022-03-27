@@ -156,17 +156,17 @@ export default function AccountFirebase(props) {
 
   const xpClass = (level) => {
     if (level <= 4) {
-      return 'badge-white lvl-badge me-2';
+      return 'xp-user-badge badge-white';
     } else if (level > 4 && level < 10) {
-      return 'badge-yellow lvl-badge me-2';
+      return 'xp-user-badge badge-yellow';
     } else if (level > 9 && level < 15) {
-      return 'badge-orange lvl-badge me-2';
+      return 'xp-user-badge badge-orange';
     } else if (level > 14 && level < 20) {
-      return 'badge-green lvl-badge me-2';
+      return 'xp-user-badge badge-green';
     } else if (level > 19 && level < 24) {
-      return 'badge-blue lvl-badge me-2';
+      return 'xp-user-badge badge-blue';
     } else {
-      return 'badge-brown lvl-badge me-2';
+      return 'xp-user-badge badge-brown';
     }
   }
 
@@ -177,8 +177,22 @@ export default function AccountFirebase(props) {
           <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="md" className="dd-profile">
             <DropdownToggle color='transparent' className='dd-toggle' caret>
               {userData[0]
-                ? <span><span className={xpClass(userData[0].level)}>{userData[0].level}</span> {userData[0].name}</span>
-                : <span><span className={xpClass(0)}>1</span> {user.displayName ? user.displayName : "ClubUser"}</span>
+                ? <span className="d-inline-flex">
+                  <div className={xpClass(userData[0].level)}>
+                    <span className="circle">
+                      <span>{userData[0].level}</span>
+                    </span>
+                  </div>
+                  {userData[0].name}
+                </span>
+                : <span className="d-inline-flex">
+                  <div className={xpClass(1)}>
+                    <span className="circle">
+                      <span>1</span>
+                    </span>
+                  </div>
+                  ClubUser
+                </span>
               }
             </DropdownToggle>
             <DropdownMenu >

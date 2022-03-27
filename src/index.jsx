@@ -26,7 +26,7 @@ import './index.scss'
 ReactDOM.render(
   <BrowserRouter>
     <Toaster
-      position="top-left"
+      position="top-right"
       reverseOrder={false}
       gutter={8}
       containerClassName=""
@@ -34,7 +34,7 @@ ReactDOM.render(
       className='toast-modal'
       toastOptions={{
         // Define default options
-        className: '',
+        className: 'mt-5',
         duration: 5000,
         style: {
           background: 'rgba(28, 31, 35, 1)',
@@ -69,13 +69,13 @@ ReactDOM.render(
         <Route index element={<Main />} />
         <Route path="nfts" element={<Nfts />} />
         <Route path="fair-play" element={<Fairplay />} />
-        <Route path="demo-rps" element={<Demo />} />
         <Route path="about" element={<MainAbout />} />
         <Route path="profile" element={<MainProfile />} />
         <Route path="*" element={<Navigate replace to="/" />} />
       </Route>
       <Route path="/rps" element={<RpsLayout />}>
         <Route index element={<Rps />} />
+        <Route path="demo" element={<Demo />} />
         <Route path="about" element={<RpsAbout />} />
         <Route path="*" element={<Navigate replace to="/rps" />} />
       </Route>

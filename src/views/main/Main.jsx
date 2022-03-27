@@ -88,7 +88,7 @@ export default function Main() {
       )
 
       const arrGlobal = [... new Set(globalGames.map(data => data))]
-      var globalTop = arrGlobal.map(account => query(collection(db, "allGames"), where("account", "==", account)))
+      var globalTop = arrGlobal.map(account => query(collection(db, "allGames"), where("account", "==", account), where("createdAt", "<", unixTimeStamp)))
       const array3 = await Promise.all(
         globalTop.map(async query => {
           return await getDocs(query)
@@ -315,11 +315,11 @@ export default function Main() {
         <div className='row text-center mb-2'>
           <div className='social-card col-6 mx-auto'>
             <div className='card-bg twitter-bg'></div>
-            <a href='https://twitter.com/RPSGameClub' target="_blank" rel="noreferrer"><img src={TwitterImg} width='400' /></a>
+            <a href='https://twitter.com/RPSGamesClub' target="_blank" rel="noreferrer"><img src={TwitterImg} width='400' /></a>
           </div>
           <div className='social-card col-6 mx-auto'>
             <div className='card-bg discord-bg'></div>
-            <a href="https://discord.gg/Ygk58VR4" target="_blank" rel="noreferrer"><img src={DiscordImg} width='400' /></a>
+            <a href="https://discord.gg/AM65VtvP2Q" target="_blank" rel="noreferrer"><img src={DiscordImg} width='400' /></a>
           </div>
         </div>
       </div>

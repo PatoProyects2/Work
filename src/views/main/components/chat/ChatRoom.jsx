@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react"
 import { addDoc, onSnapshot, orderBy, collection, serverTimestamp, where, limit, getDocs, query, arrayRemove, updateDoc, doc } from "firebase/firestore";
 import Picker, { SKIN_TONE_MEDIUM_DARK } from 'emoji-picker-react';
-import { Modal, ModalBody, FormGroup, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, } from 'reactstrap'
+import { Modal, ModalBody, FormGroup, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Form, } from 'reactstrap'
 import { auth, db } from "../../../../firebase/firesbaseConfig";
 import ChatMessage from './ChatMessage';
 
@@ -194,15 +194,15 @@ function ChatRoom(props) {
                 </svg>
               </button>
               <input type="text" className="chat_input" placeholder="Type something..." value={formValue} onChange={(e) => setFormValue(e.target.value)} maxLength="50" />
-              <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="up" size="xs" className="btn btn-transparent chat_send">
-                <DropdownToggle>
+              <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="up" size="xs" className="chat_emoji">
+                <DropdownToggle className="chat_emoji_btn">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-emoji-smile" viewBox="0 0 16 16">
                     <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
                     <path d="M4.285 9.567a.5.5 0 0 1 .683.183A3.498 3.498 0 0 0 8 11.5a3.498 3.498 0 0 0 3.032-1.75.5.5 0 1 1 .866.5A4.498 4.498 0 0 1 8 12.5a4.498 4.498 0 0 1-3.898-2.25.5.5 0 0 1 .183-.683zM7 6.5C7 7.328 6.552 8 6 8s-1-.672-1-1.5S5.448 5 6 5s1 .672 1 1.5zm4 0c0 .828-.448 1.5-1 1.5s-1-.672-1-1.5S9.448 5 10 5s1 .672 1 1.5z" />
                   </svg>
                 </DropdownToggle>
                 <DropdownMenu >
-                  <div>
+                  <>
                     <Picker
                       onEmojiClick={onEmojiClick}
                       disableAutoFocus={true}
@@ -210,7 +210,7 @@ function ChatRoom(props) {
                       groupNames={{ smileys_people: 'PEOPLE' }}
                       native
                     />
-                  </div>
+                  </>
                 </DropdownMenu>
               </Dropdown>
               <button className="btn btn-transparent chat_send" type="submit"><i className="fa-solid fa-paper-plane"></i></button>
@@ -218,7 +218,7 @@ function ChatRoom(props) {
           </form>
           :
           <div className="chat_input_contain disabled">
-            <input type="text" className="chat_input" maxLength="500" placeholder="Log in and play to start chatting..." disabled="" />
+            <input type="text" className="chat_input" maxLength="500" placeholder="Sign up and play to start chatting." disabled="" />
             <span className="chat_send"><i className="fa-solid fa-paper-plane"></i></span>
           </div>
         }
@@ -228,24 +228,30 @@ function ChatRoom(props) {
               <button type="button" className="btn-close" aria-label="Close" onClick={openChatSettings}></button>
             </div>
             <h4 className="text-center">Settings</h4>
-            <FormGroup className="pt-3 text-center">
-              {"Chat history duration: "}
-              <button type="button" onClick={setHistoryChat}>{chatHistory}</button>
-            </FormGroup>
-            <FormGroup className="pt-3 text-center">
-              {userClub ?
-                <>
-                  {"Ignored Users: " + ignoredUsers.length}
-                  <ul>
-                    {ignoredUsers.map(users => (
-                      <li role="button" onClick={(event) => removeIgnoredUsers(users[1])} key={users[0]}>{users[0]}</li>
-                    ))}
-                  </ul>
-                </>
-                :
-                ""
-              }
-            </FormGroup>
+            <div className="row">
+              <div className="col-12 col-md-6">
+                <FormGroup className="pt-3 text-center">
+                  <span className="d-block mb-3">Chat history duration: </span>
+                  <button type="button" className="btn btn-info" onClick={setHistoryChat}>{chatHistory}</button> <span>ms</span>
+                </FormGroup>
+              </div>
+              <div className="col-12 col-md-6">
+                <FormGroup className="pt-3 text-center">
+                  {userClub ?
+                    <>
+                      <span className="d-block mb-3">{"Ignored Users: " + ignoredUsers.length}</span>
+                      <ul className="ignored-list">
+                        {ignoredUsers.map(users => (
+                          <li role="button" onClick={(event) => removeIgnoredUsers(users[1])} key={users[0]}>{users[0]}</li>
+                        ))}
+                      </ul>
+                    </>
+                    :
+                    ""
+                  }
+                </FormGroup>
+              </div>
+            </div>
           </ModalBody>
         </Modal>
       </div>
