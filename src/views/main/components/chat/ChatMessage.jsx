@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Modal, ModalBody, ModalFooter, FormGroup, Table } from 'reactstrap'
+import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Modal, ModalBody, FormGroup, Table } from 'reactstrap'
 import { query, where, collection, limit, onSnapshot, updateDoc, arrayUnion, doc } from "firebase/firestore";
 import { db } from '../../../../firebase/firesbaseConfig'
 function ChatMessage({ text, uid, photo, name, level, auth, userClub }) {
@@ -67,7 +67,7 @@ function ChatMessage({ text, uid, photo, name, level, auth, userClub }) {
                         <DropdownItem onClick={OpenStatModal}>Stats</DropdownItem>
                         {auth.currentUser ?
                             <>
-                                {uid !== auth.currentUser.uid && userClub ? <DropdownItem onClick={IgnoreUser}>Ignore</DropdownItem> : <DropdownItem disabled={true}>Ignore</DropdownItem>}
+                                {uid !== auth.currentUser.uid && userData[0] ? <DropdownItem onClick={IgnoreUser}>Ignore</DropdownItem> : <DropdownItem disabled={true}>Ignore</DropdownItem>}
                             </>
                             :
                             ""

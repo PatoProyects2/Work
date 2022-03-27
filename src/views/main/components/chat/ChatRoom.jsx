@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react"
 import { addDoc, onSnapshot, orderBy, collection, serverTimestamp, where, limit, getDocs, query, arrayRemove, updateDoc, doc } from "firebase/firestore";
-import { Modal, ModalBody, FormGroup } from 'reactstrap'
+import Picker, { SKIN_TONE_MEDIUM_DARK } from 'emoji-picker-react';
+import { Modal, ModalBody, FormGroup, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, } from 'reactstrap'
 import { auth, db } from "../../../../firebase/firesbaseConfig";
 import ChatMessage from './ChatMessage';
 
@@ -10,7 +11,19 @@ function ChatRoom(props) {
   const [ignoredUsers, setIgnoredUsers] = useState([])
   const [formValue, setFormValue] = useState('')
   const [chatHistory, setChatHistory] = useState(50)
+  const [dropdown, setDropdown] = useState(false);
   const [settings, setSettings] = useState(false)
+  const [chosenEmoji, setChosenEmoji] = useState(null);
+
+  const toggleMenu = () => {
+    setDropdown(!dropdown);
+  }
+
+  const onEmojiClick = (event, emojiObject) => {
+    setChosenEmoji(emojiObject);
+    let emoticon = emojiObject.emoji
+    setFormValue(formValue + emoticon);
+  };
 
   useEffect(() => {
     const readUserProfile = (user) => {
@@ -178,7 +191,23 @@ function ChatRoom(props) {
                   />
                 </svg>
               </button>
-              <input type="text" className="chat_input" maxLength="500" placeholder="Type something..." value={formValue} onChange={(e) => setFormValue(e.target.value)} />
+              <input type="text" className="chat_input" maxLength="500" placeholder="Type something..." value={formValue} onChange={(e) => setFormValue(e.target.value)} maxlength="50"/>
+              <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="up" size="xs" className="my-2">
+                <DropdownToggle>
+                  {"EMOJI"}
+                </DropdownToggle>
+                <DropdownMenu >
+                  <div>
+                    <Picker
+                      onEmojiClick={onEmojiClick}
+                      disableAutoFocus={true}
+                      skinTone={SKIN_TONE_MEDIUM_DARK}
+                      groupNames={{ smileys_people: 'PEOPLE' }}
+                      native
+                    />
+                  </div>
+                </DropdownMenu>
+              </Dropdown>
               <button className="btn btn-transparent chat_send" type="submit"><i className="fa-solid fa-paper-plane"></i></button>
             </div>
           </form>

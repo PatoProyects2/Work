@@ -589,10 +589,10 @@ export default function Rps() {
       } while (myEvents[0] === undefined);
       if (myEvents[0]) {
         if (myEvents[0].blockNumber > userDocument.rps.lastGameBlock) {
-          const userAmount = parseInt(web3.utils.fromWei(myEvents[0].returnValues[1], 'ether')) * maticPrice
+          const userAmount = web3.utils.fromWei(myEvents[0].returnValues[1], 'ether')
           updateDoc(doc(db, "clubUsers", account), {
             "rps.totalGames": userDocument.rps.totalGames + 1,
-            "rps.totalAmount": userDocument.rps.totalMaticAmount + userAmount,
+            "rps.totalAmount": userDocument.rps.totalAmount + parseInt(userAmount),
             "rps.lastGameBlock": myEvents[0].blockNumber
           })
           addDoc(collection(db, "allGames"), {
@@ -602,7 +602,7 @@ export default function Rps() {
             name: userDocument.name,
             photo: userDocument.photo,
             account: myEvents[0].returnValues[0],
-            maticAmount: userAmount,
+            amount: parseInt(userAmount),
             streak: parseInt(myEvents[0].returnValues[2]),
             result: myEvents[0].returnValues[3],
             game: 'RPS'
@@ -610,13 +610,13 @@ export default function Rps() {
           if (myEvents[0].returnValues[3] === true) {
             updateDoc(doc(db, "clubUsers", account), {
               "rps.gameWon": userDocument.rps.gameWon + 1,
-              "rps.amountWon": userDocument.rps.amountWon + userAmount,
+              "rps.amountWon": userDocument.rps.amountWon + parseInt(userAmount)
             })
           }
           if (myEvents[0].returnValues[3] === false) {
             updateDoc(doc(db, "clubUsers", account), {
               "rps.gameLoss": userDocument.rps.gameLoss + 1,
-              "rps.amountLoss": userDocument.rps.amountLoss + userAmount
+              "rps.amountLoss": userDocument.rps.amountLoss + parseInt(userAmount)
             })
           }
           if (myEvents[0].returnValues[2] > userDocument.rps.dayWinStreak || dayBlock > userDocument.rps.winStreakTime) {
@@ -888,7 +888,6 @@ export default function Rps() {
                   <label htmlFor="age">I confirm that I am at least 18 years old</label>
                 </p>
                 <button className="btn-hover btn-start" onClick={openGame}>DOUBLE OR NOTHING</button>
-                <p>CLICK TO SEE OPTIONS</p>
                 <ReadAllGames />
               </>
               :

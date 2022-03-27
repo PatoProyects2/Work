@@ -100,7 +100,7 @@ export default function Main() {
       const arrayGlobal = [... new Set(array3.map(data => data._snapshot.docChanges))]
 
       var data0 = arrayDay.map(users => {
-        let amounts = users.map(amount => parseInt(amount.doc.data.value.mapValue.fields.maticAmount.integerValue))
+        let amounts = users.map(amount => parseInt(amount.doc.data.value.mapValue.fields.amount.integerValue))
         let amount = lodash.sum(amounts)
         let top = [
           users[0].doc.data.value.mapValue.fields.account.stringValue,
@@ -112,7 +112,7 @@ export default function Main() {
         return top
       })
       var data1 = arrayWeek.map(users => {
-        let amounts = users.map(amount => parseInt(amount.doc.data.value.mapValue.fields.maticAmount.integerValue))
+        let amounts = users.map(amount => parseInt(amount.doc.data.value.mapValue.fields.amount.integerValue))
         let amount = lodash.sum(amounts)
         let top = [
           users[0].doc.data.value.mapValue.fields.account.stringValue,
@@ -124,7 +124,7 @@ export default function Main() {
         return top
       })
       var data2 = arrayMonth.map(users => {
-        let amounts = users.map(amount => parseInt(amount.doc.data.value.mapValue.fields.maticAmount.integerValue))
+        let amounts = users.map(amount => parseInt(amount.doc.data.value.mapValue.fields.amount.integerValue))
         let amount = lodash.sum(amounts)
         let top = [
           users[0].doc.data.value.mapValue.fields.account.stringValue,
@@ -136,7 +136,7 @@ export default function Main() {
         return top
       })
       var data3 = arrayGlobal.map(users => {
-        let amounts = users.map(amount => parseInt(amount.doc.data.value.mapValue.fields.maticAmount.integerValue))
+        let amounts = users.map(amount => parseInt(amount.doc.data.value.mapValue.fields.amount.integerValue))
         let amount = lodash.sum(amounts)
         let top = [
           users[0].doc.data.value.mapValue.fields.account.stringValue,

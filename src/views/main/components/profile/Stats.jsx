@@ -65,7 +65,7 @@ export default function Stats(props) {
                 {props.userData[0].rps.amountLoss}
               </td>
               <td>
-                {props.userData[0].rps.totalMaticAmount}
+                {props.userData[0].rps.totalAmount}
               </td>
               <td>
                 {props.userData[0].rps.dayWinStreak}
