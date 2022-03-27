@@ -14,6 +14,7 @@ import DiscordImg from '../../assets/imgs/discord_card.png'
 import TwitterImg from '../../assets/imgs/twitter_card.png'
 import FairPlayImg from '../../assets/imgs/fair_play_hover_card.png'
 import NFTImg from '../../assets/imgs/nft_hover_card.png'
+import { useMatchMedia } from '../../hooks/useMatchMedia'
 
 export default function Main() {
   const [user] = useAuthState(auth)
@@ -29,10 +30,10 @@ export default function Main() {
   const [weeklyAmount, setWeeklyAmount] = useState(false);
   const [monthlyAmount, setMonthlyAmount] = useState(false);
   const [globalAmount, setGlobalAmount] = useState(false);
+  const isMobileResolution = useMatchMedia('(max-width:650px)', false);
 
   useEffect(() => {
     const readLeaderboard = async () => {
-
       var unixTimeStamp = Math.round((new Date()).getTime() / 1000);
 
       var lastDay = unixTimeStamp - 86400
@@ -333,12 +334,8 @@ export default function Main() {
             <Button onClick={leaderboardsModalAmount} className={mostAmount ? 'active btn-rank' : 'btn-rank'}>Most Amount</Button>
           </ButtonGroup>
 
+          {isMobileResolution ? <>{liveBets && <ReadAllGames isMobileVersion={true} />}</> : <>{liveBets && <ReadAllGames isMobileVersion={false} />}</>}
 
-          {liveBets &&
-            <>
-              <ReadAllGames />
-            </>
-          }
           {mostPlays &&
             <ButtonGroup>
               <Button onClick={day} className={`btn-recurrence ${dailyGame ? 'active' : ''}`}>Daily</Button>
@@ -357,39 +354,78 @@ export default function Main() {
           }
         </div>
 
-        {mostPlays && leaderboard.games &&
+        {isMobileResolution ?
           <>
-            {dailyGame &&
-              <MostPlays leaderboard={leaderboard.games.day} />
+            {mostPlays && leaderboard.games &&
+              <>
+                {dailyGame &&
+                  <MostPlays leaderboard={leaderboard.games.day} isMobileVersion={true} />
+                }
+                {weeklyGame &&
+                  <MostPlays leaderboard={leaderboard.games.week} isMobileVersion={true} />
+                }
+                {monthlyGame &&
+                  <MostPlays leaderboard={leaderboard.games.month} isMobileVersion={true} />
+                }
+                {globalGame &&
+                  <MostPlays leaderboard={leaderboard.games.global} isMobileVersion={true} />
+                }
+              </>
             }
-            {weeklyGame &&
-              <MostPlays leaderboard={leaderboard.games.week} />
+            {mostAmount && leaderboard.amount &&
+              <>
+                {dailyAmount &&
+                  <MostAmount leaderboard={leaderboard.amount.day} isMobileVersion={true} />
+                }
+                {weeklyAmount &&
+                  <MostAmount leaderboard={leaderboard.amount.week} isMobileVersion={true} />
+                }
+                {monthlyAmount &&
+                  <MostAmount leaderboard={leaderboard.amount.month} isMobileVersion={true} />
+                }
+                {globalAmount &&
+                  <MostAmount leaderboard={leaderboard.amount.global} isMobileVersion={true} />
+                }
+              </>
             }
-            {monthlyGame &&
-              <MostPlays leaderboard={leaderboard.games.month} />
+          </>
+          :
+          <>
+            {mostPlays && leaderboard.games &&
+              <>
+                {dailyGame &&
+                  <MostPlays leaderboard={leaderboard.games.day} isMobileVersion={false} />
+                }
+                {weeklyGame &&
+                  <MostPlays leaderboard={leaderboard.games.week} isMobileVersion={false} />
+                }
+                {monthlyGame &&
+                  <MostPlays leaderboard={leaderboard.games.month} isMobileVersion={false} />
+                }
+                {globalGame &&
+                  <MostPlays leaderboard={leaderboard.games.global} isMobileVersion={false} />
+                }
+              </>
             }
-            {globalGame &&
-              <MostPlays leaderboard={leaderboard.games.global} />
+            {mostAmount && leaderboard.amount &&
+              <>
+                {dailyAmount &&
+                  <MostAmount leaderboard={leaderboard.amount.day} isMobileVersion={false} />
+                }
+                {weeklyAmount &&
+                  <MostAmount leaderboard={leaderboard.amount.week} isMobileVersion={false} />
+                }
+                {monthlyAmount &&
+                  <MostAmount leaderboard={leaderboard.amount.month} isMobileVersion={false} />
+                }
+                {globalAmount &&
+                  <MostAmount leaderboard={leaderboard.amount.global} isMobileVersion={false} />
+                }
+              </>
             }
           </>
         }
-        {mostAmount && leaderboard.amount &&
-          <>
-            {dailyAmount &&
-              <MostAmount leaderboard={leaderboard.amount.day} />
-            }
-            {weeklyAmount &&
-              <MostAmount leaderboard={leaderboard.amount.week} />
-            }
-            {monthlyAmount &&
-              <MostAmount leaderboard={leaderboard.amount.month} />
-            }
-            {globalAmount &&
-              <MostAmount leaderboard={leaderboard.amount.global} />
-            }
-          </>
-        }
-      </div>
+      </div >
     </>
   );
 }

@@ -7,6 +7,7 @@ import ChatMessage from './ChatMessage';
 
 function ChatRoom(props) {
   const [userClub, setUserClub] = useState({})
+  const [userGames, setUserGames] = useState(0)
   const [messages, setMessages] = useState([])
   const [ignoredUsers, setIgnoredUsers] = useState([])
   const [formValue, setFormValue] = useState('')
@@ -33,6 +34,7 @@ function ChatRoom(props) {
           const userData = doc._snapshot.docChanges[0]
           if (userData) {
             setUserClub(userData.doc.data.value.mapValue.fields)
+            setUserGames(userData.doc.data.value.mapValue.fields.rps.mapValue.fields.totalGames.integerValue)
           }
         });
         return unsub;
@@ -171,7 +173,7 @@ function ChatRoom(props) {
             <div ref={messagesEndRef}></div>
           </ul>
         </div>
-        {props.user ?
+        {props.user && userGames > 0 ?
           <form onSubmit={sendMessage}>
             <div className="chat_input_contain">
               <button type="button" className="btn btn-transparent" onClick={openChatSettings}>
@@ -216,7 +218,7 @@ function ChatRoom(props) {
           </form>
           :
           <div className="chat_input_contain disabled">
-            <input type="text" className="chat_input" maxLength="500" placeholder="Log in to start chatting..." disabled="" />
+            <input type="text" className="chat_input" maxLength="500" placeholder="Log in and play to start chatting..." disabled="" />
             <span className="chat_send"><i className="fa-solid fa-paper-plane"></i></span>
           </div>
         }

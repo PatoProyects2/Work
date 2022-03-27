@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { useAuthState } from 'react-firebase-hooks/auth'
-import { sendEmailVerification, updateProfile } from 'firebase/auth';
+import { sendEmailVerification, updateProfile, updateEmail } from 'firebase/auth';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { Button, FormGroup, Input, Row, Col, Card, CardImg, CardBody, CardTitle, Label, Modal, ModalBody } from 'reactstrap'
-import { toast } from 'react-hot-toast';
+import { toast, Toaster } from 'react-hot-toast';
 import { query, where, collection, limit, onSnapshot, updateDoc, doc } from "firebase/firestore";
 import { auth, db, storage } from '../../../../firebase/firesbaseConfig'
 import Stats from './Stats'
@@ -13,10 +13,11 @@ export default function Profile() {
     displayName: '',
     photoURL: 'https://ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh'
   });
+  const [userEmail, setUserEmail] = useState({ email: '' });
   const [user] = useAuthState(auth)
   const [userData, setUserData] = useState({});
   const [nftPicture, setNftPicture] = useState(false);
-
+  const [name, setName] = useState('');
   const [log, setLog] = useState('');
   const [uploadValue, setUploadValue] = useState(0);
   const [picture, setPicture] = useState(null);
@@ -76,12 +77,20 @@ export default function Profile() {
     }
   }
 
-  const handleInputChange = (event) => {
+  const handleInputNameChange = (event) => {
     setUserInfo({
       ...userInfo,
       [event.target.name]: event.target.value
+    })
+  }
+
+  const handleInputEmailChange = (event) => {
+    setUserEmail({
+      ...userEmail,
+      [event.target.name]: event.target.value
     });
   }
+
 
   useEffect(() => {
     readUserClubData(user)
@@ -93,6 +102,7 @@ export default function Profile() {
       const unsub = onSnapshot(q, (doc) => {
         const clubData = doc.docs.map(userData => userData.data())
         setUserData(clubData)
+        setName(clubData[0].name)
       });
       return unsub;
     }
@@ -109,17 +119,35 @@ export default function Profile() {
 
   const updateUserProfile = () => {
     if (userData[0]) {
+      if (userInfo.displayName.length === 0 && userEmail.email.length === 0) {
+        toast.error('Invalid data')
+      }
       if (userInfo.displayName.length >= 4 && userInfo.displayName.length <= 12) {
         toast.promise(
           updateDoc(doc(db, "clubUsers", userData[0].account), { name: userInfo.displayName }),
           {
             loading: 'Updating...',
-            success: <b>Profile updated</b>,
-            error: <b>Profile not updated</b>,
+            success: <b>Username updated</b>,
+            error: <b>Invalid username</b>,
           })
-      } else {
-        toast.error("The name must be between 4 and 12 characters")
-        return false
+        setUserInfo({ displayName: '' })
+      }
+      if (userInfo.displayName.length > 12) {
+        toast.error('The username must be between 4 and 12 characters')
+      }
+      let re = /^([\da-z_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/.test(userEmail.email)
+      if (re) {
+        toast.promise(
+          updateEmail(auth.currentUser, userEmail.email),
+          {
+            loading: 'Updating...',
+            success: <b>Email updated</b>,
+            error: <b>Inavlid email</b>,
+          })
+        setUserEmail({ email: '' })
+      }
+      if (!re && userEmail.email.length > 0) {
+        toast.error('Invalid email')
       }
     } else {
       if (userInfo.displayName.length >= 4 && userInfo.displayName.length <= 12) {
@@ -166,16 +194,22 @@ export default function Profile() {
                     className="rounded-circle profile-img"
                     src={(userData[0] && userData[0].photo) ? userData[0].photo : "https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh"}
                     top
-
                   />
                   <FormGroup floating>
-                    <Input id="displayName" name="displayName" className="d-modal-input"
-                      placeholder="ClubUser" onChange={handleInputChange} type="text" defaultValue={userData[0] ? userData[0].name : user.displayName} />
+                    {name.length > 0 ?
+                      <>
+                        <Input id="displayName" name="displayName" className="d-modal-input"
+                          placeholder="ClubUser" onChange={handleInputNameChange} type="text" defaultValue={userData[0].name} />
+                      </>
+                      :
+                      <Input id="displayName" name="displayName" className="d-modal-input"
+                        placeholder="ClubUser" onChange={handleInputNameChange} type="text" defaultValue={user.displayName} />
+                    }
                     <Label for="displayName">Username</Label>
                   </FormGroup>
                   <FormGroup floating>
                     <Input id="email" name="email" className={`d-modal-input ${user.emailVerified ? "is-valid" : "is-invalid"}`}
-                      type="email" defaultValue={user.email} disabled />
+                      type="email" onChange={handleInputEmailChange} defaultValue={user.email} />
                     <Label for="email">Email</Label>
                     {!user.emailVerified &&
                       <Button color="primary" type="button" className="mt-3" onClick={resendEmailVerification}>Resend email verification</Button>
