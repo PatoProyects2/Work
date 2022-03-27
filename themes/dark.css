@@ -177,6 +177,14 @@ input[type=radio][name=pic1]:checked+img {
     fill: #ffb74d;
 }
 
+svg:hover>g.brand-icon {
+    fill: #ffb74d;
+}
+
+.brand-icon {
+    fill: #fff;
+}
+
 .d-modal .modal-content {
     background-color: #292b2c !important;
 }
