@@ -23,6 +23,9 @@ function ChatMessage({ text, uid, photo, name, level, auth, userClub }) {
             }
         }
         readUserById(uid)
+        return () => {
+            setUserData({});
+        };
     }, [uid])
 
     const OpenStatModal = () => {

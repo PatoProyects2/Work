@@ -34,6 +34,7 @@ export default function Main() {
 
   useEffect(() => {
     const readLeaderboard = async () => {
+
       var unixTimeStamp = Math.round((new Date()).getTime() / 1000);
 
       var lastDay = unixTimeStamp - 86400

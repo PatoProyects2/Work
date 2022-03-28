@@ -888,7 +888,7 @@ export default function Rps() {
                   <label htmlFor="age">I confirm that I am at least 18 years old</label>
                 </p>
                 <button className="btn-hover btn-start" onClick={openGame}>DOUBLE OR NOTHING</button>
-                <ReadAllGames />
+                {isMobileResolution ? <ReadAllGames isMobileVersion={true} /> : <ReadAllGames isMobileVersion={false} />}
               </>
               :
               <>

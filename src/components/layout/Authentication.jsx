@@ -23,6 +23,9 @@ export default function AccountFirebase(props) {
 
   useEffect(() => {
     readUserClubData(user)
+    return () => {
+      setUserData({});
+    };
   }, [user])
 
   const readUserClubData = (user) => {

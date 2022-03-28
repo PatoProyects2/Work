@@ -3,7 +3,7 @@ import { useAuthState } from 'react-firebase-hooks/auth'
 import { sendEmailVerification, updateProfile, updateEmail } from 'firebase/auth';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { Button, FormGroup, Input, Row, Col, Card, CardImg, CardBody, CardTitle, Label, Modal, ModalBody } from 'reactstrap'
-import { toast, Toaster } from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 import { query, where, collection, limit, onSnapshot, updateDoc, doc } from "firebase/firestore";
 import { auth, db, storage } from '../../../../firebase/firesbaseConfig'
 import Stats from './Stats'
@@ -17,7 +17,7 @@ export default function Profile() {
   const [user] = useAuthState(auth)
   const [userData, setUserData] = useState({});
   const [nftPicture, setNftPicture] = useState(false);
-  const [name, setName] = useState('');
+  const [name, setName] = useState('ClubUser');
   const [log, setLog] = useState('');
   const [uploadValue, setUploadValue] = useState(0);
   const [picture, setPicture] = useState(null);
@@ -102,7 +102,9 @@ export default function Profile() {
       const unsub = onSnapshot(q, (doc) => {
         const clubData = doc.docs.map(userData => userData.data())
         setUserData(clubData)
-        setName(clubData[0].name)
+        if (clubData[0]) {
+          setName(clubData[0].name)
+        }
       });
       return unsub;
     }
@@ -190,7 +192,7 @@ export default function Profile() {
                   </CardTitle>
                   <CardImg
                     onClick={selectPicture}
-                    alt={userData[0] ? userData[0].name : user.displayName ? user.displayName : "ClubUser"}
+                    alt={userData[0] ? name : user.displayName ? user.displayName : "ClubUser"}
                     className="rounded-circle profile-img"
                     src={(userData[0] && userData[0].photo) ? userData[0].photo : "https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh"}
                     top
@@ -199,7 +201,7 @@ export default function Profile() {
                     {name.length > 0 ?
                       <>
                         <Input id="displayName" name="displayName" className="d-modal-input"
-                          placeholder="ClubUser" onChange={handleInputNameChange} type="text" defaultValue={userData[0].name} />
+                          placeholder="ClubUser" onChange={handleInputNameChange} type="text" defaultValue={name} />
                       </>
                       :
                       <Input id="displayName" name="displayName" className="d-modal-input"

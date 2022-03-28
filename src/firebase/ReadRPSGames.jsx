@@ -246,7 +246,7 @@ export default function ReadRPSGames() {
                 {historyPlays[0] !== undefined && historyPlays[0].createdAt ?
                     <>
                         <DropdownItem className="dd-menu-item">
-                            <img width="35" height="35" className="rounded-circle" alt="" src={`${historyPlays[0].photo}`} />
+                            <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[0].photo}`} />
                             {historyPlays[0].name !== 'Username' ? " " + historyPlays[0].name : " " + historyPlays[0].account.substring(0, 5).toLowerCase()}
                             {" played " + historyPlays[0].amount + " MATIC and"}
                             <span style={{ color: historyPlays[0].result ? "mediumseagreen" : "crimson" }}>
@@ -269,7 +269,7 @@ export default function ReadRPSGames() {
                 {historyPlays[1] !== undefined && historyPlays[1].createdAt ?
                     <>
                         <DropdownItem className="dd-menu-item">
-                            <img width="35" height="35" className="rounded-circle" alt="" src={`${historyPlays[1].photo}`} />
+                            <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[1].photo}`} />
                             {historyPlays[1].name !== 'Username' ? " " + historyPlays[1].name : " " + historyPlays[1].account.substring(0, 5).toLowerCase()}
                             {" played " + historyPlays[1].amount + " MATIC and"}
                             <span style={{ color: historyPlays[1].result ? "mediumseagreen" : "crimson" }}>
@@ -292,7 +292,7 @@ export default function ReadRPSGames() {
                 {historyPlays[2] !== undefined && historyPlays[2].createdAt ?
                     <>
                         <DropdownItem className="dd-menu-item">
-                            <img width="35" height="35" className="rounded-circle" alt="" src={`${historyPlays[2].photo}`} />
+                            <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[2].photo}`} />
                             {historyPlays[2].name !== 'Username' ? " " + historyPlays[2].name : " " + historyPlays[2].account.substring(0, 5).toLowerCase()}
                             {" played " + historyPlays[2].amount + " MATIC and"}
                             <span style={{ color: historyPlays[2].result ? "mediumseagreen" : "crimson" }}>
@@ -315,7 +315,7 @@ export default function ReadRPSGames() {
                 {historyPlays[3] !== undefined && historyPlays[3].createdAt ?
                     <>
                         <DropdownItem className="dd-menu-item">
-                            <img width="35" height="35" className="rounded-circle" alt="" src={`${historyPlays[3].photo}`} />
+                            <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[3].photo}`} />
                             {historyPlays[3].name !== 'Username' ? " " + historyPlays[3].name : " " + historyPlays[3].account.substring(0, 5).toLowerCase()}
                             {" played " + historyPlays[3].amount + " MATIC and"}
                             <span style={{ color: historyPlays[3].result ? "mediumseagreen" : "crimson" }}>
@@ -338,7 +338,7 @@ export default function ReadRPSGames() {
                 {historyPlays[4] !== undefined && historyPlays[4].createdAt ?
                     <>
                         <DropdownItem className="dd-menu-item">
-                            <img width="35" height="35" className="rounded-circle" alt="" src={`${historyPlays[4].photo}`} />
+                            <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[4].photo}`} />
                             {historyPlays[4].name !== 'Username' ? " " + historyPlays[4].name : " " + historyPlays[4].account.substring(0, 5).toLowerCase()}
                             {" played " + historyPlays[4].amount + " MATIC and"}
                             <span style={{ color: historyPlays[4].result ? "mediumseagreen" : "crimson" }}>
@@ -361,7 +361,7 @@ export default function ReadRPSGames() {
                 {historyPlays[5] !== undefined && historyPlays[5].createdAt ?
                     <>
                         <DropdownItem className="dd-menu-item">
-                            <img width="35" height="35" className="rounded-circle" alt="" src={`${historyPlays[5].photo}`} />
+                            <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[5].photo}`} />
                             {historyPlays[5].name !== 'Username' ? " " + historyPlays[5].name : " " + historyPlays[5].account.substring(0, 5).toLowerCase()}
                             {" played " + historyPlays[5].amount + " MATIC and"}
                             <span style={{ color: historyPlays[5].result ? "mediumseagreen" : "crimson" }}>
@@ -384,7 +384,7 @@ export default function ReadRPSGames() {
                 {historyPlays[6] !== undefined && historyPlays[6].createdAt ?
                     <>
                         <DropdownItem className="dd-menu-item">
-                            <img width="35" height="35" className="rounded-circle" alt="" src={`${historyPlays[6].photo}`} />
+                            <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[6].photo}`} />
                             {historyPlays[6].name !== 'Username' ? " " + historyPlays[6].name : " " + historyPlays[6].account.substring(0, 5).toLowerCase()}
                             {" played " + historyPlays[6].amount + " MATIC and"}
                             <span style={{ color: historyPlays[6].result ? "mediumseagreen" : "crimson" }}>
@@ -407,7 +407,7 @@ export default function ReadRPSGames() {
                 {historyPlays[7] !== undefined && historyPlays[7].createdAt ?
                     <>
                         <DropdownItem className="dd-menu-item">
-                            <img width="35" height="35" className="rounded-circle" alt="" src={`${historyPlays[7].photo}`} />
+                            <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[7].photo}`} />
                             {historyPlays[7].name !== 'Username' ? " " + historyPlays[7].name : " " + historyPlays[7].account.substring(0, 5).toLowerCase()}
                             {" played " + historyPlays[7].amount + " MATIC and"}
                             <span style={{ color: historyPlays[7].result ? "mediumseagreen" : "crimson" }}>
@@ -430,7 +430,7 @@ export default function ReadRPSGames() {
                 {historyPlays[8] !== undefined && historyPlays[8].createdAt ?
                     <>
                         <DropdownItem className="dd-menu-item">
-                            <img width="35" height="35" className="rounded-circle" alt="" src={`${historyPlays[8].photo}`} />
+                            <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[8].photo}`} />
                             {historyPlays[8].name !== 'Username' ? " " + historyPlays[8].name : " " + historyPlays[8].account.substring(0, 5).toLowerCase()}
                             {" played " + historyPlays[8].amount + " MATIC and"}
                             <span style={{ color: historyPlays[8].result ? "mediumseagreen" : "crimson" }}>
@@ -453,7 +453,7 @@ export default function ReadRPSGames() {
                 {historyPlays[9] !== undefined && historyPlays[9].createdAt ?
                     <>
                         <DropdownItem className="dd-menu-item">
-                            <img width="35" height="35" className="rounded-circle" alt="" src={`${historyPlays[9].photo}`} />
+                            <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[9].photo}`} />
                             {historyPlays[9].name !== 'Username' ? " " + historyPlays[9].name : " " + historyPlays[9].account.substring(0, 5).toLowerCase()}
                             {" played " + historyPlays[9].amount + " MATIC and"}
                             <span style={{ color: historyPlays[9].result ? "mediumseagreen" : "crimson" }}>
@@ -476,7 +476,7 @@ export default function ReadRPSGames() {
                 {historyPlays[10] !== undefined && historyPlays[10].createdAt ?
                     <>
                         <DropdownItem className="dd-menu-item">
-                            <img width="35" height="35" className="rounded-circle" alt="" src={`${historyPlays[10].photo}`} />
+                            <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[10].photo}`} />
                             {historyPlays[10].name !== 'Username' ? " " + historyPlays[10].name : " " + historyPlays[10].account.substring(0, 5).toLowerCase()}
                             {" played " + historyPlays[10].amount + " MATIC and"}
                             <span style={{ color: historyPlays[10].result ? "mediumseagreen" : "crimson" }}>
@@ -499,7 +499,7 @@ export default function ReadRPSGames() {
                 {historyPlays[11] !== undefined && historyPlays[11].createdAt ?
                     <>
                         <DropdownItem className="dd-menu-item">
-                            <img width="35" height="35" className="rounded-circle" alt="" src={`${historyPlays[11].photo}`} />
+                            <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[11].photo}`} />
                             {historyPlays[11].name !== 'Username' ? " " + historyPlays[11].name : " " + historyPlays[11].account.substring(0, 5).toLowerCase()}
                             {" played " + historyPlays[11].amount + " MATIC and"}
                             <span style={{ color: historyPlays[11].result ? "mediumseagreen" : "crimson" }}>

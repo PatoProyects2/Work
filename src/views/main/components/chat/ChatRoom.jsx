@@ -66,8 +66,10 @@ function ChatRoom(props) {
 
       }
     }
-
     readIgnoredUser(userClub)
+    return () => {
+      setIgnoredUsers([]);
+    };
   }, [userClub])
 
 

@@ -75,6 +75,7 @@ export const NavbarDesktop = ({ handleFaqModal, handleHtpModal, handleRpsModal, 
                                 Home
                             </NavLink>
                             <NavLink
+                                end
                                 onClick={() => setShowOffCanvas(false)}
                                 className={({ isActive }) => "nav-item nav-link nav-link-primary" + (isActive ? ' active' : '')} to="/rps">
                                 <svg
@@ -257,7 +258,7 @@ export const NavbarDesktop = ({ handleFaqModal, handleHtpModal, handleRpsModal, 
                             <a href="https://twitter.com/RPSGamesClub" className="twitter-icon" target="_blank" rel="noopener noreferrer">
                                 <i className="fab fa-2x fa-twitter"></i>
                             </a>
-                            <a href="https://discord.gg/AM65VtvP2Q" className="discord-icon" target="_blank" rel="noopener noreferrer">
+                            <a href="https://discord.gg/Ygk58VR4" className="discord-icon" target="_blank" rel="noopener noreferrer">
                                 <i className="fab fa-2x fa-discord"></i>
                             </a>
                         </div>

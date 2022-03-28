@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '../../firebase/firesbaseConfig'
+import { useMixpanel } from 'react-mixpanel-browser';
 import { Outlet } from 'react-router-dom'
 import ChatRoom from '../../views/main/components/chat/ChatRoom';
 import Footer from '../footer/Footer'
@@ -11,6 +12,10 @@ export function MainLayout() {
   const [user] = useAuthState(auth);
   const [showChat, setShowChat] = useState(false);
   const [balance, setBalance] = useState('-');
+
+  const mixpanel = useMixpanel();
+  mixpanel.init('07cdb36cf270a17ef7095ffc2aacb29d', { debug: true });
+  mixpanel.track('Sign up');
 
   return (
     <BalanceContext.Provider value={{ balance, setBalance }}>
