@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
 import lodash from 'lodash'
-import { collection, getDocs, query, orderBy, where } from "firebase/firestore";
+import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import { Button, ButtonGroup } from 'reactstrap';
-import { useAuthState } from 'react-firebase-hooks/auth'
-import { db, auth } from '../../firebase/firesbaseConfig'
+import { db } from '../../firebase/firesbaseConfig'
 import MostPlays from './components/MostPlays'
 import MostAmount from './components/MostAmount'
 import ReadAllGames from '../../firebase/ReadAllGames'
@@ -17,7 +16,6 @@ import NFTImg from '../../assets/imgs/nft_hover_card.png'
 import { useMatchMedia } from '../../hooks/useMatchMedia'
 
 export default function Main() {
-  const [user] = useAuthState(auth)
   const [leaderboard, setLeaderboard] = useState({});
   const [liveBets, setLiveBets] = useState(true);
   const [mostPlays, setMostPlays] = useState(false);
@@ -34,141 +32,206 @@ export default function Main() {
 
   useEffect(() => {
     const readLeaderboard = async () => {
-
       var unixTimeStamp = Math.round((new Date()).getTime() / 1000);
-
       var lastDay = unixTimeStamp - 86400
       var lastWeek = unixTimeStamp - 604800
       var lastMonth = unixTimeStamp - 2592000
 
-      var dayGames = []
-      var weekGames = []
-      var monthGames = []
-      var globalGames = []
+      let dayGames = []
+      let weekGames = []
+      let monthGames = []
+      let globalGames = []
 
       const clubCollection = collection(db, "allGames")
       const queryGames = query(clubCollection, orderBy("createdAt", "desc"))
       const documentGames = await getDocs(queryGames)
       documentGames.forEach(doc => {
+        let data = doc.data()
         let created = doc.data().createdAt
-
         if (created > lastDay) {
-          dayGames = dayGames.concat([doc.data().account])
+          let array0 = {
+            account: data.account,
+            photo: data.photo,
+            name: data.name,
+            amount: data.amount
+          }
+          dayGames = dayGames.concat(array0)
         }
         if (created > lastWeek) {
-          weekGames = weekGames.concat([doc.data().account])
+          let array1 = {
+            account: data.account,
+            photo: data.photo,
+            name: data.name,
+            amount: data.amount
+          }
+          weekGames = weekGames.concat(array1)
         }
         if (created > lastMonth) {
-          monthGames = monthGames.concat([doc.data().account])
+          let array2 = {
+            account: data.account,
+            photo: data.photo,
+            name: data.name,
+            amount: data.amount
+          }
+          monthGames = monthGames.concat(array2)
         }
-        globalGames = globalGames.concat([doc.data().account])
+        let array3 = {
+          account: data.account,
+          photo: data.photo,
+          name: data.name,
+          amount: data.amount
+        }
+        globalGames = globalGames.concat(array3)
       });
 
-      const arrDay = [... new Set(dayGames.map(data => data))]
-      var dayTop = arrDay.map(account => query(collection(db, "allGames"), where("account", "==", account), where("createdAt", ">", lastDay)))
-      const array0 = await Promise.all(
-        dayTop.map(async query => {
-          return await getDocs(query)
+      let dayObject = []
+      dayGames.forEach(x => {
+        if (!dayObject.hasOwnProperty(x.account)) {
+          dayObject[x.account] = []
+        }
+        dayObject[x.account].push({
+          account: x.account,
+          photo: x.photo,
+          name: x.name,
+          amount: x.amount
         })
-      )
+      })
 
-      const arrWeek = [... new Set(weekGames.map(data => data))]
-      var weekTop = arrWeek.map(account => query(collection(db, "allGames"), where("account", "==", account), where("createdAt", ">", lastWeek)))
-      const array1 = await Promise.all(
-        weekTop.map(async query => {
-          return await getDocs(query)
+      let weekObject = []
+      weekGames.forEach(x => {
+        if (!weekObject.hasOwnProperty(x.account)) {
+          weekObject[x.account] = []
+        }
+        weekObject[x.account].push({
+          account: x.account,
+          photo: x.photo,
+          name: x.name,
+          amount: x.amount
         })
-      )
+      })
 
-      const arrMonth = [... new Set(monthGames.map(data => data))]
-      var monthTop = arrMonth.map(account => query(collection(db, "allGames"), where("account", "==", account), where("createdAt", ">", lastMonth)))
-      const array2 = await Promise.all(
-        monthTop.map(async query => {
-          return await getDocs(query)
+
+      let monthObject = []
+      monthGames.forEach(x => {
+        if (!monthObject.hasOwnProperty(x.account)) {
+          monthObject[x.account] = []
+        }
+        monthObject[x.account].push({
+          account: x.account,
+          photo: x.photo,
+          name: x.name,
+          amount: x.amount
         })
-      )
+      })
 
-      const arrGlobal = [... new Set(globalGames.map(data => data))]
-      var globalTop = arrGlobal.map(account => query(collection(db, "allGames"), where("account", "==", account), where("createdAt", "<", unixTimeStamp)))
-      const array3 = await Promise.all(
-        globalTop.map(async query => {
-          return await getDocs(query)
+      let globalObject = []
+      globalGames.forEach(x => {
+        if (!globalObject.hasOwnProperty(x.account)) {
+          globalObject[x.account] = []
+        }
+        globalObject[x.account].push({
+          account: x.account,
+          photo: x.photo,
+          name: x.name,
+          amount: x.amount
         })
-      )
+      })
 
-      const arrayDay = [... new Set(array0.map(data => data._snapshot.docChanges))]
-      const arrayWeek = [... new Set(array1.map(data => data._snapshot.docChanges))]
-      const arrayMonth = [... new Set(array2.map(data => data._snapshot.docChanges))]
-      const arrayGlobal = [... new Set(array3.map(data => data._snapshot.docChanges))]
+      let dayArray = []
+      Object.values(dayObject).forEach(val => {
+        dayArray = dayArray.concat([val])
+      });
 
-      var data0 = arrayDay.map(users => {
-        let amounts = users.map(amount => parseInt(amount.doc.data.value.mapValue.fields.amount.integerValue))
+      let weekArray = []
+      Object.values(weekObject).forEach(val => {
+        weekArray = weekArray.concat([val])
+      });
+
+      let monthArray = []
+      Object.values(monthObject).forEach(val => {
+        monthArray = monthArray.concat([val])
+      });
+
+      let globalArray = []
+      Object.values(globalObject).forEach(val => {
+        globalArray = globalArray.concat([val])
+      });
+
+      let day = dayArray.map(users => {
+        let amounts = users.map(amount => amount.amount)
         let amount = lodash.sum(amounts)
-        let user = users[users.length - 1].doc.data.value.mapValue.fields
+        let user = users[users.length - 1]
         let top = [
-          user.account.stringValue,
-          user.photo.stringValue,
-          user.name.stringValue,
+          user.account,
+          user.photo,
+          user.name,
           users.length,
           amount
         ]
         return top
       })
-      var data1 = arrayWeek.map(users => {
-        let amounts = users.map(amount => parseInt(amount.doc.data.value.mapValue.fields.amount.integerValue))
+
+      let week = weekArray.map(users => {
+        let amounts = users.map(amount => amount.amount)
         let amount = lodash.sum(amounts)
-        let user = users[users.length - 1].doc.data.value.mapValue.fields
+        let user = users[users.length - 1]
         let top = [
-          user.account.stringValue,
-          user.photo.stringValue,
-          user.name.stringValue,
+          user.account,
+          user.photo,
+          user.name,
           users.length,
           amount
         ]
         return top
       })
-      var data2 = arrayMonth.map(users => {
-        let amounts = users.map(amount => parseInt(amount.doc.data.value.mapValue.fields.amount.integerValue))
+
+      let month = monthArray.map(users => {
+        let amounts = users.map(amount => amount.amount)
         let amount = lodash.sum(amounts)
-        let user = users[users.length - 1].doc.data.value.mapValue.fields
+        let user = users[users.length - 1]
         let top = [
-          user.account.stringValue,
-          user.photo.stringValue,
-          user.name.stringValue,
+          user.account,
+          user.photo,
+          user.name,
           users.length,
           amount
         ]
         return top
       })
-      var data3 = arrayGlobal.map(users => {
-        let amounts = users.map(amount => parseInt(amount.doc.data.value.mapValue.fields.amount.integerValue))
+
+      let global = globalArray.map(users => {
+        let amounts = users.map(amount => amount.amount)
         let amount = lodash.sum(amounts)
-        let user = users[users.length - 1].doc.data.value.mapValue.fields
+        let user = users[users.length - 1]
         let top = [
-          user.account.stringValue,
-          user.photo.stringValue,
-          user.name.stringValue,
+          user.account,
+          user.photo,
+          user.name,
           users.length,
           amount
         ]
         return top
       })
+
 
       var leaderboard = {
         games: {},
         amount: {},
       }
 
-      leaderboard.games.day = data0.sort(((a, b) => b[3] - a[3]))
-      leaderboard.games.week = data1.sort(((a, b) => b[3] - a[3]))
-      leaderboard.games.month = data2.sort(((a, b) => b[3] - a[3]))
-      leaderboard.games.global = data3.sort(((a, b) => b[3] - a[3]))
+      leaderboard.games.day = day.sort(((a, b) => b[3] - a[3]))
+      leaderboard.amount.day = day.sort(((a, b) => b[4] - a[4]))
 
-      leaderboard.amount.day = data0.sort(((a, b) => b[4] - a[4]))
-      leaderboard.amount.week = data1.sort(((a, b) => b[4] - a[4]))
-      leaderboard.amount.month = data2.sort(((a, b) => b[4] - a[4]))
-      leaderboard.amount.global = data3.sort(((a, b) => b[4] - a[4]))
+      leaderboard.games.week = week.sort(((a, b) => b[3] - a[3]))
+      leaderboard.amount.week = week.sort(((a, b) => b[4] - a[4]))
 
+      leaderboard.games.month = month.sort(((a, b) => b[3] - a[3]))
+      leaderboard.amount.month = month.sort(((a, b) => b[4] - a[4]))
+
+      leaderboard.games.global = global.sort(((a, b) => b[3] - a[3]))
+      leaderboard.amount.global = global.sort(((a, b) => b[4] - a[4]))
+
+      console.log(leaderboard)
       setLeaderboard(leaderboard)
     }
     readLeaderboard()
