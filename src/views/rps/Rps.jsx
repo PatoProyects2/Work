@@ -10,8 +10,9 @@ import WalletLink from "walletlink";
 import { doc, getDoc, setDoc, updateDoc, collection, addDoc, serverTimestamp } from "firebase/firestore";
 import toast from 'react-hot-toast';
 import RpsGame from '../../abis/rpsGame/rpsGame.json'
+import RpsGamePolygon from '../../abis/rpsGamePolygon/rpsGame.json'
 import swapV2 from '../../abis/swap/IUniswapV2Router02.json'
-import { rpsGameContract, polygonSwapContract, maticContract, usdcContract } from '../../components/blockchain/Contracts'
+import { rpsGameContract, polygonSwapContract, maticContract, usdcContract, rpsGamePolygonContract } from '../../components/blockchain/Contracts'
 import HistoryGames from './components/HistoryGames'
 import ConnectWallet from './components/ConnectWallet'
 import ConnectChain from './components/ConnectChain'
@@ -462,8 +463,6 @@ export default function Rps() {
       }
       const web3 = new Web3(provider);
       setWeb3(web3)
-      const rpsgame = new web3.eth.Contract(RpsGame.abi, rpsGameContract)
-      setRpsgame(rpsgame)
       const polygonSwap = new web3.eth.Contract(swapV2.abi, polygonSwapContract)
       setSwapPolygon(polygonSwap)
       const accounts = await web3.eth.getAccounts();
@@ -479,29 +478,35 @@ export default function Rps() {
       if (chainId === 137) {
         let maticPrice = await polygonSwap.methods.getAmountsOut(decimal.toString(), [maticContract, usdcContract]).call()
         setMaticPrice(maticPrice[1])
+        const rpsgame = new web3.eth.Contract(RpsGamePolygon.abi, rpsGamePolygonContract)
+        setRpsgame(rpsgame)
+      }
+      if (chainId === 80001) {
+        const rpsgame = new web3.eth.Contract(RpsGame.abi, rpsGameContract)
+        setRpsgame(rpsgame)
       }
       ethereum.on('chainChanged', () => {
         window.location.reload()
       });
-      if (chainId !== 80001) {
+      if (chainId !== 137) {
         try {
           await ethereum.sendAsync({
             method: 'wallet_addEthereumChain',
             params: [{
-              chainId: "0x13881",
-              chainName: "Mumbai Testnet",
-              rpcUrls: ["https://rpc-mumbai.matic.today"],
+              chainId: "0x89",
+              chainName: "Polygon Mainnet",
+              rpcUrls: ["https://polygon-rpc.com/"],
               iconUrls: [""],
               nativeCurrency: {
                 name: "MATIC",
                 symbol: "MATIC",
                 decimals: 18,
               },
-              blockExplorerUrls: ["https://mumbai.polygonscan.com/"],
+              blockExplorerUrls: ["https://explorer.matic.network/"],
             }],
           });
         } catch (error) {
-          console.log(error);
+
         }
       }
     } catch (e) {
@@ -519,11 +524,12 @@ export default function Rps() {
       toast.error("Confirm that your are at least 18 years old")
       return false
     }
-    if (network !== 80001) {
-      toast.error("Network not supported, please connect to Mumbai network")
+    if (network === 80001 || network === 137) {
+      setActive(true)
+    } else {
+      toast.error("Select a valid network")
       return false
     }
-    setActive(true)
   }
 
   const handleInputChange = (event) => {
@@ -542,20 +548,20 @@ export default function Rps() {
     if (document.getElementById('rock').checked || document.getElementById('paper').checked || document.getElementById('scissors').checked) {
       setUserhand(usergame.hand)
     } else {
-      toast.error("Select your betting hand")
+      toast.error("Select the betting hand")
       setDoubleOrNothingStatus(false)
       return false
     }
     if (document.getElementById('amount1').checked || document.getElementById('amount2').checked || document.getElementById('amount3').checked || document.getElementById('amount4').checked || document.getElementById('amount5').checked || document.getElementById('amount6').checked) {
       setUseramount(usergame.amount)
     } else {
-      toast.error("Select your betting amount")
+      toast.error("Select the bet amount")
       setDoubleOrNothingStatus(false)
       return false
     }
     setPlaying(true)
     setAnimation(true)
-    let myEvents = null
+    let myEvents = []
     const query0 = doc(db, "clubUsers", account)
     const userDocument0 = await getDoc(query0)
     const userDocument = userDocument0.data()
@@ -659,11 +665,11 @@ export default function Rps() {
     if (userGameResult) {
       toast.success("You doubled your money, congrats!")
     }
+    const balance = await web3.eth.getBalance(account)
     loadUserGame(account, user)
     setAnimation(false)
     setShowGameResult(false)
     setGameResult(true)
-    const balance = await web3.eth.getBalance(account)
     setWalletBalance(balance)
     setBalance(balance)
   }
@@ -679,15 +685,15 @@ export default function Rps() {
     <>
       {isMobileResolution
         ?
-        <div className="d-flex flex-row justify-content-around gap-1">
+        <div className="d-flex flex-row justify-content-start gap-1">
           {account !== '0x000000000000000000000000000000000000dEaD' ?
             <>
               <HistoryGames
-                isMobileVersion={true}
+                isMobileVersion={false}
                 unixTimeStamp={unixTimeStamp}
               />
               <WinStreakLeaderboard
-                isMobileVersion={true}
+                isMobileVersion={false}
                 unixTimeStamp={unixTimeStamp}
               />
               <ConnectWallet
@@ -750,67 +756,63 @@ export default function Rps() {
                       <h3>{userhand + " FOR " + useramount + " MATIC"}</h3>
                     </> : ""}
                   {showGameResult === true ? <button className="btn-hover btn-green" onClick={showResult}>SEE RESULT</button> : ""}
-                  {gameResult === true
-                    ?
+                  {gameResult === true &&
                     <>
-                      {userGameStreak > 1 ?
-                        <>
+                      {userGameStreak > 1 &&
+                        <div className="mb-5">
                           <h3>Congrats!</h3>
-                          <br></br>
                           <h3>{"You're on a " + userGameStreak + " win streak"}</h3>
-                          <br></br>
-                        </>
-                        :
-                        ""
+                        </div>
                       }
                       {userhand === 'ROCK' && userGameResult === true &&
-                        <div className="d-flex justify-content-center">
+                        <div className="d-flex justify-content-center mt-4">
                           <img className="result-rps-image" src={RockWin} alt="Rock Wins" />
                         </div>
                       }
                       {userhand === 'PAPER' && userGameResult === true &&
-                        <div className="d-flex justify-content-center">
+                        <div className="d-flex justify-content-center mt-4">
                           <img className="result-rps-image" src={PaperWin} alt="Paper Wins" />
                         </div>
                       }
                       {userhand === 'SCISSORS' && userGameResult === true &&
-                        <div className="d-flex justify-content-center">
+                        <div className="d-flex justify-content-center mt-4">
                           <img className="result-rps-image" src={ScissorsWin} alt="Scissors Wins" />
                         </div>
                       }
                       {userhand === 'ROCK' && userGameResult === false &&
-                        <div className="d-flex justify-content-center">
+                        <div className="d-flex justify-content-center mt-4">
                           <img className="result-rps-image" src={RockLose} alt="Rock Loses" />
                         </div>
                       }
                       {userhand === 'PAPER' && userGameResult === false &&
-                        <div className="d-flex justify-content-center">
+                        <div className="d-flex justify-content-center mt-4">
                           <img className="result-rps-image" src={PaperLose} alt="Paper Loses" />
                         </div>
                       }
                       {userhand === 'SCISSORS' && userGameResult === false &&
-                        <div className="d-flex justify-content-center">
+                        <div className="d-flex justify-content-center mt-4">
                           <img className="result-rps-image" src={ScissorsLose} alt="Scissors Loses" />
                         </div>
                       }
-                      <br></br>
-                      <br></br>
-                      <h3>{userGameResult === true ? " YOU WON " : ""}{userGameResult === false ? " YOU LOST " : ""}</h3>
-                      <h3 style={{ color: userGameResult ? "mediumseagreen" : "crimson" }}>{userGameResult === true ? useramount : ""}{userGameResult === false ? useramount : ""}{" MATIC"}</h3>
-                      <br></br>
-                      <h3>
-                        {userGameResult === true ?
-                          <button className="btn-hover btn-green" onClick={backGame}>CLAIM REWARD</button>
-                          :
-                          <>
-                            <p>Try again?</p>
-                            <button className="btn-hover btn-start" onClick={backGame}>DOUBLE OR NOTHING</button>
-                          </>
-                        }
-                      </h3>
+                      <div className="d-flex flex-column flex-md-row justify-content-between w-50 mx-auto mt-4">
+                        <div className="d-flex flex-column justify-content-center">
+                          <span className="rps-result-title">{userGameResult === true ? " YOU WON " : ""}{userGameResult === false ? " YOU LOST " : ""}</span>
+                          <span className="rps-result-amount" style={{ color: userGameResult ? "mediumseagreen" : "crimson" }}>
+                            {userGameResult === true ? useramount : ""}{userGameResult === false ? useramount : ""}{" MATIC"}
+                          </span>
+                        </div>
+                        <div>
+                          {userGameResult === true ?
+                            <button className="btn-hover btn-green" onClick={backGame}>CLAIM REWARD</button>
+                            :
+                            <>
+                              <h5>Try again?</h5>
+                              <button className="btn-hover btn-start" onClick={backGame}>DOUBLE OR NOTHING</button>
+                            </>
+                          }
+                        </div>
+                      </div>
                     </>
-                    :
-                    ""
                   }
                 </div>
                 :
@@ -867,7 +869,7 @@ export default function Rps() {
             </div>
           </>
           :
-          <div>
+          <>
             <div className="row g-0 my-5 justify-content-center">
               <div className="col-3 col-md-2">
                 <img className="my-3 img-fluid" src={Rock} alt="Rock" />
@@ -883,19 +885,22 @@ export default function Rps() {
               <>
                 <ConnectChain network={network} />
                 <br></br>
-                <p>
+                <br></br>
+                <p className="text-center mt-3">
                   <input id="age" type="checkbox"></input>&nbsp;
                   <label htmlFor="age">I confirm that I am at least 18 years old</label>
                 </p>
-                <button className="btn-hover btn-start" onClick={openGame}>DOUBLE OR NOTHING</button>
-                {isMobileResolution ? <ReadAllGames isMobileVersion={true} /> : <ReadAllGames isMobileVersion={false} />}
+                <div className="text-center">
+                  <button className="btn-hover btn-start" onClick={openGame}>DOUBLE OR NOTHING</button>
+                </div>
+                {<ReadAllGames isMobileResolution={isMobileResolution} />}
               </>
               :
               <>
                 <ConnectWallet connectWeb3Modal={connectWeb3Modal} decimal={decimal} web3={web3} account={account} />
               </>
             }
-          </div>
+          </>
         }
       </article >
     </>

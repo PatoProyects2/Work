@@ -346,149 +346,149 @@ export default function Main() {
 
   return (
     <>
-      <div className='cards-container'>
-        <div className='row text-center mb-2 mb-md-5'>
-          <div className='game-card rps col-md-6 col-12 mx-auto'>
-            <NavLink to='/rps'>
-              <div className='card-bg rps-bg'></div>
-              <img src={RPSGameImg} width='400' />
-            </NavLink>
-          </div>
-        </div>
-        <div className='row text-center mb-2 mb-md-5'>
-          <div className='game-card col-md-4 mx-auto'>
-            <NavLink to='/'>
-              <div className='card-bg soon-bg'></div>
-              <img src={ComingSoonImg} width='400' />
-            </NavLink>
-          </div>
-          <div className='game-card col-md-4 mx-auto'>
-            <NavLink to='/nfts'>
-              <div className='card-bg nfts-bg'></div>
-              <img src={NFTImg} width='400' />
-            </NavLink>
-          </div>
-          <div className='game-card last col-md-4 mx-auto'>
-            <NavLink to='/fair-play'>
-              <div className='card-bg fair-bg'></div>
-              <img src={FairPlayImg} width='400' />
-            </NavLink>
-          </div>
-        </div>
-        <div className='row text-center mb-2'>
-          <div className='social-card col-6 mx-auto'>
-            <div className='card-bg twitter-bg'></div>
-            <a href='https://twitter.com/RPSGamesClub' target="_blank" rel="noreferrer"><img src={TwitterImg} width='400' /></a>
-          </div>
-          <div className='social-card col-6 mx-auto'>
-            <div className='card-bg discord-bg'></div>
-            <a href="https://discord.gg/AM65VtvP2Q" target="_blank" rel="noreferrer"><img src={DiscordImg} width='400' /></a>
-          </div>
+    <div className='cards-container'>
+      <div className='row text-center mb-2 mb-md-5'>
+        <div className='game-card rps col-md-6 col-12 mx-auto'>
+          <NavLink to='/rps'>
+            <div className='card-bg rps-bg'></div>
+            <img src={RPSGameImg} width='400' />
+          </NavLink>
         </div>
       </div>
-
-      <br></br>
-
-      <div className="table-list-container">
-        <div className='d-flex justify-content-between flex-wrap'>
-          <ButtonGroup>
-            <Button onClick={liveBetsModal} className={liveBets ? 'active btn-rank' : 'btn-rank'}>Live Bets</Button>
-            <Button onClick={leaderboardsModalPlays} className={mostPlays ? 'active btn-rank' : 'btn-rank'}>Most Plays</Button>
-            <Button onClick={leaderboardsModalAmount} className={mostAmount ? 'active btn-rank' : 'btn-rank'}>Most Amount</Button>
-          </ButtonGroup>
-
-          {mostPlays &&
-            <ButtonGroup>
-              <Button onClick={day} className={`btn-recurrence ${dailyGame ? 'active' : ''}`}>Daily</Button>
-              <Button onClick={week} className={`btn-recurrence ${weeklyGame ? 'active' : ''}`}>Weekly</Button>
-              <Button onClick={month} className={`btn-recurrence ${monthlyGame ? 'active' : ''}`}>Monthly</Button>
-              <Button onClick={all} className={`btn-recurrence ${globalGame ? 'active' : ''}`}>Global</Button>
-            </ButtonGroup>
-          }
-          {mostAmount &&
-            <ButtonGroup>
-              <Button onClick={day} className={`btn-recurrence ${dailyAmount ? 'active' : ''}`}>Daily</Button>
-              <Button onClick={week} className={`btn-recurrence ${weeklyAmount ? 'active' : ''}`}>Weekly</Button>
-              <Button onClick={month} className={`btn-recurrence ${monthlyAmount ? 'active' : ''}`}>Monthly</Button>
-              <Button onClick={all} className={`btn-recurrence ${globalAmount ? 'active' : ''}`}>Global</Button>
-            </ButtonGroup>
-          }
+      <div className='row text-center mb-2 mb-md-5'>
+        <div className='game-card col-md-4 mx-auto'>
+          <NavLink to='/'>
+            <div className='card-bg soon-bg'></div>
+            <img src={ComingSoonImg} width='400' />
+          </NavLink>
         </div>
+        <div className='game-card col-md-4 mx-auto'>
+          <NavLink to='/nfts'>
+            <div className='card-bg nfts-bg'></div>
+            <img src={NFTImg} width='400' />
+          </NavLink>
+        </div>
+        <div className='game-card last col-md-4 mx-auto'>
+          <NavLink to='/fair-play'>
+            <div className='card-bg fair-bg'></div>
+            <img src={FairPlayImg} width='400' />
+          </NavLink>
+        </div>
+      </div>
+      <div className='row text-center mb-2'>
+        <div className='social-card col-6 mx-auto'>
+          <div className='card-bg twitter-bg'></div>
+          <a href='https://twitter.com/RPSGamesClub' target="_blank" rel="noreferrer"><img src={TwitterImg} width='400' /></a>
+        </div>
+        <div className='social-card col-6 mx-auto'>
+          <div className='card-bg discord-bg'></div>
+          <a href="https://discord.gg/AM65VtvP2Q" target="_blank" rel="noreferrer"><img src={DiscordImg} width='400' /></a>
+        </div>
+      </div>
+    </div>
 
-        {isMobileResolution ? <>{liveBets && <ReadAllGames isMobileVersion={true} />}</> : <>{liveBets && <ReadAllGames isMobileVersion={false} />}</>}
+    <br></br>
 
-        {isMobileResolution ?
-          <>
-            {mostPlays && leaderboard.games &&
-              <>
-                {dailyGame &&
-                  <MostPlays leaderboard={leaderboard.games.day} isMobileVersion={true} />
-                }
-                {weeklyGame &&
-                  <MostPlays leaderboard={leaderboard.games.week} isMobileVersion={true} />
-                }
-                {monthlyGame &&
-                  <MostPlays leaderboard={leaderboard.games.month} isMobileVersion={true} />
-                }
-                {globalGame &&
-                  <MostPlays leaderboard={leaderboard.games.global} isMobileVersion={true} />
-                }
-              </>
-            }
-            {mostAmount && leaderboard.amount &&
-              <>
-                {dailyAmount &&
-                  <MostAmount leaderboard={leaderboard.amount.day} isMobileVersion={true} />
-                }
-                {weeklyAmount &&
-                  <MostAmount leaderboard={leaderboard.amount.week} isMobileVersion={true} />
-                }
-                {monthlyAmount &&
-                  <MostAmount leaderboard={leaderboard.amount.month} isMobileVersion={true} />
-                }
-                {globalAmount &&
-                  <MostAmount leaderboard={leaderboard.amount.global} isMobileVersion={true} />
-                }
-              </>
-            }
-          </>
-          :
-          <>
-            {mostPlays && leaderboard.games &&
-              <>
-                {dailyGame &&
-                  <MostPlays leaderboard={leaderboard.games.day} isMobileVersion={false} />
-                }
-                {weeklyGame &&
-                  <MostPlays leaderboard={leaderboard.games.week} isMobileVersion={false} />
-                }
-                {monthlyGame &&
-                  <MostPlays leaderboard={leaderboard.games.month} isMobileVersion={false} />
-                }
-                {globalGame &&
-                  <MostPlays leaderboard={leaderboard.games.global} isMobileVersion={false} />
-                }
-              </>
-            }
-            {mostAmount && leaderboard.amount &&
-              <>
-                {dailyAmount &&
-                  <MostAmount leaderboard={leaderboard.amount.day} isMobileVersion={false} />
-                }
-                {weeklyAmount &&
-                  <MostAmount leaderboard={leaderboard.amount.week} isMobileVersion={false} />
-                }
-                {monthlyAmount &&
-                  <MostAmount leaderboard={leaderboard.amount.month} isMobileVersion={false} />
-                }
-                {globalAmount &&
-                  <MostAmount leaderboard={leaderboard.amount.global} isMobileVersion={false} />
-                }
-              </>
-            }
-          </>
+    <div className="table-list-container">
+      <div className='d-flex justify-content-between flex-wrap'>
+        <ButtonGroup>
+          <Button onClick={liveBetsModal} className={liveBets ? 'active btn-rank' : 'btn-rank'}>Live Bets</Button>
+          <Button onClick={leaderboardsModalPlays} className={mostPlays ? 'active btn-rank' : 'btn-rank'}>Most Plays</Button>
+          <Button onClick={leaderboardsModalAmount} className={mostAmount ? 'active btn-rank' : 'btn-rank'}>Most Amount</Button>
+        </ButtonGroup>
+
+        {mostPlays &&
+          <ButtonGroup>
+            <Button onClick={day} className={`btn-recurrence ${dailyGame ? 'active' : ''}`}>Daily</Button>
+            <Button onClick={week} className={`btn-recurrence ${weeklyGame ? 'active' : ''}`}>Weekly</Button>
+            <Button onClick={month} className={`btn-recurrence ${monthlyGame ? 'active' : ''}`}>Monthly</Button>
+            <Button onClick={all} className={`btn-recurrence ${globalGame ? 'active' : ''}`}>Global</Button>
+          </ButtonGroup>
         }
-      </div >
-    </>
+        {mostAmount &&
+          <ButtonGroup>
+            <Button onClick={day} className={`btn-recurrence ${dailyAmount ? 'active' : ''}`}>Daily</Button>
+            <Button onClick={week} className={`btn-recurrence ${weeklyAmount ? 'active' : ''}`}>Weekly</Button>
+            <Button onClick={month} className={`btn-recurrence ${monthlyAmount ? 'active' : ''}`}>Monthly</Button>
+            <Button onClick={all} className={`btn-recurrence ${globalAmount ? 'active' : ''}`}>Global</Button>
+          </ButtonGroup>
+        }
+      </div>
+
+      {liveBets && <ReadAllGames isMobileResolution={ isMobileResolution } /> }
+
+      {isMobileResolution ?
+        <>
+          {mostPlays && leaderboard.games &&
+            <>
+              {dailyGame &&
+                <MostPlays leaderboard={leaderboard.games.day} isMobileVersion={true} />
+              }
+              {weeklyGame &&
+                <MostPlays leaderboard={leaderboard.games.week} isMobileVersion={true} />
+              }
+              {monthlyGame &&
+                <MostPlays leaderboard={leaderboard.games.month} isMobileVersion={true} />
+              }
+              {globalGame &&
+                <MostPlays leaderboard={leaderboard.games.global} isMobileVersion={true} />
+              }
+            </>
+          }
+          {mostAmount && leaderboard.amount &&
+            <>
+              {dailyAmount &&
+                <MostAmount leaderboard={leaderboard.amount.day} isMobileVersion={true} />
+              }
+              {weeklyAmount &&
+                <MostAmount leaderboard={leaderboard.amount.week} isMobileVersion={true} />
+              }
+              {monthlyAmount &&
+                <MostAmount leaderboard={leaderboard.amount.month} isMobileVersion={true} />
+              }
+              {globalAmount &&
+                <MostAmount leaderboard={leaderboard.amount.global} isMobileVersion={true} />
+              }
+            </>
+          }
+        </>
+        :
+        <>
+          {mostPlays && leaderboard.games &&
+            <>
+              {dailyGame &&
+                <MostPlays leaderboard={leaderboard.games.day} isMobileVersion={false} />
+              }
+              {weeklyGame &&
+                <MostPlays leaderboard={leaderboard.games.week} isMobileVersion={false} />
+              }
+              {monthlyGame &&
+                <MostPlays leaderboard={leaderboard.games.month} isMobileVersion={false} />
+              }
+              {globalGame &&
+                <MostPlays leaderboard={leaderboard.games.global} isMobileVersion={false} />
+              }
+            </>
+          }
+          {mostAmount && leaderboard.amount &&
+            <>
+              {dailyAmount &&
+                <MostAmount leaderboard={leaderboard.amount.day} isMobileVersion={false} />
+              }
+              {weeklyAmount &&
+                <MostAmount leaderboard={leaderboard.amount.week} isMobileVersion={false} />
+              }
+              {monthlyAmount &&
+                <MostAmount leaderboard={leaderboard.amount.month} isMobileVersion={false} />
+              }
+              {globalAmount &&
+                <MostAmount leaderboard={leaderboard.amount.global} isMobileVersion={false} />
+              }
+            </>
+          }
+        </>
+      }
+    </div >
+  </>
   );
 }

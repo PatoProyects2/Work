@@ -184,10 +184,11 @@ ul {
 
 .game-container {
     max-height: 745px;
-    margin: 50px auto 0 auto;
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    text-align: center;
     h1 {
         font-size: 35px;
         text-align: center;
@@ -280,7 +281,7 @@ ul {
         border: 3px solid white;
     }
     @media (min-width: 992px) {
-        max-width: 60%;
+        max-width: 70%;
     }
     @media (min-width: 768px) {
         .rps-img {
@@ -520,8 +521,8 @@ ul {
     .menu {
         left: 75px;
     }
-    .list-group-item .title {
-        font-size: 0.9rem;
+    .list-group .title {
+        font-size: 0.95rem;
     }
 }
 
@@ -546,6 +547,8 @@ ul {
     }
     .wrapper {
         min-height: calc(100vh - 56px);
+        margin-top: 56px;
+        padding: 10px 10px 0 10px;
     }
     .table-list-container {
         width: 100%;
@@ -1057,8 +1060,36 @@ ul.messages {
     .content-section.expanded {
         margin-left: 0 !important;
     }
+    .active-users-navbar {
+        display: none;
+    }
+    .active-users-offcanvas {
+        display: flex;
+        color: white;
+        align-items: center;
+        margin: auto;
+    }
 }
 
 .result-rps-image {
     margin-bottom: 1rem;
+}
+
+.rps-result-title {
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+
+.rps-result-amount {
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+@media (min-width: 992px) {
+    .active-users-navbar {
+        display: flex;
+    }
+    .active-users-offcanvas {
+        display: none;
+    }
 }

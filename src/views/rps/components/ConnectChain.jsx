@@ -1,26 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap'
 export default function ConnectChain(props) {
     const [dropdown, setDropdown] = useState(false);
-    const [actualNetwork, setActualNetwork] = useState('NETWORK')
     const toggleMenu = () => {
         setDropdown(!dropdown);
-    }
- 
-    useEffect(() => {
-        readNetworkData(props.network)
-        return () => {
-            setActualNetwork('');
-          };
-    }, [props.network])
-
-    const readNetworkData = (network) => {
-        if (network === 80001) {
-            setActualNetwork('MUMBAI')
-        }
-        if (network === 137) {
-            setActualNetwork('POLYGON')
-        }
     }
 
     const addPolygon = async () => {
@@ -31,7 +14,7 @@ export default function ConnectChain(props) {
                     chainId: "0x89",
                     chainName: "Polygon Mainnet",
                     rpcUrls: ["https://polygon-rpc.com/"],
-                    iconUrls: ["https://queesunbitcoin.com/wp-content/uploads/2021/05/curso-sobre-binance-online.png"],
+                    iconUrls: [""],
                     nativeCurrency: {
                         name: "MATIC",
                         symbol: "MATIC",
@@ -41,7 +24,7 @@ export default function ConnectChain(props) {
                 }],
             });
         } catch (error) {
-            console.log(error);
+
         }
     }
 
@@ -63,17 +46,19 @@ export default function ConnectChain(props) {
                 }],
             });
         } catch (error) {
-            console.log(error);
+
         }
     }
     return (
-        <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="lg" className="my-2">
+        <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="lg" className="dd-profile my-2 text-center">
             <DropdownToggle caret color='danger'>
-                {actualNetwork}
+                {props.network === 137 && 'POLYGON'}
+                {props.network === 80001 && 'MUMBAI'}
+                {props.network !== 80001 && props.network !== 137 && 'NETWORK'}
             </DropdownToggle>
             <DropdownMenu >
-                <DropdownItem disabled={actualNetwork === 'POLYGON'} onClick={addPolygon}>POLYGON</DropdownItem>
-                <DropdownItem disabled={actualNetwork === 'MUMBAI'} onClick={addMumbai}>MUMBAI</DropdownItem>
+                <DropdownItem disabled={props.network === 137} onClick={addPolygon}>POLYGON</DropdownItem>
+                <DropdownItem disabled={props.network === 80001} onClick={addMumbai}>MUMBAI</DropdownItem>
             </DropdownMenu>
         </Dropdown>
     )

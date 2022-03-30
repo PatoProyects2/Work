@@ -14,7 +14,7 @@ export function RpsLayout() {
         <Navbar navType="rps" />
       </header>
       <main className='wrapper'>
-        <section className="text-center">
+        <section>
           <Outlet />
         </section>
       </main>

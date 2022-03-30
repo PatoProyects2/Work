@@ -212,6 +212,10 @@ svg:hover>g.brand-icon {
     color: whitesmoke !important;
 }
 
+.dd-profile .dropdown-item:disabled {
+    color: #adb5bd !important;
+}
+
 .dd-profile .dropdown-item:hover {
     background-color: #52525B !important;
 }

@@ -35,7 +35,7 @@ export const NavbarDesktop = ({ handleFaqModal, handleHtpModal, handleRpsModal, 
                             </g>
                         </svg>
                     </NavLink>
-                    <Presence />
+                    <div className="active-users-navbar">{ <Presence /> }</div>
                 </div>
 
                 <MaticBalance />
@@ -253,6 +253,7 @@ export const NavbarDesktop = ({ handleFaqModal, handleHtpModal, handleRpsModal, 
                                 Rewards
                             </NavLink> */}
                         </Nav>
+                        <div className="active-users-offcanvas">{ <Presence /> }</div>
                         {isMobileResolution && <div className="d-flex justify-content-center mt-3"><AccountFirebase /></div>}
                         <div className="d-flex flex-row gap-2 justify-content-center mt-3">
                             <a href="https://twitter.com/RPSGamesClub" className="twitter-icon" target="_blank" rel="noopener noreferrer">
