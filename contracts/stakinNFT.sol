@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+//SPDX-License-Identifier: MIT
 pragma solidity >=0.4.22 <0.9.0;
 
 //import "@OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/math/SafeMath.sol";
@@ -7,7 +7,9 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-import "./nfts/rpsNFT.sol"; 
+interface rpsGame{
+    function Play() external payable;
+}
 /*
 Dev @PatoVerde : 
  * Se crea un vector, en cada posicion guardara cuanto(value) debe repartirse a cada id EN STAKE. (newPlayFunction)
@@ -24,13 +26,15 @@ contract Staking is Ownable {
     mapping(address => infoUser) infOfUsers; // informacion de cada usuario (address => ([id1,id2...],ultimoRetiro))
     //mapping(uint => uint) IdDeposit; //Info de en que "play" fue depositado el nft.
 
+    rpsGame public rpsContract;
     IERC721 public ROCK;
     uint256 public nftInStake;
-    bool public rewardsActive = true;
+    bool public rewardsActive = false;
 
     event Deposit(address, uint);
     event Claim();
     event Withdraw();
+    event C_setRpsGameAddress(address, address);
     /*
     modifier onlyGame(){
         require(msg.sender == address(ROCK));
@@ -39,6 +43,10 @@ contract Staking is Ownable {
 
     constructor(){
 
+    }
+
+    function setRewardsActive(bool _onOFF) public onlyOwner{
+        rewardsActive = _onOFF;
     }
 
     function deposit(uint _id) public{    
@@ -77,9 +85,9 @@ contract Staking is Ownable {
         uint totalPay;
         totalPay = calculatePay(infOfUsers[msg.sender].lastClaim, length);
         infOfUsers[msg.sender].lastClaim = returnLength();
-        payTo(totalPay,msg.sender);
         //* Datos de usuario:
         delete infOfUsers[msg.sender].nftIdStake[_posID];       
+        payTo(totalPay,msg.sender);
         //* Transferir el nft al user
         ROCK.safeTransferFrom( address(this),msg.sender, _id);
         emit Deposit(msg.sender,_id);
@@ -100,9 +108,16 @@ contract Staking is Ownable {
 
 
     uint testValueUsers = 10;
-    function newPlay() public payable {  
-        uint cant = ROCK.balanceOf(address(this));      
-        earningPerPlay.push(msg.value / cant);
+
+    function newPlay() public payable {
+        if(address(rpsContract) == address(0)){
+            earningPerPlay.push(msg.value / testValueUsers); 
+        }else {
+            require(msg.sender == address(rpsContract));
+            earningPerPlay.push(msg.value / testValueUsers); 
+        }
+                  
+        
     }
     function setTestValueUsers(uint _cantUsers) public {
         testValueUsers = _cantUsers;
@@ -131,5 +146,14 @@ contract Staking is Ownable {
             i++;
         }
         return i;
+    }
+    function setRpsGameAddress(address payable _newRpsGame) public onlyOwner{
+        rpsContract = rpsGame(_newRpsGame);
+        emit C_setRpsGameAddress(msg.sender,_newRpsGame);
+    }
+
+    function withdrawAllFounds() public payable onlyOwner{
+        require(rewardsActive == false);
+        payable(msg.sender).transfer(address(this).balance);
     }
 }

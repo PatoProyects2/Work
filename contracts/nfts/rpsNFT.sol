@@ -39,7 +39,7 @@ contract rpsNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         uint256 supply = totalSupply()+1;
         require(_mintAmount > 0);
         require(_mintAmount < maxMintAmount);
-        require(supply + _mintAmount <= maxSupply);
+        require(totalSupply() + _mintAmount <= maxSupply);
         
         if(msg.sender !=owner()){
             require(_mintAmount == 1);
@@ -51,13 +51,13 @@ contract rpsNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         if(msg.sender !=owner()){            
             require(msg.value >= priceMint, "Not Founds");
         }
-        uint rare = serRarity();
+        uint rare = setRarity();
         safeMint(msg.sender, 1);
         rarity[totalSupply()] = rare;
     }
 
-    function serRarity() internal view returns(uint){        
-        require(totalSupply()+1 <= maxSupply);
+    function setRarity() internal view returns(uint){        
+        require(totalSupply() <= maxSupply);
         uint rare = random.randrange(0,4,msg.sender);
         if( maxSupply/333 == 2){
             rare +=5;
@@ -68,24 +68,33 @@ contract rpsNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         //el while solo esta para 0-4, cuidado con valores 5-14    
         while(cantOfRarity[rare] > maxRarity(rare)){
             rare++;
+            if(rare == 5){
+                rare = 0;
+            }
+            if (rare == 10){
+                rare = 5;
+            }
+            if (rare == 15){
+                rare = 10;
+            }
         }
         return rare;
     }
     // modificar para valores 5-14
     function maxRarity(uint _pos)internal pure returns(uint){
-        if(_pos == 0 ){
+        if(_pos == 0 || _pos == 5 || _pos == 10){
             return 150;
         }
-        if(_pos == 1){
+        if(_pos == 1 || _pos == 6 || _pos == 11){
             return 100;
         }
-        if(_pos == 2){
+        if(_pos == 2 || _pos == 7 || _pos == 12){
             return 51;
         }
-        if(_pos == 3){
+        if(_pos == 3 || _pos == 8 || _pos == 13){
             return 21;
         }
-        if(_pos == 4){
+        if(_pos == 4 || _pos == 9 || _pos == 14){
             return 11;
         }
     }
@@ -127,7 +136,27 @@ contract rpsNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     function setFoundsDevs(address _newFoundAddres) public onlyOwner{
         foundsDevs = _newFoundAddres;
     }
+    function setPriceMint(uint _newPrice) public {
+        priceMint == _newPrice;
+    }
 
+    function whatRarity(uint _pos)internal pure returns(string memory){
+        if(_pos == 0 || _pos == 5 || _pos == 10){
+            return "Common";
+        }
+        if(_pos == 1 || _pos == 6 || _pos == 11){
+            return "Uncommon";
+        }
+        if(_pos == 2 || _pos == 7 || _pos == 12){
+            return "Rare";
+        }
+        if(_pos == 3 || _pos == 8 || _pos == 13){
+            return "Epic";
+        }
+        if(_pos == 4 || _pos == 9 || _pos == 14){
+            return "Legend";
+        }
+    }
 
 
     // The following functions are overrides required by Solidity.
