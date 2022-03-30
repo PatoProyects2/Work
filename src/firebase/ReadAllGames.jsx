@@ -241,13 +241,13 @@ export default function ReadAllGames(props) {
 
     return (
         <>
-            <p className="d-flex justify-content-end me-4">{historyPlays.length !== undefined ? historyPlays.length : 0}{" Total bets"}</p>
+            <p className={`d-flex justify-content-end me-4 ${props.isMobileVersion ? 'mt-2' : ''}`}>{historyPlays.length !== undefined ? historyPlays.length : 0}{" Total bets"}</p>
             <div className="container">
-                <div className="play-list mt-2">
+                <div className="play-list mt-2">               
                     <ul className="list-group">
                         {historyPlays[0] !== undefined && historyPlays[0].createdAt ?
                             <>
-                                <li className='d-flex list-group-item list-group-item-action'>
+                                <li className='d-flex flex-column list-group-item list-group-item-action'>
                                     <div className="title mb-auto ms-2">
                                         <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[0].photo}`} />
                                         &nbsp;
@@ -279,7 +279,7 @@ export default function ReadAllGames(props) {
                             : ""}
                         {historyPlays[1] !== undefined && historyPlays[1].createdAt ?
                             <>
-                                <li className='d-flex list-group-item list-group-item-action'>
+                                <li className='d-flex flex-column list-group-item list-group-item-action'>
                                     <div className="title mb-auto ms-2">
                                         <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[1].photo}`} />
                                         &nbsp;
@@ -311,7 +311,7 @@ export default function ReadAllGames(props) {
                             : ""}
                         {historyPlays[2] !== undefined && historyPlays[2].createdAt ?
                             <>
-                                <li className='d-flex list-group-item list-group-item-action'>
+                                <li className='d-flex flex-column list-group-item list-group-item-action'>
                                     <div className="title mb-auto ms-2">
                                         <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[2].photo}`} />
                                         &nbsp;
@@ -343,7 +343,7 @@ export default function ReadAllGames(props) {
                             : ""}
                         {historyPlays[3] !== undefined && historyPlays[3].createdAt ?
                             <>
-                                <li className='d-flex list-group-item list-group-item-action'>
+                                <li className='d-flex flex-column list-group-item list-group-item-action'>
                                     <div className="title mb-auto ms-2">
                                         <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[3].photo}`} />
                                         &nbsp;
@@ -375,7 +375,7 @@ export default function ReadAllGames(props) {
                             : ""}
                         {historyPlays[4] !== undefined && historyPlays[4].createdAt ?
                             <>
-                                <li className='d-flex list-group-item list-group-item-action'>
+                                <li className='d-flex flex-column list-group-item list-group-item-action'>
                                     <div className="title mb-auto ms-2">
                                         <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[4].photo}`} />
                                         &nbsp;
@@ -407,7 +407,7 @@ export default function ReadAllGames(props) {
                             : ""}
                         {historyPlays[5] !== undefined && historyPlays[5].createdAt ?
                             <>
-                                <li className='d-flex list-group-item list-group-item-action'>
+                                <li className='d-flex flex-column list-group-item list-group-item-action'>
                                     <div className="title mb-auto ms-2">
                                         <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[5].photo}`} />
                                         &nbsp;
@@ -439,7 +439,7 @@ export default function ReadAllGames(props) {
                             : ""}
                         {historyPlays[6] !== undefined && historyPlays[6].createdAt ?
                             <>
-                                <li className='d-flex list-group-item list-group-item-action'>
+                                <li className='d-flex flex-column list-group-item list-group-item-action'>
                                     <div className="title mb-auto ms-2">
                                         <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[6].photo}`} />
                                         &nbsp;
@@ -471,7 +471,7 @@ export default function ReadAllGames(props) {
                             : ""}
                         {historyPlays[7] !== undefined && historyPlays[7].createdAt ?
                             <>
-                                <li className='d-flex list-group-item list-group-item-action'>
+                                <li className='d-flex flex-column list-group-item list-group-item-action'>
                                     <div className="title mb-auto ms-2">
                                         <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[7].photo}`} />
                                         &nbsp;
@@ -503,7 +503,7 @@ export default function ReadAllGames(props) {
                             : ""}
                         {historyPlays[8] !== undefined && historyPlays[8].createdAt ?
                             <>
-                                <li className='d-flex list-group-item list-group-item-action'>
+                                <li className='d-flex flex-column list-group-item list-group-item-action'>
                                     <div className="title mb-auto ms-2">
                                         <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[8].photo}`} />
                                         &nbsp;
@@ -535,7 +535,7 @@ export default function ReadAllGames(props) {
                             : ""}
                         {historyPlays[9] !== undefined && historyPlays[9].createdAt ?
                             <>
-                                <li className='d-flex list-group-item list-group-item-action'>
+                                <li className='d-flex flex-column list-group-item list-group-item-action'>
                                     <div className="title mb-auto ms-2">
                                         <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[9].photo}`} />
                                         &nbsp;
@@ -567,7 +567,7 @@ export default function ReadAllGames(props) {
                             : ""}
                         {historyPlays[10] !== undefined && historyPlays[10].createdAt ?
                             <>
-                                <li className='d-flex list-group-item list-group-item-action'>
+                                <li className='d-flex flex-column list-group-item list-group-item-action'>
                                     <div className="title mb-auto ms-2">
                                         <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[10].photo}`} />
                                         {historyPlays[10].name !== 'ClubUser' ? " " + historyPlays[10].name : " " + historyPlays[10].account.substring(0, 4).toLowerCase()}
@@ -592,7 +592,7 @@ export default function ReadAllGames(props) {
                             : ""}
                         {historyPlays[11] !== undefined && historyPlays[11].createdAt ?
                             <>
-                                <li className='d-flex list-group-item list-group-item-action'>
+                                <li className='d-flex flex-column list-group-item list-group-item-action'>
                                     <div className="title mb-auto ms-2">
                                         <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[11].photo}`} />
                                         {historyPlays[11].name !== 'ClubUser' ? " " + historyPlays[11].name : " " + historyPlays[11].account.substring(0, 4).toLowerCase()}

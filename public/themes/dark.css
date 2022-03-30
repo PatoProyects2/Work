@@ -374,9 +374,9 @@ svg:hover>g.brand-icon {
     color: #acbfc6;
 }
 
-.chat_input[type=text] {
+.chat_input {
     background-color: #243037;
-    color: #adbec6;
+    color: #adbec6 !important;
 }
 
 .chat_input_contain .chat_send {

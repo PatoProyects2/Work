@@ -83,7 +83,6 @@ ul {
 .play-list {
     width: 100%;
     max-width: 600px;
-    padding: 15px;
     margin: auto;
 }
 
@@ -103,9 +102,7 @@ ul {
 }
 
 .time-in-row {
-    position: absolute;
-    right: 10px;
-    bottom: 0;
+    font-size: 0.9rem;
 }
 
 .menu {
@@ -523,6 +520,9 @@ ul {
     .menu {
         left: 75px;
     }
+    .list-group-item .title {
+        font-size: 0.9rem;
+    }
 }
 
 @media (max-width: 767px) {
@@ -645,7 +645,7 @@ ul {
     height: 100%;
     width: 0;
     position: fixed;
-    z-index: 1;
+    z-index: 10;
     top: 56px;
     left: 0;
     transition: 0.5s;
@@ -699,10 +699,11 @@ ul {
 }
 
 .chat_input_hold {
+    //height: calc(100% - 48px);
     height: calc(100% - 48px);
     position: relative;
     z-index: 1;
-    // flex: 1;
+    //flex: 1 1;
     display: flex;
     justify-content: space-between;
     flex-direction: column;
@@ -739,7 +740,7 @@ ul {
 }
 
 .chat_cont {
-    width: 250px;
+    max-width: 210px;
     font-size: 16px;
     line-height: 15px;
     vertical-align: middle;
@@ -770,7 +771,7 @@ ul {
     display: flex;
 }
 
-.chat_input[type=text] {
+.chat_input {
     height: 50px;
     padding: 0 70px 0 20px;
     width: 100%;
@@ -930,6 +931,12 @@ ul.messages {
     .chat_collapse_ico.expanded {
         left: 85%;
     }
+    .chat_cont {
+        max-width: 166px;
+    }
+    .chat_input_hold {
+        max-height: calc(100% - 100px);
+    }
 }
 
 .swiper {
@@ -1043,6 +1050,12 @@ ul.messages {
 @media (min-width: 768px) {
     .result-rps-image {
         width: 70%;
+    }
+}
+
+@media (max-width: 990px) {
+    .content-section.expanded {
+        margin-left: 0 !important;
     }
 }
 

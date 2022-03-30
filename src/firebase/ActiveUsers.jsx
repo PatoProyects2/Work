@@ -9,6 +9,10 @@ export default function Presence() {
 
     useEffect(() => {
         readData(user)
+
+        return () => {
+            setActive(0);
+        };
     }, [user])
 
     const readData = async (user) => {

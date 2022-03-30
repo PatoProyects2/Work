@@ -198,7 +198,7 @@ export default function Profile() {
                     top
                   />
                   <FormGroup floating>
-                    {name.length > 0 ?
+                    {name !== 'ClubUser' ?
                       <>
                         <Input id="displayName" name="displayName" className="d-modal-input"
                           placeholder="ClubUser" onChange={handleInputNameChange} type="text" defaultValue={name} />

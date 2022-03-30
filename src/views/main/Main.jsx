@@ -231,7 +231,6 @@ export default function Main() {
       leaderboard.games.global = global.sort(((a, b) => b[3] - a[3]))
       leaderboard.amount.global = global.sort(((a, b) => b[4] - a[4]))
 
-      console.log(leaderboard)
       setLeaderboard(leaderboard)
     }
     readLeaderboard()
@@ -398,8 +397,6 @@ export default function Main() {
             <Button onClick={leaderboardsModalAmount} className={mostAmount ? 'active btn-rank' : 'btn-rank'}>Most Amount</Button>
           </ButtonGroup>
 
-          {isMobileResolution ? <>{liveBets && <ReadAllGames isMobileVersion={true} />}</> : <>{liveBets && <ReadAllGames isMobileVersion={false} />}</>}
-
           {mostPlays &&
             <ButtonGroup>
               <Button onClick={day} className={`btn-recurrence ${dailyGame ? 'active' : ''}`}>Daily</Button>
@@ -417,6 +414,8 @@ export default function Main() {
             </ButtonGroup>
           }
         </div>
+
+        {isMobileResolution ? <>{liveBets && <ReadAllGames isMobileVersion={true} />}</> : <>{liveBets && <ReadAllGames isMobileVersion={false} />}</>}
 
         {isMobileResolution ?
           <>

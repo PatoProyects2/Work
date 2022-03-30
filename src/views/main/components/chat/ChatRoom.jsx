@@ -103,24 +103,18 @@ function ChatRoom(props) {
 
   const sendMessage = async (e) => {
     e.preventDefault()
-    if (formValue === "") return
+    if (formValue.trim() === "") {
+      setFormValue("")
+      return false
+    }
     if (userClub.name) {
       const docRef = await addDoc(collection(db, "messages"), {
-        text: formValue,
+        text: formValue.trim(),
         createdAt: serverTimestamp(),
         uid: props.user.uid,
         name: userClub.name.stringValue,
         level: userClub.level.integerValue,
         photo: userClub.photo.stringValue,
-      })
-    } else {
-      const docRef = await addDoc(collection(db, "messages"), {
-        text: formValue,
-        createdAt: serverTimestamp(),
-        uid: props.user.uid,
-        name: props.user.displayName,
-        level: "1",
-        photo: "https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh",
       })
     }
     setFormValue('')
