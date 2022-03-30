@@ -10,7 +10,7 @@ export default function MostAmount(props) {
           <tr>
             <th> Nº</th>
             <th> User </th>
-            <th> Most amount played</th>
+            <th> Amount</th>
           </tr>
         </thead>
         <tbody>
@@ -23,10 +23,10 @@ export default function MostAmount(props) {
                 <img width="25" height="25" className="rounded-circle me-2" alt="" src={`${props.leaderboard[0][1]}`} />
                 {props.leaderboard[0][2] !== 'Username' ?
                   <>
-                    {props.isMobileVersion && props.leaderboard[0][2].length > 5 ? props.leaderboard[0][2].substring(0, 5) + "..." : props.leaderboard[0][2]}
+                    {props.isMobileResolution && props.leaderboard[0][2].length > 6 ? props.leaderboard[0][2].substring(0, 6) + "..." : props.leaderboard[0][2]}
                   </>
                   :
-                  props.leaderboard[0][0].substring(0, 5).toLowerCase() + "..."
+                  props.leaderboard[0][0].substring(0, 6).toLowerCase() + "..."
                 }
               </td>
               <td>
@@ -49,10 +49,10 @@ export default function MostAmount(props) {
                 <img width="25" height="25" className="rounded-circle me-2" alt="" src={`${props.leaderboard[1][1]}`} />
                 {props.leaderboard[1][2] !== 'Username' ?
                   <>
-                    {props.isMobileVersion && props.leaderboard[1][2].length > 5 ? props.leaderboard[1][2].substring(0, 5) + "..." : props.leaderboard[1][2]}
+                    {props.isMobileResolution && props.leaderboard[1][2].length > 6 ? props.leaderboard[1][2].substring(0, 6) + "..." : props.leaderboard[1][2]}
                   </>
                   :
-                  props.leaderboard[1][0].substring(0, 5).toLowerCase() + "..."
+                  props.leaderboard[1][0].substring(0, 6).toLowerCase() + "..."
                 }
               </td>
               <td>
@@ -75,10 +75,10 @@ export default function MostAmount(props) {
                 <img width="25" height="25" className="rounded-circle me-2" alt="" src={`${props.leaderboard[2][1]}`} />
                 {props.leaderboard[2][2] !== 'Username' ?
                   <>
-                    {props.isMobileVersion && props.leaderboard[2][2].length > 5 ? props.leaderboard[2][2].substring(0, 5) + "..." : props.leaderboard[2][2]}
+                    {props.isMobileResolution && props.leaderboard[2][2].length > 6 ? props.leaderboard[2][2].substring(0, 6) + "..." : props.leaderboard[2][2]}
                   </>
                   :
-                  props.leaderboard[2][0].substring(0, 5).toLowerCase() + "..."
+                  props.leaderboard[2][0].substring(0, 6).toLowerCase() + "..."
                 }
               </td>
               <td>
@@ -101,10 +101,10 @@ export default function MostAmount(props) {
                 <img width="25" height="25" className="rounded-circle me-2" alt="" src={`${props.leaderboard[3][1]}`} />
                 {props.leaderboard[3][2] !== 'Username' ?
                   <>
-                    {props.isMobileVersion && props.leaderboard[3][2].length > 5 ? props.leaderboard[3][2].substring(0, 5) + "..." : props.leaderboard[3][2]}
+                    {props.isMobileResolution && props.leaderboard[3][2].length > 6 ? props.leaderboard[3][2].substring(0, 6) + "..." : props.leaderboard[3][2]}
                   </>
                   :
-                  props.leaderboard[3][0].substring(0, 5).toLowerCase() + "..."
+                  props.leaderboard[3][0].substring(0, 6).toLowerCase() + "..."
                 }
               </td>
               <td>
@@ -127,10 +127,10 @@ export default function MostAmount(props) {
                 <img width="25" height="25" className="rounded-circle me-2" alt="" src={`${props.leaderboard[4][1]}`} />
                 {props.leaderboard[4][2] !== 'Username' ?
                   <>
-                    {props.isMobileVersion && props.leaderboard[4][2].length > 5 ? props.leaderboard[4][2].substring(0, 5) + "..." : props.leaderboard[4][2]}
+                    {props.isMobileResolution && props.leaderboard[4][2].length > 6 ? props.leaderboard[4][2].substring(0, 6) + "..." : props.leaderboard[4][2]}
                   </>
                   :
-                  props.leaderboard[4][0].substring(0, 5).toLowerCase() + "..."
+                  props.leaderboard[4][0].substring(0, 6).toLowerCase() + "..."
                 }
               </td>
               <td>
@@ -153,10 +153,10 @@ export default function MostAmount(props) {
                 <img width="25" height="25" className="rounded-circle me-2" alt="" src={`${props.leaderboard[5][1]}`} />
                 {props.leaderboard[5][2] !== 'Username' ?
                   <>
-                    {props.isMobileVersion && props.leaderboard[5][2].length > 5 ? props.leaderboard[5][2].substring(0, 5) + "..." : props.leaderboard[5][2]}
+                    {props.isMobileResolution && props.leaderboard[5][2].length > 6 ? props.leaderboard[5][2].substring(0, 6) + "..." : props.leaderboard[5][2]}
                   </>
                   :
-                  props.leaderboard[5][0].substring(0, 5).toLowerCase() + "..."
+                  props.leaderboard[5][0].substring(0, 6).toLowerCase() + "..."
                 }
               </td>
               <td>
@@ -179,10 +179,10 @@ export default function MostAmount(props) {
                 <img width="25" height="25" className="rounded-circle me-2" alt="" src={`${props.leaderboard[6][1]}`} />
                 {props.leaderboard[6][2] !== 'Username' ?
                   <>
-                    {props.isMobileVersion && props.leaderboard[6][2].length > 5 ? props.leaderboard[6][2].substring(0, 5) + "..." : props.leaderboard[6][2]}
+                    {props.isMobileResolution && props.leaderboard[6][2].length > 6 ? props.leaderboard[6][2].substring(0, 6) + "..." : props.leaderboard[6][2]}
                   </>
                   :
-                  props.leaderboard[6][0].substring(0, 5).toLowerCase() + "..."
+                  props.leaderboard[6][0].substring(0, 6).toLowerCase() + "..."
                 }
               </td>
               <td>
@@ -205,10 +205,10 @@ export default function MostAmount(props) {
                 <img width="25" height="25" className="rounded-circle me-2" alt="" src={`${props.leaderboard[7][1]}`} />
                 {props.leaderboard[7][2] !== 'Username' ?
                   <>
-                    {props.isMobileVersion && props.leaderboard[7][2].length > 5 ? props.leaderboard[7][2].substring(0, 5) + "..." : props.leaderboard[7][2]}
+                    {props.isMobileResolution && props.leaderboard[7][2].length > 6 ? props.leaderboard[7][2].substring(0, 6) + "..." : props.leaderboard[7][2]}
                   </>
                   :
-                  props.leaderboard[7][0].substring(0, 5).toLowerCase() + "..."
+                  props.leaderboard[7][0].substring(0, 6).toLowerCase() + "..."
                 }
               </td>
               <td>
@@ -231,10 +231,10 @@ export default function MostAmount(props) {
                 <img width="25" height="25" className="rounded-circle me-2" alt="" src={`${props.leaderboard[8][1]}`} />
                 {props.leaderboard[8][2] !== 'Username' ?
                   <>
-                    {props.isMobileVersion && props.leaderboard[8][2].length > 5 ? props.leaderboard[8][2].substring(0, 5) + "..." : props.leaderboard[8][2]}
+                    {props.isMobileResolution && props.leaderboard[8][2].length > 6 ? props.leaderboard[8][2].substring(0, 6) + "..." : props.leaderboard[8][2]}
                   </>
                   :
-                  props.leaderboard[8][0].substring(0, 5).toLowerCase() + "..."
+                  props.leaderboard[8][0].substring(0, 6).toLowerCase() + "..."
                 }
               </td>
               <td>
@@ -257,10 +257,10 @@ export default function MostAmount(props) {
                 <img width="25" height="25" className="rounded-circle me-2" alt="" src={`${props.leaderboard[9][1]}`} />
                 {props.leaderboard[9][2] !== 'Username' ?
                   <>
-                    {props.isMobileVersion && props.leaderboard[9][2].length > 5 ? props.leaderboard[9][2].substring(0, 5) + "..." : props.leaderboard[9][2]}
+                    {props.isMobileResolution && props.leaderboard[9][2].length > 6 ? props.leaderboard[9][2].substring(0, 6) + "..." : props.leaderboard[9][2]}
                   </>
                   :
-                  props.leaderboard[9][0].substring(0, 5).toLowerCase() + "..."
+                  props.leaderboard[9][0].substring(0, 6).toLowerCase() + "..."
                 }
               </td>
               <td>

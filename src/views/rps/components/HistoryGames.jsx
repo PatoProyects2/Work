@@ -6,12 +6,11 @@ export default function HistoryGames(props) {
     const toggleMenu = () => {
         setDropdown(!dropdown);
     }
-
     return (
         <>
             <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="md">
                 {
-                    props.isMobileVersion ?
+                    props.isMobileResolution ?
                         <DropdownToggle color='danger'>
                             PLAYS
                         </DropdownToggle>
@@ -20,7 +19,7 @@ export default function HistoryGames(props) {
                             LIVEPLAYS
                         </DropdownToggle>
                 }
-                <ReadRPSGames />
+                <ReadRPSGames isMobileResolution={props.isMobileResolution} />
             </Dropdown>
         </>
     )

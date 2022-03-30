@@ -43,6 +43,7 @@ export default function dayWinStreakLeaderboard(props) {
     useEffect(() => {
         readActuallTime(props.unixTimeStamp)
     }, [props.unixTimeStamp])
+
     const readActuallTime = async (unixTimeStamp) => {
         let winStreakDay = []
         const unixSeconds = parseInt(unixTimeStamp)
@@ -141,7 +142,7 @@ export default function dayWinStreakLeaderboard(props) {
         <>
             <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="md">
                 {
-                    props.isMobileVersion ?
+                    props.isMobileResolution ?
                         <DropdownToggle color='danger'>
                             STREAKS
                         </DropdownToggle>

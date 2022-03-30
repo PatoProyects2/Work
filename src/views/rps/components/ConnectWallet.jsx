@@ -104,13 +104,22 @@ export default function ConnectWallet(props) {
     ).then(() => setSend(false))
   }
 
-  const manageWallets = async () => {
+  const manageWallets = () => {
     ethereum.request({
       method: 'wallet_requestPermissions',
       params: [{
         eth_accounts: {},
       }]
     });
+  }
+
+
+  const connectWallet = () => {
+    if (document.getElementById('age').checked === false) {
+      props.toast.error('Confirm that you are at least 18 years old')
+      return false
+    }
+    props.connectWeb3Modal()
   }
 
   return (
@@ -186,9 +195,13 @@ export default function ConnectWallet(props) {
         </>
         :
         <Dropdown className='text-center' isOpen={dropdown} toggle={toggleMenu} direction="down" size="lg">
-          <DropdownToggle color='danger' onClick={props.connectWeb3Modal}>
+          <DropdownToggle color='danger' onClick={connectWallet}>
             CONNECT WALLET
           </DropdownToggle>
+          <p className="text-center mt-3">
+            <input id="age" type="checkbox"></input>&nbsp;
+            <label htmlFor="age">I confirm that I am at least 18 years old</label>
+          </p>
         </Dropdown>
       }
     </>

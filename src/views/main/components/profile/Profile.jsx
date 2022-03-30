@@ -191,6 +191,7 @@ export default function Profile() {
                     Profile
                   </CardTitle>
                   <CardImg
+                    role="button"
                     onClick={selectPicture}
                     alt={userData[0] ? name : user.displayName ? user.displayName : "ClubUser"}
                     className="rounded-circle profile-img"

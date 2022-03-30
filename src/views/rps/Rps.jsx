@@ -15,7 +15,6 @@ import swapV2 from '../../abis/swap/IUniswapV2Router02.json'
 import { rpsGameContract, polygonSwapContract, maticContract, usdcContract, rpsGamePolygonContract } from '../../components/blockchain/Contracts'
 import HistoryGames from './components/HistoryGames'
 import ConnectWallet from './components/ConnectWallet'
-import ConnectChain from './components/ConnectChain'
 import WinStreakLeaderboard from './components/WinStreakLeaderboard'
 import ReadAllGames from '../../firebase/ReadAllGames'
 import { ReadUnixTime } from '../../firebase/ReadUnixTime'
@@ -392,6 +391,7 @@ export default function Rps() {
   }
 
   const connectWeb3Modal = async () => {
+
     const providerOptions = {
       walletconnect: {
         display: {
@@ -513,17 +513,14 @@ export default function Rps() {
     }
   }
 
-  const disconnectWallet = async () => {
+  const disconnectWallet = () => {
     web3ModalInfo.clearCachedProvider();
     setActive(false)
     setAccount('0x000000000000000000000000000000000000dEaD')
   }
 
   const openGame = () => {
-    if (document.getElementById('age').checked === false) {
-      toast.error("Confirm that your are at least 18 years old")
-      return false
-    }
+
     if (network === 80001 || network === 137) {
       setActive(true)
     } else {
@@ -674,7 +671,7 @@ export default function Rps() {
     setBalance(balance)
   }
 
-  const backGame = (images) => {
+  const backGame = () => {
     setPlaying(false)
     setUserGameStreak(0)
     setUserGameResult(undefined)
@@ -683,17 +680,16 @@ export default function Rps() {
 
   return (
     <>
-      {isMobileResolution
-        ?
+      {isMobileResolution ?
         <div className="d-flex flex-row justify-content-start gap-1">
           {account !== '0x000000000000000000000000000000000000dEaD' ?
             <>
               <HistoryGames
-                isMobileVersion={false}
+                isMobileResolution={isMobileResolution}
                 unixTimeStamp={unixTimeStamp}
               />
               <WinStreakLeaderboard
-                isMobileVersion={false}
+                isMobileResolution={isMobileResolution}
                 unixTimeStamp={unixTimeStamp}
               />
               <ConnectWallet
@@ -718,11 +714,11 @@ export default function Rps() {
             <>
               <div className="d-flex flex-row gap-3">
                 <HistoryGames
-                  isMobileVersion={false}
+                  isMobileResolution={isMobileResolution}
                   unixTimeStamp={unixTimeStamp}
                 />
                 <WinStreakLeaderboard
-                  isMobileVersion={false}
+                  isMobileResolution={isMobileResolution}
                   unixTimeStamp={unixTimeStamp}
                 />
                 <ConnectWallet
@@ -883,13 +879,6 @@ export default function Rps() {
             </div>
             {account !== '0x000000000000000000000000000000000000dEaD' ?
               <>
-                <ConnectChain network={network} />
-                <br></br>
-                <br></br>
-                <p className="text-center mt-3">
-                  <input id="age" type="checkbox"></input>&nbsp;
-                  <label htmlFor="age">I confirm that I am at least 18 years old</label>
-                </p>
                 <div className="text-center">
                   <button className="btn-hover btn-start" onClick={openGame}>DOUBLE OR NOTHING</button>
                 </div>
@@ -897,7 +886,7 @@ export default function Rps() {
               </>
               :
               <>
-                <ConnectWallet connectWeb3Modal={connectWeb3Modal} decimal={decimal} web3={web3} account={account} />
+                <ConnectWallet toast={toast} connectWeb3Modal={connectWeb3Modal} decimal={decimal} web3={web3} account={account} />
               </>
             }
           </>
