@@ -294,7 +294,7 @@ export default function AccountFirebase(props) {
               </FormGroup>
             </ModalBody>
             <ModalFooter>
-              {"Do you already have an account?"}<button className="btn btn-transparent text-secondary" onClick={changeAccountModal}>Sign In</button>
+              {"Do you already have an account?"}<button className="btn btn-transparent text-secondary" onClick={changeAccountModal}>Log In</button>
             </ModalFooter>
           </Modal>
         </>

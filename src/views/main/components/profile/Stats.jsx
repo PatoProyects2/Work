@@ -12,22 +12,13 @@ export default function Stats(props) {
               Wallet
             </th>
             <th>
-              Games Won
-            </th>
-            <th>
-              Games Loss
-            </th>
-            <th>
               Total Games
             </th>
             <th>
-              Amount Won
-            </th>
-            <th>
-              Amount Loss
-            </th>
-            <th>
               Total Amount
+            </th>
+            <th>
+              Profit
             </th>
             <th>
               Win Streak
@@ -50,22 +41,13 @@ export default function Stats(props) {
                 {props.userData[0].account.substring(0, 5) + "..." + props.userData[0].account.substring(38, 42)}
               </td>
               <td>
-                {props.userData[0].rps.gameWon}
-              </td>
-              <td>
-                {props.userData[0].rps.gameLoss}
-              </td>
-              <td>
                 {props.userData[0].rps.totalGames}
               </td>
               <td>
-                {props.userData[0].rps.amountWon}
+                {"$" + props.userData[0].rps.totalAmount}
               </td>
               <td>
-                {props.userData[0].rps.amountLoss}
-              </td>
-              <td>
-                {props.userData[0].rps.totalAmount}
+                {"$" + props.userData[0].rps.amountWon - props.userData[0].rps.amountLoss}
               </td>
               <td>
                 {props.userData[0].rps.dayWinStreak}

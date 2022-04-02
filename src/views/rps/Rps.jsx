@@ -52,7 +52,6 @@ export default function Rps() {
   const [userGameStreak, setUserGameStreak] = useState(0);
   const [userhand, setUserhand] = useState(0);
   const [useramount, setUseramount] = useState(0);
-  const [maticPrice, setMaticPrice] = useState(0);
   const [active, setActive] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [animation, setAnimation] = useState(false);
@@ -400,7 +399,7 @@ export default function Rps() {
         package: WalletConnectProvider,
         options: {
           rpc: {
-            80001: "https://polygon-mumbai.infura.io/v3/270caadf97b048ec8823dff39e612c46",
+            137: "https://polygon-rpc.com",
           },
         }
       },
@@ -411,10 +410,10 @@ export default function Rps() {
         package: Torus,
         options: {
           networkParams: {
-            host: "https://polygon-mumbai.infura.io/v3/270caadf97b048ec8823dff39e612c46",
-            chainId: 80001,
-            networkId: 80001,
-            blockExplorer: "https://mumbai.polygonscan.com/",
+            host: "https://polygon-rpc.com",
+            chainId: 137,
+            networkId: 137,
+            blockExplorer: "https://polygonscan.com/",
             ticker: "MATIC",
             tickerName: "MATIC",
           },
@@ -427,7 +426,7 @@ export default function Rps() {
         package: Portis,
         options: {
           id: "fc6fd5a9-493b-4806-858d-ff67918ea1dc",
-          network: "maticMumbai",
+          network: "matic",
         },
       },
       walletlink: {
@@ -437,8 +436,8 @@ export default function Rps() {
         package: WalletLink,
         options: {
           appName: "RPS",
-          rpc: "https://polygon-mumbai.infura.io/v3/270caadf97b048ec8823dff39e612c46",
-          chainId: 80001,
+          rpc: "https://polygon-rpc.com",
+          chainId: 137,
           appLogoUrl: null,
           darkMode: false
         },
@@ -463,8 +462,6 @@ export default function Rps() {
       }
       const web3 = new Web3(provider);
       setWeb3(web3)
-      const polygonSwap = new web3.eth.Contract(swapV2.abi, polygonSwapContract)
-      setSwapPolygon(polygonSwap)
       const accounts = await web3.eth.getAccounts();
       setAccount(accounts[0].toLowerCase())
       ethereum.on('accountsChanged', () => {
@@ -476,8 +473,8 @@ export default function Rps() {
       const chainId = await web3.eth.getChainId();
       setNetwork(chainId)
       if (chainId === 137) {
-        let maticPrice = await polygonSwap.methods.getAmountsOut(decimal.toString(), [maticContract, usdcContract]).call()
-        setMaticPrice(maticPrice[1])
+        const polygonSwap = new web3.eth.Contract(swapV2.abi, polygonSwapContract)
+        setSwapPolygon(polygonSwap)
         const rpsgame = new web3.eth.Contract(RpsGamePolygon.abi, rpsGamePolygonContract)
         setRpsgame(rpsgame)
       }
@@ -572,7 +569,7 @@ export default function Rps() {
         .send({
           from: account,
           value: calculateValue,
-          gasLimit: 400000
+          gasPrice: '40000000000'
         })
         .catch((err) => {
           if (err.code === 4001) {
@@ -592,10 +589,13 @@ export default function Rps() {
       } while (myEvents[0] === undefined);
       if (myEvents[0]) {
         if (myEvents[0].blockNumber > userDocument.rps.lastGameBlock) {
+          let maticPrice = await swapPolygon.methods.getAmountsOut(decimal.toString(), [maticContract, usdcContract]).call()
           const userAmount = web3.utils.fromWei(myEvents[0].returnValues[1], 'ether')
+          const usdAmount = (parseInt(maticPrice[1] / 10000) / 100) * userAmount
+          console.log(usdAmount)
           updateDoc(doc(db, "clubUsers", account), {
             "rps.totalGames": userDocument.rps.totalGames + 1,
-            "rps.totalAmount": userDocument.rps.totalAmount + parseInt(userAmount),
+            "rps.totalAmount": userDocument.rps.totalAmount + usdAmount,
             "rps.lastGameBlock": myEvents[0].blockNumber
           })
           addDoc(collection(db, "allGames"), {
@@ -613,13 +613,13 @@ export default function Rps() {
           if (myEvents[0].returnValues[3] === true) {
             updateDoc(doc(db, "clubUsers", account), {
               "rps.gameWon": userDocument.rps.gameWon + 1,
-              "rps.amountWon": userDocument.rps.amountWon + parseInt(userAmount)
+              "rps.amountWon": userDocument.rps.amountWon + usdAmount
             })
           }
           if (myEvents[0].returnValues[3] === false) {
             updateDoc(doc(db, "clubUsers", account), {
               "rps.gameLoss": userDocument.rps.gameLoss + 1,
-              "rps.amountLoss": userDocument.rps.amountLoss + parseInt(userAmount)
+              "rps.amountLoss": userDocument.rps.amountLoss + usdAmount
             })
           }
           if (myEvents[0].returnValues[2] > userDocument.rps.dayWinStreak || dayBlock > userDocument.rps.winStreakTime) {

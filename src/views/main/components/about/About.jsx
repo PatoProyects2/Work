@@ -32,7 +32,7 @@ export default function About() {
 
       <Roadmap />
 
-      <FAQ />
+      {/* <FAQ /> */}
     </div>
   );
 }

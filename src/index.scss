@@ -604,6 +604,7 @@ ul {
     position: relative;
     text-align: center;
     top: 30px;
+    min-width: 60px;
 }
 
 //   #78350f
@@ -1092,4 +1093,10 @@ ul.messages {
     .active-users-offcanvas {
         display: none;
     }
+}
+
+.btn:focus,
+.btn:active {
+    outline: none !important;
+    box-shadow: none;
 }

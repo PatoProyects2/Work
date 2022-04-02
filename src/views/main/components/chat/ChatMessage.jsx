@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react'
-import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Modal, ModalBody, FormGroup, Table } from 'reactstrap'
+import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Modal, ModalBody, FormGroup, Table, Button, ButtonGroup } from 'reactstrap'
 import { query, where, collection, limit, onSnapshot, updateDoc, arrayUnion, doc } from "firebase/firestore";
 import { db } from '../../../../firebase/firesbaseConfig'
 function ChatMessage({ text, uid, photo, name, level, auth, userClub }) {
     const [userData, setUserData] = useState({});
     const [dropdown, setDropdown] = useState(false);
     const [stats, setStats] = useState(false);
-
+    const [rpsStats, setRpsStats] = useState(true);
+  
     const toggleMenu = () => {
         setDropdown(!dropdown);
     }
@@ -60,6 +61,24 @@ function ChatMessage({ text, uid, photo, name, level, auth, userClub }) {
         }
     }
 
+    const rpsStatsModal = () => {
+        if (!rpsStats) {
+            setRpsStats(true)
+        }
+        const data = [
+            { year: '1991', value: 3 },
+            { year: '1992', value: 4 },
+            { year: '1993', value: 3.5 },
+            { year: '1994', value: 5 },
+            { year: '1995', value: 4.9 },
+            { year: '1996', value: 6 },
+            { year: '1997', value: 7 },
+            { year: '1998', value: 9 },
+            { year: '1999', value: 13 },
+        ];
+    
+    }
+
     return (
         <>
             <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="xs" className="my-2">
@@ -102,35 +121,18 @@ function ChatMessage({ text, uid, photo, name, level, auth, userClub }) {
                                 <span className="level_val">Lvl: {level}</span>
                             </span>
                         </div>
+                        <ButtonGroup>
+                            <Button onClick={rpsStatsModal} className={rpsStats ? 'active btn-rank' : 'btn-rank'}>RPS</Button>
+                        </ButtonGroup>
+
                         {userData[0] ?
                             <>
-                                {userData[0].rps.totalGames > 0 ?
+                                {rpsStats &&
                                     <Table className="tbl-ranking" borderless responsive size="">
                                         <thead className="border-bottom">
                                             <tr>
                                                 <th>
-                                                    Wallet
-                                                </th>
-                                                <th>
-                                                    Games Won
-                                                </th>
-                                                <th>
-                                                    Games Loss
-                                                </th>
-                                                <th>
-                                                    Total Games
-                                                </th>
-                                                <th>
-                                                    Amount Won
-                                                </th>
-                                                <th>
-                                                    Amount Loss
-                                                </th>
-                                                <th>
-                                                    Total Amount
-                                                </th>
-                                                <th>
-                                                    Win Streak
+                                                    Day Streak
                                                 </th>
                                                 <th>
                                                     Rock
@@ -146,27 +148,6 @@ function ChatMessage({ text, uid, photo, name, level, auth, userClub }) {
                                         <tbody>
                                             <tr>
                                                 <td>
-                                                    {userData[0].account.substring(0, 5) + "..." + userData[0].account.substring(38, 42)}
-                                                </td>
-                                                <td>
-                                                    {userData[0].rps.gameWon}
-                                                </td>
-                                                <td>
-                                                    {userData[0].rps.gameLoss}
-                                                </td>
-                                                <td>
-                                                    {userData[0].rps.totalGames}
-                                                </td>
-                                                <td>
-                                                    {userData[0].rps.amountWon}
-                                                </td>
-                                                <td>
-                                                    {userData[0].rps.amountLoss}
-                                                </td>
-                                                <td>
-                                                    {userData[0].rps.totalMaticAmount}
-                                                </td>
-                                                <td>
                                                     {userData[0].rps.dayWinStreak}
                                                 </td>
                                                 <td>
@@ -177,6 +158,42 @@ function ChatMessage({ text, uid, photo, name, level, auth, userClub }) {
                                                 </td>
                                                 <td>
                                                     {userData[0].rps.scissors}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </Table>
+                                }
+                                {userData[0].rps.totalGames > 0 ?
+                                    <Table className="tbl-ranking" borderless responsive size="">
+                                        <thead className="border-bottom">
+                                            <tr>
+                                                <th>
+                                                    Wallet
+                                                </th>
+                                                <th>
+                                                    Total Games
+                                                </th>
+                                                <th>
+                                                    Total Amount
+                                                </th>
+                                                <th>
+                                                    Profit
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    {userData[0].account.substring(0, 5) + "..." + userData[0].account.substring(38, 42)}
+                                                </td>
+                                                <td>
+                                                    {userData[0].rps.totalGames}
+                                                </td>
+                                                <td>
+                                                    {"$" + userData[0].rps.totalAmount}
+                                                </td>
+                                                <td>
+                                                    {"$" + (userData[0].rps.amountWon - userData[0].rps.amountLoss).toString()}
                                                 </td>
                                             </tr>
                                         </tbody>
