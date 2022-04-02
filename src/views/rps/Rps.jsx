@@ -60,6 +60,7 @@ export default function Rps() {
   const [doubleOrNothingStatus, setDoubleOrNothingStatus] = useState(undefined);
   const [showGameResult, setShowGameResult] = useState(false);
   const isMobileResolution = useMatchMedia('(max-width:650px)', false);
+  const main = false;
   const unixTimeStamp = ReadUnixTime();
 
   useEffect(() => {
@@ -592,23 +593,10 @@ export default function Rps() {
           let maticPrice = await swapPolygon.methods.getAmountsOut(decimal.toString(), [maticContract, usdcContract]).call()
           const userAmount = web3.utils.fromWei(myEvents[0].returnValues[1], 'ether')
           const usdAmount = (parseInt(maticPrice[1] / 10000) / 100) * userAmount
-          console.log(usdAmount)
           updateDoc(doc(db, "clubUsers", account), {
             "rps.totalGames": userDocument.rps.totalGames + 1,
             "rps.totalAmount": userDocument.rps.totalAmount + usdAmount,
             "rps.lastGameBlock": myEvents[0].blockNumber
-          })
-          addDoc(collection(db, "allGames"), {
-            createdAt: time,
-            uid: userDocument.uid,
-            block: myEvents[0].blockNumber,
-            name: userDocument.name,
-            photo: userDocument.photo,
-            account: myEvents[0].returnValues[0],
-            amount: parseInt(userAmount),
-            streak: parseInt(myEvents[0].returnValues[2]),
-            result: myEvents[0].returnValues[3],
-            game: 'RPS'
           })
           if (myEvents[0].returnValues[3] === true) {
             updateDoc(doc(db, "clubUsers", account), {
@@ -643,6 +631,19 @@ export default function Rps() {
               "rps.scissors": userDocument.rps.scissors + 1,
             })
           }
+          addDoc(collection(db, "allGames"), {
+            createdAt: time,
+            uid: userDocument.uid,
+            block: myEvents[0].blockNumber,
+            name: userDocument.name,
+            photo: userDocument.photo,
+            account: myEvents[0].returnValues[0].toLowerCase(),
+            amount: parseInt(userAmount),
+            streak: parseInt(myEvents[0].returnValues[2]),
+            result: myEvents[0].returnValues[3],
+            game: 'RPS',
+            profit: (userDocument.rps.amountWon - userDocument.rps.amountLoss).toString()
+          })
           setUserGameResult(myEvents[0].returnValues[3])
           setUserGameStreak(myEvents[0].returnValues[2])
           setShowGameResult(true)
@@ -882,7 +883,7 @@ export default function Rps() {
                 <div className="text-center">
                   <button className="btn-hover btn-start" onClick={openGame}>DOUBLE OR NOTHING</button>
                 </div>
-                {<ReadAllGames isMobileResolution={isMobileResolution} />}
+                {<ReadAllGames isMobileResolution={isMobileResolution} main={main} />}
               </>
               :
               <>

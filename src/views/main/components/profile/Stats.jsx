@@ -47,7 +47,7 @@ export default function Stats(props) {
                 {"$" + props.userData[0].rps.totalAmount}
               </td>
               <td>
-                {"$" + props.userData[0].rps.amountWon - props.userData[0].rps.amountLoss}
+                {"$" + (props.userData[0].rps.amountWon - props.userData[0].rps.amountLoss).toFixed(2)}
               </td>
               <td>
                 {props.userData[0].rps.dayWinStreak}

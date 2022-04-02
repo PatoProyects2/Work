@@ -28,6 +28,7 @@ export default function Main() {
   const [weeklyAmount, setWeeklyAmount] = useState(false);
   const [monthlyAmount, setMonthlyAmount] = useState(false);
   const [globalAmount, setGlobalAmount] = useState(false);
+  const main = true;
   const isMobileResolution = useMatchMedia('(max-width:650px)', false);
 
   useEffect(() => {
@@ -218,7 +219,6 @@ export default function Main() {
         games: {},
         amount: {},
       }
-
       leaderboard.games.day = day.sort(((a, b) => b[3] - a[3]))
       leaderboard.amount.day = day.sort(((a, b) => b[4] - a[4]))
 
@@ -415,7 +415,7 @@ export default function Main() {
           }
         </div>
 
-        {liveBets && <ReadAllGames isMobileResolution={isMobileResolution} />}
+        {liveBets && <ReadAllGames isMobileResolution={isMobileResolution} main={main}/>}
 
         {isMobileResolution ?
           <>

@@ -191,13 +191,23 @@ export default function Profile() {
                     Profile
                   </CardTitle>
                   <CardImg
-                    role="button"
-                    onClick={selectPicture}
                     alt={userData[0] ? name : user.displayName ? user.displayName : "ClubUser"}
                     className="rounded-circle profile-img"
                     src={(userData[0] && userData[0].photo) ? userData[0].photo : "https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh"}
                     top
                   />
+                  <div class="file-select" id="picture"  >
+                    <input type="file" accept="image/png, image/jpeg" onChange={handleInputUpload} />
+                  </div>
+                  <FormGroup>
+                    {uploadValue > 0 && uploadValue < 100 &&
+                      <>
+                        {log + " " + uploadValue + "%"}
+                        <br></br>
+                        <progress value={uploadValue} max="100"></progress>
+                      </>
+                    }
+                  </FormGroup>
                   <FormGroup floating>
                     {name !== 'ClubUser' ?
                       <>
@@ -225,33 +235,6 @@ export default function Profile() {
               </Card>
             </Col>
           </Row>
-          <Modal isOpen={nftPicture} className="d-modal" size="lg">
-            <ModalBody>
-              <div className='d-flex justify-content-end'>
-                <button type="button" className="btn-close" aria-label="Close" onClick={selectPicture}></button>
-              </div>
-              <h4 className="text-center">Picture</h4>
-              <FormGroup className="pt-3 text-center">
-                <div>
-                  {uploadValue === 0 ?
-                    <input type="file" accept="image/png, image/jpeg" onChange={handleInputUpload} />
-                    :
-                    <>
-                      {uploadValue > 0 && uploadValue < 100 ?
-                        <>
-                          {log + " " + uploadValue + "%"}
-                          <br></br>
-                          <progress value={uploadValue} max="100"></progress>
-                        </>
-                        :
-                        <img src={picture} height="150" alt="" />
-                      }
-                    </>
-                  }
-                </div>
-              </FormGroup>
-            </ModalBody>
-          </Modal>
           <Stats userData={userData} />
         </>
         :

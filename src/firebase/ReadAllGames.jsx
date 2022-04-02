@@ -241,9 +241,11 @@ export default function ReadAllGames(props) {
 
     return (
         <>
-            <p className={`d-flex justify-content-start me-4 ${props.isMobileResolution ? 'mt-2' : ''}`}>
-                {historyPlays.length !== undefined ? historyPlays.length : 0}{" Total bets"}
-            </p>
+            {props.main &&
+                <p className={`d-flex justify-content-start me-4 ${props.isMobileResolution ? 'mt-2' : ''}`}>
+                    {historyPlays.length !== undefined ? historyPlays.length : 0}{" Total bets"}
+                </p>
+            }
             <div className="play-list mt-2">
                 <ul className="list-group">
                     {historyPlays[0] !== undefined && historyPlays[0].createdAt ?

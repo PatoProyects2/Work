@@ -195,13 +195,17 @@ export default function ConnectWallet(props) {
         </>
         :
         <Dropdown className='text-center' isOpen={dropdown} toggle={toggleMenu} direction="down" size="lg">
+          <p className="text-center mt-3">
+            <label className="switch">
+              <input id="age" type="checkbox"></input>&nbsp;
+              <span className="slider round"></span>
+            </label>
+            &nbsp;
+            I confirm that I am at least 18 years old
+          </p>
           <DropdownToggle color='danger' onClick={connectWallet}>
             CONNECT WALLET
           </DropdownToggle>
-          <p className="text-center mt-3">
-            <input id="age" type="checkbox"></input>&nbsp;
-            <label htmlFor="age">I confirm that I am at least 18 years old</label>
-          </p>
         </Dropdown>
       }
     </>
