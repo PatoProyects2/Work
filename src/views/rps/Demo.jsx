@@ -147,9 +147,9 @@ export default function Demo() {
                             <button className="btn-hover btn-start" onClick={backGame}>DOUBLE OR NOTHING</button>
                           </>
                         }
-                      </div>                      
-                    </div>              
-                  </>                 
+                      </div>
+                    </div>
+                  </>
                 }
               </div>
               :
@@ -219,8 +219,12 @@ export default function Demo() {
             </div>
           </div>
           <p className="text-center mt-3">
-            <input id="age" type="checkbox"></input>&nbsp;
-            <label htmlFor="age">I confirm that I am at least 18 years old</label>
+            <label className="switch">
+              <input id="age" type="checkbox"></input>&nbsp;
+              <span className="slider round"></span>
+            </label>
+            &nbsp;
+            I confirm that I am at least 18 years old
           </p>
           <div className="text-center">
             <button className="btn-hover btn-start" onClick={openGame}>DOUBLE OR NOTHING</button>

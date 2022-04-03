@@ -21,7 +21,7 @@ function ChatMessage({ text, uid, photo, name, level, auth, userClub }) {
                     const clubData = doc.docs.map(userData => userData.data())
                     setUserData(clubData)
                 });
-                return unsub;
+                return () => unsub()
             }
         }
         readUserById(uid)

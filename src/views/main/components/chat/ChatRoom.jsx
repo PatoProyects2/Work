@@ -38,7 +38,7 @@ function ChatRoom(props) {
             setUserGames(userData.doc.data.value.mapValue.fields.rps.mapValue.fields.totalGames.integerValue)
           }
         });
-        return unsub;
+        return () => unsub()
       } catch (e) {
 
       }
@@ -94,7 +94,7 @@ function ChatRoom(props) {
 
           }
         });
-        return unsub;
+        return () => unsub()
       } catch (e) {
 
       }
@@ -176,8 +176,8 @@ function ChatRoom(props) {
               <button type="button" className="btn btn-transparent" onClick={openChatSettings}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
+                  width="20"
+                  height="20"
                   fill="white"
                   className="bi bi-gear"
                   viewBox="0 0 16 16"
@@ -193,7 +193,7 @@ function ChatRoom(props) {
               <input type="text" className="chat_input" placeholder="Type something..." value={formValue} onChange={(e) => setFormValue(e.target.value)} maxLength="50" />
               <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="up" size="xs" className="chat_emoji">
                 <DropdownToggle className="chat_emoji_btn">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" viewBox="0 0 15.498 15.498">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 15.498 15.498">
                     <path id="face-smile-emoji" d="M7.749,8A7.749,7.749,0,1,0,15.5,15.749,7.748,7.748,0,0,0,7.749,8Zm0,14A6.249,6.249,0,1,1,14,15.749,6.256,6.256,0,0,1,7.749,22Zm-2.5-6.749a1,1,0,1,0-1-1A1,1,0,0,0,5.249,15.249Zm5,0a1,1,0,1,0-1-1A1,1,0,0,0,10.249,15.249Zm.125,2.268a3.413,3.413,0,0,1-5.249,0,.75.75,0,0,0-1.153.959,4.919,4.919,0,0,0,7.555,0,.75.75,0,0,0-1.153-.959Z" transform="translate(0 -8)" />
                   </svg>
                 </DropdownToggle>

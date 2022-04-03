@@ -788,17 +788,17 @@ ul {
 .chat_input_contain .chat_send {
     position: absolute;
     font-size: 20px;
-    right: 26px;
+    right: 24px;
     float: right;
     cursor: pointer;
     transition: color .4s ease;
-    padding: 7px;
+    padding: 5px;
 }
 
 .chat_input_contain .chat_emoji {
     position: absolute;
-    right: 65px;
-    bottom: 26px;
+    right: 52px;
+    bottom: 28px;
 }
 
 .chat_emoji_btn {

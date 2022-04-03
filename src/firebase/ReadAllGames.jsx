@@ -60,7 +60,7 @@ export default function ReadAllGames(props) {
             const played = doc.docs.map(amountLeaderboard => amountLeaderboard.data())
             setHistoryPlays(played)
         });
-        return unsub;
+        return () => unsub()
     }, [])
 
     useEffect(() => {
