@@ -21,65 +21,68 @@ import Fairplay from './views/main/components/fairplay/Fairplay';
 import * as serviceWorker from './serviceWorker'
 import 'bootstrap/dist/css/bootstrap.css'
 import './index.scss'
+import ScrollToTop from './components/ui/ScrollToTop';
 
 ReactDOM.render(
   <MixpanelProvider>
     <BrowserRouter>
-      <Toaster
-        position="top-right"
-        reverseOrder={false}
-        gutter={8}
-        containerClassName=""
-        containerStyle={{}}
-        className='toast-modal'
-        toastOptions={{
-          // Define default options
-          className: 'mt-5',
-          duration: 5000,
-          style: {
-            background: 'rgba(28, 31, 35, 1)',
-            color: 'whitesmoke'
-          },
-          // Default options for specific types
-          success: {
-            duration: 3000,
-            theme: {
-              primary: 'green',
-              secondary: 'black',
+      <ScrollToTop>
+        <Toaster
+          position="top-right"
+          reverseOrder={false}
+          gutter={8}
+          containerClassName=""
+          containerStyle={{}}
+          className='toast-modal'
+          toastOptions={{
+            // Define default options
+            className: 'mt-5',
+            duration: 5000,
+            style: {
+              background: 'rgba(28, 31, 35, 1)',
+              color: 'whitesmoke'
             },
-          },
-        }}
-      >
-        {(t) => (
-          <ToastBar toast={t}>
-            {({ icon, message }) => (
-              <>
-                {icon}
-                {message}
-                {t.type !== 'loading' && (
-                  <span className='toast-close' onClick={() => toast.dismiss(t.id)}><i className='fa-solid fa-xmark fa-lg'></i></span>
-                )}
-              </>
-            )}
-          </ToastBar>
-        )}
-      </Toaster>
-      <Routes>
-        <Route path="/" element={<MainLayout />}>
-          <Route index element={<Main />} />
-          <Route path="nfts" element={<Nfts />} />
-          <Route path="fair-play" element={<Fairplay />} />
-          <Route path="about" element={<MainAbout />} />
-          <Route path="profile" element={<MainProfile />} />
-          <Route path="*" element={<Navigate replace to="/" />} />
-        </Route>
-        <Route path="/rps" element={<RpsLayout />}>
-          <Route index element={<Rps />} />
-          <Route path="demo" element={<Demo />} />
-          <Route path="about" element={<RpsAbout />} />
-          <Route path="*" element={<Navigate replace to="/rps" />} />
-        </Route>
-      </Routes>
+            // Default options for specific types
+            success: {
+              duration: 3000,
+              theme: {
+                primary: 'green',
+                secondary: 'black',
+              },
+            },
+          }}
+        >
+          {(t) => (
+            <ToastBar toast={t}>
+              {({ icon, message }) => (
+                <>
+                  {icon}
+                  {message}
+                  {t.type !== 'loading' && (
+                    <span className='toast-close' onClick={() => toast.dismiss(t.id)}><i className='fa-solid fa-xmark fa-lg'></i></span>
+                  )}
+                </>
+              )}
+            </ToastBar>
+          )}
+        </Toaster>
+        <Routes>
+          <Route path="/" element={<MainLayout />}>
+            <Route index element={<Main />} />
+            <Route path="nfts" element={<Nfts />} />
+            <Route path="fair-play" element={<Fairplay />} />
+            <Route path="about" element={<MainAbout />} />
+            <Route path="profile" element={<MainProfile />} />
+            <Route path="*" element={<Navigate replace to="/" />} />
+          </Route>
+          <Route path="/rps" element={<RpsLayout />}>
+            <Route index element={<Rps />} />
+            <Route path="demo" element={<Demo />} />
+            <Route path="about" element={<RpsAbout />} />
+            <Route path="*" element={<Navigate replace to="/rps" />} />
+          </Route>
+        </Routes>
+      </ScrollToTop>
     </BrowserRouter >
   </MixpanelProvider>,
   document.getElementById('root')

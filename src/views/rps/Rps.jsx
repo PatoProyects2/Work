@@ -811,14 +811,14 @@ export default function Rps() {
                             {userGameResult === true ? useramount : ""}{userGameResult === false ? useramount : ""}{" MATIC"}
                           </span>
                         </div>
-                        <div>
+                        <div className="d-flex justify-content-center">
                           {userGameResult === true ?
                             <button className="btn-hover btn-green" onClick={backGame}>CLAIM REWARD</button>
                             :
-                            <>
-                              <h5>Try again?</h5>
+                            <div className="d-flex flex-column align-items-center">
+                              <p>Try again?</p>
                               <button className="btn-hover btn-start" onClick={backGame}>DOUBLE OR NOTHING</button>
-                            </>
+                            </div>
                           }
                         </div>
                       </div>

@@ -106,7 +106,7 @@ export default function Profile() {
           setName(clubData[0].name)
         }
       });
-      return unsub;
+      return () => unsub()
     }
   }
   const resendEmailVerification = () => {

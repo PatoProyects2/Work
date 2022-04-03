@@ -816,6 +816,7 @@ ul {
 ul.messages {
     padding: 0;
     margin: 0;
+    height: calc(100vh - 50px);
 }
 
 .chat_user_img {
@@ -1148,11 +1149,13 @@ ul.messages {
 }
 
 input:checked+.slider {
-    background-color: #2196F3;
+    // background-color: #2196F3;
+    background-color: #ffb74d;
 }
 
 input:focus+.slider {
-    box-shadow: 0 0 1px #2196F3;
+    // box-shadow: 0 0 1px #2196F3;
+    box-shadow: 0 0 1px #ffb74d;
 }
 
 input:checked+.slider:before {
