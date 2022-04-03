@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useRef } from "react"
 import { addDoc, onSnapshot, orderBy, collection, serverTimestamp, where, limit, getDocs, query, arrayRemove, updateDoc, doc } from "firebase/firestore";
 import Picker, { SKIN_TONE_MEDIUM_DARK } from 'emoji-picker-react';
-import { Modal, ModalBody, FormGroup, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Form, } from 'reactstrap'
+import { Modal, ModalBody, FormGroup, Dropdown, DropdownMenu, DropdownToggle, } from 'reactstrap'
 import { auth, db } from "../../../../firebase/firesbaseConfig";
 import ChatMessage from './ChatMessage';
+import SendLogo from '../../../../assets/imgs/send.png'
 
 function ChatRoom(props) {
   const [userClub, setUserClub] = useState({})
@@ -192,9 +193,8 @@ function ChatRoom(props) {
               <input type="text" className="chat_input" placeholder="Type something..." value={formValue} onChange={(e) => setFormValue(e.target.value)} maxLength="50" />
               <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="up" size="xs" className="chat_emoji">
                 <DropdownToggle className="chat_emoji_btn">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-emoji-smile" viewBox="0 0 16 16">
-                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                    <path d="M4.285 9.567a.5.5 0 0 1 .683.183A3.498 3.498 0 0 0 8 11.5a3.498 3.498 0 0 0 3.032-1.75.5.5 0 1 1 .866.5A4.498 4.498 0 0 1 8 12.5a4.498 4.498 0 0 1-3.898-2.25.5.5 0 0 1 .183-.683zM7 6.5C7 7.328 6.552 8 6 8s-1-.672-1-1.5S5.448 5 6 5s1 .672 1 1.5zm4 0c0 .828-.448 1.5-1 1.5s-1-.672-1-1.5S9.448 5 10 5s1 .672 1 1.5z" />
+                  <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" viewBox="0 0 15.498 15.498">
+                    <path id="face-smile-emoji" d="M7.749,8A7.749,7.749,0,1,0,15.5,15.749,7.748,7.748,0,0,0,7.749,8Zm0,14A6.249,6.249,0,1,1,14,15.749,6.256,6.256,0,0,1,7.749,22Zm-2.5-6.749a1,1,0,1,0-1-1A1,1,0,0,0,5.249,15.249Zm5,0a1,1,0,1,0-1-1A1,1,0,0,0,10.249,15.249Zm.125,2.268a3.413,3.413,0,0,1-5.249,0,.75.75,0,0,0-1.153.959,4.919,4.919,0,0,0,7.555,0,.75.75,0,0,0-1.153-.959Z" transform="translate(0 -8)" />
                   </svg>
                 </DropdownToggle>
                 <DropdownMenu >
@@ -209,7 +209,7 @@ function ChatRoom(props) {
                   </>
                 </DropdownMenu>
               </Dropdown>
-              <button className="btn btn-transparent chat_send" type="submit"><i className="fa-solid fa-paper-plane"></i></button>
+              <button className="btn btn-transparent chat_send" type="submit"><img widht="30" height="30" src={SendLogo} alt="" /></button>
             </div>
           </form>
           :

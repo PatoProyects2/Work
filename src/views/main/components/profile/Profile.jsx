@@ -238,7 +238,7 @@ export default function Profile() {
           <Stats userData={userData} />
         </>
         :
-        <h2 className='text-center'>PLEASE LOG IN OR SIGN UP</h2>
+        <h2 className='text-center mt-3'>PLEASE LOG IN OR SIGN UP</h2>
       }
     </div>
   );

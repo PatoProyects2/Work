@@ -4,7 +4,7 @@ import { db } from '../../../../firebase/firesbaseConfig'
 import DataChart from './DataChart'
 export default function Chart({ userData }) {
   const [data, setData] = useState(undefined);
-  
+
   useEffect(() => {
     var unixTimeStamp = Math.round((new Date()).getTime() / 1000);
     var lastDay = unixTimeStamp - 86400
@@ -30,7 +30,7 @@ export default function Chart({ userData }) {
 
   return (
     <>
-      <DataChart data={data} />
+      {userData.rps.totalGames > 0 && <DataChart data={data} />}
     </>
   )
 }
