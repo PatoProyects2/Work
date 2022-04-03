@@ -81,6 +81,10 @@ body {
     background-color: #52525B !important;
 }
 
+.dd-menu-item.disabled {
+    color: #52525B !important;
+}
+
 .btn-rank {
     background-color: rgba(28, 31, 35, 1) !important;
     color: whitesmoke!important;
@@ -103,6 +107,15 @@ body {
 .list-group {
     background-color: rgba(28, 31, 35, 1);
     color: whitesmoke;
+}
+
+.list-group li:hover {
+    background-color: #292b2c;
+    border-bottom: 2px solid #232c31;
+}
+
+.list-group li {
+    border-bottom: 2px solid #232c31;
 }
 
 .list-group-item.list-group-item-action {
@@ -395,4 +408,145 @@ svg:hover>g.brand-icon {
 
 .chat_collapse_ico {
     background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMS44MzEiIGhlaWdodD0iMjEuODMzIiB2aWV3Qm94PSIwIDAgMjEuODMxIDIxLjgzMyI+CiAgPHBhdGggaWQ9ImNvbW1lbnQtYWx0LWxpbmVzIiBkPSJNMTkuMSwwSDIuNzI5QTIuNzMxLDIuNzMxLDAsMCwwLDAsMi43Mjl2MTIuMjhhMi43MzEsMi43MzEsMCwwLDAsMi43MjksMi43MjlINi44MjJWMjEuMzJhLjUxMy41MTMsMCwwLDAsLjgxNC40MTRsNS4zMjYtNEgxOS4xYTIuNzMxLDIuNzMxLDAsMCwwLDIuNzI5LTIuNzI5VjIuNzI5QTIuNzMxLDIuNzMxLDAsMCwwLDE5LjEsMFpNMTIuMjgsMTEuMjU3YS4zNDIuMzQyLDAsMCwxLS4zNDEuMzQxSDUuOGEuMzQyLjM0MiwwLDAsMS0uMzQxLS4zNDF2LS42ODJhLjM0Mi4zNDIsMCwwLDEsLjM0MS0uMzQxaDYuMTRhLjM0Mi4zNDIsMCwwLDEsLjM0MS4zNDFabTQuMDkzLTQuMDkzYS4zNDIuMzQyLDAsMCwxLS4zNDEuMzQxSDUuOGEuMzQyLjM0MiwwLDAsMS0uMzQxLS4zNDFWNi40ODFBLjM0Mi4zNDIsMCwwLDEsNS44LDYuMTRIMTYuMDMyYS4zNDIuMzQyLDAsMCwxLC4zNDEuMzQxWiIgZmlsbD0iIzY4NzU3YiIvPgo8L3N2Zz4K);
+}
+
+
+/* User Stats */
+
+.user-stats-info {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+}
+
+.user-stats-profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: 2rem;
+}
+
+.user-stats-image {
+    border: 2px solid #2f3e45;
+    padding: 3px;
+}
+
+.user-stats-lvl {
+    display: flex;
+    margin-top: 0.5rem;
+    background-color: #2f3e45;
+    padding: 3px 5px;
+    border-radius: 5px;
+}
+
+.user-daily-stats {
+    display: flex;
+    flex-direction: column;
+    background-color: #2f3e45;
+    border-radius: 5px;
+    padding: 10px;
+    width: 60%;
+}
+
+.user-daily-stats-container {
+    display: flex;
+    gap: 3rem;
+}
+
+.game-list-stats {
+    display: flex;
+    flex-direction: column;
+    gap: .25rem;
+    border-right: 2px solid #acbfc6;
+    padding-right: 2rem;
+}
+
+.user-daily-stats h5 {
+    text-align: end;
+    font-size: 0.9rem;
+}
+
+.game-stats {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.btn-game-stats {
+    border: none;
+    outline: none;
+    padding: 0;
+    background: transparent;
+    color: #acbfc6;
+    text-transform: uppercase;
+}
+
+.btn-game-stats:hover,
+.btn-game-stats.active {
+    color: #ffb74d;
+    border-bottom: 1px solid #ffb74d;
+}
+
+.header-row {
+    color: #acbfc6;
+    font-size: 0.9rem;
+}
+
+.header-content {
+    color: whitesmoke;
+    font-size: 0.9rem;
+}
+
+.user-stats-profit {
+    /* d-flex justify-content-center mt-5 gap-5 */
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+    gap: 1.5rem;
+}
+
+.profit-border {
+    border-right: 2px solid #acbfc6;
+    padding-right: 1rem;
+}
+
+.profit-plus {
+    color: green;
+}
+
+.profit-minus {
+    color: coral;
+}
+
+@media (max-width: 991px) {
+    .user-stats-info {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin-top: 1rem;
+    }
+    .user-stats-profile {
+        margin-left: 0;
+        margin-bottom: 1rem;
+    }
+    .user-daily-stats {
+        width: 100%;
+    }
+    .game-list-stats {
+        font-size: 0.875rem;
+        padding-right: 0.5rem;
+        gap: 0;
+        min-width: 60px;
+    }
+    .user-daily-stats-container {
+        gap: 0;
+    }
+    .game-stats {
+        width: 75%;
+    }
+    .user-stats-profit {
+        gap: 0.25rem;
+        text-align: center;
+    }
 }
