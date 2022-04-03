@@ -312,8 +312,14 @@ svg:hover>g.brand-icon {
 }
 
 .roadmap-label.accomplished,
+.roadmap-link,
 .arrow-highlight {
     color: #ffc107;
+}
+
+.roadmap-link:hover {
+    color: #ffc107;
+    opacity: 0.8;
 }
 
 .RSPBprogressBar .RSPBprogression {
