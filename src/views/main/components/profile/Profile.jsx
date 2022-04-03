@@ -196,7 +196,7 @@ export default function Profile() {
                     src={(userData[0] && userData[0].photo) ? userData[0].photo : "https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh"}
                     top
                   />
-                  <div class="file-select" id="picture"  >
+                  <div className="file-select" id="picture"  >
                     <input type="file" accept="image/png, image/jpeg" onChange={handleInputUpload} />
                   </div>
                   <FormGroup>

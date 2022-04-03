@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Modal, ModalBody, FormGroup, Table, Button, ButtonGroup } from 'reactstrap'
-import { query, where, collection, limit, onSnapshot, updateDoc, arrayUnion, doc, orderBy, getDocs } from "firebase/firestore";
+import { query, where, collection, limit, onSnapshot, updateDoc, arrayUnion, doc } from "firebase/firestore";
 import { db } from '../../../../firebase/firesbaseConfig'
-import Chart from './Chart'
+import Chart from '../profile/Chart'
 function ChatMessage({ text, uid, photo, name, level, auth, userClub }) {
     const [userData, setUserData] = useState({});
-    const [data, setData] = useState({});
     const [dropdown, setDropdown] = useState(false);
     const [stats, setStats] = useState(false);
     const [rpsStats, setRpsStats] = useState(true);
@@ -31,37 +30,7 @@ function ChatMessage({ text, uid, photo, name, level, auth, userClub }) {
         };
     }, [uid])
 
-    useEffect(() => {
-        const readAllUserGames = async (userClub) => {
-            var unixTimeStamp = Math.round((new Date()).getTime() / 1000);
-            var lastDay = unixTimeStamp - 86400
-            if (userClub.account) {
-                const clubCollection = collection(db, "allGames")
-                const queryGames = query(clubCollection, where("createdAt", ">", lastDay), where("account", "==", userClub.account.stringValue))
-                const documentGames = await getDocs(queryGames)
-                const documents = documentGames._snapshot.docChanges
-                let array = documents.map(document => {
-                    const data = document.doc.data.value.mapValue.fields
-                    const created = parseInt(data.createdAt.integerValue)
-                    const profit = parseInt(data.profit.stringValue)
-                    let top = {
-                        profit: profit,
-                        time: created
-                    }
-                    return top
-                })
-                let stats = array.sort(((a, b) => b.time + a.time))
-                console.log(array)
-                console.log(stats)
-                setData(stats)
-            }
-        }
 
-        readAllUserGames(userClub)
-        return () => {
-            setData({});
-        }
-    }, [userClub])
 
     const OpenStatModal = () => {
         if (!stats) {
@@ -226,7 +195,7 @@ function ChatMessage({ text, uid, photo, name, level, auth, userClub }) {
                             ""}
                     </FormGroup>
                     <FormGroup>
-                        <Chart data={data} />
+                        <Chart userData={userData[0]} />
                     </FormGroup>
                 </ModalBody>
             </Modal>

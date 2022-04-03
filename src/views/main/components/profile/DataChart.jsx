@@ -1,6 +1,7 @@
 import React from 'react';
 import { Line } from '@ant-design/charts';
-export default function Chart({ data }) {
+export default function DataChart({ data }) {
+  console.log(data)
   const config = {
     data,
     xField: 'time',
@@ -9,10 +10,12 @@ export default function Chart({ data }) {
       size: 5,
       shape: 'diamond',
     },
-  };
+  }
   return (
     <div>
-      <Line {...config} />
+      {data &&
+        <Line {...config} />
+      }
     </div>
-  );
+  )
 }
