@@ -8,6 +8,7 @@ import Portis from "@portis/web3";
 import ethProvider from "eth-provider";
 import WalletLink from "walletlink";
 import { doc, getDoc, setDoc, updateDoc, collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { useMixpanel } from 'react-mixpanel-browser';
 import toast from 'react-hot-toast';
 import RpsGame from '../../abis/rpsGame/rpsGame.json'
 import RpsGamePolygon from '../../abis/rpsGamePolygon/rpsGame.json'
@@ -60,8 +61,9 @@ export default function Rps() {
   const [doubleOrNothingStatus, setDoubleOrNothingStatus] = useState(undefined);
   const [showGameResult, setShowGameResult] = useState(false);
   const isMobileResolution = useMatchMedia('(max-width:650px)', false);
-  const main = false;
   const unixTimeStamp = ReadUnixTime();
+  const mixpanel = useMixpanel();
+  const main = false;
 
   useEffect(() => {
     readAccount(user)
@@ -100,6 +102,9 @@ export default function Rps() {
   }, [account, user])
 
   const loadUserGame = async (account, user) => {
+    mixpanel.init('07cdb36cf270a17ef7095ffc2aacb29d', { debug: false });
+    mixpanel.track('Sign up');
+
     const query0 = doc(db, "clubUsers", account)
     const userDocument0 = await getDoc(query0)
     const userData = userDocument0.data()
@@ -358,8 +363,8 @@ export default function Rps() {
               lastGameBlock: 0,
             },
           })
+            .then(() => window.location.reload())
         }
-        window.location.reload()
       }
       if (!user && account !== '0x000000000000000000000000000000000000dEaD') {
         setDoc(doc(db, "clubUsers", account), {
@@ -385,7 +390,7 @@ export default function Rps() {
             lastGameBlock: 0,
           },
         })
-        window.location.reload()
+          .then(() => window.location.reload())
       }
     }
   }
@@ -644,6 +649,14 @@ export default function Rps() {
             game: 'RPS',
             profit: (userDocument.rps.amountWon - userDocument.rps.amountLoss).toString()
           })
+          mixpanel.track(
+            "rps",
+            {
+              "account": myEvents[0].returnValues[0].toLowerCase(),
+              "result": myEvents[0].returnValues[3],
+              "streak": parseInt(myEvents[0].returnValues[2])
+            }
+          );
           setUserGameResult(myEvents[0].returnValues[3])
           setUserGameStreak(myEvents[0].returnValues[2])
           setShowGameResult(true)
