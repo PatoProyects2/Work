@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.css": "/Work/static/css/main.040b4f36.chunk.css",
-    "main.js": "/Work/static/js/main.6626ce4b.chunk.js",
-    "main.js.map": "/Work/static/js/main.6626ce4b.chunk.js.map",
+    "main.css": "/Work/static/css/main.76360ee5.chunk.css",
+    "main.js": "/Work/static/js/main.13196a44.chunk.js",
+    "main.js.map": "/Work/static/js/main.13196a44.chunk.js.map",
     "runtime-main.js": "/Work/static/js/runtime-main.9471df77.js",
     "runtime-main.js.map": "/Work/static/js/runtime-main.9471df77.js.map",
     "static/css/2.4615dd22.chunk.css": "/Work/static/css/2.4615dd22.chunk.css",
-    "static/js/2.ca3850df.chunk.js": "/Work/static/js/2.ca3850df.chunk.js",
-    "static/js/2.ca3850df.chunk.js.map": "/Work/static/js/2.ca3850df.chunk.js.map",
+    "static/js/2.1e0db862.chunk.js": "/Work/static/js/2.1e0db862.chunk.js",
+    "static/js/2.1e0db862.chunk.js.map": "/Work/static/js/2.1e0db862.chunk.js.map",
     "index.html": "/Work/index.html",
     "static/css/2.4615dd22.chunk.css.map": "/Work/static/css/2.4615dd22.chunk.css.map",
-    "static/css/main.040b4f36.chunk.css.map": "/Work/static/css/main.040b4f36.chunk.css.map",
-    "static/js/2.ca3850df.chunk.js.LICENSE.txt": "/Work/static/js/2.ca3850df.chunk.js.LICENSE.txt",
+    "static/css/main.76360ee5.chunk.css.map": "/Work/static/css/main.76360ee5.chunk.css.map",
+    "static/js/2.1e0db862.chunk.js.LICENSE.txt": "/Work/static/js/2.1e0db862.chunk.js.LICENSE.txt",
     "static/media/Games_Club.d1c864bd.png": "/Work/static/media/Games_Club.d1c864bd.png",
     "static/media/PaperLose.575ddc25.gif": "/Work/static/media/PaperLose.575ddc25.gif",
     "static/media/PaperWin.0f056330.gif": "/Work/static/media/PaperWin.0f056330.gif",
@@ -32,8 +32,8 @@
   "entrypoints": [
     "static/js/runtime-main.9471df77.js",
     "static/css/2.4615dd22.chunk.css",
-    "static/js/2.ca3850df.chunk.js",
-    "static/css/main.040b4f36.chunk.css",
-    "static/js/main.6626ce4b.chunk.js"
+    "static/js/2.1e0db862.chunk.js",
+    "static/css/main.76360ee5.chunk.css",
+    "static/js/main.13196a44.chunk.js"
   ]
 }
