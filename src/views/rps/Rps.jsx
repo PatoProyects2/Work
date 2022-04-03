@@ -31,10 +31,10 @@ import PaperLose from '../../assets/imgs/animations/PaperLose.gif'
 import PaperWin from '../../assets/imgs/animations/PaperWin.gif'
 import ScissorsLose from '../../assets/imgs/animations/ScissorsLose.gif'
 import ScissorsWin from '../../assets/imgs/animations/ScissorsWin.gif'
-import { BalanceContext } from '../../context/BalanceContext';
+import { Context } from '../../context/Context';
 
 export default function Rps() {
-  const { setBalance } = useContext(BalanceContext);
+  const { setBalance } = useContext(Context);
   const [user] = useAuthState(auth)
   const [web3, setWeb3] = useState({});
   const [rpsgame, setRpsgame] = useState({});

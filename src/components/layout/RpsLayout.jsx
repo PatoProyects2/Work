@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { Outlet } from 'react-router-dom'
-import {BalanceContext} from '../../context/BalanceContext';
-
+import {Context} from '../../context/Context';
 import { Navbar } from '../ui/navbar/Navbar';
 
 export function RpsLayout() {
@@ -9,7 +8,7 @@ export function RpsLayout() {
   const [balance, setBalance] = useState('-');
 
   return (
-    <BalanceContext.Provider value={{balance, setBalance}}>
+    <Context.Provider value={{balance, setBalance}}>
       <header>
         <Navbar navType="rps" />
       </header>
@@ -18,6 +17,6 @@ export function RpsLayout() {
           <Outlet />
         </section>
       </main>
-    </BalanceContext.Provider>
+    </Context.Provider>
   );
 }

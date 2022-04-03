@@ -1,5 +1,25 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { collection, getDocs, query } from "firebase/firestore";
+import { db } from '../../../../firebase/firesbaseConfig'
 export default function Fairplay() {
+  const [winGames, setWinGames] = useState(0);
+  const [loseGames, setLoseGames] = useState(0);
+  const [totalGames, setTotalGames] = useState(0);
+  useEffect(() => {
+    const readFairGames = async () => {
+      const clubCollection = collection(db, "allGames")
+      const queryGames = query(clubCollection)
+      const documentGames = await getDocs(queryGames)
+      const games = documentGames._snapshot.docChanges
+      let array = games.map(games => games.doc.data.value.mapValue.fields.result.booleanValue)
+      const win = array.filter(x => x)
+      const lose = array.filter(x => !x)
+      setWinGames(win.length)
+      setLoseGames(lose.length)
+      setTotalGames(win.length + lose.length)
+    }
+    readFairGames()
+  }, [])
   return (
     <div className='container'>
       <div className='row pt-5'>
@@ -11,8 +31,14 @@ export default function Fairplay() {
             We are implementing ChainLink's oracle, this helps us to improve our security and has an audited randomness. <br />
             One of our main premises is to be as transparent as possible, therefore our house wallets will be of public access.
           </p>
-          <a href="https://eu.mixpanel.com/public/XCghszDcX9eQ52ejMDG8V2" target="_blank">View Realtime Stats</a>
         </div>
+        {totalGames > 0 &&
+          <>
+            <span>{"TOTAL GAMES " + totalGames + " 100%"}</span>
+            <span>{"WIN " + winGames + " " + ((winGames / totalGames) * 100).toFixed(2) + " %"}</span>
+            <span>{"LOSE " + loseGames + " " + ((loseGames / totalGames) * 100).toFixed(2) + " %"}</span>
+          </>
+        }
       </div>
     </div>
   );

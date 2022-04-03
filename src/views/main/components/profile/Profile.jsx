@@ -7,6 +7,7 @@ import { toast } from 'react-hot-toast';
 import { query, where, collection, limit, onSnapshot, updateDoc, doc } from "firebase/firestore";
 import { auth, db, storage } from '../../../../firebase/firesbaseConfig'
 import Stats from './Stats'
+import FileUploader from './FileUploader';
 
 export default function Profile() {
   const [userInfo, setUserInfo] = useState({
@@ -91,7 +92,6 @@ export default function Profile() {
     });
   }
 
-
   useEffect(() => {
     readUserClubData(user)
   }, [user])
@@ -106,7 +106,7 @@ export default function Profile() {
           setName(clubData[0].name)
         }
       });
-      return () => unsub()
+      return unsub;
     }
   }
   const resendEmailVerification = () => {
@@ -180,7 +180,7 @@ export default function Profile() {
   }
 
   return (
-    <div className="container">
+    <div className="container">  
       {user ?
         <>
           <Row>
@@ -196,9 +196,12 @@ export default function Profile() {
                     src={(userData[0] && userData[0].photo) ? userData[0].photo : "https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh"}
                     top
                   />
-                  <div className="file-select" id="picture"  >
+                  {/* <div className="file-select" id="picture"  >
                     <input type="file" accept="image/png, image/jpeg" onChange={handleInputUpload} />
-                  </div>
+                  </div> */}
+                  
+                  <FileUploader handleChange={handleInputUpload} text="Change picture" />
+
                   <FormGroup>
                     {uploadValue > 0 && uploadValue < 100 &&
                       <>

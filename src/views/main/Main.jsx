@@ -415,7 +415,7 @@ export default function Main() {
           }
         </div>
 
-        {liveBets && <ReadAllGames isMobileResolution={isMobileResolution} main={main}/>}
+        {liveBets && <ReadAllGames isMobileResolution={isMobileResolution} main={main} />}
 
         {isMobileResolution ?
           <>

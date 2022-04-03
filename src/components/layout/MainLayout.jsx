@@ -5,7 +5,7 @@ import { Outlet } from 'react-router-dom'
 import ChatRoom from '../../views/main/components/chat/ChatRoom';
 import Footer from '../footer/Footer'
 import { Navbar } from '../ui/navbar/Navbar';
-import { BalanceContext } from '../../context/BalanceContext';
+import { Context } from '../../context/Context';
 
 export function MainLayout() {
   const [user] = useAuthState(auth);
@@ -13,7 +13,7 @@ export function MainLayout() {
   const [balance, setBalance] = useState('-');
 
   return (
-    <BalanceContext.Provider value={{ balance, setBalance }}>
+    <Context.Provider value={{ balance, setBalance}}>
       <header>
         <Navbar navType="rps" />
       </header>
@@ -35,6 +35,6 @@ export function MainLayout() {
       <footer>
         <Footer />
       </footer>
-    </BalanceContext.Provider>
+    </Context.Provider>
   );
 }

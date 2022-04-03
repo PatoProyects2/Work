@@ -6,7 +6,6 @@ import AccountFirebase from '../../layout/Authentication';
 import { useMatchMedia } from '../../../hooks/useMatchMedia';
 import GamesClub from '../../../assets/imgs/Games_Club.png';
 import MaticBalance from '../../../views/rps/components/MaticBalance';
-
 export const NavbarDesktop = ({ handleFaqModal, handleHtpModal, handleRpsModal, navType }) => {
     const [showOffcanvas, setShowOffCanvas] = useState(false);
     const isMobileResolution = useMatchMedia('(max-width:768px)', false);
@@ -35,7 +34,7 @@ export const NavbarDesktop = ({ handleFaqModal, handleHtpModal, handleRpsModal, 
                             </g>
                         </svg>
                     </NavLink>
-                    <div className="active-users-navbar">{ <Presence /> }</div>
+                    <div className="active-users-navbar">{<Presence />}</div>
                 </div>
 
                 <MaticBalance />
@@ -253,8 +252,10 @@ export const NavbarDesktop = ({ handleFaqModal, handleHtpModal, handleRpsModal, 
                                 Rewards
                             </NavLink> */}
                         </Nav>
-                        <div className="active-users-offcanvas">{ <Presence /> }</div>
+                        <div className="active-users-offcanvas">{<Presence />}</div>
                         {isMobileResolution && <div className="d-flex justify-content-center mt-3"><AccountFirebase /></div>}
+                        <br></br>
+                        <a href="https://eu.mixpanel.com/public/XCghszDcX9eQ52ejMDG8V2" className="text-center mixpanel-stat" target="_blank" rel="noopener noreferrer">Realtime Stats</a>
                         <div className="d-flex flex-row gap-2 justify-content-center mt-3">
                             <a href="https://twitter.com/RPSGamesClub" className="twitter-icon" target="_blank" rel="noopener noreferrer">
                                 <i className="fab fa-2x fa-twitter"></i>

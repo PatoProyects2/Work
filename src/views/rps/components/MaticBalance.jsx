@@ -1,11 +1,10 @@
 import React, { useContext } from 'react'
 import MaticLogo from '../../../assets/imgs/matic-logo.png'
-import { BalanceContext } from '../../../context/BalanceContext'
-
+import { Context } from '../../../context/Context'
 
 export default function MaticBalance() {
 
-    const { balance } = useContext(BalanceContext);
+    const { balance } = useContext(Context);
 
     return (
         <>
