@@ -100,6 +100,7 @@ function ChatMessage({ text, uid, photo, name, level, auth, userClub }) {
                         <div className='d-flex justify-content-end'>
                             <button type="button" className="btn-close" aria-label="Close" onClick={OpenStatModal}></button>
                         </div>
+                        <span className="ms-3">{name} Stats</span>
                         <div className="user-stats-info">
                             <div className="user-stats-profile">
                                 <img className="rounded-circle user-stats-image" width="100" height="100" src={photo} alt={name} />
@@ -119,7 +120,7 @@ function ChatMessage({ text, uid, photo, name, level, auth, userClub }) {
                                     {(userData[0] && rpsStats) &&
                                         <div className="game-stats">
                                             <div className="row header-row text-center mb-2">
-                                                <div className='col-4'>Win Streak</div>
+                                                <div className='col-4'>Day Streak</div>
                                                 <div className='col-2'>Rock</div>
                                                 <div className='col-3'>Paper</div>
                                                 <div className='col-3'>Scissors</div>
@@ -148,9 +149,9 @@ function ChatMessage({ text, uid, photo, name, level, auth, userClub }) {
                                     </div>
                                     <div className="d-flex flex-column align-items-center profit-border">
                                         <span className="header-row">Total Amount</span>
-                                        <span className="content-row">{"$" + userData[0].rps.totalAmount}</span>
+                                        <span className="content-row">{userData[0].rps.totalAmount}</span>
                                     </div>
-                                    <div className="d-flex flex-column align-items-center profit-border">
+                                    <div className="d-flex flex-column align-items-center">
                                         <span className="header-row">Profit</span>
                                         <span className={`content-row ${(userData[0].rps.amountWon - userData[0].rps.amountLoss) > 0 ? 'profit-plus' : 'profit-minus'}`}>{"$" + (userData[0].rps.amountWon - userData[0].rps.amountLoss).toFixed(2)}</span>
                                     </div>
@@ -159,9 +160,9 @@ function ChatMessage({ text, uid, photo, name, level, auth, userClub }) {
                                 : "No games found"
                             }
                         </div>
-                        <FormGroup>
+                        <div className="chart-user">
                             <Chart userData={userData[0]} />
-                        </FormGroup>
+                        </div>
                     </ModalBody>
                 </Modal>
             }

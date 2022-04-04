@@ -6,7 +6,6 @@ import ChatRoom from '../../components/chat/ChatRoom';
 import Footer from '../footer/Footer'
 import { Navbar } from '../ui/navbar/Navbar';
 import { Context } from '../../context/Context';
-import Chat from '../../assets/imgs/chat.png';
 
 export function MainLayout() {
   const [user] = useAuthState(auth);
@@ -14,7 +13,7 @@ export function MainLayout() {
   const [balance, setBalance] = useState('-');
 
   return (
-    <Context.Provider value={{ balance, setBalance }}>
+    <Context.Provider value={{ balance, setBalance}}>
       <header>
         <Navbar navType="rps" />
       </header>
@@ -24,7 +23,9 @@ export function MainLayout() {
             <ChatRoom user={user} />
           </div>
 
-          <img src={Chat} className={`chat_collapse_ico ${showChat ? 'expanded' : ''}`} onClick={() => setShowChat(!showChat)} alt="" />
+          <div className="chat_expand">
+            <span className={`chat_collapse_ico ${showChat ? 'expanded' : ''}`} onClick={() => setShowChat(!showChat)}></span>
+          </div>
 
           <div className={`content-section ${showChat ? 'expanded' : ''}`}>
             <Outlet />

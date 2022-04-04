@@ -7,6 +7,7 @@ import { useMatchMedia } from '../../../hooks/useMatchMedia';
 import GamesClub from '../../../assets/imgs/Games_Club.png';
 import MetamaskLogo from '../../../assets/imgs/fox.png';
 import MaticBalance from '../../../views/rps/components/MaticBalance';
+
 export const NavbarDesktop = ({ handleFaqModal, handleHtpModal, handleRpsModal, navType }) => {
     const [showOffcanvas, setShowOffCanvas] = useState(false);
     const isMobileResolution = useMatchMedia('(max-width:768px)', false);
@@ -262,8 +263,7 @@ export const NavbarDesktop = ({ handleFaqModal, handleHtpModal, handleRpsModal, 
                         </Nav>
                         <div className="active-users-offcanvas">{<Presence />}</div>
                         {isMobileResolution && <div className="d-flex justify-content-center mt-3"><AccountFirebase /></div>}
-                        <br></br>
-                        <a href="https://eu.mixpanel.com/public/XCghszDcX9eQ52ejMDG8V2" className="text-center mixpanel-stat" target="_blank" rel="noopener noreferrer">Realtime Stats</a>
+                        
                         <div className="d-flex flex-row gap-2 justify-content-center mt-3">
                             <a href="https://twitter.com/RPSGamesClub" className="twitter-icon" target="_blank" rel="noopener noreferrer">
                                 <i className="fab fa-2x fa-twitter"></i>
@@ -271,6 +271,19 @@ export const NavbarDesktop = ({ handleFaqModal, handleHtpModal, handleRpsModal, 
                             <a href="https://discord.gg/Ygk58VR4" className="discord-icon" target="_blank" rel="noopener noreferrer">
                                 <i className="fab fa-2x fa-discord"></i>
                             </a>
+                        </div>
+                        <div className="d-flex justify-content-center">
+                        <a href="https://eu.mixpanel.com/public/XCghszDcX9eQ52ejMDG8V2" className="nav-item-secondary" target="_blank" rel="noopener noreferrer">Stats</a>
+                            <NavLink
+                                onClick={() => setShowOffCanvas(false)}
+                                className={({ isActive }) => "nav-item-secondary" + (isActive ? ' active' : '')} to="/refund-policy">
+                                Refund Policy
+                            </NavLink>
+                            <NavLink
+                                onClick={() => setShowOffCanvas(false)}
+                                className={({ isActive }) => "nav-item-secondary" + (isActive ? ' active' : '')} to="/terms">
+                                Terms & Conditions
+                            </NavLink>
                         </div>
                     </OffcanvasBody>
                 </Offcanvas>

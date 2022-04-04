@@ -18,6 +18,8 @@ import Demo from './views/rps/Demo'
 import RpsAbout from './views/rps/components/about/About'
 import Nfts from './views/main/components/nfts/Nfts';
 import Fairplay from './views/main/components/fairplay/Fairplay';
+import RefundPolicy from './views/main/refundPolicy/RefundPolicy';
+import Terms from './views/main/terms/Terms';
 import * as serviceWorker from './serviceWorker'
 import 'bootstrap/dist/css/bootstrap.css'
 import './index.scss'
@@ -73,6 +75,8 @@ ReactDOM.render(
             <Route path="fair-play" element={<Fairplay />} />
             <Route path="about" element={<MainAbout />} />
             <Route path="profile" element={<MainProfile />} />
+            <Route path="refund-policy" element={<RefundPolicy />} />
+            <Route path="terms" element={<Terms />} />
             <Route path="*" element={<Navigate replace to="/" />} />
           </Route>
           <Route path="/rps" element={<RpsLayout />}>

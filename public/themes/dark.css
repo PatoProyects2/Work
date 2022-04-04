@@ -17,6 +17,15 @@ body {
     color: rgba(255, 193, 7, 0.8) !important;
 }
 
+.content-link {
+    color: #ffb74d !important;
+}
+
+.content-link:hover {
+    color: #ffb74d !important;
+    opacity: 0.8;
+}
+
 
 /* MAIN PAGE */
 
@@ -241,6 +250,17 @@ svg:hover>g.brand-icon {
     fill: #ffb74d;
 }
 
+.nav-item-secondary {
+    color: grey;
+    margin: .5rem 1rem;
+}
+
+.nav-item-secondary:hover,
+.nav-item-secondary.active {
+    color: #ffb74d;
+    text-decoration: underline;
+}
+
 .btn-wallet {
     background-color: #212529 !important;
     border: 1px solid whitesmoke !important;
@@ -417,6 +437,9 @@ svg:hover>g.brand-icon {
     display: flex;
     justify-content: space-between;
     margin-top: 1rem;
+    background: #535759;
+    padding: 15px;
+    border-radius: 5px;
 }
 
 .user-stats-profile {
@@ -516,6 +539,15 @@ svg:hover>g.brand-icon {
 
 .profit-minus {
     color: coral;
+}
+
+.chart-user {
+    margin-top: 1.2rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
+    background: #535759;
+    border-radius: 5px;
+    padding: 10px;
 }
 
 @media (max-width: 991px) {

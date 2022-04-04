@@ -127,14 +127,6 @@ ul {
     color: rgba(29, 161, 242, 0.8);
 }
 
-.mixpanel-stat {
-    color: #ffffff;
-}
-
-.mixpanel-stat:hover {
-    color: #ffb74d;
-}
-
 .btn-hover {
     width: 180px;
     font-size: 22px;
@@ -722,6 +714,20 @@ ul {
     box-shadow: 0 0 10px 0 #141a1d;
 }
 
+.chat_msgs::-webkit-scrollbar {
+    width: 12px;
+}
+
+.chat_msgs::-webkit-scrollbar-track {
+    background: #232c31;
+}
+
+.chat_msgs::-webkit-scrollbar-thumb {
+    background-color: #6c757d;
+    border-radius: 20px;
+    border: 3px solid #232c31;
+}
+
 .chat_msgs {
     padding: 0 4px;
     overflow-y: scroll;
@@ -796,17 +802,17 @@ ul {
 .chat_input_contain .chat_send {
     position: absolute;
     font-size: 20px;
-    right: 24px;
+    right: 26px;
     float: right;
     cursor: pointer;
     transition: color .4s ease;
-    padding: 5px;
+    padding: 7px;
 }
 
 .chat_input_contain .chat_emoji {
     position: absolute;
-    right: 52px;
-    bottom: 28px;
+    right: 65px;
+    bottom: 26px;
 }
 
 .chat_emoji_btn {
@@ -1186,7 +1192,10 @@ input:checked+.slider:before {
 // FILE INPUT
 .file-select {
     position: relative;
-    display: inline-block;
+    display: flex;
+    max-width: 50%;
+    margin: 0 auto;
+    cursor: pointer;
 }
 
 .file-select::before {
@@ -1202,6 +1211,7 @@ input:checked+.slider:before {
     right: 0;
     top: 0;
     bottom: 0;
+    cursor: pointer;
 }
 
 .file-select input[type="file"] {
