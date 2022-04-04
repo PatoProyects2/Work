@@ -30,7 +30,7 @@ export default function MostAmount(props) {
                 }
               </td>
               <td>
-                {props.leaderboard[0][4]}
+                {"$" + (props.leaderboard[0][4]).toFixed(2)}
               </td>
             </tr>
             :
@@ -56,7 +56,7 @@ export default function MostAmount(props) {
                 }
               </td>
               <td>
-                {props.leaderboard[1][3]}
+                {"$" + (props.leaderboard[1][3]).toFixed(2)}
               </td>
             </tr>
             :
@@ -82,7 +82,7 @@ export default function MostAmount(props) {
                 }
               </td>
               <td>
-                {props.leaderboard[2][3]}
+                {"$" + (props.leaderboard[2][3]).toFixed(2)}
               </td>
             </tr>
             :
@@ -108,7 +108,7 @@ export default function MostAmount(props) {
                 }
               </td>
               <td>
-                {props.leaderboard[3][3]}
+                {"$" + (props.leaderboard[3][3]).toFixed(2)}
               </td>
             </tr>
             :
@@ -134,7 +134,7 @@ export default function MostAmount(props) {
                 }
               </td>
               <td>
-                {props.leaderboard[4][3]}
+                {"$" + (props.leaderboard[4][3]).toFixed(2)}
               </td>
             </tr>
             :
@@ -160,7 +160,7 @@ export default function MostAmount(props) {
                 }
               </td>
               <td>
-                {props.leaderboard[5][3]}
+                {"$" + (props.leaderboard[5][3]).toFixed(2)}
               </td>
             </tr>
             :
@@ -186,7 +186,7 @@ export default function MostAmount(props) {
                 }
               </td>
               <td>
-                {props.leaderboard[6][3]}
+                {"$" + (props.leaderboard[6][3]).toFixed(2)}
               </td>
             </tr>
             :
@@ -212,7 +212,7 @@ export default function MostAmount(props) {
                 }
               </td>
               <td>
-                {props.leaderboard[7][3]}
+                {"$" + (props.leaderboard[7][3]).toFixed(2)}
               </td>
             </tr>
             :
@@ -238,7 +238,7 @@ export default function MostAmount(props) {
                 }
               </td>
               <td>
-                {props.leaderboard[8][3]}
+                {"$" + (props.leaderboard[8][3]).toFixed(2)}
               </td>
             </tr>
             :
@@ -264,7 +264,7 @@ export default function MostAmount(props) {
                 }
               </td>
               <td>
-                {props.leaderboard[9][3]}
+                {"$" + (props.leaderboard[9][3]).toFixed(2)}
               </td>
             </tr>
             :

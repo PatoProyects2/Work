@@ -5,6 +5,7 @@ import Presence from '../../../firebase/ActiveUsers'
 import AccountFirebase from '../../layout/Authentication';
 import { useMatchMedia } from '../../../hooks/useMatchMedia';
 import GamesClub from '../../../assets/imgs/Games_Club.png';
+import MetamaskLogo from '../../../assets/imgs/fox.png';
 import MaticBalance from '../../../views/rps/components/MaticBalance';
 export const NavbarDesktop = ({ handleFaqModal, handleHtpModal, handleRpsModal, navType }) => {
     const [showOffcanvas, setShowOffCanvas] = useState(false);
@@ -38,6 +39,13 @@ export const NavbarDesktop = ({ handleFaqModal, handleHtpModal, handleRpsModal, 
                 </div>
 
                 <MaticBalance />
+
+                {isMobileResolution &&
+                    <a href="https://metamask.app.link/dapp/rpsgames.vercel.app/" target="_blank" rel="noopener noreferrer">
+                        <img src={MetamaskLogo} width="25" height="25" alt="" />
+                        <span>MOBILE APP</span>
+                    </a>
+                }
 
                 <div className='d-flex align-items-center gap-2'>
                     {!isMobileResolution && <AccountFirebase />}

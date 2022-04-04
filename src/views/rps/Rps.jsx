@@ -63,7 +63,6 @@ export default function Rps() {
   const isMobileResolution = useMatchMedia('(max-width:650px)', false);
   const unixTimeStamp = ReadUnixTime();
   const mixpanel = useMixpanel();
-  const main = false;
 
   useEffect(() => {
     readAccount(user)
@@ -386,7 +385,7 @@ export default function Rps() {
             amountWon: 0,
             amountLoss: 0,
             totalGames: 0,
-            totalMaticAmount: 0,
+            totalAmount: 0,
             lastGameBlock: 0,
           },
         })
@@ -643,7 +642,8 @@ export default function Rps() {
             name: userDocument.name,
             photo: userDocument.photo,
             account: myEvents[0].returnValues[0].toLowerCase(),
-            amount: parseInt(userAmount),
+            amount: usdAmount,
+            maticAmount: parseInt(userAmount),
             streak: parseInt(myEvents[0].returnValues[2]),
             result: myEvents[0].returnValues[3],
             game: 'RPS',
@@ -816,7 +816,7 @@ export default function Rps() {
                             <button className="btn-hover btn-green" onClick={backGame}>CLAIM REWARD</button>
                             :
                             <div className="d-flex flex-column align-items-center">
-                              <p>Try again?</p>
+                              <span className="rps-result-title">TRY AGAIN?</span>
                               <button className="btn-hover btn-start" onClick={backGame}>DOUBLE OR NOTHING</button>
                             </div>
                           }
@@ -896,7 +896,7 @@ export default function Rps() {
                 <div className="text-center">
                   <button className="btn-hover btn-start" onClick={openGame}>DOUBLE OR NOTHING</button>
                 </div>
-                {<ReadAllGames isMobileResolution={isMobileResolution} main={main} />}
+                {<ReadAllGames isMobileResolution={isMobileResolution} />}
               </>
               :
               <>

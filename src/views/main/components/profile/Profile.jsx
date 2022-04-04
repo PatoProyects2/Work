@@ -8,7 +8,6 @@ import { query, where, collection, limit, onSnapshot, updateDoc, doc } from "fir
 import { auth, db, storage } from '../../../../firebase/firesbaseConfig'
 import Stats from './Stats'
 import FileUploader from './FileUploader';
-
 export default function Profile() {
   const [userInfo, setUserInfo] = useState({
     displayName: '',
@@ -94,6 +93,10 @@ export default function Profile() {
 
   useEffect(() => {
     readUserClubData(user)
+    return () => {
+      setUserData({});
+      setName('');
+    }
   }, [user])
 
   const readUserClubData = (user) => {

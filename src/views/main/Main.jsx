@@ -28,7 +28,6 @@ export default function Main() {
   const [weeklyAmount, setWeeklyAmount] = useState(false);
   const [monthlyAmount, setMonthlyAmount] = useState(false);
   const [globalAmount, setGlobalAmount] = useState(false);
-  const main = true;
   const isMobileResolution = useMatchMedia('(max-width:650px)', false);
 
   useEffect(() => {
@@ -415,7 +414,7 @@ export default function Main() {
           }
         </div>
 
-        {liveBets && <ReadAllGames isMobileResolution={isMobileResolution} main={main} />}
+        {liveBets && <ReadAllGames isMobileResolution={isMobileResolution} />}
 
         {isMobileResolution ?
           <>

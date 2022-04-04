@@ -143,7 +143,7 @@ export default function Demo() {
                           <button className="btn-hover btn-green" onClick={backGame}>CLAIM REWARD</button>
                           :
                           <div className="d-flex flex-column align-items-center">
-                            <p>Try again?</p>
+                            <span className="rps-result-title">Try again?</span>
                             <button className="btn-hover btn-start" onClick={backGame}>DOUBLE OR NOTHING</button>
                           </div>
                         }

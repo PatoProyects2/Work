@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Modal, ModalBody, FormGroup, Table, Button, ButtonGroup } from 'reactstrap'
 import { query, where, collection, limit, onSnapshot, updateDoc, arrayUnion, doc } from "firebase/firestore";
-import { db } from '../../../../firebase/firesbaseConfig'
-import Chart from '../profile/Chart'
+import { db } from '../../firebase/firesbaseConfig'
+import Chart from '../../views/main/components/profile/Chart'
 function ChatMessage({ text, uid, photo, name, level, auth, userClub }) {
     const [userData, setUserData] = useState({});
     const [dropdown, setDropdown] = useState(false);

@@ -6,7 +6,6 @@ import { toast } from 'react-hot-toast';
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { useNavigate } from 'react-router-dom'
 import { auth, db } from "../../firebase/firesbaseConfig"
-
 export default function AccountFirebase(props) {
   const [user] = useAuthState(auth)
   const [userInfo, setUserInfo] = useState({
@@ -75,14 +74,19 @@ export default function AccountFirebase(props) {
   }
   const signUpWithUserPass = () => {
     if (userInfo.email.length > 0 && userInfo.password.length > 0) {
+
       toast.promise(
         createUserWithEmailAndPassword(auth, userInfo.email, userInfo.password),
         {
           loading: 'Creating account...',
           success: <b>Account created</b>,
-          error: <b>Invalid email or password</b>,
+          error: <b>Email already in use</b>,
         })
         .then(() => sendEmailVerification(auth.currentUser))
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+        });
     } else {
       toast.error("Invalid email or password")
       return false
@@ -179,23 +183,29 @@ export default function AccountFirebase(props) {
         <>
           <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="md" className="dd-profile">
             <DropdownToggle color='transparent' className='dd-toggle' caret>
-              {userData[0]
-                ? <span className="d-inline-flex">
-                  <div className={xpClass(userData[0].level)}>
-                    <span className="circle">
-                      <span>{userData[0].level}</span>
+              {userData[0] ? <span className="d-inline-flex">
+                <div className={xpClass(userData[0].level)}>
+                  <span className="circle">
+                    <span>{userData[0].level}</span>
+                  </span>
+                </div>
+                {userData[0].name}
+              </span>
+                :
+                <>
+                  {user.displayName ?
+                    user.displayName
+                    :
+                    <span className="d-inline-flex">
+                      <div className={xpClass(1)}>
+                        <span className="circle">
+                          <span>1</span>
+                        </span>
+                      </div>
+                      ClubUser
                     </span>
-                  </div>
-                  {userData[0].name}
-                </span>
-                : <span className="d-inline-flex">
-                  <div className={xpClass(1)}>
-                    <span className="circle">
-                      <span>1</span>
-                    </span>
-                  </div>
-                  ClubUser
-                </span>
+                  }
+                </>
               }
             </DropdownToggle>
             <DropdownMenu >

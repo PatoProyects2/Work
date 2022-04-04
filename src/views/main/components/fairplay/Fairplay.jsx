@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { collection, getDocs, query } from "firebase/firestore";
 import { db } from '../../../../firebase/firesbaseConfig'
+import FairGame from './FairGame'
 export default function Fairplay() {
-  const [winGames, setWinGames] = useState(0);
-  const [loseGames, setLoseGames] = useState(0);
-  const [totalGames, setTotalGames] = useState(0);
+  const [data, setData] = useState([]);
   useEffect(() => {
     const readFairGames = async () => {
       const clubCollection = collection(db, "allGames")
@@ -14,11 +13,22 @@ export default function Fairplay() {
       let array = games.map(games => games.doc.data.value.mapValue.fields.result.booleanValue)
       const win = array.filter(x => x)
       const lose = array.filter(x => !x)
-      setWinGames(win.length)
-      setLoseGames(lose.length)
-      setTotalGames(win.length + lose.length)
+      let object = [
+        {
+          type: 'Win Games',
+          value: win.length,
+        },
+        {
+          type: 'Lose Games',
+          value: lose.length
+        },
+      ]
+      setData(object)
     }
     readFairGames()
+    return () => {
+      setData([]);
+    }
   }, [])
   return (
     <div className='container'>
@@ -32,12 +42,8 @@ export default function Fairplay() {
             One of our main premises is to be as transparent as possible, therefore our house wallets will be of public access.
           </p>
         </div>
-        {totalGames > 0 &&
-          <>
-            <span>{"TOTAL GAMES " + totalGames + " 100%"}</span>
-            <span>{"WIN " + winGames + " " + ((winGames / totalGames) * 100).toFixed(2) + " %"}</span>
-            <span>{"LOSE " + loseGames + " " + ((loseGames / totalGames) * 100).toFixed(2) + " %"}</span>
-          </>
+        {data[0] &&
+          <FairGame data={data} />
         }
       </div>
     </div>
