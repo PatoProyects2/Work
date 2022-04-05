@@ -597,6 +597,8 @@ export default function Rps() {
           let maticPrice = await swapPolygon.methods.getAmountsOut(decimal.toString(), [maticContract, usdcContract]).call()
           const userAmount = web3.utils.fromWei(myEvents[0].returnValues[1], 'ether')
           const usdAmount = (parseInt(maticPrice[1] / 10000) / 100) * userAmount
+          let profit = 0
+
           updateDoc(doc(db, "clubUsers", account), {
             "rps.totalGames": userDocument.rps.totalGames + 1,
             "rps.totalAmount": userDocument.rps.totalAmount + usdAmount,
@@ -607,12 +609,14 @@ export default function Rps() {
               "rps.gameWon": userDocument.rps.gameWon + 1,
               "rps.amountWon": userDocument.rps.amountWon + usdAmount
             })
+            profit = (userDocument.rps.amountWon - userDocument.rps.amountLoss) + usdAmount
           }
           if (myEvents[0].returnValues[3] === false) {
             updateDoc(doc(db, "clubUsers", account), {
               "rps.gameLoss": userDocument.rps.gameLoss + 1,
               "rps.amountLoss": userDocument.rps.amountLoss + usdAmount
             })
+            profit = (userDocument.rps.amountWon - userDocument.rps.amountLoss) - usdAmount
           }
           if (myEvents[0].returnValues[2] > userDocument.rps.dayWinStreak || dayBlock > userDocument.rps.winStreakTime) {
             updateDoc(doc(db, "clubUsers", account), {
@@ -647,7 +651,7 @@ export default function Rps() {
             streak: parseInt(myEvents[0].returnValues[2]),
             result: myEvents[0].returnValues[3],
             game: 'RPS',
-            profit: (userDocument.rps.amountWon - userDocument.rps.amountLoss).toString()
+            profit: profit
           })
           mixpanel.track(
             "rps",
@@ -808,7 +812,7 @@ export default function Rps() {
                         <div className="d-flex flex-column justify-content-center">
                           <span className="rps-result-title">{userGameResult === true ? " YOU WON " : ""}{userGameResult === false ? " YOU LOST " : ""}</span>
                           <span className="rps-result-amount" style={{ color: userGameResult ? "mediumseagreen" : "crimson" }}>
-                            {userGameResult === true ? useramount : ""}{userGameResult === false ? useramount : ""}{" MATIC"}
+                            {userGameResult === true ? useramount * 2 : ""}{userGameResult === false ? useramount : ""}{" MATIC"}
                           </span>
                         </div>
                         <div className="d-flex justify-content-center">

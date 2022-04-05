@@ -635,10 +635,15 @@ ul {
     z-index: 2;
     margin-top: 8px;
     margin-left: 10px;
-    width: 22px;
-    height: 22px;
+    width: 25px;
+    height: 25px;
     transition: all .4s;
     cursor: pointer;
+}
+
+.chat_collapse_ico {
+    background-image: url('/assets/imgs/ic_chat.png');
+    background-size: cover;
 }
 
 .chat_collapse_ico.expanded {
@@ -703,11 +708,9 @@ ul {
 }
 
 .chat_input_hold {
-    //height: calc(100% - 48px);
     height: calc(100% - 48px);
     position: relative;
     z-index: 1;
-    //flex: 1 1;
     display: flex;
     justify-content: space-between;
     flex-direction: column;
@@ -802,7 +805,7 @@ ul {
 .chat_input_contain .chat_send {
     position: absolute;
     font-size: 20px;
-    right: 26px;
+    right: 20px;
     float: right;
     cursor: pointer;
     transition: color .4s ease;
@@ -811,7 +814,7 @@ ul {
 
 .chat_input_contain .chat_emoji {
     position: absolute;
-    right: 65px;
+    right: 50px;
     bottom: 26px;
 }
 

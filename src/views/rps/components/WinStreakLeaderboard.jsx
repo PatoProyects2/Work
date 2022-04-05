@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap'
-import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import { collection, where, query, orderBy, onSnapshot } from "firebase/firestore";
 import { db } from '../../../firebase/firesbaseConfig'
 export default function dayWinStreakLeaderboard(props) {
     const [dropdown, setDropdown] = useState(false);
-    const [dayWinStreak, setDayWinStreak] = useState(0);
+    const [streakData, setStreakData] = useState([]);
+    const [dayWinStreak, setDayWinStreak] = useState([]);
     const [day0, setDay0] = useState(0);
     const [day1, setDay1] = useState(0);
     const [day2, setDay2] = useState(0);
@@ -40,10 +41,19 @@ export default function dayWinStreakLeaderboard(props) {
     const toggleMenu = () => {
         setDropdown(!dropdown);
     }
+
     useEffect(() => {
-        readActuallTime(props.unixTimeStamp)
+        const q = query(collection(db, "clubUsers"), where("rps.dayWinStreak", ">", 0), orderBy("rps.dayWinStreak", "desc"))
+        const unsub = onSnapshot(q, (doc) => {
+            const streaks = doc.docs.map(winStreak => winStreak.data())
+            setStreakData(streaks)
+        });
+        return () => unsub()
+    }, [])
+
+    useEffect(() => {
+        readActuallTime(props.unixTimeStamp, streakData)
         return () => {
-            setDayWinStreak(0);
             setDay0(0);
             setDay1(0);
             setDay2(0);
@@ -77,23 +87,24 @@ export default function dayWinStreakLeaderboard(props) {
             setSecond6(0);
             setSecond7(0);
         };
-    }, [props.unixTimeStamp])
+    }, [props.unixTimeStamp, streakData])
 
-    const readActuallTime = async (unixTimeStamp) => {
-        let winStreakDay = []
-        const unixSeconds = parseInt(unixTimeStamp)
-        let lastDay = unixSeconds - 86400
-        const clubCollection = collection(db, "clubUsers")
-        const queryGames = query(clubCollection, orderBy("rps.dayWinStreak", "desc"))
-        const documentGames = await getDocs(queryGames)
-        documentGames.forEach((doc) => {
-            if (doc.data().rps.winStreakTime > lastDay && doc.data().rps.dayWinStreak > 1) {
-                winStreakDay.push([doc.data().photo, doc.data().name, doc.data().account, doc.data().rps.dayWinStreak, doc.data().rps.winStreakTime.seconds])
-            }
-        });
-        setDayWinStreak(winStreakDay)
-        if (winStreakDay[0]) {
-            var seg = unixSeconds - winStreakDay[0][4]
+    const readActuallTime = async (unixTimeStamp, streakData) => {
+        var lastDay = unixTimeStamp - 86400
+        let streak = []
+        try {
+            streak = streakData.map(doc => {
+                if (doc.rps.winStreakTime.seconds > lastDay) {
+                    let array = [doc.photo, doc.name, doc.account, doc.rps.dayWinStreak, doc.rps.winStreakTime.seconds]
+                    return array
+                }
+            })
+        } catch (e) {
+
+        }
+
+        try {
+            var seg = unixTimeStamp - dayWinStreak[0][4]
             var day = Math.floor(seg / (24 * 3600));
             var hour = Math.floor((seg - day * 24 * 3600) / 3600);
             var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
@@ -101,9 +112,12 @@ export default function dayWinStreakLeaderboard(props) {
             setHour0(hour)
             setMinute0(minute)
             setSecond0(seg)
+        } catch (e) {
+
         }
-        if (winStreakDay[1]) {
-            var seg = unixSeconds - winStreakDay[1][4]
+
+        try {
+            var seg = unixTimeStamp - dayWinStreak[1][4]
             var day = Math.floor(seg / (24 * 3600));
             var hour = Math.floor((seg - day * 24 * 3600) / 3600);
             var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
@@ -111,9 +125,12 @@ export default function dayWinStreakLeaderboard(props) {
             setHour1(hour)
             setMinute1(minute)
             setSecond1(seg)
+        } catch (e) {
+
         }
-        if (winStreakDay[2]) {
-            var seg = unixSeconds - winStreakDay[2][4]
+
+        try {
+            var seg = unixTimeStamp - dayWinStreak[2][4]
             var day = Math.floor(seg / (24 * 3600));
             var hour = Math.floor((seg - day * 24 * 3600) / 3600);
             var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
@@ -121,9 +138,12 @@ export default function dayWinStreakLeaderboard(props) {
             setHour2(hour)
             setMinute2(minute)
             setSecond2(seg)
+        } catch (e) {
+
         }
-        if (winStreakDay[3]) {
-            var seg = unixSeconds - winStreakDay[3][4]
+
+        try {
+            var seg = unixTimeStamp - dayWinStreak[3][4]
             var day = Math.floor(seg / (24 * 3600));
             var hour = Math.floor((seg - day * 24 * 3600) / 3600);
             var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
@@ -131,9 +151,12 @@ export default function dayWinStreakLeaderboard(props) {
             setHour3(hour)
             setMinute3(minute)
             setSecond3(seg)
+        } catch (e) {
+
         }
-        if (winStreakDay[4]) {
-            var seg = unixSeconds - winStreakDay[4][4]
+
+        try {
+            var seg = unixTimeStamp - dayWinStreak[4][4]
             var day = Math.floor(seg / (24 * 3600));
             var hour = Math.floor((seg - day * 24 * 3600) / 3600);
             var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
@@ -141,9 +164,12 @@ export default function dayWinStreakLeaderboard(props) {
             setHour4(hour)
             setMinute4(minute)
             setSecond4(seg)
+        } catch (e) {
+
         }
-        if (winStreakDay[5]) {
-            var seg = unixSeconds - winStreakDay[5][4]
+
+        try {
+            var seg = unixTimeStamp - dayWinStreak[5][4]
             var day = Math.floor(seg / (24 * 3600));
             var hour = Math.floor((seg - day * 24 * 3600) / 3600);
             var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
@@ -151,9 +177,12 @@ export default function dayWinStreakLeaderboard(props) {
             setHour5(hour)
             setMinute5(minute)
             setSecond5(seg)
+        } catch (e) {
+
         }
-        if (winStreakDay[6]) {
-            var seg = unixSeconds - winStreakDay[6][4]
+
+        try {
+            var seg = unixTimeStamp - dayWinStreak[6][4]
             var day = Math.floor(seg / (24 * 3600));
             var hour = Math.floor((seg - day * 24 * 3600) / 3600);
             var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
@@ -161,9 +190,12 @@ export default function dayWinStreakLeaderboard(props) {
             setHour6(hour)
             setMinute6(minute)
             setSecond6(seg)
+        } catch (e) {
+
         }
-        if (winStreakDay[7]) {
-            var seg = unixSeconds - winStreakDay[7][4]
+
+        try {
+            var seg = unixTimeStamp - dayWinStreak[7][4]
             var day = Math.floor(seg / (24 * 3600));
             var hour = Math.floor((seg - day * 24 * 3600) / 3600);
             var minute = Math.floor((seg - day * 24 * 3600 - hour * 3600) / 60);
@@ -171,7 +203,11 @@ export default function dayWinStreakLeaderboard(props) {
             setHour7(hour)
             setMinute7(minute)
             setSecond7(seg)
+        } catch (e) {
+
         }
+
+        setDayWinStreak(streak)
     }
     return (
         <>

@@ -213,11 +213,11 @@ export default function Main() {
         return top
       })
 
-
       var leaderboard = {
         games: {},
         amount: {},
       }
+      
       leaderboard.games.day = day.sort(((a, b) => b[3] - a[3]))
       leaderboard.amount.day = day.sort(((a, b) => b[4] - a[4]))
 

@@ -214,7 +214,7 @@ function ChatRoom(props) {
           </form>
           :
           <div className="chat_input_contain disabled">
-            <input type="text" className="chat_input" maxLength="500" placeholder="Sign up and play to start chatting." disabled="" />
+            <input type="text" className="chat_input" maxLength="500" placeholder="Sign up and play to start chatting" disabled="" />
           </div>
         }
         <Modal isOpen={settings} className="d-modal" size="lg">

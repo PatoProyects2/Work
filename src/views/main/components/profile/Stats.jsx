@@ -66,7 +66,7 @@ export default function Stats(props) {
                   {props.userData[0].rps.totalGames}
                 </td>
                 <td>
-                  {"$" + props.userData[0].rps.totalAmount}
+                  {"$" + props.userData[0].rps.totalAmount.toFixed(2)}
                 </td>
                 <td>
                   {"$" + (props.userData[0].rps.amountWon - props.userData[0].rps.amountLoss).toFixed(2)}

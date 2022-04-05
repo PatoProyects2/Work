@@ -135,7 +135,7 @@ export default function Demo() {
                       <div className="d-flex flex-column justify-content-center">
                         <span className="rps-result-title">{userGameResult === true ? " YOU WON " : ""}{userGameResult === false ? " YOU LOST " : ""}</span>
                         <span className="rps-result-amount" style={{ color: userGameResult ? "mediumseagreen" : "crimson" }}>
-                          {userGameResult === true ? useramount : ""}{userGameResult === false ? useramount : ""}{" MATIC"}
+                          {userGameResult === true ? useramount * 2 : ""}{userGameResult === false ? useramount : ""}{" MATIC"}
                         </span>
                       </div>
                       <div className="d-flex justify-content-center">

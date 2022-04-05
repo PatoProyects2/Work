@@ -13,7 +13,7 @@ export function MainLayout() {
   const [balance, setBalance] = useState('-');
 
   return (
-    <Context.Provider value={{ balance, setBalance}}>
+    <Context.Provider value={{ balance, setBalance }}>
       <header>
         <Navbar navType="rps" />
       </header>

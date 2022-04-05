@@ -149,14 +149,13 @@ function ChatMessage({ text, uid, photo, name, level, auth, userClub }) {
                                     </div>
                                     <div className="d-flex flex-column align-items-center profit-border">
                                         <span className="header-row">Total Amount</span>
-                                        <span className="content-row">{userData[0].rps.totalAmount}</span>
+                                        <span className="content-row">{"$" + userData[0].rps.totalAmount.toFixed(2)}</span>
                                     </div>
                                     <div className="d-flex flex-column align-items-center">
                                         <span className="header-row">Profit</span>
                                         <span className={`content-row ${(userData[0].rps.amountWon - userData[0].rps.amountLoss) > 0 ? 'profit-plus' : 'profit-minus'}`}>{"$" + (userData[0].rps.amountWon - userData[0].rps.amountLoss).toFixed(2)}</span>
                                     </div>
                                 </>
-
                                 : "No games found"
                             }
                         </div>

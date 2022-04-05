@@ -272,8 +272,8 @@ export const NavbarDesktop = ({ handleFaqModal, handleHtpModal, handleRpsModal, 
                                 <i className="fab fa-2x fa-discord"></i>
                             </a>
                         </div>
-                        <div className="d-flex justify-content-center">
-                        <a href="https://eu.mixpanel.com/public/XCghszDcX9eQ52ejMDG8V2" className="nav-item-secondary" target="_blank" rel="noopener noreferrer">Stats</a>
+                        <div className="nav-items-secondary">
+                            <a href="https://eu.mixpanel.com/public/XCghszDcX9eQ52ejMDG8V2" className="nav-item-secondary" target="_blank" rel="noopener noreferrer">Stats</a>
                             <NavLink
                                 onClick={() => setShowOffCanvas(false)}
                                 className={({ isActive }) => "nav-item-secondary" + (isActive ? ' active' : '')} to="/refund-policy">
