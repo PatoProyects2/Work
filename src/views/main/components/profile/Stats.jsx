@@ -1,80 +1,63 @@
 import React from 'react'
 import { Table } from 'reactstrap'
-import Chart from './Chart'
-export default function Stats(props) {
+
+export default function Stats({ userData }) {
   return (
     <>
-      {props.userData[0] &&
+      {userData[0] &&
         <>
-          <Table className="tbl-ranking" borderless responsive size="">
-            <thead className="border-bottom">
+          <Table className="profile-game-stats" responsive size="">
+            <thead>
               <tr>
-                <th>
-                  Day Streak
-                </th>
-                <th>
-                  Rock
-                </th>
-                <th>
-                  Paper
-                </th>
-                <th>
-                  Scissors
-                </th>
+                <th>Day Streak</th>
+                <th>Rock</th>
+                <th>Paper</th>
+                <th>Scissors</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td>
-                  {props.userData[0].rps.dayWinStreak}
+                  {userData[0].rps.dayWinStreak}
                 </td>
                 <td>
-                  {props.userData[0].rps.rock}
+                  {userData[0].rps.rock}
                 </td>
                 <td>
-                  {props.userData[0].rps.paper}
+                  {userData[0].rps.paper}
                 </td>
                 <td>
-                  {props.userData[0].rps.scissors}
+                  {userData[0].rps.scissors}
                 </td>
               </tr>
             </tbody>
           </Table>
-          <Table className="tbl-ranking" borderless responsive size="">
-            <thead className="border-bottom">
+          <Table className="profile-account-stats" responsive size="">
+            <thead>
               <tr>
-                <th>
-                  Wallet
-                </th>
-                <th>
-                  Total Games
-                </th>
-                <th>
-                  Total Amount
-                </th>
-                <th>
-                  Profit
-                </th>
+                <th>Wallet</th>
+                <th>Total Games</th>
+                <th>Total Amount</th>
+                <th>Profit</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td>
-                  {props.userData[0].account.substring(0, 5) + "..." + props.userData[0].account.substring(38, 42)}
+                  {userData[0].account.substring(0, 5) + "..." + userData[0].account.substring(38, 42)}
                 </td>
                 <td>
-                  {props.userData[0].rps.totalGames}
+                  {userData[0].rps.totalGames}
                 </td>
                 <td>
-                  {"$" + props.userData[0].rps.totalAmount.toFixed(2)}
+                  {"$" + userData[0].rps.totalAmount.toFixed(2)}
                 </td>
-                <td>
-                  {"$" + (props.userData[0].rps.amountWon - props.userData[0].rps.amountLoss).toFixed(2)}
+                <td className={`${(userData[0].rps.amountWon - userData[0].rps.amountLoss) > 0 ? "profit-plus" : "profit-minus"}`}>
+                  {"$" + (userData[0].rps.amountWon - userData[0].rps.amountLoss).toFixed(2)}
                 </td>
               </tr>
             </tbody>
           </Table>
-          <Chart userData={props.userData[0]} />
         </>
       }
     </>

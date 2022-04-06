@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { sendEmailVerification, updateProfile, updateEmail } from 'firebase/auth';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { Button, FormGroup, Input, Row, Col, Card, CardImg, CardBody, CardTitle, Label, Modal, ModalBody } from 'reactstrap'
+import { Button, FormGroup, Input, Row, Col, Card, CardImg, CardBody, CardTitle, Label, Progress, Modal, ModalBody } from 'reactstrap'
 import { toast } from 'react-hot-toast';
 import { query, where, collection, limit, onSnapshot, updateDoc, doc } from "firebase/firestore";
 import { auth, db, storage } from '../../../../firebase/firesbaseConfig'
 import Stats from './Stats'
 import FileUploader from './FileUploader';
+import Chart from './Chart'
+
 export default function Profile() {
   const [userInfo, setUserInfo] = useState({
     displayName: '',
@@ -93,10 +95,6 @@ export default function Profile() {
 
   useEffect(() => {
     readUserClubData(user)
-    return () => {
-      setUserData({});
-      setName('');
-    }
   }, [user])
 
   const readUserClubData = (user) => {
@@ -109,7 +107,7 @@ export default function Profile() {
           setName(clubData[0].name)
         }
       });
-      return unsub;
+      return () => unsub()
     }
   }
   const resendEmailVerification = () => {
@@ -170,82 +168,69 @@ export default function Profile() {
     }
   }
 
-  const selectPicture = () => {
-    if (userData[0].level > 4) {
-      if (nftPicture) {
-        setNftPicture(false)
-      } else {
-        setNftPicture(true)
-      }
-    } else {
-      toast.error("You need level 5 to unlock this function")
-    }
-  }
-
   return (
-    <div className="container">  
+
+    <>
       {user ?
         <>
-          <Row>
-            <Col lg="6" className="mx-auto">
-              <Card className='profile-card'>
-                <CardBody>
-                  <CardTitle className="text-center profile-title" tag="h2">
-                    Profile
-                  </CardTitle>
-                  <CardImg
-                    alt={userData[0] ? name : user.displayName ? user.displayName : "ClubUser"}
-                    className="rounded-circle profile-img"
-                    src={(userData[0] && userData[0].photo) ? userData[0].photo : "https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh"}
-                    top
-                  />
-                  {/* <div className="file-select" id="picture"  >
-                    <input type="file" accept="image/png, image/jpeg" onChange={handleInputUpload} />
-                  </div> */}
-                  
-                  <FileUploader handleChange={handleInputUpload} text="Change picture" />
+          <div className="profile-container">
+            <h3 className="my-3 text-center">{userData[0] ? name : user.displayName ? user.displayName : "ClubUser"} Stats</h3>
+            <div className="d-flex flex-row justify-content-between align-items-center gap-5">
+              <div className="profile-info-container">
+                <img
+                  alt={userData[0] ? name : user.displayName ? user.displayName : "ClubUser"}
+                  className="rounded-circle profile-img"
+                  src={(userData[0] && userData[0].photo) ? userData[0].photo : "https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh"} />
 
-                  <FormGroup>
-                    {uploadValue > 0 && uploadValue < 100 &&
-                      <>
-                        {log + " " + uploadValue + "%"}
-                        <br></br>
-                        <progress value={uploadValue} max="100"></progress>
-                      </>
-                    }
-                  </FormGroup>
-                  <FormGroup floating>
-                    {name !== 'ClubUser' ?
-                      <>
-                        <Input id="displayName" name="displayName" className="d-modal-input"
-                          placeholder="ClubUser" onChange={handleInputNameChange} type="text" defaultValue={name} />
-                      </>
-                      :
+                <FileUploader handleChange={handleInputUpload} text="Change picture" />
+
+                {uploadValue > 0 && uploadValue < 100 &&
+                  <>
+                    <Progress value={uploadValue} striped={true} animated={true} className="my-3">{`${log} ${uploadValue}%`}</Progress>
+                  </>
+                }
+
+                <FormGroup floating>
+                  {name !== 'ClubUser' ?
+                    <>
                       <Input id="displayName" name="displayName" className="d-modal-input"
-                        placeholder="ClubUser" onChange={handleInputNameChange} type="text" defaultValue={user.displayName} />
-                    }
-                    <Label for="displayName">Username</Label>
-                  </FormGroup>
-                  <FormGroup floating>
-                    <Input id="email" name="email" className={`d-modal-input ${user.emailVerified ? "is-valid" : "is-invalid"}`}
-                      type="email" onChange={handleInputEmailChange} defaultValue={user.email} />
-                    <Label for="email">Email</Label>
-                    {!user.emailVerified &&
-                      <Button color="primary" type="button" className="mt-3" onClick={resendEmailVerification}>Resend email verification</Button>
-                    }
-                  </FormGroup>
-                  <FormGroup className="d-flex justify-content-end">
-                    <Button color="warning" type="submit" onClick={updateUserProfile}>Save</Button>
-                  </FormGroup>
-                </CardBody>
-              </Card>
-            </Col>
-          </Row>
-          <Stats userData={userData} />
+                        placeholder="ClubUser" onChange={handleInputNameChange} type="text" defaultValue={name} />
+                    </>
+                    :
+                    <Input id="displayName" name="displayName" className="d-modal-input"
+                      placeholder="ClubUser" onChange={handleInputNameChange} type="text" defaultValue={user.displayName} />
+                  }
+                  <Label for="displayName">Username</Label>
+                </FormGroup>
+
+                <FormGroup floating>
+                  <Input id="email" name="email" className={`d-modal-input ${user.emailVerified ? "is-valid" : "is-invalid"}`}
+                    type="email" onChange={handleInputEmailChange} defaultValue={user.email} />
+                  <Label for="email">Email</Label>
+                  {!user.emailVerified &&
+                    <Button color="primary" type="button" className="mt-3" onClick={resendEmailVerification}>Resend email verification</Button>
+                  }
+                </FormGroup>
+
+                <FormGroup className="d-grid my-3">
+                  <Button color="warning" type="submit" onClick={updateUserProfile}>Save</Button>
+                </FormGroup>
+              </div>
+
+              <div className="profile-data-container">
+                <div className="profile-stats-container">
+                  <Stats userData={userData} />
+                </div>
+                <div className="profile-chart-container">
+                  <Chart userData={userData[0]} />
+                </div>
+              </div>
+            </div>
+          </div>
         </>
         :
         <h2 className='text-center mt-3'>PLEASE LOG IN OR SIGN UP</h2>
       }
-    </div>
+    </>
   );
 }

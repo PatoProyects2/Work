@@ -68,7 +68,7 @@ export default function Rps() {
     readAccount(user)
   }, [user])
 
-  const readAccount = async (user) => {
+  const readAccount = (user) => {
     if (!user) {
       toast('Log in if you want to save you game stats and ahievements', {
         duration: 30000,
@@ -395,7 +395,6 @@ export default function Rps() {
   }
 
   const connectWeb3Modal = async () => {
-
     const providerOptions = {
       walletconnect: {
         display: {
@@ -404,7 +403,7 @@ export default function Rps() {
         package: WalletConnectProvider,
         options: {
           rpc: {
-            137: "https://polygon-rpc.com",
+            137: "https://polygon-mainnet.infura.io/v3/90d296c660054ac58664fde980846688",
           },
         }
       },
@@ -415,7 +414,7 @@ export default function Rps() {
         package: Torus,
         options: {
           networkParams: {
-            host: "https://polygon-rpc.com",
+            host: "https://polygon-mainnet.infura.io/v3/90d296c660054ac58664fde980846688",
             chainId: 137,
             networkId: 137,
             blockExplorer: "https://polygonscan.com/",
@@ -441,7 +440,7 @@ export default function Rps() {
         package: WalletLink,
         options: {
           appName: "RPS",
-          rpc: "https://polygon-rpc.com",
+          rpc: "https://polygon-mainnet.infura.io/v3/90d296c660054ac58664fde980846688",
           chainId: 137,
           appLogoUrl: null,
           darkMode: false
@@ -472,9 +471,12 @@ export default function Rps() {
       ethereum.on('accountsChanged', () => {
         window.location.reload()
       });
-      const balance = await web3.eth.getBalance(accounts[0]);
-      setWalletBalance(balance);
-      setBalance(balance);
+      web3.eth.getBalance(accounts[0])
+        .then(balance => {
+          setBalance(balance)
+          setWalletBalance(balance)
+        })
+        .catch(err => console.log(err))
       const chainId = await web3.eth.getChainId();
       setNetwork(chainId)
       if (chainId === 137) {
@@ -512,6 +514,7 @@ export default function Rps() {
         }
       }
     } catch (e) {
+      console.log(e)
     }
   }
 
@@ -522,7 +525,6 @@ export default function Rps() {
   }
 
   const openGame = () => {
-
     if (network === 80001 || network === 137) {
       setActive(true)
     } else {
@@ -569,12 +571,16 @@ export default function Rps() {
     if (userDocument.rps.lastGameBlock < actuallBlock) {
       const inputAmount = web3.utils.toWei(usergame.amount.toString(), "ether")
       let calculateValue = await rpsgame.methods.calculateValue(inputAmount).call()
+      let state = false
       rpsgame.methods
         .play(inputAmount)
         .send({
           from: account,
           value: calculateValue,
           gasPrice: '40000000000'
+        })
+        .then(() => {
+          state = true
         })
         .catch((err) => {
           if (err.code === 4001) {
@@ -588,10 +594,23 @@ export default function Rps() {
           setAnimation(false)
           return false
         });
-      do {
-        myEvents = await rpsgame.getPastEvents('Play', { filter: { _to: account }, fromBlock: actuallBlock, toBlock: 'latest' })
-        await sleep(1000)
-      } while (myEvents[0] === undefined);
+
+      let options = {
+        filter: {
+          _to: account
+        },
+        fromBlock: actuallBlock,
+        toBlock: 'latest'
+      };
+
+      if (state) {
+        do {
+          myEvents = await rpsgame.getPastEvents('Play', options)
+          await sleep(1000)
+          console.log(myEvents)
+        } while (myEvents[0] === undefined);
+      }
+
       if (myEvents[0]) {
         if (myEvents[0].blockNumber > userDocument.rps.lastGameBlock) {
           let maticPrice = await swapPolygon.methods.getAmountsOut(decimal.toString(), [maticContract, usdcContract]).call()
@@ -680,13 +699,17 @@ export default function Rps() {
     if (userGameResult) {
       toast.success("You doubled your money, congrats!")
     }
-    const balance = await web3.eth.getBalance(account)
+    web3.eth.getBalance(account)
+      .then(balance => {
+        setBalance(balance)
+        setWalletBalance(balance)
+      })
+      .catch(err => console.log(err))
     loadUserGame(account, user)
     setAnimation(false)
     setShowGameResult(false)
     setGameResult(true)
     setWalletBalance(balance)
-    setBalance(balance)
   }
 
   const backGame = () => {
@@ -900,7 +923,7 @@ export default function Rps() {
                 <div className="text-center">
                   <button className="btn-hover btn-start" onClick={openGame}>DOUBLE OR NOTHING</button>
                 </div>
-                {<ReadAllGames isMobileResolution={isMobileResolution} />}
+                <ReadAllGames isMobileResolution={isMobileResolution} />
               </>
               :
               <>

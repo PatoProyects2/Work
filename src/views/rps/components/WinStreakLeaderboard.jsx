@@ -54,6 +54,7 @@ export default function dayWinStreakLeaderboard(props) {
     useEffect(() => {
         readActuallTime(props.unixTimeStamp, streakData)
         return () => {
+            setDayWinStreak([]);
             setDay0(0);
             setDay1(0);
             setDay2(0);

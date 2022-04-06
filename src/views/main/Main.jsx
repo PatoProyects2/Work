@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
 import lodash from 'lodash'
-import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import { collection, getDocs, query, orderBy, setDoc, doc } from "firebase/firestore";
 import { Button, ButtonGroup } from 'reactstrap';
-import { db } from '../../firebase/firesbaseConfig'
+import { useAuthState } from 'react-firebase-hooks/auth'
+import { db, auth } from '../../firebase/firesbaseConfig'
 import MostPlays from './components/MostPlays'
 import MostAmount from './components/MostAmount'
 import ReadAllGames from '../../firebase/ReadAllGames'
@@ -16,6 +17,7 @@ import NFTImg from '../../assets/imgs/nft_hover_card.png'
 import { useMatchMedia } from '../../hooks/useMatchMedia'
 
 export default function Main() {
+  const [user] = useAuthState(auth)
   const [leaderboard, setLeaderboard] = useState({});
   const [liveBets, setLiveBets] = useState(true);
   const [mostPlays, setMostPlays] = useState(false);
@@ -31,8 +33,12 @@ export default function Main() {
   const isMobileResolution = useMatchMedia('(max-width:650px)', false);
 
   useEffect(() => {
-    const readLeaderboard = async () => {
+    const readLeaderboard = async (user) => {
       var unixTimeStamp = Math.round((new Date()).getTime() / 1000);
+      if (user) {
+        setDoc(doc(db, "status", user.uid), { state: 'online', time: unixTimeStamp })
+      }
+
       var lastDay = unixTimeStamp - 86400
       var lastWeek = unixTimeStamp - 604800
       var lastMonth = unixTimeStamp - 2592000
@@ -217,7 +223,7 @@ export default function Main() {
         games: {},
         amount: {},
       }
-      
+
       leaderboard.games.day = day.sort(((a, b) => b[3] - a[3]))
       leaderboard.amount.day = day.sort(((a, b) => b[4] - a[4]))
 
@@ -237,7 +243,7 @@ export default function Main() {
     return () => {
       setLeaderboard({});
     };
-  }, [])
+  }, [user])
 
   const liveBetsModal = () => {
     if (!liveBets) {

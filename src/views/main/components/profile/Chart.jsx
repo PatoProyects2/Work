@@ -12,7 +12,7 @@ export default function Chart({ userData }) {
       var pow = Math.pow(base || 10, digits);
       return Math.round(this * pow) / pow;
     }
-    if (userData.account) {
+    if (userData) {
       const q = query(collection(db, "allGames"), where("createdAt", ">", lastDay), where("account", "==", userData.account))
       getDocs(q)
         .then(document => {
@@ -34,7 +34,11 @@ export default function Chart({ userData }) {
 
   return (
     <>
-      {userData.rps.totalGames > 0 && <DataChart data={data} />}
+      {userData &&
+        <>
+          {userData.rps.totalGames > 0 && <DataChart data={data} />}
+        </>
+      }
     </>
   )
 }

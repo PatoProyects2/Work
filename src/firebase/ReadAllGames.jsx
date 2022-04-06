@@ -187,56 +187,6 @@ export default function ReadAllGames(props) {
             }
         }
         readActuallTime(unixTimeStamp)
-        return () => {
-            setDay0(0);
-            setDay1(0);
-            setDay2(0);
-            setDay3(0);
-            setDay4(0);
-            setDay5(0);
-            setDay6(0);
-            setDay7(0);
-            setDay8(0);
-            setDay9(0);
-            setDay10(0);
-            setDay11(0);
-            setHour0(0);
-            setHour1(0);
-            setHour2(0);
-            setHour3(0);
-            setHour4(0);
-            setHour5(0);
-            setHour6(0);
-            setHour7(0);
-            setHour8(0);
-            setHour9(0);
-            setHour10(0);
-            setHour11(0);
-            setMinute0(0);
-            setMinute1(0);
-            setMinute2(0);
-            setMinute3(0);
-            setMinute4(0);
-            setMinute5(0);
-            setMinute6(0);
-            setMinute7(0);
-            setMinute8(0);
-            setMinute9(0);
-            setMinute10(0);
-            setMinute11(0);
-            setSecond0(0);
-            setSecond1(0);
-            setSecond2(0);
-            setSecond3(0);
-            setSecond4(0);
-            setSecond5(0);
-            setSecond6(0);
-            setSecond7(0);
-            setSecond8(0);
-            setSecond9(0);
-            setSecond10(0);
-            setSecond11(0);
-        };
     }, [unixTimeStamp])
 
     return (
