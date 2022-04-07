@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.css": "/Work/static/css/main.b96b887f.chunk.css",
-    "main.js": "/Work/static/js/main.99e372d6.chunk.js",
-    "main.js.map": "/Work/static/js/main.99e372d6.chunk.js.map",
-    "runtime-main.js": "/Work/static/js/runtime-main.9471df77.js",
-    "runtime-main.js.map": "/Work/static/js/runtime-main.9471df77.js.map",
+    "main.css": "/Work/static/css/main.e0345b39.chunk.css",
+    "main.js": "/Work/static/js/main.8043b2d1.chunk.js",
+    "main.js.map": "/Work/static/js/main.8043b2d1.chunk.js.map",
+    "runtime-main.js": "/Work/static/js/runtime-main.eb317288.js",
+    "runtime-main.js.map": "/Work/static/js/runtime-main.eb317288.js.map",
     "static/css/2.4615dd22.chunk.css": "/Work/static/css/2.4615dd22.chunk.css",
-    "static/js/2.f6d675b9.chunk.js": "/Work/static/js/2.f6d675b9.chunk.js",
-    "static/js/2.f6d675b9.chunk.js.map": "/Work/static/js/2.f6d675b9.chunk.js.map",
+    "static/js/2.fabe81ef.chunk.js": "/Work/static/js/2.fabe81ef.chunk.js",
+    "static/js/2.fabe81ef.chunk.js.map": "/Work/static/js/2.fabe81ef.chunk.js.map",
     "index.html": "/Work/index.html",
     "static/css/2.4615dd22.chunk.css.map": "/Work/static/css/2.4615dd22.chunk.css.map",
-    "static/css/main.b96b887f.chunk.css.map": "/Work/static/css/main.b96b887f.chunk.css.map",
-    "static/js/2.f6d675b9.chunk.js.LICENSE.txt": "/Work/static/js/2.f6d675b9.chunk.js.LICENSE.txt",
+    "static/css/main.e0345b39.chunk.css.map": "/Work/static/css/main.e0345b39.chunk.css.map",
+    "static/js/2.fabe81ef.chunk.js.LICENSE.txt": "/Work/static/js/2.fabe81ef.chunk.js.LICENSE.txt",
     "static/media/Games_Club.d1c864bd.png": "/Work/static/media/Games_Club.d1c864bd.png",
     "static/media/PaperLose.575ddc25.gif": "/Work/static/media/PaperLose.575ddc25.gif",
     "static/media/PaperWin.0f056330.gif": "/Work/static/media/PaperWin.0f056330.gif",
@@ -24,16 +24,18 @@
     "static/media/discord_card.9c902417.png": "/Work/static/media/discord_card.9c902417.png",
     "static/media/index.scss": "/Work/static/media/twitter_hover.266aa5bd.png",
     "static/media/fair_play_hover_card.6bde0c0c.png": "/Work/static/media/fair_play_hover_card.6bde0c0c.png",
+    "static/media/fox.5777210e.png": "/Work/static/media/fox.5777210e.png",
     "static/media/matic-logo.a53fa9d8.png": "/Work/static/media/matic-logo.a53fa9d8.png",
     "static/media/nft_hover_card.80aaaca0.png": "/Work/static/media/nft_hover_card.80aaaca0.png",
     "static/media/rps_card.90344e20.png": "/Work/static/media/rps_card.90344e20.png",
+    "static/media/security_card.69c8cac0.png": "/Work/static/media/security_card.69c8cac0.png",
     "static/media/twitter_card.71356aef.png": "/Work/static/media/twitter_card.71356aef.png"
   },
   "entrypoints": [
-    "static/js/runtime-main.9471df77.js",
+    "static/js/runtime-main.eb317288.js",
     "static/css/2.4615dd22.chunk.css",
-    "static/js/2.f6d675b9.chunk.js",
-    "static/css/main.b96b887f.chunk.css",
-    "static/js/main.99e372d6.chunk.js"
+    "static/js/2.fabe81ef.chunk.js",
+    "static/css/main.e0345b39.chunk.css",
+    "static/js/main.8043b2d1.chunk.js"
   ]
 }

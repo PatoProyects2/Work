@@ -17,6 +17,15 @@ body {
     color: rgba(255, 193, 7, 0.8) !important;
 }
 
+.content-link {
+    color: #ffb74d !important;
+}
+
+.content-link:hover {
+    color: #ffb74d !important;
+    opacity: 0.8;
+}
+
 
 /* MAIN PAGE */
 
@@ -241,6 +250,24 @@ svg:hover>g.brand-icon {
     fill: #ffb74d;
 }
 
+.nav-items-secondary {
+    /* d-flex justify-content-between" style={{ fontSize: '0.95rem'}} */
+    display: flex;
+    justify-content: center;
+    font-size: 0.87rem;
+}
+
+.nav-item-secondary {
+    color: grey;
+    margin: .5rem 1rem;
+}
+
+.nav-item-secondary:hover,
+.nav-item-secondary.active {
+    color: #ffb74d;
+    text-decoration: underline;
+}
+
 .btn-wallet {
     background-color: #212529 !important;
     border: 1px solid whitesmoke !important;
@@ -406,10 +433,6 @@ svg:hover>g.brand-icon {
     color: #23d160;
 }
 
-.chat_collapse_ico {
-    background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMS44MzEiIGhlaWdodD0iMjEuODMzIiB2aWV3Qm94PSIwIDAgMjEuODMxIDIxLjgzMyI+CiAgPHBhdGggaWQ9ImNvbW1lbnQtYWx0LWxpbmVzIiBkPSJNMTkuMSwwSDIuNzI5QTIuNzMxLDIuNzMxLDAsMCwwLDAsMi43Mjl2MTIuMjhhMi43MzEsMi43MzEsMCwwLDAsMi43MjksMi43MjlINi44MjJWMjEuMzJhLjUxMy41MTMsMCwwLDAsLjgxNC40MTRsNS4zMjYtNEgxOS4xYTIuNzMxLDIuNzMxLDAsMCwwLDIuNzI5LTIuNzI5VjIuNzI5QTIuNzMxLDIuNzMxLDAsMCwwLDE5LjEsMFpNMTIuMjgsMTEuMjU3YS4zNDIuMzQyLDAsMCwxLS4zNDEuMzQxSDUuOGEuMzQyLjM0MiwwLDAsMS0uMzQxLS4zNDF2LS42ODJhLjM0Mi4zNDIsMCwwLDEsLjM0MS0uMzQxaDYuMTRhLjM0Mi4zNDIsMCwwLDEsLjM0MS4zNDFabTQuMDkzLTQuMDkzYS4zNDIuMzQyLDAsMCwxLS4zNDEuMzQxSDUuOGEuMzQyLjM0MiwwLDAsMS0uMzQxLS4zNDFWNi40ODFBLjM0Mi4zNDIsMCwwLDEsNS44LDYuMTRIMTYuMDMyYS4zNDIuMzQyLDAsMCwxLC4zNDEuMzQxWiIgZmlsbD0iIzY4NzU3YiIvPgo8L3N2Zz4K);
-}
-
 
 /* User Stats */
 
@@ -417,6 +440,9 @@ svg:hover>g.brand-icon {
     display: flex;
     justify-content: space-between;
     margin-top: 1rem;
+    background: #535759;
+    padding: 15px;
+    border-radius: 5px;
 }
 
 .user-stats-profile {
@@ -516,6 +542,15 @@ svg:hover>g.brand-icon {
 
 .profit-minus {
     color: coral;
+}
+
+.chart-user {
+    margin-top: 1.2rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
+    background: #535759;
+    border-radius: 5px;
+    padding: 10px;
 }
 
 @media (max-width: 991px) {
