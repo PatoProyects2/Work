@@ -95,6 +95,10 @@ export default function Profile() {
 
   useEffect(() => {
     readUserClubData(user)
+    return () => {
+      setUserData({});
+      setName('');
+    }
   }, [user])
 
   const readUserClubData = (user) => {
@@ -110,6 +114,7 @@ export default function Profile() {
       return () => unsub()
     }
   }
+  
   const resendEmailVerification = () => {
     toast.promise(
       sendEmailVerification(auth.currentUser),

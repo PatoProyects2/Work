@@ -472,9 +472,9 @@ export default function Rps() {
         window.location.reload()
       });
       web3.eth.getBalance(accounts[0])
-        .then(balance => {
-          setBalance(balance)
-          setWalletBalance(balance)
+        .then(b => {
+          setBalance(b)
+          setWalletBalance(b)
         })
         .catch(err => console.log(err))
       const chainId = await web3.eth.getChainId();
@@ -514,7 +514,7 @@ export default function Rps() {
         }
       }
     } catch (e) {
-      console.log(e)
+
     }
   }
 
@@ -571,7 +571,6 @@ export default function Rps() {
     if (userDocument.rps.lastGameBlock < actuallBlock) {
       const inputAmount = web3.utils.toWei(usergame.amount.toString(), "ether")
       let calculateValue = await rpsgame.methods.calculateValue(inputAmount).call()
-      let state = false
       rpsgame.methods
         .play(inputAmount)
         .send({
@@ -579,20 +578,17 @@ export default function Rps() {
           value: calculateValue,
           gasPrice: '40000000000'
         })
-        .then(() => {
-          state = true
-        })
         .catch((err) => {
           if (err.code === 4001) {
             toast.error("User denied transaction signature")
+            myEvents[0] = false
+            setDoubleOrNothingStatus(false)
+            setPlaying(false)
+            setAnimation(false)
+            return false
           } else {
-            toast.error("Failed transaction")
+            toast.warning("Pending transaction")
           }
-          myEvents[0] = false
-          setDoubleOrNothingStatus(false)
-          setPlaying(false)
-          setAnimation(false)
-          return false
         });
 
       let options = {
@@ -603,13 +599,14 @@ export default function Rps() {
         toBlock: 'latest'
       };
 
-      if (state) {
-        do {
+      do {
+        try {
           myEvents = await rpsgame.getPastEvents('Play', options)
-          await sleep(1000)
-          console.log(myEvents)
-        } while (myEvents[0] === undefined);
-      }
+        } catch (e) {
+       
+        }
+        await sleep(1000)
+      } while (myEvents[0] === undefined);
 
       if (myEvents[0]) {
         if (myEvents[0].blockNumber > userDocument.rps.lastGameBlock) {
@@ -695,21 +692,20 @@ export default function Rps() {
     }
   }
 
-  const showResult = async () => {
+  const showResult = () => {
     if (userGameResult) {
       toast.success("You doubled your money, congrats!")
     }
     web3.eth.getBalance(account)
-      .then(balance => {
-        setBalance(balance)
-        setWalletBalance(balance)
+      .then(b => {
+        setBalance(b)
+        setWalletBalance(b)
       })
       .catch(err => console.log(err))
     loadUserGame(account, user)
     setAnimation(false)
     setShowGameResult(false)
     setGameResult(true)
-    setWalletBalance(balance)
   }
 
   const backGame = () => {
