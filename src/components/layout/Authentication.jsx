@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import { signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, setPersistence, browserSessionPersistence } from 'firebase/auth';
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Button, Modal, ModalBody, ModalFooter, FormGroup, Input } from 'reactstrap'
+import DiscordOauth2 from "discord-oauth2"
 import { query, where, collection, limit, onSnapshot } from "firebase/firestore";
 import { toast } from 'react-hot-toast';
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { useNavigate } from 'react-router-dom'
 import { auth, db } from "../../firebase/firesbaseConfig"
+
+
+
 export default function AccountFirebase(props) {
   const [user] = useAuthState(auth)
   const [userInfo, setUserInfo] = useState({

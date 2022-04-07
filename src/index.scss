@@ -1353,3 +1353,20 @@ input[type="file"]::-webkit-file-upload-button {
 #picture::before {
     content: 'Change picture';
 }
+
+.fair-game-stats {
+    width: 50%;
+    margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+    .fair-game-stats {
+        width: 70%;
+    }
+}
+
+@media (max-width: 478px) {
+    .fair-game-stats {
+        width: 90%;
+    }
+}

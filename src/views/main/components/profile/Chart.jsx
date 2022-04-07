@@ -3,7 +3,7 @@ import { query, where, collection, getDocs } from "firebase/firestore";
 import { db } from '../../../../firebase/firesbaseConfig'
 import DataChart from './DataChart'
 export default function Chart({ userData }) {
-  const [data, setData] = useState(undefined);
+  const [data, setData] = useState([]);
 
   useEffect(() => {
     var unixTimeStamp = Math.round((new Date()).getTime() / 1000);
@@ -29,6 +29,9 @@ export default function Chart({ userData }) {
           })
           setData(array)
         })
+    }
+    return () => {
+      setData([])
     }
   }, [userData])
 

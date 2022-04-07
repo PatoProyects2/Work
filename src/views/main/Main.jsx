@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
 import lodash from 'lodash'
-import { collection, getDocs, query, orderBy, setDoc, doc } from "firebase/firestore";
-import { Button, ButtonGroup } from 'reactstrap';
+import { collection, getDocs, query, orderBy, setDoc, doc } from "firebase/firestore"
+import { Button, ButtonGroup } from 'reactstrap'
+import { useSearchParams } from 'react-router-dom'
+import DiscordOauth2 from "discord-oauth2"
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { db, auth } from '../../firebase/firesbaseConfig'
 import MostPlays from './components/MostPlays'
@@ -31,6 +33,8 @@ export default function Main() {
   const [monthlyAmount, setMonthlyAmount] = useState(false);
   const [globalAmount, setGlobalAmount] = useState(false);
   const isMobileResolution = useMatchMedia('(max-width:650px)', false);
+  let [searchParams, setSearchParams] = useSearchParams();
+  let code = searchParams.get("code");
 
   useEffect(() => {
     const readLeaderboard = async (user) => {
@@ -349,6 +353,29 @@ export default function Main() {
     }
   }
 
+  useEffect(() => {
+    const readDiscordData = () => {
+      if (user) {
+        const oauth = new DiscordOauth2();
+        oauth.tokenRequest({
+          clientId: process.env.REACT_APP_DISCORD_CLIENTID,
+          clientSecret: process.env.REACT_APP_DISCORD_CLIENTSECRET,
+          code: code,
+          scope: "identify email",
+          grantType: "authorization_code",
+          redirectUri: "https://patoproyects2.github.io",
+        })
+          .then(res => {
+            oauth.getUser(res.access_token)
+              .then(console.log);
+          })
+          .catch(err => console.log(err))
+      }
+    }
+
+    readDiscordData()
+  }, [user, code])
+
   return (
     <>
       <div className='cards-container'>
@@ -493,6 +520,8 @@ export default function Main() {
             }
           </>
         }
+        {/* <Button onClick={connectDiscord}>CONNECT DISCORD</Button> */}
+        <a href='https://discord.com/api/oauth2/authorize?client_id=961656991149875232&redirect_uri=https%3A%2F%2F8ba6-81-32-7-32.ngrok.io%2F&response_type=code&scope=identify%20email'>CONNECT DISCORD</a>
       </div >
     </>
   );
