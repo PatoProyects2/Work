@@ -20,10 +20,13 @@ export default function Chart({ userData }) {
           let array = documents.map(document => {
             const data = document.doc.data.value.mapValue.fields
             const created = parseInt(data.createdAt.integerValue)
-            const profit = data.profit.doubleValue.toFixedNumber(2)
-            let top = {
-              profit: profit,
-              time: created
+            let top = undefined
+            if (data.uid.stringValue !== 'anonymous') {
+              const profit = data.profit.doubleValue.toFixedNumber(2)
+              top = {
+                profit: profit,
+                time: created
+              }
             }
             return top
           })
@@ -39,7 +42,11 @@ export default function Chart({ userData }) {
     <>
       {userData &&
         <>
-          {userData.rps.totalGames > 0 && <DataChart data={data} />}
+          {userData.rps.totalGames > 0 ?
+            <DataChart data={data} />
+            :
+            <span>No games found</span>
+          }
         </>
       }
     </>

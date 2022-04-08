@@ -4,18 +4,19 @@ import { db } from "./firesbaseConfig";
 export default function Presence() {
     const [active, setActive] = useState(0);
     useEffect(() => {
+        const readData = async () => {
+            var unixTimeStamp = Math.round((new Date()).getTime() / 1000);
+            let lastDay = unixTimeStamp - 86400
+            const q1 = query(collection(db, 'status'), where('state', '==', 'online'), where('time', '>', lastDay))
+            const d1 = await getDocs(q1)
+            setActive(d1._snapshot.docChanges.length)
+        }
         readData()
         return () => {
             setActive(0);
         };
     }, [])
-    const readData = async () => {
-        var unixTimeStamp = Math.round((new Date()).getTime() / 1000);
-        let lastDay = unixTimeStamp - 86400
-        const q1 = query(collection(db, 'status'), where('state', '==', 'online'), where('time', '>', lastDay))
-        const d1 = await getDocs(q1)
-        setActive(d1._snapshot.docChanges.length)
-    }
+
     return (
         <>
             <span className="d-flex align-items-center ms-3">

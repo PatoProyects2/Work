@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import Web3 from 'web3'
 import Web3Modal from "web3modal";
-import { useAuthState } from 'react-firebase-hooks/auth'
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import Torus from "@toruslabs/torus-embed";
 import Portis from "@portis/web3";
@@ -19,7 +18,7 @@ import ConnectWallet from './components/ConnectWallet'
 import WinStreakLeaderboard from './components/WinStreakLeaderboard'
 import ReadAllGames from '../../firebase/ReadAllGames'
 import { ReadUnixTime } from '../../firebase/ReadUnixTime'
-import { auth, db } from '../../firebase/firesbaseConfig'
+import { db } from '../../firebase/firesbaseConfig'
 import { useMatchMedia } from '../../hooks/useMatchMedia'
 import Rock from '../../assets/imgs/rock.gif'
 import Paper from '../../assets/imgs/paper.gif'
@@ -34,8 +33,8 @@ import ScissorsWin from '../../assets/imgs/animations/ScissorsWin.gif'
 import { Context } from '../../context/Context';
 
 export default function Rps() {
+  const { discordId } = useContext(Context);
   const { setBalance } = useContext(Context);
-  const [user] = useAuthState(auth)
   const [web3, setWeb3] = useState({});
   const [rpsgame, setRpsgame] = useState({});
   const [swapPolygon, setSwapPolygon] = useState({});
@@ -45,7 +44,6 @@ export default function Rps() {
     hand: '',
     amount: 0
   });
-  const [register, setRegister] = useState('');
   const [account, setAccount] = useState('0x000000000000000000000000000000000000dEaD');
   const [walletBalance, setWalletBalance] = useState(0);
   const [network, setNetwork] = useState(0);
@@ -65,11 +63,8 @@ export default function Rps() {
   const mixpanel = useMixpanel();
 
   useEffect(() => {
-    readAccount(user)
-  }, [user])
-
-  const readAccount = (user) => {
-    if (!user) {
+    let token = window.localStorage.getItem('loggedUser')
+    if (!token) {
       toast('Log in if you want to save you game stats and ahievements', {
         duration: 30000,
         position: 'top-right',
@@ -90,220 +85,213 @@ export default function Rps() {
         },
       });
     }
-  }
+  }, [discordId])
 
   useEffect(() => {
-    loadUserGame(account, user)
+    loadUserGame()
     return () => {
       setUserData({});
-      setRegister('');
     };
-  }, [account, user])
+  }, [account, discordId])
 
-  const loadUserGame = async (account, user) => {
+  const loadUserGame = async () => {
     mixpanel.init('07cdb36cf270a17ef7095ffc2aacb29d', { debug: false });
     mixpanel.track('Sign up');
-
-    const query0 = doc(db, "clubUsers", account)
-    const userDocument0 = await getDoc(query0)
-    const userData = userDocument0.data()
-    if (userData) {
-      setUserData(userData)
-      if (userData.uid === '' && user) {
-        updateDoc(doc(db, "clubUsers", account), {
-          uid: user.uid
-        })
+    const document = await getDoc(doc(db, "clubUsers", discordId))
+    const data = document.data()
+    if (data) {
+      setUserData(data)
+      if (data.account === '' && account !== '0x000000000000000000000000000000000000dEaD') {
+        updateDoc(doc(db, "clubUsers", discordId), {
+          account: account
+        }).then(window.location.reload())
       }
-
-      var date = new Date(userData.register.seconds * 1000);
-      setRegister(date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear());
-
-      if (userData.rps.totalGames > 9 && userData.rps.totalGames < 20 && userData.level < 2) {
-        updateDoc(doc(db, "clubUsers", account), {
+      if (data.rps.totalGames > 9 && data.rps.totalGames < 20 && data.level < 2) {
+        updateDoc(doc(db, "clubUsers", discordId), {
           level: 2
         })
         toast('You reach level 2, congrats!', {
           icon: '🆙',
         });
       }
-      if (userData.rps.totalGames > 19 && userData.rps.totalGames < 30 && userData.level < 3) {
-        updateDoc(doc(db, "clubUsers", account), {
+      if (data.rps.totalGames > 19 && data.rps.totalGames < 30 && data.level < 3) {
+        updateDoc(doc(db, "clubUsers", discordId), {
           level: 3
         })
         toast('You reach level 3, congrats!', {
           icon: '🆙',
         });
       }
-      if (userData.rps.totalGames > 29 && userData.rps.totalGames < 40 && userData.level < 4) {
-        updateDoc(doc(db, "clubUsers", account), {
+      if (data.rps.totalGames > 29 && data.rps.totalGames < 40 && data.level < 4) {
+        updateDoc(doc(db, "clubUsers", discordId), {
           level: 4
         })
         toast('You reach level 4, congrats!', {
           icon: '🆙',
         });
       }
-      if (userData.rps.totalGames > 39 && userData.rps.totalGames < 50 && userData.level < 5) {
-        updateDoc(doc(db, "clubUsers", account), {
+      if (data.rps.totalGames > 39 && data.rps.totalGames < 50 && data.level < 5) {
+        updateDoc(doc(db, "clubUsers", discordId), {
           level: 5
         })
         toast('You reach level 5, congrats!', {
           icon: '🆙',
         });
       }
-      if (userData.rps.totalGames > 55 && userData.rps.totalGames < 70 && userData.level < 6) {
-        updateDoc(doc(db, "clubUsers", account), {
+      if (data.rps.totalGames > 49 && data.rps.totalGames < 65 && data.level < 6) {
+        updateDoc(doc(db, "clubUsers", discordId), {
           level: 6
         })
         toast('You reach level 6, congrats!', {
           icon: '🆙',
         });
       }
-      if (userData.rps.totalGames > 69 && userData.rps.totalGames < 85 && userData.level < 7) {
-        updateDoc(doc(db, "clubUsers", account), {
+      if (data.rps.totalGames > 64 && data.rps.totalGames < 80 && data.level < 7) {
+        updateDoc(doc(db, "clubUsers", discordId), {
           level: 7
         })
         toast('You reach level 7, congrats!', {
           icon: '🆙',
         });
       }
-      if (userData.rps.totalGames > 84 && userData.rps.totalGames < 70 && userData.level < 8) {
-        updateDoc(doc(db, "clubUsers", account), {
+      if (data.rps.totalGames > 79 && data.rps.totalGames < 95 && data.level < 8) {
+        updateDoc(doc(db, "clubUsers", discordId), {
           level: 8
         })
         toast('You reach level 8, congrats!', {
           icon: '🆙',
         });
       }
-      if (userData.rps.totalGames > 99 && userData.rps.totalGames < 90 && userData.level < 9) {
-        updateDoc(doc(db, "clubUsers", account), {
+      if (data.rps.totalGames > 94 && data.rps.totalGames < 110 && data.level < 9) {
+        updateDoc(doc(db, "clubUsers", discordId), {
           level: 9
         })
         toast('You reach level 9, congrats!', {
           icon: '🆙',
         });
       }
-      if (userData.rps.totalGames > 114 && userData.rps.totalGames < 110 && userData.level < 10) {
-        updateDoc(doc(db, "clubUsers", account), {
+      if (data.rps.totalGames > 109 && data.rps.totalGames < 125 && data.level < 10) {
+        updateDoc(doc(db, "clubUsers", discordId), {
           level: 10
         })
         toast('You reach level 10, congrats!', {
           icon: '🆙',
         });
       }
-      if (userData.rps.totalGames > 139 && userData.rps.totalGames < 140 && userData.level < 11) {
-        updateDoc(doc(db, "clubUsers", account), {
+      if (data.rps.totalGames > 124 && data.rps.totalGames < 150 && data.level < 11) {
+        updateDoc(doc(db, "clubUsers", discordId), {
           level: 11
         })
         toast('You reach level 11, congrats!', {
           icon: '🆙',
         });
       }
-      if (userData.rps.totalGames > 164 && userData.rps.totalGames < 170 && userData.level < 12) {
-        updateDoc(doc(db, "clubUsers", account), {
+      if (data.rps.totalGames > 149 && data.rps.totalGames < 200 && data.level < 12) {
+        updateDoc(doc(db, "clubUsers", discordId), {
           level: 12
         })
         toast('You reach level 12, congrats!', {
           icon: '🆙',
         });
       }
-      if (userData.rps.totalGames > 189 && userData.rps.totalGames < 200 && userData.level < 13) {
-        updateDoc(doc(db, "clubUsers", account), {
+      if (data.rps.totalGames > 199 && data.rps.totalGames < 250 && data.level < 13) {
+        updateDoc(doc(db, "clubUsers", discordId), {
           level: 13
         })
         toast('You reach level 13, congrats!', {
           icon: '🆙',
         });
       }
-      if (userData.rps.totalGames > 214 && userData.rps.totalGames < 240 && userData.level < 14) {
-        updateDoc(doc(db, "clubUsers", account), {
+      if (data.rps.totalGames > 249 && data.rps.totalGames < 300 && data.level < 14) {
+        updateDoc(doc(db, "clubUsers", discordId), {
           level: 14
         })
         toast('You reach level 14, congrats!', {
           icon: '🆙',
         });
       }
-      if (userData.rps.totalGames > 239 && userData.rps.totalGames < 290 && userData.level < 15) {
-        updateDoc(doc(db, "clubUsers", account), {
+      if (data.rps.totalGames > 299 && data.rps.totalGames < 350 && data.level < 15) {
+        updateDoc(doc(db, "clubUsers", discordId), {
           level: 15
         })
         toast('You reach level 15, congrats!', {
           icon: '🆙',
         });
       }
-      if (userData.rps.totalGames > 279 && userData.rps.totalGames < 350 && userData.level < 16) {
-        updateDoc(doc(db, "clubUsers", account), {
+      if (data.rps.totalGames > 349 && data.rps.totalGames < 390 && data.level < 16) {
+        updateDoc(doc(db, "clubUsers", discordId), {
           level: 16
         })
         toast('You reach level 16, congrats!', {
           icon: '🆙',
         });
       }
-      if (userData.rps.totalGames > 319 && userData.rps.totalGames < 350 && userData.level < 17) {
-        updateDoc(doc(db, "clubUsers", account), {
+      if (data.rps.totalGames > 389 && data.rps.totalGames < 430 && data.level < 17) {
+        updateDoc(doc(db, "clubUsers", discordId), {
           level: 17
         })
         toast('You reach level 17, congrats!', {
           icon: '🆙',
         });
       }
-      if (userData.rps.totalGames > 359 && userData.rps.totalGames < 350 && userData.level < 18) {
-        updateDoc(doc(db, "clubUsers", account), {
+      if (data.rps.totalGames > 429 && data.rps.totalGames < 470 && data.level < 18) {
+        updateDoc(doc(db, "clubUsers", discordId), {
           level: 18
         })
         toast('You reach level 18, congrats!', {
           icon: '🆙',
         });
       }
-      if (userData.rps.totalGames > 399 && userData.rps.totalGames < 350 && userData.level < 19) {
-        updateDoc(doc(db, "clubUsers", account), {
+      if (data.rps.totalGames > 469 && data.rps.totalGames < 510 && data.level < 19) {
+        updateDoc(doc(db, "clubUsers", discordId), {
           level: 19
         })
         toast('You reach level 19, congrats!', {
           icon: '🆙',
         });
       }
-      if (userData.rps.totalGames > 439 && userData.rps.totalGames < 350 && userData.level < 20) {
-        updateDoc(doc(db, "clubUsers", account), {
+      if (data.rps.totalGames > 509 && data.rps.totalGames < 550 && data.level < 20) {
+        updateDoc(doc(db, "clubUsers", discordId), {
           level: 20
         })
         toast('You reach level 20, congrats!', {
           icon: '🆙',
         });
       }
-      if (userData.rps.totalGames > 489 && userData.rps.totalGames < 350 && userData.level < 21) {
-        updateDoc(doc(db, "clubUsers", account), {
+      if (data.rps.totalGames > 549 && data.rps.totalGames < 600 && data.level < 21) {
+        updateDoc(doc(db, "clubUsers", discordId), {
           level: 21
         })
         toast('You reach level 21, congrats!', {
           icon: '🆙',
         });
       }
-      if (userData.rps.totalGames > 539 && userData.rps.totalGames < 350 && userData.level < 22) {
-        updateDoc(doc(db, "clubUsers", account), {
+      if (data.rps.totalGames > 599 && data.rps.totalGames < 650 && data.level < 22) {
+        updateDoc(doc(db, "clubUsers", discordId), {
           level: 22
         })
         toast('You reach level 22, congrats!', {
           icon: '🆙',
         });
       }
-      if (userData.rps.totalGames > 589 && userData.rps.totalGames < 350 && userData.level < 23) {
-        updateDoc(doc(db, "clubUsers", account), {
+      if (data.rps.totalGames > 649 && data.rps.totalGames < 700 && data.level < 23) {
+        updateDoc(doc(db, "clubUsers", discordId), {
           level: 23
         })
         toast('You reach level 23, congrats!', {
           icon: '🆙',
         });
       }
-      if (userData.rps.totalGames > 639 && userData.rps.totalGames < 350 && userData.level < 24) {
-        updateDoc(doc(db, "clubUsers", account), {
+      if (data.rps.totalGames > 699 && data.rps.totalGames < 750 && data.level < 24) {
+        updateDoc(doc(db, "clubUsers", discordId), {
           level: 24
         })
         toast('You reach level 24, congrats!', {
           icon: '🆙',
         });
       }
-      if (userData.rps.totalGames > 689 && userData.rps.totalGames < 350 && userData.level < 25) {
-        updateDoc(doc(db, "clubUsers", account), {
+      if (data.rps.totalGames > 749 && data.rps.totalGames < 800 && data.level < 25) {
+        updateDoc(doc(db, "clubUsers", discordId), {
           level: 25
         })
         toast('You reach level 25, congrats!', {
@@ -311,17 +299,16 @@ export default function Rps() {
         });
       }
     } else {
-      if (user && account !== '0x000000000000000000000000000000000000dEaD') {
-        if (user.displayName) {
-          setDoc(doc(db, "clubUsers", account), {
-            uid: user.uid,
-            register: serverTimestamp(),
-            name: user.displayName,
-            photo: 'https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh',
+      const anonDoc = await getDoc(doc(db, "anonUsers", account))
+      const anonData = anonDoc.data()
+      if (!anonData) {
+        if (account !== '0x000000000000000000000000000000000000dEaD') {
+          const arrayData = {
+            uid: 'anonymous',
             account: account,
-            games: ['RPS'],
+            name: 'RPS player',
+            photo: 'https://firebasestorage.googleapis.com/v0/b/games-club-dce4d.appspot.com/o/ClubLogo.png?alt=media&token=5dd64484-c99f-4ce9-a06b-0a3ee112b37b',
             level: 1,
-            ignored: [],
             rps: {
               rock: 0,
               paper: 0,
@@ -335,61 +322,10 @@ export default function Rps() {
               totalGames: 0,
               totalAmount: 0,
               lastGameBlock: 0,
-            },
-          })
-        } else {
-          setDoc(doc(db, "clubUsers", account), {
-            uid: user.uid,
-            register: serverTimestamp(),
-            name: 'ClubUser',
-            photo: 'https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh',
-            account: account,
-            games: ['RPS'],
-            level: 1,
-            ignored: [],
-            rps: {
-              rock: 0,
-              paper: 0,
-              scissors: 0,
-              dayWinStreak: 0,
-              winStreakTime: 0,
-              gameWon: 0,
-              gameLoss: 0,
-              amountWon: 0,
-              amountLoss: 0,
-              totalGames: 0,
-              totalAmount: 0,
-              lastGameBlock: 0,
-            },
-          })
-            .then(() => window.location.reload())
+            }
+          }
+          setDoc(doc(db, "anonUsers", account), arrayData).then(window.location.reload())
         }
-      }
-      if (!user && account !== '0x000000000000000000000000000000000000dEaD') {
-        setDoc(doc(db, "clubUsers", account), {
-          uid: "",
-          register: serverTimestamp(),
-          name: 'ClubUser',
-          photo: 'https://gateway.ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh',
-          account: account,
-          games: ['RPS'],
-          level: 1,
-          rps: {
-            rock: 0,
-            paper: 0,
-            scissors: 0,
-            dayWinStreak: 0,
-            winStreakTime: 0,
-            gameWon: 0,
-            gameLoss: 0,
-            amountWon: 0,
-            amountLoss: 0,
-            totalGames: 0,
-            totalAmount: 0,
-            lastGameBlock: 0,
-          },
-        })
-          .then(() => window.location.reload())
       }
     }
   }
@@ -563,111 +499,219 @@ export default function Rps() {
     setPlaying(true)
     setAnimation(true)
     let myEvents = []
-    const query0 = doc(db, "clubUsers", account)
-    const userDocument0 = await getDoc(query0)
-    const userDocument = userDocument0.data()
-    const actuallBlock = await web3.eth.getBlockNumber()
+    let actuallBlock = 0
+    try {
+      actuallBlock = await web3.eth.getBlockNumber()
+    } catch (e) {
+
+    }
     const dayBlock = actuallBlock - 43200
-    if (userDocument.rps.lastGameBlock < actuallBlock) {
-      const inputAmount = web3.utils.toWei(usergame.amount.toString(), "ether")
-      let calculateValue = await rpsgame.methods.calculateValue(inputAmount).call()
-      rpsgame.methods
-        .play(inputAmount)
-        .send({
-          from: account,
-          value: calculateValue,
-          gasPrice: '40000000000'
-        })
-        .catch((err) => {
-          if (err.code === 4001) {
-            toast.error("User denied transaction signature")
-            myEvents[0] = false
-            setDoubleOrNothingStatus(false)
-            setPlaying(false)
-            setAnimation(false)
-            return false
-          } else {
-            toast.warning("Pending transaction")
-          }
-        });
-
-      let options = {
-        filter: {
-          _to: account
-        },
-        fromBlock: actuallBlock,
-        toBlock: 'latest'
-      };
-
-      do {
+    const q = doc(db, "clubUsers", discordId)
+    const d = await getDoc(q)
+    let playerDocument = d.data()
+    if (playerDocument) {
+      if (playerDocument.rps.lastGameBlock < actuallBlock) {
+        const inputAmount = web3.utils.toWei(usergame.amount.toString(), "ether")
+        let calculateValue = 0
         try {
-          myEvents = await rpsgame.getPastEvents('Play', options)
+          calculateValue = await rpsgame.methods.calculateValue(inputAmount).call()
         } catch (e) {
-       
-        }
-        await sleep(1000)
-      } while (myEvents[0] === undefined);
 
-      if (myEvents[0]) {
-        if (myEvents[0].blockNumber > userDocument.rps.lastGameBlock) {
-          let maticPrice = await swapPolygon.methods.getAmountsOut(decimal.toString(), [maticContract, usdcContract]).call()
+        }
+        rpsgame.methods
+          .play(inputAmount)
+          .send({
+            from: account,
+            value: calculateValue,
+            gasPrice: '40000000000'
+          })
+          .catch((err) => {
+            if (err.code === 4001) {
+              toast.error("User denied transaction signature")
+              myEvents[0] = false
+              setDoubleOrNothingStatus(false)
+              setPlaying(false)
+              setAnimation(false)
+              return false
+            } else {
+              toast.warning("Pending transaction")
+            }
+          });
+
+        let options = {
+          filter: {
+            _to: account
+          },
+          fromBlock: actuallBlock,
+          toBlock: 'latest'
+        };
+
+        do {
+          try {
+            myEvents = await rpsgame.getPastEvents('Play', options)
+          } catch (e) {
+
+          }
+          await sleep(1000)
+        } while (myEvents[0] === undefined);
+
+        if (myEvents[0]) {
+          if (myEvents[0].blockNumber > playerDocument.rps.lastGameBlock) {
+            let maticPrice = 0
+            try {
+              maticPrice = await swapPolygon.methods.getAmountsOut(decimal.toString(), [maticContract, usdcContract]).call()
+            } catch (e) {
+
+            }
+            const userAmount = web3.utils.fromWei(myEvents[0].returnValues[1], 'ether')
+            const usdAmount = (parseInt(maticPrice[1] / 10000) / 100) * userAmount
+            let profit = 0
+
+            updateDoc(doc(db, "clubUsers", discordId), {
+              "rps.totalGames": playerDocument.rps.totalGames + 1,
+              "rps.totalAmount": playerDocument.rps.totalAmount + usdAmount,
+              "rps.lastGameBlock": myEvents[0].blockNumber
+            })
+            if (myEvents[0].returnValues[3] === true) {
+              updateDoc(doc(db, "clubUsers", discordId), {
+                "rps.gameWon": playerDocument.rps.gameWon + 1,
+                "rps.amountWon": playerDocument.rps.amountWon + usdAmount
+              })
+              profit = (playerDocument.rps.amountWon - playerDocument.rps.amountLoss) + usdAmount
+            }
+            if (myEvents[0].returnValues[3] === false) {
+              updateDoc(doc(db, "clubUsers", discordId), {
+                "rps.gameLoss": playerDocument.rps.gameLoss + 1,
+                "rps.amountLoss": playerDocument.rps.amountLoss + usdAmount
+              })
+              profit = (playerDocument.rps.amountWon - playerDocument.rps.amountLoss) - usdAmount
+            }
+            if (myEvents[0].returnValues[2] > playerDocument.rps.dayWinStreak || dayBlock > playerDocument.rps.winStreakTime) {
+              updateDoc(doc(db, "clubUsers", discordId), {
+                "rps.dayWinStreak": parseInt(myEvents[0].returnValues[2]),
+                "rps.winStreakTime": serverTimestamp()
+              })
+            }
+            if (usergame.hand === 'ROCK') {
+              updateDoc(doc(db, "clubUsers", discordId), {
+                "rps.rock": playerDocument.rps.rock + 1,
+              })
+            }
+            if (usergame.hand === 'PAPER') {
+              updateDoc(doc(db, "clubUsers", discordId), {
+                "rps.paper": playerDocument.rps.paper + 1,
+              })
+            }
+            if (usergame.hand === 'SCISSORS') {
+              updateDoc(doc(db, "clubUsers", discordId), {
+                "rps.scissors": playerDocument.rps.scissors + 1,
+              })
+            }
+            addDoc(collection(db, "allGames"), {
+              createdAt: time,
+              uid: playerDocument.uid,
+              block: myEvents[0].blockNumber,
+              name: playerDocument.name,
+              photo: playerDocument.photo,
+              account: myEvents[0].returnValues[0].toLowerCase(),
+              amount: usdAmount,
+              maticAmount: parseInt(userAmount),
+              streak: parseInt(myEvents[0].returnValues[2]),
+              result: myEvents[0].returnValues[3],
+              game: 'RPS',
+              profit: profit
+            })
+            mixpanel.track(
+              "rps",
+              {
+                "account": myEvents[0].returnValues[0].toLowerCase(),
+                "result": myEvents[0].returnValues[3],
+                "streak": parseInt(myEvents[0].returnValues[2])
+              }
+            );
+            setUserGameResult(myEvents[0].returnValues[3])
+            setUserGameStreak(myEvents[0].returnValues[2])
+            setShowGameResult(true)
+            setDoubleOrNothingStatus(false)
+          }
+        }
+      } else {
+        toast.error("Wait some seconds to play again")
+        setDoubleOrNothingStatus(false)
+        setPlaying(false)
+        setAnimation(false)
+        return false
+      }
+    } else {
+      const anonQ = doc(db, "anonUsers", account)
+      const anonD = await getDoc(anonQ)
+      let anonymousDocument = anonD.data()
+      if (anonymousDocument) {
+        const inputAmount = web3.utils.toWei(usergame.amount.toString(), "ether")
+        let calculateValue = 0
+        try {
+          calculateValue = await rpsgame.methods.calculateValue(inputAmount).call()
+        } catch (e) {
+
+        }
+        rpsgame.methods
+          .play(inputAmount)
+          .send({
+            from: account,
+            value: calculateValue,
+            gasPrice: '40000000000'
+          })
+          .catch((err) => {
+            if (err.code === 4001) {
+              toast.error("User denied transaction signature")
+              myEvents[0] = false
+              setDoubleOrNothingStatus(false)
+              setPlaying(false)
+              setAnimation(false)
+              return false
+            } else {
+              toast.warning("Pending transaction")
+            }
+          });
+
+        let options = {
+          filter: {
+            _to: account
+          },
+          fromBlock: actuallBlock,
+          toBlock: 'latest'
+        };
+
+        do {
+          try {
+            myEvents = await rpsgame.getPastEvents('Play', options)
+          } catch (e) {
+
+          }
+          await sleep(1000)
+        } while (myEvents[0] === undefined);
+        if (myEvents[0]) {
+
+          let maticPrice = 0
+          try {
+            maticPrice = await swapPolygon.methods.getAmountsOut(decimal.toString(), [maticContract, usdcContract]).call()
+          } catch (e) {
+
+          }
           const userAmount = web3.utils.fromWei(myEvents[0].returnValues[1], 'ether')
           const usdAmount = (parseInt(maticPrice[1] / 10000) / 100) * userAmount
-          let profit = 0
-
-          updateDoc(doc(db, "clubUsers", account), {
-            "rps.totalGames": userDocument.rps.totalGames + 1,
-            "rps.totalAmount": userDocument.rps.totalAmount + usdAmount,
-            "rps.lastGameBlock": myEvents[0].blockNumber
-          })
-          if (myEvents[0].returnValues[3] === true) {
-            updateDoc(doc(db, "clubUsers", account), {
-              "rps.gameWon": userDocument.rps.gameWon + 1,
-              "rps.amountWon": userDocument.rps.amountWon + usdAmount
-            })
-            profit = (userDocument.rps.amountWon - userDocument.rps.amountLoss) + usdAmount
-          }
-          if (myEvents[0].returnValues[3] === false) {
-            updateDoc(doc(db, "clubUsers", account), {
-              "rps.gameLoss": userDocument.rps.gameLoss + 1,
-              "rps.amountLoss": userDocument.rps.amountLoss + usdAmount
-            })
-            profit = (userDocument.rps.amountWon - userDocument.rps.amountLoss) - usdAmount
-          }
-          if (myEvents[0].returnValues[2] > userDocument.rps.dayWinStreak || dayBlock > userDocument.rps.winStreakTime) {
-            updateDoc(doc(db, "clubUsers", account), {
-              "rps.dayWinStreak": parseInt(myEvents[0].returnValues[2]),
-              "rps.winStreakTime": serverTimestamp()
-            })
-          }
-          if (usergame.hand === 'ROCK') {
-            updateDoc(doc(db, "clubUsers", account), {
-              "rps.rock": userDocument.rps.rock + 1,
-            })
-          }
-          if (usergame.hand === 'PAPER') {
-            updateDoc(doc(db, "clubUsers", account), {
-              "rps.paper": userDocument.rps.paper + 1,
-            })
-          }
-          if (usergame.hand === 'SCISSORS') {
-            updateDoc(doc(db, "clubUsers", account), {
-              "rps.scissors": userDocument.rps.scissors + 1,
-            })
-          }
           addDoc(collection(db, "allGames"), {
             createdAt: time,
-            uid: userDocument.uid,
+            uid: anonymousDocument.uid,
             block: myEvents[0].blockNumber,
-            name: userDocument.name,
-            photo: userDocument.photo,
+            name: anonymousDocument.name,
+            photo: anonymousDocument.photo,
             account: myEvents[0].returnValues[0].toLowerCase(),
             amount: usdAmount,
             maticAmount: parseInt(userAmount),
             streak: parseInt(myEvents[0].returnValues[2]),
             result: myEvents[0].returnValues[3],
             game: 'RPS',
-            profit: profit
           })
           mixpanel.track(
             "rps",
@@ -683,12 +727,6 @@ export default function Rps() {
           setDoubleOrNothingStatus(false)
         }
       }
-    } else {
-      toast.error("Wait some seconds to play again")
-      setDoubleOrNothingStatus(false)
-      setPlaying(false)
-      setAnimation(false)
-      return false
     }
   }
 
@@ -702,7 +740,7 @@ export default function Rps() {
         setWalletBalance(b)
       })
       .catch(err => console.log(err))
-    loadUserGame(account, user)
+    loadUserGame()
     setAnimation(false)
     setShowGameResult(false)
     setGameResult(true)
@@ -736,8 +774,7 @@ export default function Rps() {
                 walletBalance={walletBalance}
                 disconnectWallet={disconnectWallet}
                 userData={userData}
-                register={register}
-                user={user}
+                user={discordId}
                 toast={toast}
               />
             </>
@@ -765,8 +802,7 @@ export default function Rps() {
                   walletBalance={walletBalance}
                   disconnectWallet={disconnectWallet}
                   userData={userData}
-                  register={register}
-                  user={user}
+                  user={discordId}
                   toast={toast}
                 />
               </div>

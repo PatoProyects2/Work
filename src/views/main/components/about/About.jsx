@@ -1,5 +1,5 @@
 import React from 'react'
-import FAQ from '../FAQ';
+// import FAQ from '../FAQ';
 import Roadmap from '../Roadmap';
 
 import "react-step-progress-bar/styles.css";
@@ -25,8 +25,7 @@ export default function About() {
             Our main goal is to expand ourselves into many different BlockChains, this is a differentiating factor and creates an 
             unprecedented bridge between the main NFT communities.<br/>
             We will start our growth in the uprising Polygon Chain followed by the consolidated Solana Ecosystem.
-          </p>
-          <button className='btn btn-warning d-inline-flex flex-row align-items-center'>Get Started Now &nbsp;<i className='fa-solid fa-arrow-right'></i></button>
+          </p>          
         </div>
       </div>
 

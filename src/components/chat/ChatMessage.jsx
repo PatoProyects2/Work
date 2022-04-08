@@ -14,20 +14,12 @@ function ChatMessage({ text, uid, photo, name, level, auth, userClub }) {
     }
 
     useEffect(() => {
-        const readUserById = (uid) => {
-            if (uid) {
-                const q = query(collection(db, "clubUsers"), where("uid", "==", uid), limit(3))
-                const unsub = onSnapshot(q, (doc) => {
-                    const clubData = doc.docs.map(userData => userData.data())
-                    setUserData(clubData)
-                });
-                return () => unsub()
-            }
-        }
-        readUserById(uid)
-        return () => {
-            setUserData({});
-        };
+        const q = query(collection(db, "clubUsers"), where("uid", "==", uid), limit(3))
+        const unsub = onSnapshot(q, (doc) => {
+            const clubData = doc.docs.map(userData => userData.data())
+            setUserData(clubData)
+        });
+        return () => unsub()
     }, [uid])
 
     const OpenStatModal = () => {
@@ -84,12 +76,13 @@ function ChatMessage({ text, uid, photo, name, level, auth, userClub }) {
                     <div className="chat_cont">{text}</div>
                     <DropdownMenu className="dd-menu">
                         <DropdownItem className="dd-menu-item" onClick={OpenStatModal}>Stats</DropdownItem>
-                        {auth.currentUser ?
+                        {auth &&
                             <>
-                                {uid !== auth.currentUser.uid && userData[0] ? <DropdownItem className="dd-menu-item" onClick={IgnoreUser}>Ignore</DropdownItem> : <DropdownItem className="dd-menu-item" disabled={true}>Ignore</DropdownItem>}
+                                {uid !== auth && userClub[0]
+                                    ? <DropdownItem className="dd-menu-item" onClick={IgnoreUser}>Ignore</DropdownItem>
+                                    : <DropdownItem className="dd-menu-item" disabled={true}>Ignore</DropdownItem>
+                                }
                             </>
-                            :
-                            ""
                         }
                     </DropdownMenu>
                 </li>

@@ -6,9 +6,10 @@ import { Navbar } from '../ui/navbar/Navbar';
 export function RpsLayout() {
 
   const [balance, setBalance] = useState('-');
+  const [discordId, setDiscordId] = useState('-');
 
   return (
-    <Context.Provider value={{balance, setBalance}}>
+    <Context.Provider value={{balance, setBalance, discordId, setDiscordId}}>
       <header>
         <Navbar navType="rps" />
       </header>

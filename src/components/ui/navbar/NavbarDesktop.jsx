@@ -21,7 +21,7 @@ export const NavbarDesktop = ({ handleFaqModal, handleHtpModal, handleRpsModal, 
                         className='mx-2'>
                         <i className="fas fa-bars"></i>
                     </Button>
-                    <img src={GamesClub} width="40" height="40" alt="" />
+                    <img className="rounded-circle" src={GamesClub} width="40" height="40" alt="" />
                     &nbsp;
                     <NavLink className='d-flex align-items-center rps-logo' to='/'>
                         <svg
@@ -263,7 +263,7 @@ export const NavbarDesktop = ({ handleFaqModal, handleHtpModal, handleRpsModal, 
                         </Nav>
                         <div className="active-users-offcanvas">{<Presence />}</div>
                         {isMobileResolution && <div className="d-flex justify-content-center mt-3"><AccountFirebase /></div>}
-                        
+
                         <div className="d-flex flex-row gap-2 justify-content-center mt-3">
                             <a href="https://twitter.com/RPSGamesClub" className="twitter-icon" target="_blank" rel="noopener noreferrer">
                                 <i className="fab fa-2x fa-twitter"></i>

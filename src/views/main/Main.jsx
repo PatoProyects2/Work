@@ -1,12 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { NavLink } from 'react-router-dom'
 import lodash from 'lodash'
 import { collection, getDocs, query, orderBy, setDoc, doc } from "firebase/firestore"
 import { Button, ButtonGroup } from 'reactstrap'
-import { useSearchParams } from 'react-router-dom'
-import DiscordOauth2 from "discord-oauth2"
-import { useAuthState } from 'react-firebase-hooks/auth'
-import { db, auth } from '../../firebase/firesbaseConfig'
+import { db } from '../../firebase/firesbaseConfig'
 import MostPlays from './components/MostPlays'
 import MostAmount from './components/MostAmount'
 import ReadAllGames from '../../firebase/ReadAllGames'
@@ -16,10 +13,11 @@ import DiscordImg from '../../assets/imgs/discord_card.png'
 import TwitterImg from '../../assets/imgs/twitter_card.png'
 import FairPlayImg from '../../assets/imgs/fair_play_hover_card.png'
 import NFTImg from '../../assets/imgs/nft_hover_card.png'
+import { Context } from '../../context/Context';
 import { useMatchMedia } from '../../hooks/useMatchMedia'
 
 export default function Main() {
-  const [user] = useAuthState(auth)
+  const { discordId } = useContext(Context);
   const [leaderboard, setLeaderboard] = useState({});
   const [liveBets, setLiveBets] = useState(true);
   const [mostPlays, setMostPlays] = useState(false);
@@ -33,14 +31,13 @@ export default function Main() {
   const [monthlyAmount, setMonthlyAmount] = useState(false);
   const [globalAmount, setGlobalAmount] = useState(false);
   const isMobileResolution = useMatchMedia('(max-width:650px)', false);
-  let [searchParams, setSearchParams] = useSearchParams();
-  let code = searchParams.get("code");
 
   useEffect(() => {
-    const readLeaderboard = async (user) => {
+    const readLeaderboard = async () => {
       var unixTimeStamp = Math.round((new Date()).getTime() / 1000);
-      if (user) {
-        setDoc(doc(db, "status", user.uid), { state: 'online', time: unixTimeStamp })
+      
+      if (discordId !== '-') {
+        setDoc(doc(db, "status", discordId), { state: 'online', time: unixTimeStamp })
       }
 
       var lastDay = unixTimeStamp - 86400
@@ -243,11 +240,10 @@ export default function Main() {
       setLeaderboard(leaderboard)
     }
     readLeaderboard()
-
     return () => {
       setLeaderboard({});
     };
-  }, [user])
+  }, [discordId])
 
   const liveBetsModal = () => {
     if (!liveBets) {
@@ -353,28 +349,7 @@ export default function Main() {
     }
   }
 
-  useEffect(() => {
-    const readDiscordData = () => {
-      if (user) {
-        const oauth = new DiscordOauth2();
-        oauth.tokenRequest({
-          clientId: process.env.REACT_APP_DISCORD_CLIENTID,
-          clientSecret: process.env.REACT_APP_DISCORD_CLIENTSECRET,
-          code: code,
-          scope: "identify email",
-          grantType: "authorization_code",
-          redirectUri: "https://patoproyects2.github.io",
-        })
-          .then(res => {
-            oauth.getUser(res.access_token)
-              .then(console.log);
-          })
-          .catch(err => console.log(err))
-      }
-    }
 
-    readDiscordData()
-  }, [user, code])
 
   return (
     <>
@@ -520,8 +495,6 @@ export default function Main() {
             }
           </>
         }
-        {/* <Button onClick={connectDiscord}>CONNECT DISCORD</Button> */}
-        <a href='https://discord.com/api/oauth2/authorize?client_id=961656991149875232&redirect_uri=https%3A%2F%2F8ba6-81-32-7-32.ngrok.io%2F&response_type=code&scope=identify%20email'>CONNECT DISCORD</a>
       </div >
     </>
   );

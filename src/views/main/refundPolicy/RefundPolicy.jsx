@@ -5,7 +5,7 @@ export default function RefundPolicy() {
     return (
         <div className='container'>
             <div className='row pt-5'>
-                <div className='col-md-8 col-sm-10 col-12 mx-auto my-auto'>
+                <div className='col-sm-10 col-12 mx-auto my-auto'>
                     <h1 className='d-inline heading-black text-capitalize'>Refund Policy</h1>
                     <h4 className="mt-3"><i className="fa-solid fa-hashtag"></i>&nbsp; 1.1</h4>
                     <p className='lead py-3'>
@@ -42,7 +42,7 @@ export default function RefundPolicy() {
                     <p className='lead pt-3'>
                         Thus, our platform may require User to submit additional documents, including, but not limited to:
                     </p>
-                    <ul>
+                    <ul className='lead'>
                         <li>Identification Documents (e.g. passport)</li>
                         <li>A scanned copy of Users credit/debit card</li>
                         <li>Utility Bill</li>

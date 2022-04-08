@@ -1,12 +1,14 @@
-import React, { useEffect, useState, useRef } from "react"
+import React, { useEffect, useState, useRef, useContext } from "react"
 import { addDoc, onSnapshot, orderBy, collection, serverTimestamp, where, limit, getDocs, query, arrayRemove, updateDoc, doc } from "firebase/firestore";
 import Picker, { SKIN_TONE_MEDIUM_DARK } from 'emoji-picker-react';
 import { Modal, ModalBody, FormGroup, Dropdown, DropdownMenu, DropdownToggle, } from 'reactstrap'
-import { auth, db } from "../../firebase/firesbaseConfig";
+import { db } from "../../firebase/firesbaseConfig";
 import ChatMessage from './ChatMessage';
 import SendLogo from '../../assets/imgs/send.png'
+import { Context } from '../../context/Context';
 
-function ChatRoom(props) {
+function ChatRoom() {
+  const { discordId } = useContext(Context);
   const [userClub, setUserClub] = useState({})
   const [userGames, setUserGames] = useState(0)
   const [messages, setMessages] = useState([])
@@ -28,9 +30,9 @@ function ChatRoom(props) {
   };
 
   useEffect(() => {
-    const readUserProfile = (user) => {
+    const readUserProfile = () => {
       try {
-        const q = query(collection(db, "clubUsers"), where("uid", "==", user.uid))
+        const q = query(collection(db, "clubUsers"), where("uid", "==", discordId))
         const unsub = onSnapshot(q, (doc) => {
           const userData = doc._snapshot.docChanges[0]
           if (userData) {
@@ -44,8 +46,8 @@ function ChatRoom(props) {
       }
     }
 
-    readUserProfile(props.user)
-  }, [props.user])
+    readUserProfile()
+  }, [discordId])
 
 
   useEffect(() => {
@@ -112,7 +114,7 @@ function ChatRoom(props) {
       const docRef = await addDoc(collection(db, "messages"), {
         text: formValue.trim(),
         createdAt: serverTimestamp(),
-        uid: props.user.uid,
+        uid: discordId,
         name: userClub.name.stringValue,
         level: userClub.level.integerValue,
         photo: userClub.photo.stringValue,
@@ -166,11 +168,11 @@ function ChatRoom(props) {
       <div className="chat_input_hold">
         <div className="chat_msgs">
           <ul className="messages">
-            {messages && messages.map(msg => <ChatMessage key={msg.id} {...msg} auth={auth} userClub={userClub} />)}
+            {messages && messages.map(msg => <ChatMessage key={msg.id} {...msg} auth={discordId} userClub={userClub} />)}
             <div ref={messagesEndRef}></div>
           </ul>
         </div>
-        {props.user && userGames > 0 ?
+        {discordId !== '-' && userGames > 0 ?
           <form onSubmit={sendMessage}>
             <div className="chat_input_contain">
               <button type="button" className="btn btn-transparent" onClick={openChatSettings}>

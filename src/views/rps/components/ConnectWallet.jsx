@@ -12,7 +12,6 @@ export default function ConnectWallet(props) {
     account1: '',
     amount1: 0,
   });
-  const [edit, setEdit] = useState(false);
   const [send, setSend] = useState(false);
   const [dropdown, setDropdown] = useState(false);
 
@@ -29,14 +28,6 @@ export default function ConnectWallet(props) {
 
   const toggleMenu = () => {
     setDropdown(!dropdown);
-  }
-
-  const editProfile = () => {
-    if (edit === false) {
-      setEdit(true);
-    } else {
-      setEdit(false);
-    }
   }
 
   const sendMatic = () => {
@@ -141,38 +132,11 @@ export default function ConnectWallet(props) {
                 </button>
               </DropdownItem>
               <DropdownItem divider />
-              <DropdownItem onClick={editProfile}>Edit profile</DropdownItem>
               <DropdownItem onClick={sendMatic}>Tip coins</DropdownItem>
               <DropdownItem onClick={manageWallets}>Accounts</DropdownItem>
               <DropdownItem onClick={props.disconnectWallet}>Disconnect</DropdownItem>
             </DropdownMenu>
           </Dropdown>
-          <Modal isOpen={edit} className="d-modal" size="sm">
-            <ModalBody>
-              <div className='d-flex justify-content-end'>
-                <button type="button" className="btn-close" aria-label="Close" onClick={editProfile}></button>
-              </div>
-              <h4 className="text-center">Profile</h4>
-              <FormGroup className="pt-3 text-center">
-                {props.userData.photo && <img className="rounded-circle me-2" src={props.userData.photo} width="105" height="105" alt="" />}
-              </FormGroup>
-              <FormGroup className="text-center">
-                <Label>{"User since " + props.register}</Label>
-              </FormGroup>
-              <FormGroup>
-                <Input
-                  name="displayName"
-                  placeholder="Username"
-                  className="d-modal-input"
-                  onChange={handleInputChange}
-                  type="text"
-                  defaultValue={props.userData.name} />
-              </FormGroup>
-            </ModalBody>
-            <ModalFooter>
-              <Button color="warning" type="submit" onClick={updateUserProfile}>Save</Button>
-            </ModalFooter>
-          </Modal>
           <Modal isOpen={send} className="d-modal" size="sm">
             <ModalBody>
               <div className='d-flex justify-content-end'>

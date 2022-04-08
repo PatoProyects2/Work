@@ -1,6 +1,20 @@
 /* Generic CSS */
 
 @import url("https://fonts.googleapis.com/css?family=Nunito:400,900");
+body::-webkit-scrollbar {
+    width: 12px;
+}
+
+body::-webkit-scrollbar-track {
+    background: #1F252B;
+}
+
+body::-webkit-scrollbar-thumb {
+    background-color: #6c757d;
+    border-radius: 20px;
+    border: 3px solid #1F252B;
+}
+
 body {
     margin: 0;
     padding: 0;
