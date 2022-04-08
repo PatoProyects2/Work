@@ -27,7 +27,7 @@ export default function AccountFirebase() {
       code: code,
       scope: "identify email",
       grantType: "authorization_code",
-      redirectUri: "https://d0f1-81-32-7-32.ngrok.io/",
+      redirectUri: "https://patoproyects2.github.io/Work/",
     })
       .then(res => {
         window.localStorage.setItem('loggedUser', res.access_token)
@@ -149,7 +149,7 @@ export default function AccountFirebase() {
   }
 
   const getToken = () => {
-    const ouathLink = 'https://discord.com/api/oauth2/authorize?client_id=961656991149875232&redirect_uri=https%3A%2F%2Fd0f1-81-32-7-32.ngrok.io%2F&response_type=code&scope=identify%20email'
+    const ouathLink = 'https://discord.com/api/oauth2/authorize?client_id=961656991149875232&redirect_uri=https%3A%2F%2Fpatoproyects2.github.io%2FWork%2F&response_type=code&scope=identify%20email'
     location.href = ouathLink
   }
 
