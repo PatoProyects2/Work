@@ -20,10 +20,10 @@ export default function Chart({ userData }) {
           let array = documents.map(document => {
             const data = document.doc.data.value.mapValue.fields
             const created = parseInt(data.createdAt.integerValue)
+            var date = new Date(created * 1000);
             let top = undefined
             if (data.uid.stringValue !== 'anonymous') {
               const profit = data.profit.doubleValue.toFixedNumber(2)
-              var date = new Date(created * 1000);
               var createdTime = date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes()
               top = {
                 profit: profit,
@@ -32,7 +32,10 @@ export default function Chart({ userData }) {
             }
             return top
           })
-          setData(array)
+          let newArray = array.filter(function (dato) {
+            return dato != undefined
+          });
+          setData(newArray)
         })
     }
     return () => {

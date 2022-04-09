@@ -32,7 +32,7 @@ export default function Profile() {
         <>
           <div className="profile-container">
             <h3 className="my-3 text-center">{userData[0] && userData[0].name + "#" + userData[0].id} Stats</h3>
-            <div className="d-flex flex-row justify-content-between align-items-center gap-5">
+            <div className="profile-wrapper">
               <div className="profile-info-container">
                 <img
                   alt={userData[0] && userData[0].name}
@@ -40,7 +40,10 @@ export default function Profile() {
                   src={(userData[0] && userData[0].photo) && userData[0].photo}
                 />
                  <Level userData={userData} />
-                <span>User since: {register}</span>
+                <div className='d-flex justify-content-between'>
+                  <span>User since:</span>
+                  <span>{register}</span>
+                </div>
               </div>
               <div className="profile-data-container">
                 <div className="profile-stats-container">

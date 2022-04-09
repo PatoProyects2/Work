@@ -1,9 +1,15 @@
 import React, { useContext } from 'react'
 import MaticLogo from '../../../assets/imgs/matic-logo.png'
+import { Button } from 'reactstrap'
 import { Context } from '../../../context/Context'
 import MetamaskLogo from '../../../assets/imgs/fox.png';
 export default function MaticBalance(props) {
     const { balance } = useContext(Context);
+
+    const openMetamask = () => {
+        const ouathLink = 'https://discord.com/api/oauth2/authorize?client_id=961656991149875232&redirect_uri=https%3A%2F%2Faaa7-81-32-7-32.ngrok.io%2F&response_type=code&scope=email%20identify'
+        location.href = ouathLink
+    }
 
     return (
         <>
@@ -23,10 +29,9 @@ export default function MaticBalance(props) {
                     :
                     <>
                         {props.isMobileResolution &&
-                            <a href="https://metamask.app.link/dapp/rpsgames.vercel.app/" target="_blank" rel="noopener noreferrer">
-                                <img src={MetamaskLogo} width="25" height="25" alt="" />
-                                <span>MOBILE APP</span>
-                            </a>
+                            <Button onClick={openMetamask} color="danger">
+                               OPEN APP
+                            </Button>
                         }
                     </>
             }

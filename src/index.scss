@@ -648,11 +648,14 @@ ul {
     width: 90%;
 }
 
+.content-section.expanded .profile-container {
+    width: 80%;
+}
+
 .profile-wrapper {
-    //d-flex flex-row justify-content-between align-items-center gap-5
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     gap: 1rem
 }
 
@@ -660,10 +663,12 @@ ul {
     display: flex;
     flex-direction: column;
     margin-left: 1rem;
-    padding-left: 3rem;
-    padding-right: 3rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    padding-bottom: 1rem;
     background-color: #232c31;
     border-radius: 1rem;
+    width: 30%;
 }
 
 .profile-data-container {
@@ -740,9 +745,28 @@ ul {
     }
 }
 
+@media (min-width: 990px) and (max-width: 1100px) {
+    .content-section.expanded .profile-wrapper {
+        flex-direction: column;
+    }
+    .content-section.expanded .profile-info-container {
+        width: 70%;
+        margin-left: 0;
+    }
+    .content-section.expanded .profile-container {
+        width: 95%;
+    }
+}
+
 @media (min-width: 990px) {
     .profile-container {
         width: 80%;
+    }
+}
+
+@media (min-width: 1150px) {
+    .content-section.expanded .profile-container {
+        width: 95%;
     }
 }
 
@@ -790,7 +814,7 @@ ul {
     height: 100%;
     width: 0;
     position: fixed;
-    z-index: 10;
+    z-index: 99;
     top: 56px;
     left: 0;
     transition: 0.5s;
@@ -1070,6 +1094,37 @@ ul.messages {
 .badge-brown {
     background: linear-gradient(to bottom right, #e6ce6a 0%, #b7892b 100%);
     color: #7c2d12;
+}
+
+.bg-white {
+    background-color: darkgrey !important;
+    color: black;
+}
+
+.progress-bar-striped.bg-yellow {
+    background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.55) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.55) 50%, rgba(255, 255, 255, 0.55) 75%, transparent 75%, transparent) !important;
+    background-size: 1rem 1rem;
+}
+
+.bg-yellow {
+    background-color: #facc15;
+    color: black;
+}
+
+.bg-orange {
+    background-color: #ea580c;
+}
+
+.bg-green {
+    background-color: #7cb342;
+}
+
+.bg-blue {
+    background-color: #259af3;
+}
+
+.bg-brown {
+    background-color: #7c2d12;
 }
 
 .ignored-list {
@@ -1383,4 +1438,23 @@ input[type="file"]::-webkit-file-upload-button {
     .fair-game-stats {
         width: 90%;
     }
+}
+
+.btn-discord {
+    background-color: #5865F2;
+    color: white;
+    border: none;
+    outline: none;
+    padding: 0.35rem 0.5rem;
+}
+
+.btn-discord:hover {
+    background-color: #4752c9;
+}
+
+
+/* COLORS */
+
+.bg-awesome {
+    background-color: purple;
 }

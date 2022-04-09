@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { doc, setDoc, getDoc } from "firebase/firestore";
-import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Button } from 'reactstrap'
+import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap'
 import { useNavigate } from 'react-router-dom'
 import DiscordOauth2 from "discord-oauth2"
 import { useSearchParams } from 'react-router-dom'
@@ -9,6 +9,7 @@ import { Context } from '../../context/Context';
 export default function AccountFirebase() {
   const [baseData, setBaseData] = useState(false);
   const [accessToken, setAccessToken] = useState(false);
+  const [url, setUrl] = useState('');
   const [dropdown, setDropdown] = useState(false);
   const { setDiscordId } = useContext(Context);
   let [searchParams, setSearchParams] = useSearchParams();
@@ -21,124 +22,127 @@ export default function AccountFirebase() {
   }
 
   useEffect(() => {
-    const getAccessToken = async () => {
+    setUrl(code)
+  }, [])
+
+  useEffect(() => {
+    getAccessToken()
+    return () => {
+      setAccessToken(false)
+    }
+  }, [url])
+
+  const getAccessToken = async () => {
+    try {
+      let res = await oauth.tokenRequest({
+        clientId: process.env.REACT_APP_DISCORD_CLIENTID,
+        clientSecret: process.env.REACT_APP_DISCORD_CLIENTSECRET,
+        code: url,
+        scope: "identify email",
+        grantType: "authorization_code",
+        redirectUri: "https://patoproyects2.github.io/Work/",
+      })
+      if (res) {
+        window.localStorage.setItem('loggedUser', res.access_token)
+        setAccessToken(res.access_token)
+      }
+    } catch (e) {
+
+    }
+  }
+
+  useEffect(() => {
+    readUserData()
+    return () => setBaseData(false)
+  }, [accessToken])
+
+  const readUserData = async () => {
+    let token = window.localStorage.getItem('loggedUser')
+    if (token) {
       try {
-        let res = await oauth.tokenRequest({
-          clientId: process.env.REACT_APP_DISCORD_CLIENTID,
-          clientSecret: process.env.REACT_APP_DISCORD_CLIENTSECRET,
-          code: code,
-          scope: "identify email",
-          grantType: "authorization_code",
-          redirectUri: "https://20a4-81-32-7-32.ngrok.io/",
-        })
-        if (res) {
-          window.localStorage.setItem('loggedUser', res.access_token)
-          setAccessToken(res.access_token)
+        const userData = await oauth.getUser(token)
+        if (userData) {
+          const document = await getDoc(doc(db, "clubUsers", userData.id))
+          const data = document.data()
+          if (data) {
+            setBaseData(data)
+          } else {
+            var unixTimeStamp = Math.round((new Date()).getTime() / 1000);
+            let arrayData = undefined
+            if (userData.avatar) {
+              arrayData = {
+                account: '',
+                uid: userData.id,
+                register: unixTimeStamp,
+                name: userData.username,
+                id: userData.discriminator,
+                photo: `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}`,
+                banner: {
+                  file: userData.banner,
+                  color: userData.banner_color
+                },
+                email: userData.email,
+                dsVerified: userData.verified,
+                level: 1,
+                games: ['RPS'],
+                rps: {
+                  rock: 0,
+                  paper: 0,
+                  scissors: 0,
+                  dayWinStreak: 0,
+                  winStreakTime: 0,
+                  gameWon: 0,
+                  gameLoss: 0,
+                  amountWon: 0,
+                  amountLoss: 0,
+                  totalGames: 0,
+                  totalAmount: 0,
+                  lastGameBlock: 0,
+                }
+              }
+            } else {
+              arrayData = {
+                account: '',
+                uid: userData.id,
+                register: unixTimeStamp,
+                name: userData.username,
+                id: userData.discriminator,
+                photo: 'https://firebasestorage.googleapis.com/v0/b/games-club-dce4d.appspot.com/o/ClubLogo.png?alt=media&token=5dd64484-c99f-4ce9-a06b-0a3ee112b37b',
+                banner: {
+                  file: userData.banner,
+                  color: userData.banner_color
+                },
+                email: userData.email,
+                dsVerified: userData.verified,
+                level: 1,
+                games: ['RPS'],
+                rps: {
+                  rock: 0,
+                  paper: 0,
+                  scissors: 0,
+                  dayWinStreak: 0,
+                  winStreakTime: 0,
+                  gameWon: 0,
+                  gameLoss: 0,
+                  amountWon: 0,
+                  amountLoss: 0,
+                  totalGames: 0,
+                  totalAmount: 0,
+                  lastGameBlock: 0,
+                }
+              }
+            }
+            if (arrayData) {
+              setDoc(doc(db, "clubUsers", userData.id), arrayData)
+              setBaseData(arrayData)
+            }
+          }
         }
       } catch (e) {
 
       }
     }
-    getAccessToken()
-    return () => {
-      setAccessToken(false);
-    }
-  }, [code])
-
-
-  useEffect(() => {
-    const readUserData = async () => {
-      let token = window.localStorage.getItem('loggedUser')
-      if (token) {
-        try {
-          const userData = await oauth.getUser(token)
-          if (userData) {
-            const document = await getDoc(doc(db, "clubUsers", userData.id))
-            const data = document.data()
-            if (data) {
-              setBaseData(data)
-            } else {
-              var unixTimeStamp = Math.round((new Date()).getTime() / 1000);
-              let arrayData = undefined
-              if (userData.avatar) {
-                arrayData = {
-                  account: '',
-                  uid: userData.id,
-                  register: unixTimeStamp,
-                  name: userData.username,
-                  id: userData.discriminator,
-                  photo: `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}`,
-                  banner: {
-                    file: userData.banner,
-                    color: userData.banner_color
-                  },
-                  email: userData.email,
-                  dsVerified: userData.verified,
-                  level: 1,
-                  games: ['RPS'],
-                  rps: {
-                    rock: 0,
-                    paper: 0,
-                    scissors: 0,
-                    dayWinStreak: 0,
-                    winStreakTime: 0,
-                    gameWon: 0,
-                    gameLoss: 0,
-                    amountWon: 0,
-                    amountLoss: 0,
-                    totalGames: 0,
-                    totalAmount: 0,
-                    lastGameBlock: 0,
-                  }
-                }
-              } else {
-                arrayData = {
-                  account: '',
-                  uid: userData.id,
-                  register: unixTimeStamp,
-                  name: userData.username,
-                  id: userData.discriminator,
-                  photo: 'https://firebasestorage.googleapis.com/v0/b/games-club-dce4d.appspot.com/o/ClubLogo.png?alt=media&token=5dd64484-c99f-4ce9-a06b-0a3ee112b37b',
-                  banner: {
-                    file: userData.banner,
-                    color: userData.banner_color
-                  },
-                  email: userData.email,
-                  dsVerified: userData.verified,
-                  level: 1,
-                  games: ['RPS'],
-                  rps: {
-                    rock: 0,
-                    paper: 0,
-                    scissors: 0,
-                    dayWinStreak: 0,
-                    winStreakTime: 0,
-                    gameWon: 0,
-                    gameLoss: 0,
-                    amountWon: 0,
-                    amountLoss: 0,
-                    totalGames: 0,
-                    totalAmount: 0,
-                    lastGameBlock: 0,
-                  }
-                }
-              }
-              if (arrayData) {
-                setDoc(doc(db, "clubUsers", userData.id), arrayData)
-                setBaseData(arrayData)
-              }
-            }
-          }
-        } catch (e) {
-
-        }
-      }
-    }
-    readUserData()
-    return () => {
-      setBaseData(false);
-    }
-  }, [accessToken])
+  }
 
   useEffect(() => {
     if (baseData) {
@@ -163,7 +167,7 @@ export default function AccountFirebase() {
   }
 
   const getToken = () => {
-    const ouathLink = 'https://discord.com/api/oauth2/authorize?client_id=961656991149875232&redirect_uri=https%3A%2F%2F20a4-81-32-7-32.ngrok.io%2F&response_type=code&scope=identify%20email'
+    const ouathLink = 'https://discord.com/api/oauth2/authorize?client_id=961656991149875232&redirect_uri=https%3A%2F%2Fpatoproyects2.github.io%2FWork%2F&response_type=code&scope=identify%20email'
     location.href = ouathLink
   }
 
@@ -175,30 +179,24 @@ export default function AccountFirebase() {
   return (
     <>
       {baseData ?
-        <>
-          <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="md" className="dd-profile">
-            <DropdownToggle color='transparent' className='dd-toggle' caret>
-              <span className="d-inline-flex">
-                <div className={xpClass(baseData.level)}>
-                  <span className="circle">
-                    <span>{baseData.level}</span>
-                  </span>
-                </div>
-                {baseData.name + "#" + baseData.id}
-              </span>
-            </DropdownToggle>
-            <DropdownMenu >
-              <DropdownItem onClick={() => navigate('/profile')}><i className='fa-solid fa-user me-3'></i>My Profile</DropdownItem>
-              <DropdownItem onClick={removeToken}><i className='fa-solid fa-right-from-bracket me-3 text-danger'></i>Logout</DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
-        </>
+        <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="md" className="dd-profile">
+          <DropdownToggle color='transparent' className='dd-toggle' caret>
+            <div className="d-inline-flex">
+              <div className={xpClass(baseData.level)}>
+                <span className="circle">
+                  <span>{baseData.level}</span>
+                </span>
+              </div>
+              <span className="ms-2 fw-bold">{baseData.name}</span><span>#{baseData.id}</span>
+            </div>
+          </DropdownToggle>
+          <DropdownMenu >
+            <DropdownItem onClick={() => navigate('/profile')}><i className='fa-solid fa-user me-3'></i>My Profile</DropdownItem>
+            <DropdownItem onClick={removeToken}><i className='fa-solid fa-right-from-bracket me-3 text-danger'></i>Logout</DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
         :
-        <>
-          <Button onClick={getToken}>
-            CONNECT DISCORD
-          </Button>
-        </>
+        <button onClick={getToken} className="btn-discord" title="Login with Discord">LOGIN with <i className='fa-brands fa-discord'></i></button>
       }
     </>
   );
