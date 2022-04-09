@@ -1,6 +1,5 @@
 import React from 'react'
 import { Table } from 'reactstrap'
-
 export default function Stats({ userData }) {
   return (
     <>

@@ -1,7 +1,5 @@
 import React, { useState } from 'react'
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Button, Modal, ModalBody, ModalFooter, FormGroup, Input, Label } from 'reactstrap'
-import { doc, updateDoc } from "firebase/firestore";
-import { db } from '../../../firebase/firesbaseConfig'
 
 export default function ConnectWallet(props) {
   const [userInfo, setUserInfo] = useState({
@@ -35,23 +33,6 @@ export default function ConnectWallet(props) {
       setSend(true);
     } else {
       setSend(false);
-    }
-  }
-
-  const updateUserProfile = () => {
-    if (userInfo.displayName.length >= 4 && userInfo.displayName.length <= 12) {
-      props.toast.promise(
-        updateDoc(doc(db, "clubUsers", props.account), {
-          name: userInfo.displayName
-        }),
-        {
-          loading: 'Updating...',
-          success: <b>Profile updated</b>,
-          error: <b>Profile not updated</b>,
-        }
-      ).then(() => setEdit(false))
-    } else {
-      props.toast.error("The name must be between 4 and 12 characters")
     }
   }
 

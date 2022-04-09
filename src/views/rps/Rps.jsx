@@ -97,234 +97,236 @@ export default function Rps() {
   const loadUserGame = async () => {
     mixpanel.init('07cdb36cf270a17ef7095ffc2aacb29d', { debug: false });
     mixpanel.track('Sign up');
-    const document = await getDoc(doc(db, "clubUsers", discordId))
-    const data = document.data()
-    if (data) {
-      setUserData(data)
-      if (data.account === '' && account !== '0x000000000000000000000000000000000000dEaD') {
-        updateDoc(doc(db, "clubUsers", discordId), {
-          account: account
-        }).then(window.location.reload())
-      }
-      if (data.rps.totalGames > 9 && data.rps.totalGames < 20 && data.level < 2) {
-        updateDoc(doc(db, "clubUsers", discordId), {
-          level: 2
-        })
-        toast('You reach level 2, congrats!', {
-          icon: '🆙',
-        });
-      }
-      if (data.rps.totalGames > 19 && data.rps.totalGames < 30 && data.level < 3) {
-        updateDoc(doc(db, "clubUsers", discordId), {
-          level: 3
-        })
-        toast('You reach level 3, congrats!', {
-          icon: '🆙',
-        });
-      }
-      if (data.rps.totalGames > 29 && data.rps.totalGames < 40 && data.level < 4) {
-        updateDoc(doc(db, "clubUsers", discordId), {
-          level: 4
-        })
-        toast('You reach level 4, congrats!', {
-          icon: '🆙',
-        });
-      }
-      if (data.rps.totalGames > 39 && data.rps.totalGames < 50 && data.level < 5) {
-        updateDoc(doc(db, "clubUsers", discordId), {
-          level: 5
-        })
-        toast('You reach level 5, congrats!', {
-          icon: '🆙',
-        });
-      }
-      if (data.rps.totalGames > 49 && data.rps.totalGames < 65 && data.level < 6) {
-        updateDoc(doc(db, "clubUsers", discordId), {
-          level: 6
-        })
-        toast('You reach level 6, congrats!', {
-          icon: '🆙',
-        });
-      }
-      if (data.rps.totalGames > 64 && data.rps.totalGames < 80 && data.level < 7) {
-        updateDoc(doc(db, "clubUsers", discordId), {
-          level: 7
-        })
-        toast('You reach level 7, congrats!', {
-          icon: '🆙',
-        });
-      }
-      if (data.rps.totalGames > 79 && data.rps.totalGames < 95 && data.level < 8) {
-        updateDoc(doc(db, "clubUsers", discordId), {
-          level: 8
-        })
-        toast('You reach level 8, congrats!', {
-          icon: '🆙',
-        });
-      }
-      if (data.rps.totalGames > 94 && data.rps.totalGames < 110 && data.level < 9) {
-        updateDoc(doc(db, "clubUsers", discordId), {
-          level: 9
-        })
-        toast('You reach level 9, congrats!', {
-          icon: '🆙',
-        });
-      }
-      if (data.rps.totalGames > 109 && data.rps.totalGames < 125 && data.level < 10) {
-        updateDoc(doc(db, "clubUsers", discordId), {
-          level: 10
-        })
-        toast('You reach level 10, congrats!', {
-          icon: '🆙',
-        });
-      }
-      if (data.rps.totalGames > 124 && data.rps.totalGames < 150 && data.level < 11) {
-        updateDoc(doc(db, "clubUsers", discordId), {
-          level: 11
-        })
-        toast('You reach level 11, congrats!', {
-          icon: '🆙',
-        });
-      }
-      if (data.rps.totalGames > 149 && data.rps.totalGames < 200 && data.level < 12) {
-        updateDoc(doc(db, "clubUsers", discordId), {
-          level: 12
-        })
-        toast('You reach level 12, congrats!', {
-          icon: '🆙',
-        });
-      }
-      if (data.rps.totalGames > 199 && data.rps.totalGames < 250 && data.level < 13) {
-        updateDoc(doc(db, "clubUsers", discordId), {
-          level: 13
-        })
-        toast('You reach level 13, congrats!', {
-          icon: '🆙',
-        });
-      }
-      if (data.rps.totalGames > 249 && data.rps.totalGames < 300 && data.level < 14) {
-        updateDoc(doc(db, "clubUsers", discordId), {
-          level: 14
-        })
-        toast('You reach level 14, congrats!', {
-          icon: '🆙',
-        });
-      }
-      if (data.rps.totalGames > 299 && data.rps.totalGames < 350 && data.level < 15) {
-        updateDoc(doc(db, "clubUsers", discordId), {
-          level: 15
-        })
-        toast('You reach level 15, congrats!', {
-          icon: '🆙',
-        });
-      }
-      if (data.rps.totalGames > 349 && data.rps.totalGames < 390 && data.level < 16) {
-        updateDoc(doc(db, "clubUsers", discordId), {
-          level: 16
-        })
-        toast('You reach level 16, congrats!', {
-          icon: '🆙',
-        });
-      }
-      if (data.rps.totalGames > 389 && data.rps.totalGames < 430 && data.level < 17) {
-        updateDoc(doc(db, "clubUsers", discordId), {
-          level: 17
-        })
-        toast('You reach level 17, congrats!', {
-          icon: '🆙',
-        });
-      }
-      if (data.rps.totalGames > 429 && data.rps.totalGames < 470 && data.level < 18) {
-        updateDoc(doc(db, "clubUsers", discordId), {
-          level: 18
-        })
-        toast('You reach level 18, congrats!', {
-          icon: '🆙',
-        });
-      }
-      if (data.rps.totalGames > 469 && data.rps.totalGames < 510 && data.level < 19) {
-        updateDoc(doc(db, "clubUsers", discordId), {
-          level: 19
-        })
-        toast('You reach level 19, congrats!', {
-          icon: '🆙',
-        });
-      }
-      if (data.rps.totalGames > 509 && data.rps.totalGames < 550 && data.level < 20) {
-        updateDoc(doc(db, "clubUsers", discordId), {
-          level: 20
-        })
-        toast('You reach level 20, congrats!', {
-          icon: '🆙',
-        });
-      }
-      if (data.rps.totalGames > 549 && data.rps.totalGames < 600 && data.level < 21) {
-        updateDoc(doc(db, "clubUsers", discordId), {
-          level: 21
-        })
-        toast('You reach level 21, congrats!', {
-          icon: '🆙',
-        });
-      }
-      if (data.rps.totalGames > 599 && data.rps.totalGames < 650 && data.level < 22) {
-        updateDoc(doc(db, "clubUsers", discordId), {
-          level: 22
-        })
-        toast('You reach level 22, congrats!', {
-          icon: '🆙',
-        });
-      }
-      if (data.rps.totalGames > 649 && data.rps.totalGames < 700 && data.level < 23) {
-        updateDoc(doc(db, "clubUsers", discordId), {
-          level: 23
-        })
-        toast('You reach level 23, congrats!', {
-          icon: '🆙',
-        });
-      }
-      if (data.rps.totalGames > 699 && data.rps.totalGames < 750 && data.level < 24) {
-        updateDoc(doc(db, "clubUsers", discordId), {
-          level: 24
-        })
-        toast('You reach level 24, congrats!', {
-          icon: '🆙',
-        });
-      }
-      if (data.rps.totalGames > 749 && data.rps.totalGames < 800 && data.level < 25) {
-        updateDoc(doc(db, "clubUsers", discordId), {
-          level: 25
-        })
-        toast('You reach level 25, congrats!', {
-          icon: '🆙',
-        });
-      }
-    } else {
-      const anonDoc = await getDoc(doc(db, "anonUsers", account))
-      const anonData = anonDoc.data()
-      if (!anonData) {
-        if (account !== '0x000000000000000000000000000000000000dEaD') {
-          const arrayData = {
-            uid: 'anonymous',
-            account: account,
-            name: 'RPS player',
-            photo: 'https://firebasestorage.googleapis.com/v0/b/games-club-dce4d.appspot.com/o/ClubLogo.png?alt=media&token=5dd64484-c99f-4ce9-a06b-0a3ee112b37b',
-            level: 1,
-            rps: {
-              rock: 0,
-              paper: 0,
-              scissors: 0,
-              dayWinStreak: 0,
-              winStreakTime: 0,
-              gameWon: 0,
-              gameLoss: 0,
-              amountWon: 0,
-              amountLoss: 0,
-              totalGames: 0,
-              totalAmount: 0,
-              lastGameBlock: 0,
+    if (discordId !== '') {
+      const document = await getDoc(doc(db, "clubUsers", discordId))
+      const data = document.data()
+      if (data) {
+        setUserData(data)
+        if (data.account === '' && account !== '0x000000000000000000000000000000000000dEaD') {
+          updateDoc(doc(db, "clubUsers", discordId), {
+            account: account
+          }).then(window.location.reload())
+        }
+        if (data.rps.totalGames > 9 && data.rps.totalGames < 20 && data.level < 2) {
+          updateDoc(doc(db, "clubUsers", discordId), {
+            level: 2
+          })
+          toast('You reach level 2, congrats!', {
+            icon: '🆙',
+          });
+        }
+        if (data.rps.totalGames > 19 && data.rps.totalGames < 30 && data.level < 3) {
+          updateDoc(doc(db, "clubUsers", discordId), {
+            level: 3
+          })
+          toast('You reach level 3, congrats!', {
+            icon: '🆙',
+          });
+        }
+        if (data.rps.totalGames > 29 && data.rps.totalGames < 40 && data.level < 4) {
+          updateDoc(doc(db, "clubUsers", discordId), {
+            level: 4
+          })
+          toast('You reach level 4, congrats!', {
+            icon: '🆙',
+          });
+        }
+        if (data.rps.totalGames > 39 && data.rps.totalGames < 50 && data.level < 5) {
+          updateDoc(doc(db, "clubUsers", discordId), {
+            level: 5
+          })
+          toast('You reach level 5, congrats!', {
+            icon: '🆙',
+          });
+        }
+        if (data.rps.totalGames > 49 && data.rps.totalGames < 65 && data.level < 6) {
+          updateDoc(doc(db, "clubUsers", discordId), {
+            level: 6
+          })
+          toast('You reach level 6, congrats!', {
+            icon: '🆙',
+          });
+        }
+        if (data.rps.totalGames > 64 && data.rps.totalGames < 80 && data.level < 7) {
+          updateDoc(doc(db, "clubUsers", discordId), {
+            level: 7
+          })
+          toast('You reach level 7, congrats!', {
+            icon: '🆙',
+          });
+        }
+        if (data.rps.totalGames > 79 && data.rps.totalGames < 95 && data.level < 8) {
+          updateDoc(doc(db, "clubUsers", discordId), {
+            level: 8
+          })
+          toast('You reach level 8, congrats!', {
+            icon: '🆙',
+          });
+        }
+        if (data.rps.totalGames > 94 && data.rps.totalGames < 110 && data.level < 9) {
+          updateDoc(doc(db, "clubUsers", discordId), {
+            level: 9
+          })
+          toast('You reach level 9, congrats!', {
+            icon: '🆙',
+          });
+        }
+        if (data.rps.totalGames > 109 && data.rps.totalGames < 125 && data.level < 10) {
+          updateDoc(doc(db, "clubUsers", discordId), {
+            level: 10
+          })
+          toast('You reach level 10, congrats!', {
+            icon: '🆙',
+          });
+        }
+        if (data.rps.totalGames > 124 && data.rps.totalGames < 150 && data.level < 11) {
+          updateDoc(doc(db, "clubUsers", discordId), {
+            level: 11
+          })
+          toast('You reach level 11, congrats!', {
+            icon: '🆙',
+          });
+        }
+        if (data.rps.totalGames > 149 && data.rps.totalGames < 200 && data.level < 12) {
+          updateDoc(doc(db, "clubUsers", discordId), {
+            level: 12
+          })
+          toast('You reach level 12, congrats!', {
+            icon: '🆙',
+          });
+        }
+        if (data.rps.totalGames > 199 && data.rps.totalGames < 250 && data.level < 13) {
+          updateDoc(doc(db, "clubUsers", discordId), {
+            level: 13
+          })
+          toast('You reach level 13, congrats!', {
+            icon: '🆙',
+          });
+        }
+        if (data.rps.totalGames > 249 && data.rps.totalGames < 300 && data.level < 14) {
+          updateDoc(doc(db, "clubUsers", discordId), {
+            level: 14
+          })
+          toast('You reach level 14, congrats!', {
+            icon: '🆙',
+          });
+        }
+        if (data.rps.totalGames > 299 && data.rps.totalGames < 350 && data.level < 15) {
+          updateDoc(doc(db, "clubUsers", discordId), {
+            level: 15
+          })
+          toast('You reach level 15, congrats!', {
+            icon: '🆙',
+          });
+        }
+        if (data.rps.totalGames > 349 && data.rps.totalGames < 390 && data.level < 16) {
+          updateDoc(doc(db, "clubUsers", discordId), {
+            level: 16
+          })
+          toast('You reach level 16, congrats!', {
+            icon: '🆙',
+          });
+        }
+        if (data.rps.totalGames > 389 && data.rps.totalGames < 430 && data.level < 17) {
+          updateDoc(doc(db, "clubUsers", discordId), {
+            level: 17
+          })
+          toast('You reach level 17, congrats!', {
+            icon: '🆙',
+          });
+        }
+        if (data.rps.totalGames > 429 && data.rps.totalGames < 470 && data.level < 18) {
+          updateDoc(doc(db, "clubUsers", discordId), {
+            level: 18
+          })
+          toast('You reach level 18, congrats!', {
+            icon: '🆙',
+          });
+        }
+        if (data.rps.totalGames > 469 && data.rps.totalGames < 510 && data.level < 19) {
+          updateDoc(doc(db, "clubUsers", discordId), {
+            level: 19
+          })
+          toast('You reach level 19, congrats!', {
+            icon: '🆙',
+          });
+        }
+        if (data.rps.totalGames > 509 && data.rps.totalGames < 550 && data.level < 20) {
+          updateDoc(doc(db, "clubUsers", discordId), {
+            level: 20
+          })
+          toast('You reach level 20, congrats!', {
+            icon: '🆙',
+          });
+        }
+        if (data.rps.totalGames > 549 && data.rps.totalGames < 600 && data.level < 21) {
+          updateDoc(doc(db, "clubUsers", discordId), {
+            level: 21
+          })
+          toast('You reach level 21, congrats!', {
+            icon: '🆙',
+          });
+        }
+        if (data.rps.totalGames > 599 && data.rps.totalGames < 650 && data.level < 22) {
+          updateDoc(doc(db, "clubUsers", discordId), {
+            level: 22
+          })
+          toast('You reach level 22, congrats!', {
+            icon: '🆙',
+          });
+        }
+        if (data.rps.totalGames > 649 && data.rps.totalGames < 700 && data.level < 23) {
+          updateDoc(doc(db, "clubUsers", discordId), {
+            level: 23
+          })
+          toast('You reach level 23, congrats!', {
+            icon: '🆙',
+          });
+        }
+        if (data.rps.totalGames > 699 && data.rps.totalGames < 750 && data.level < 24) {
+          updateDoc(doc(db, "clubUsers", discordId), {
+            level: 24
+          })
+          toast('You reach level 24, congrats!', {
+            icon: '🆙',
+          });
+        }
+        if (data.rps.totalGames > 749 && data.level < 25) {
+          updateDoc(doc(db, "clubUsers", discordId), {
+            level: 25
+          })
+          toast('You reach level 25, congrats!', {
+            icon: '🆙',
+          });
+        }
+      } else {
+        const anonDoc = await getDoc(doc(db, "anonUsers", account))
+        const anonData = anonDoc.data()
+        if (!anonData) {
+          if (account !== '0x000000000000000000000000000000000000dEaD') {
+            const arrayData = {
+              uid: 'anonymous',
+              account: account,
+              name: 'RPS player',
+              photo: 'https://firebasestorage.googleapis.com/v0/b/games-club-dce4d.appspot.com/o/ClubLogo.png?alt=media&token=5dd64484-c99f-4ce9-a06b-0a3ee112b37b',
+              level: 1,
+              rps: {
+                rock: 0,
+                paper: 0,
+                scissors: 0,
+                dayWinStreak: 0,
+                winStreakTime: 0,
+                gameWon: 0,
+                gameLoss: 0,
+                amountWon: 0,
+                amountLoss: 0,
+                totalGames: 0,
+                totalAmount: 0,
+                lastGameBlock: 0,
+              }
             }
+            setDoc(doc(db, "anonUsers", account), arrayData).then(window.location.reload())
           }
-          setDoc(doc(db, "anonUsers", account), arrayData).then(window.location.reload())
         }
       }
     }

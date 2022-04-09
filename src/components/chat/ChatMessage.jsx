@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Modal, ModalBody, FormGroup, Table, Button, ButtonGroup } from 'reactstrap'
+import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Modal, ModalBody } from 'reactstrap'
 import { query, where, collection, limit, onSnapshot, updateDoc, arrayUnion, doc } from "firebase/firestore";
 import { db } from '../../firebase/firesbaseConfig'
 import Chart from '../../views/main/components/profile/Chart'
-function ChatMessage({ text, uid, photo, name, level, auth, userClub }) {
+function ChatMessage({ text, uid, photo, name, level, auth, id, userClub }) {
     const [userData, setUserData] = useState({});
     const [dropdown, setDropdown] = useState(false);
     const [stats, setStats] = useState(false);
@@ -93,15 +93,14 @@ function ChatMessage({ text, uid, photo, name, level, auth, userClub }) {
                         <div className='d-flex justify-content-end'>
                             <button type="button" className="btn-close" aria-label="Close" onClick={OpenStatModal}></button>
                         </div>
-                        <span className="ms-3">{name} Stats</span>
                         <div className="user-stats-info">
                             <div className="user-stats-profile">
                                 <img className="rounded-circle user-stats-image" width="100" height="100" src={photo} alt={name} />
                                 <div className="user-stats-lvl">
-                                    <span className="chat_user_name">{name}</span>
                                     <div className={xpClass()}>
                                         <div className="circle"><span>{level}</span></div>
                                     </div>
+                                    <span className="chat_user_name">{name + "#" + id}</span>
                                 </div>
                             </div>
                             <div className="user-daily-stats">

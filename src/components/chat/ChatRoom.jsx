@@ -118,6 +118,7 @@ function ChatRoom() {
         name: userClub.name.stringValue,
         level: userClub.level.integerValue,
         photo: userClub.photo.stringValue,
+        id: userClub.id.stringValue
       })
     }
     setFormValue('')
@@ -172,7 +173,7 @@ function ChatRoom() {
             <div ref={messagesEndRef}></div>
           </ul>
         </div>
-        {discordId !== '-' && userGames > 0 ?
+        {discordId !== '' && userGames > 0 ?
           <form onSubmit={sendMessage}>
             <div className="chat_input_contain">
               <button type="button" className="btn btn-transparent" onClick={openChatSettings}>

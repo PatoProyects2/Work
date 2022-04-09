@@ -4,11 +4,10 @@ import ChatRoom from '../../components/chat/ChatRoom';
 import Footer from '../footer/Footer'
 import { Navbar } from '../ui/navbar/Navbar';
 import { Context } from '../../context/Context';
-
 export function MainLayout() {
   const [showChat, setShowChat] = useState(false);
-  const [balance, setBalance] = useState('-');
-  const [discordId, setDiscordId] = useState('-');
+  const [balance, setBalance] = useState('');
+  const [discordId, setDiscordId] = useState('');
 
   return (
     <Context.Provider value={{ balance, setBalance, discordId, setDiscordId }}>

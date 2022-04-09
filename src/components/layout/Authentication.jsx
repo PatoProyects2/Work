@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { doc, setDoc, getDoc } from "firebase/firestore";
-import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Button, Modal, ModalBody, ModalFooter, FormGroup, Input } from 'reactstrap'
+import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Button } from 'reactstrap'
 import { useNavigate } from 'react-router-dom'
 import DiscordOauth2 from "discord-oauth2"
 import { useSearchParams } from 'react-router-dom'
 import { db } from "../../firebase/firesbaseConfig"
 import { Context } from '../../context/Context';
 export default function AccountFirebase() {
-  const [baseData, setBaseData] = useState(undefined);
-  const [accessToken, setAccessToken] = useState(undefined);
+  const [baseData, setBaseData] = useState(false);
+  const [accessToken, setAccessToken] = useState(false);
   const [dropdown, setDropdown] = useState(false);
   const { setDiscordId } = useContext(Context);
   let [searchParams, setSearchParams] = useSearchParams();
@@ -21,20 +21,30 @@ export default function AccountFirebase() {
   }
 
   useEffect(() => {
-    oauth.tokenRequest({
-      clientId: process.env.REACT_APP_DISCORD_CLIENTID,
-      clientSecret: process.env.REACT_APP_DISCORD_CLIENTSECRET,
-      code: code,
-      scope: "identify email",
-      grantType: "authorization_code",
-      redirectUri: "https://patoproyects2.github.io/Work/",
-    })
-      .then(res => {
-        window.localStorage.setItem('loggedUser', res.access_token)
-        setAccessToken(res.access_token)
-      })
-      .catch(err => console.log('Connected!'))
+    const getAccessToken = async () => {
+      try {
+        let res = await oauth.tokenRequest({
+          clientId: process.env.REACT_APP_DISCORD_CLIENTID,
+          clientSecret: process.env.REACT_APP_DISCORD_CLIENTSECRET,
+          code: code,
+          scope: "identify email",
+          grantType: "authorization_code",
+          redirectUri: "https://20a4-81-32-7-32.ngrok.io/",
+        })
+        if (res) {
+          window.localStorage.setItem('loggedUser', res.access_token)
+          setAccessToken(res.access_token)
+        }
+      } catch (e) {
+
+      }
+    }
+    getAccessToken()
+    return () => {
+      setAccessToken(false);
+    }
   }, [code])
+
 
   useEffect(() => {
     const readUserData = async () => {
@@ -43,7 +53,6 @@ export default function AccountFirebase() {
         try {
           const userData = await oauth.getUser(token)
           if (userData) {
-            setDiscordId(userData.id)
             const document = await getDoc(doc(db, "clubUsers", userData.id))
             const data = document.data()
             if (data) {
@@ -58,7 +67,7 @@ export default function AccountFirebase() {
                   register: unixTimeStamp,
                   name: userData.username,
                   id: userData.discriminator,
-                  photo: userData.avatar,
+                  photo: `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}`,
                   banner: {
                     file: userData.banner,
                     color: userData.banner_color
@@ -127,10 +136,15 @@ export default function AccountFirebase() {
     }
     readUserData()
     return () => {
-      setDiscordId('-')
-      setBaseData(undefined)
+      setBaseData(false);
     }
   }, [accessToken])
+
+  useEffect(() => {
+    if (baseData) {
+      setDiscordId(baseData.uid)
+    }
+  }, [baseData])
 
   const xpClass = (level) => {
     if (level <= 4) {
@@ -149,7 +163,7 @@ export default function AccountFirebase() {
   }
 
   const getToken = () => {
-    const ouathLink = 'https://discord.com/api/oauth2/authorize?client_id=961656991149875232&redirect_uri=https%3A%2F%2Fpatoproyects2.github.io%2FWork%2F&response_type=code&scope=identify%20email'
+    const ouathLink = 'https://discord.com/api/oauth2/authorize?client_id=961656991149875232&redirect_uri=https%3A%2F%2F20a4-81-32-7-32.ngrok.io%2F&response_type=code&scope=identify%20email'
     location.href = ouathLink
   }
 
@@ -170,7 +184,7 @@ export default function AccountFirebase() {
                     <span>{baseData.level}</span>
                   </span>
                 </div>
-                {baseData.name}
+                {baseData.name + "#" + baseData.id}
               </span>
             </DropdownToggle>
             <DropdownMenu >

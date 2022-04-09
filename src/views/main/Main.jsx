@@ -36,7 +36,7 @@ export default function Main() {
     const readLeaderboard = async () => {
       var unixTimeStamp = Math.round((new Date()).getTime() / 1000);
       
-      if (discordId !== '-') {
+      if (discordId !== '') {
         setDoc(doc(db, "status", discordId), { state: 'online', time: unixTimeStamp })
       }
 
