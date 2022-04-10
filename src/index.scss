@@ -168,6 +168,12 @@ ul {
     transition: all .4s ease-in-out;
 }
 
+a.btn-hover {
+    color: white;
+    display: flex;
+    align-items: center;
+}
+
 .btn-hover:focus {
     outline: none;
 }
@@ -191,6 +197,11 @@ ul {
     position: fixed;
     bottom: 25px;
     right: 20px;
+}
+
+.text-justify {
+    text-align: justify;
+    text-justify: inter-character;
 }
 
 
@@ -698,7 +709,6 @@ ul {
 
 .profile-game-stats,
 .profile-account-stats {
-    //text-center mb-4 bg-success
     text-align: center;
 }
 
@@ -719,29 +729,31 @@ ul {
     .profile-info-container {
         display: flex;
         flex-direction: column;
+        width: 100%;
         margin-left: 0;
         padding-left: 3rem;
         padding-right: 3rem;
         background-color: #232c31;
         border-radius: 1rem;
     }
+    .profile-data-container {
+        justify-content: center;
+        width: 100%;
+    }
     .profile-stats-container {
         padding: 0.25rem;
         background-color: #232c31;
         border-radius: 1rem;
-        max-width: 80vw;
-        margin: 0 auto;
     }
     .profile-chart-container {
         display: flex;
         flex-flow: row;
-        max-width: 80vw;
         padding: 2rem;
         background-color: #232c31;
         border-radius: 1rem;
     }
     .profile-chart-container canvas {
-        max-width: 60vw;
+        width: 1000px !important;
     }
 }
 
@@ -1423,20 +1435,55 @@ input[type="file"]::-webkit-file-upload-button {
     content: 'Change picture';
 }
 
-.fair-game-stats {
-    width: 50%;
+.fairplay-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: .5rem;
+    padding-top: 3rem;
+    width: 70%;
     margin: 0 auto;
 }
 
-@media (max-width: 768px) {
-    .fair-game-stats {
-        width: 70%;
+.fairplay-content {
+    width: 60%
+}
+
+.fairplay-stats {
+    width: 40%;
+    margin: 0 auto;
+}
+
+// @media (max-width: 768px) {
+//     .fairplay-stats {
+//         width: 70%;
+//     }
+// }
+// @media (max-width: 478px) {
+//     .fairplay-stats {
+//         width: 90%;
+//     }
+// }
+@media (min-width: 1200px) and (max-width: 1400px) {
+    .fairplay-container {
+        width: 85%;
     }
 }
 
-@media (max-width: 478px) {
-    .fair-game-stats {
+@media (min-width: 990px) and (max-width: 1199px) {
+    .fairplay-container {
         width: 90%;
+    }
+}
+
+@media (max-width: 989px) {
+    .fairplay-container {
+        width: 90%;
+        flex-direction: column;
+    }
+    .fairplay-content,
+    .fairplay-stats {
+        width: 100%;
     }
 }
 

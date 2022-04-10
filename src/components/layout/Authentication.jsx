@@ -10,6 +10,7 @@ export default function AccountFirebase() {
   const [baseData, setBaseData] = useState(false);
   const [accessToken, setAccessToken] = useState(false);
   const [url, setUrl] = useState('');
+  const [userRole, setUserRole] = useState('');
   const [dropdown, setDropdown] = useState(false);
   const { setDiscordId } = useContext(Context);
   let [searchParams, setSearchParams] = useSearchParams();
@@ -38,22 +39,45 @@ export default function AccountFirebase() {
         clientId: process.env.REACT_APP_DISCORD_CLIENTID,
         clientSecret: process.env.REACT_APP_DISCORD_CLIENTSECRET,
         code: url,
-        scope: "identify email",
+        scope: "identify email guilds bot",
         grantType: "authorization_code",
-        redirectUri: "https://0689-81-32-7-32.ngrok.io/",
+        redirectUri: "https://e9b7-81-33-62-198.ngrok.io/",
       })
       if (res) {
         window.localStorage.setItem('loggedUser', res.access_token)
         setAccessToken(res.access_token)
+        oauth.getUserGuilds(res.access_token).then(console.log);
       }
     } catch (e) {
 
     }
   }
 
+  // useEffect(() => {
+  //   const guildId = process.env.REACT_APP_DISCORD_GUILDID
+  //   const api = `https://discord.com/api/v9/guilds/${guildId}/members/${baseData.uid}/role/${userRole}`
+
+  //   const putMethod = {
+  //     method: 'PUT', // Method itself
+  //     headers: {
+  //       'Content-type': 'application/json; charset=UTF-8',
+  //     },
+  //     body: JSON.stringify('OTYxNjU2OTkxMTQ5ODc1MjMy.Yk8K3Q.dTANWuQKWUK48iNH58sv0W0r5S4')
+  //   }
+  //   console.log(baseData.uid)
+  //   console.log(userRole)
+  //   fetch(api, putMethod)
+  //     .then(response => response.json())
+  //     .then(data => console.log(data))
+  //     .catch(err => console.log(err))
+  // }, [baseData, userRole])
+
   useEffect(() => {
     readUserData()
-    return () => setBaseData(false)
+    return () => {
+      setBaseData(false)
+      setUserRole('')
+    }
   }, [accessToken])
 
   const readUserData = async () => {
@@ -65,6 +89,23 @@ export default function AccountFirebase() {
           const document = await getDoc(doc(db, "clubUsers", userData.id))
           const data = document.data()
           if (data) {
+            if (userRole === '') {
+              if (data.level > 4 && data.level < 10) {
+                setUserRole('937092107632529531')
+              }
+              if (data.level > 9 && data.level < 15) {
+                setUserRole('937092107632529532')
+              }
+              if (data.level > 14 && data.level < 20) {
+                setUserRole('937092107632529533')
+              }
+              if (data.level > 19 && data.level < 24) {
+                setUserRole('937092107632529534')
+              }
+              if (data.level === 25) {
+                setUserRole('962764502615588924')
+              }
+            }
             updateDoc(doc(db, "clubUsers", userData.id), {
               name: userData.username,
               photo: `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}`,
@@ -171,7 +212,7 @@ export default function AccountFirebase() {
   }
 
   const getToken = () => {
-    const ouathLink = 'https://discord.com/api/oauth2/authorize?client_id=961656991149875232&redirect_uri=https%3A%2F%2F0689-81-32-7-32.ngrok.io%2F&response_type=code&scope=identify%20email'
+    const ouathLink = 'https://discord.com/api/oauth2/authorize?client_id=961656991149875232&permissions=268435456&redirect_uri=https%3A%2F%2Fe9b7-81-33-62-198.ngrok.io%2F&response_type=code&scope=bot%20guilds%20email%20identify'
     location.href = ouathLink
   }
 
