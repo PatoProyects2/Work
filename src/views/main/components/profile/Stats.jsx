@@ -8,7 +8,7 @@ export default function Stats({ userData }) {
           <Table className="profile-game-stats" responsive size="">
             <thead>
               <tr>
-                <th>Day Streak</th>
+                <th>Win Streak</th>
                 <th>Rock</th>
                 <th>Paper</th>
                 <th>Scissors</th>

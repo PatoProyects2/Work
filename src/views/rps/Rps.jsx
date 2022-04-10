@@ -307,7 +307,7 @@ export default function Rps() {
             const arrayData = {
               uid: 'anonymous',
               account: account,
-              name: 'RPS player',
+              name: '',
               photo: 'https://firebasestorage.googleapis.com/v0/b/games-club-dce4d.appspot.com/o/ClubLogo.png?alt=media&token=5dd64484-c99f-4ce9-a06b-0a3ee112b37b',
               level: 1,
               rps: {

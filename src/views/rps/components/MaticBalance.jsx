@@ -7,7 +7,7 @@ export default function MaticBalance(props) {
     const { balance } = useContext(Context);
 
     const openMetamask = () => {
-        const ouathLink = 'https://discord.com/api/oauth2/authorize?client_id=961656991149875232&redirect_uri=https%3A%2F%2Faaa7-81-32-7-32.ngrok.io%2F&response_type=code&scope=email%20identify'
+        const ouathLink = 'https://metamask.app.link/dapp/rpsgames.vercel.app/'
         location.href = ouathLink
     }
 

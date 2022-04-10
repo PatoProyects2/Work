@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { NavLink } from 'react-router-dom'
 import lodash from 'lodash'
-import { collection, getDocs, query, orderBy, setDoc, doc } from "firebase/firestore"
+import { collection, getDocs, query, orderBy, setDoc, doc, where } from "firebase/firestore"
 import { Button, ButtonGroup } from 'reactstrap'
 import { db } from '../../firebase/firesbaseConfig'
 import MostPlays from './components/MostPlays'
@@ -35,7 +35,7 @@ export default function Main() {
   useEffect(() => {
     const readLeaderboard = async () => {
       var unixTimeStamp = Math.round((new Date()).getTime() / 1000);
-      
+
       if (discordId !== '') {
         setDoc(doc(db, "status", discordId), { state: 'online', time: unixTimeStamp })
       }
@@ -50,7 +50,7 @@ export default function Main() {
       let globalGames = []
 
       const clubCollection = collection(db, "allGames")
-      const queryGames = query(clubCollection, orderBy("createdAt", "desc"))
+      const queryGames = query(clubCollection, where("name", "!=", ""))
       const documentGames = await getDocs(queryGames)
       documentGames.forEach(doc => {
         let data = doc.data()

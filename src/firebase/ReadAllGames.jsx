@@ -199,12 +199,32 @@ export default function ReadAllGames(props) {
                                 <div className="title mb-auto ms-2">
                                     <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[0].photo}`} />
                                     &nbsp;
-                                    {historyPlays[0].name !== 'ClubUser' ?
+                                    {historyPlays[0].name !== '' ?
                                         <>
-                                            {props.isMobileResolution && historyPlays[0].name.length > 6 ? historyPlays[0].name.substring(0, 6) + "..." : historyPlays[0].name}
+                                            {props.isMobileResolution ?
+                                                <>
+                                                    {historyPlays[0].name.length > 5
+                                                        ? historyPlays[0].name.substring(0, 5) + "..."
+                                                        : historyPlays[0].name
+                                                    }
+                                                </>
+                                                :
+                                                <>
+                                                    {historyPlays[0].name.length > 15
+                                                        ? historyPlays[0].name.substring(0, 15) + "..."
+                                                        : historyPlays[0].name
+                                                    }
+                                                </>
+                                            }
                                         </>
                                         :
-                                        historyPlays[0].account.substring(0, 6).toLowerCase() + "..."
+                                        <>
+                                            {props.isMobileResolution
+                                                ? historyPlays[0].account.substring(0, 5).toLowerCase() + "..."
+                                                : historyPlays[0].account.substring(0, 5).toLowerCase() + "..." + historyPlays[0].account.substring(38, 42).toLowerCase()
+                                            }
+                                        </>
+
                                     }
                                     {" played " + historyPlays[0].maticAmount + " MATIC and"}
                                     <span style={{ color: historyPlays[0].result ? "mediumseagreen" : "crimson" }}>
@@ -231,12 +251,32 @@ export default function ReadAllGames(props) {
                                 <div className="title mb-auto ms-2">
                                     <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[1].photo}`} />
                                     &nbsp;
-                                    {historyPlays[1].name !== 'ClubUser' ?
+                                    {historyPlays[1].name !== '' ?
                                         <>
-                                            {props.isMobileResolution && historyPlays[1].name.length > 6 ? historyPlays[1].name.substring(0, 6) + "..." : historyPlays[1].name}
+                                            {props.isMobileResolution ?
+                                                <>
+                                                    {historyPlays[1].name.length > 5
+                                                        ? historyPlays[1].name.substring(0, 5) + "..."
+                                                        : historyPlays[1].name
+                                                    }
+                                                </>
+                                                :
+                                                <>
+                                                    {historyPlays[1].name.length > 15
+                                                        ? historyPlays[1].name.substring(0, 15) + "..."
+                                                        : historyPlays[1].name
+                                                    }
+                                                </>
+                                            }
                                         </>
                                         :
-                                        historyPlays[1].account.substring(0, 6).toLowerCase() + "..."
+                                        <>
+                                            {props.isMobileResolution
+                                                ? historyPlays[1].account.substring(0, 5).toLowerCase() + "..."
+                                                : historyPlays[1].account.substring(0, 5).toLowerCase() + "..." + historyPlays[1].account.substring(38, 42).toLowerCase()
+                                            }
+                                        </>
+
                                     }
                                     {" played " + historyPlays[1].maticAmount + " MATIC and"}
                                     <span style={{ color: historyPlays[1].result ? "mediumseagreen" : "crimson" }}>
@@ -263,12 +303,32 @@ export default function ReadAllGames(props) {
                                 <div className="title mb-auto ms-2">
                                     <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[2].photo}`} />
                                     &nbsp;
-                                    {historyPlays[2].name !== 'ClubUser' ?
+                                    {historyPlays[2].name !== '' ?
                                         <>
-                                            {props.isMobileResolution && historyPlays[2].name.length > 6 ? historyPlays[2].name.substring(0, 6) + "..." : historyPlays[2].name}
+                                            {props.isMobileResolution ?
+                                                <>
+                                                    {historyPlays[2].name.length > 5
+                                                        ? historyPlays[2].name.substring(0, 5) + "..."
+                                                        : historyPlays[2].name
+                                                    }
+                                                </>
+                                                :
+                                                <>
+                                                    {historyPlays[2].name.length > 15
+                                                        ? historyPlays[2].name.substring(0, 15) + "..."
+                                                        : historyPlays[2].name
+                                                    }
+                                                </>
+                                            }
                                         </>
                                         :
-                                        historyPlays[2].account.substring(0, 6).toLowerCase() + "..."
+                                        <>
+                                            {props.isMobileResolution
+                                                ? historyPlays[2].account.substring(0, 5).toLowerCase() + "..."
+                                                : historyPlays[2].account.substring(0, 5).toLowerCase() + "..." + historyPlays[2].account.substring(38, 42).toLowerCase()
+                                            }
+                                        </>
+
                                     }
                                     {" played " + historyPlays[2].maticAmount + " MATIC and"}
                                     <span style={{ color: historyPlays[2].result ? "mediumseagreen" : "crimson" }}>
@@ -295,12 +355,32 @@ export default function ReadAllGames(props) {
                                 <div className="title mb-auto ms-2">
                                     <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[3].photo}`} />
                                     &nbsp;
-                                    {historyPlays[3].name !== 'ClubUser' ?
+                                    {historyPlays[3].name !== '' ?
                                         <>
-                                            {props.isMobileResolution && historyPlays[3].name.length > 6 ? historyPlays[3].name.substring(0, 6) + "..." : historyPlays[3].name}
+                                            {props.isMobileResolution ?
+                                                <>
+                                                    {historyPlays[3].name.length > 5
+                                                        ? historyPlays[3].name.substring(0, 5) + "..."
+                                                        : historyPlays[3].name
+                                                    }
+                                                </>
+                                                :
+                                                <>
+                                                    {historyPlays[3].name.length > 15
+                                                        ? historyPlays[3].name.substring(0, 15) + "..."
+                                                        : historyPlays[3].name
+                                                    }
+                                                </>
+                                            }
                                         </>
                                         :
-                                        historyPlays[3].account.substring(0, 6).toLowerCase() + "..."
+                                        <>
+                                            {props.isMobileResolution
+                                                ? historyPlays[3].account.substring(0, 5).toLowerCase() + "..."
+                                                : historyPlays[3].account.substring(0, 5).toLowerCase() + "..." + historyPlays[3].account.substring(38, 42).toLowerCase()
+                                            }
+                                        </>
+
                                     }
                                     {" played " + historyPlays[3].maticAmount + " MATIC and"}
                                     <span style={{ color: historyPlays[3].result ? "mediumseagreen" : "crimson" }}>
@@ -327,12 +407,32 @@ export default function ReadAllGames(props) {
                                 <div className="title mb-auto ms-2">
                                     <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[4].photo}`} />
                                     &nbsp;
-                                    {historyPlays[4].name !== 'ClubUser' ?
+                                    {historyPlays[4].name !== '' ?
                                         <>
-                                            {props.isMobileResolution && historyPlays[4].name.length > 6 ? historyPlays[4].name.substring(0, 6) + "..." : historyPlays[4].name}
+                                            {props.isMobileResolution ?
+                                                <>
+                                                    {historyPlays[4].name.length > 5
+                                                        ? historyPlays[4].name.substring(0, 5) + "..."
+                                                        : historyPlays[4].name
+                                                    }
+                                                </>
+                                                :
+                                                <>
+                                                    {historyPlays[4].name.length > 15
+                                                        ? historyPlays[4].name.substring(0, 15) + "..."
+                                                        : historyPlays[4].name
+                                                    }
+                                                </>
+                                            }
                                         </>
                                         :
-                                        historyPlays[4].account.substring(0, 6).toLowerCase() + "..."
+                                        <>
+                                            {props.isMobileResolution
+                                                ? historyPlays[4].account.substring(0, 5).toLowerCase() + "..."
+                                                : historyPlays[4].account.substring(0, 5).toLowerCase() + "..." + historyPlays[4].account.substring(38, 42).toLowerCase()
+                                            }
+                                        </>
+
                                     }
                                     {" played " + historyPlays[4].maticAmount + " MATIC and"}
                                     <span style={{ color: historyPlays[4].result ? "mediumseagreen" : "crimson" }}>
@@ -359,12 +459,32 @@ export default function ReadAllGames(props) {
                                 <div className="title mb-auto ms-2">
                                     <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[5].photo}`} />
                                     &nbsp;
-                                    {historyPlays[5].name !== 'ClubUser' ?
+                                    {historyPlays[5].name !== '' ?
                                         <>
-                                            {props.isMobileResolution && historyPlays[5].name.length > 6 ? historyPlays[5].name.substring(0, 6) + "..." : historyPlays[5].name}
+                                            {props.isMobileResolution ?
+                                                <>
+                                                    {historyPlays[5].name.length > 5
+                                                        ? historyPlays[5].name.substring(0, 5) + "..."
+                                                        : historyPlays[5].name
+                                                    }
+                                                </>
+                                                :
+                                                <>
+                                                    {historyPlays[5].name.length > 15
+                                                        ? historyPlays[5].name.substring(0, 15) + "..."
+                                                        : historyPlays[5].name
+                                                    }
+                                                </>
+                                            }
                                         </>
                                         :
-                                        historyPlays[5].account.substring(0, 6).toLowerCase() + "..."
+                                        <>
+                                            {props.isMobileResolution
+                                                ? historyPlays[5].account.substring(0, 5).toLowerCase() + "..."
+                                                : historyPlays[5].account.substring(0, 5).toLowerCase() + "..." + historyPlays[5].account.substring(38, 42).toLowerCase()
+                                            }
+                                        </>
+
                                     }
                                     {" played " + historyPlays[5].maticAmount + " MATIC and"}
                                     <span style={{ color: historyPlays[5].result ? "mediumseagreen" : "crimson" }}>
@@ -391,12 +511,32 @@ export default function ReadAllGames(props) {
                                 <div className="title mb-auto ms-2">
                                     <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[6].photo}`} />
                                     &nbsp;
-                                    {historyPlays[6].name !== 'ClubUser' ?
+                                    {historyPlays[6].name !== '' ?
                                         <>
-                                            {props.isMobileResolution && historyPlays[6].name.length > 6 ? historyPlays[6].name.substring(0, 6) + "..." : historyPlays[6].name}
+                                            {props.isMobileResolution ?
+                                                <>
+                                                    {historyPlays[6].name.length > 5
+                                                        ? historyPlays[6].name.substring(0, 5) + "..."
+                                                        : historyPlays[6].name
+                                                    }
+                                                </>
+                                                :
+                                                <>
+                                                    {historyPlays[6].name.length > 15
+                                                        ? historyPlays[6].name.substring(0, 15) + "..."
+                                                        : historyPlays[6].name
+                                                    }
+                                                </>
+                                            }
                                         </>
                                         :
-                                        historyPlays[6].account.substring(0, 6).toLowerCase() + "..."
+                                        <>
+                                            {props.isMobileResolution
+                                                ? historyPlays[6].account.substring(0, 5).toLowerCase() + "..."
+                                                : historyPlays[6].account.substring(0, 5).toLowerCase() + "..." + historyPlays[6].account.substring(38, 42).toLowerCase()
+                                            }
+                                        </>
+
                                     }
                                     {" played " + historyPlays[6].maticAmount + " MATIC and"}
                                     <span style={{ color: historyPlays[6].result ? "mediumseagreen" : "crimson" }}>
@@ -423,12 +563,32 @@ export default function ReadAllGames(props) {
                                 <div className="title mb-auto ms-2">
                                     <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[7].photo}`} />
                                     &nbsp;
-                                    {historyPlays[7].name !== 'ClubUser' ?
+                                    {historyPlays[7].name !== '' ?
                                         <>
-                                            {props.isMobileResolution && historyPlays[7].name.length > 6 ? historyPlays[7].name.substring(0, 6) + "..." : historyPlays[7].name}
+                                            {props.isMobileResolution ?
+                                                <>
+                                                    {historyPlays[7].name.length > 5
+                                                        ? historyPlays[7].name.substring(0, 5) + "..."
+                                                        : historyPlays[7].name
+                                                    }
+                                                </>
+                                                :
+                                                <>
+                                                    {historyPlays[7].name.length > 15
+                                                        ? historyPlays[7].name.substring(0, 15) + "..."
+                                                        : historyPlays[7].name
+                                                    }
+                                                </>
+                                            }
                                         </>
                                         :
-                                        historyPlays[7].account.substring(0, 6).toLowerCase() + "..."
+                                        <>
+                                            {props.isMobileResolution
+                                                ? historyPlays[7].account.substring(0, 5).toLowerCase() + "..."
+                                                : historyPlays[7].account.substring(0, 5).toLowerCase() + "..." + historyPlays[7].account.substring(38, 42).toLowerCase()
+                                            }
+                                        </>
+
                                     }
                                     {" played " + historyPlays[7].maticAmount + " MATIC and"}
                                     <span style={{ color: historyPlays[7].result ? "mediumseagreen" : "crimson" }}>
@@ -455,12 +615,32 @@ export default function ReadAllGames(props) {
                                 <div className="title mb-auto ms-2">
                                     <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[8].photo}`} />
                                     &nbsp;
-                                    {historyPlays[8].name !== 'ClubUser' ?
+                                    {historyPlays[8].name !== '' ?
                                         <>
-                                            {props.isMobileResolution && historyPlays[8].name.length > 6 ? historyPlays[8].name.substring(0, 6) + "..." : historyPlays[8].name}
+                                            {props.isMobileResolution ?
+                                                <>
+                                                    {historyPlays[8].name.length > 5
+                                                        ? historyPlays[8].name.substring(0, 5) + "..."
+                                                        : historyPlays[8].name
+                                                    }
+                                                </>
+                                                :
+                                                <>
+                                                    {historyPlays[8].name.length > 15
+                                                        ? historyPlays[8].name.substring(0, 15) + "..."
+                                                        : historyPlays[8].name
+                                                    }
+                                                </>
+                                            }
                                         </>
                                         :
-                                        historyPlays[8].account.substring(0, 6).toLowerCase() + "..."
+                                        <>
+                                            {props.isMobileResolution
+                                                ? historyPlays[8].account.substring(0, 5).toLowerCase() + "..."
+                                                : historyPlays[8].account.substring(0, 5).toLowerCase() + "..." + historyPlays[8].account.substring(38, 42).toLowerCase()
+                                            }
+                                        </>
+
                                     }
                                     {" played " + historyPlays[8].maticAmount + " MATIC and"}
                                     <span style={{ color: historyPlays[8].result ? "mediumseagreen" : "crimson" }}>
@@ -487,12 +667,32 @@ export default function ReadAllGames(props) {
                                 <div className="title mb-auto ms-2">
                                     <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[9].photo}`} />
                                     &nbsp;
-                                    {historyPlays[9].name !== 'ClubUser' ?
+                                    {historyPlays[9].name !== '' ?
                                         <>
-                                            {props.isMobileResolution && historyPlays[9].name.length > 6 ? historyPlays[9].name.substring(0, 6) + "..." : historyPlays[9].name}
+                                            {props.isMobileResolution ?
+                                                <>
+                                                    {historyPlays[9].name.length > 5
+                                                        ? historyPlays[9].name.substring(0, 5) + "..."
+                                                        : historyPlays[9].name
+                                                    }
+                                                </>
+                                                :
+                                                <>
+                                                    {historyPlays[9].name.length > 15
+                                                        ? historyPlays[9].name.substring(0, 15) + "..."
+                                                        : historyPlays[9].name
+                                                    }
+                                                </>
+                                            }
                                         </>
                                         :
-                                        historyPlays[9].account.substring(0, 6).toLowerCase() + "..."
+                                        <>
+                                            {props.isMobileResolution
+                                                ? historyPlays[9].account.substring(0, 5).toLowerCase() + "..."
+                                                : historyPlays[9].account.substring(0, 5).toLowerCase() + "..." + historyPlays[9].account.substring(38, 42).toLowerCase()
+                                            }
+                                        </>
+
                                     }
                                     {" played " + historyPlays[9].maticAmount + " MATIC and"}
                                     <span style={{ color: historyPlays[9].result ? "mediumseagreen" : "crimson" }}>
@@ -519,12 +719,32 @@ export default function ReadAllGames(props) {
                                 <div className="title mb-auto ms-2">
                                     <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[10].photo}`} />
                                     &nbsp;
-                                    {historyPlays[10].name !== 'ClubUser' ?
+                                    {historyPlays[10].name !== '' ?
                                         <>
-                                            {props.isMobileResolution && historyPlays[10].name.length > 6 ? historyPlays[10].name.substring(0, 6) + "..." : historyPlays[10].name}
+                                            {props.isMobileResolution ?
+                                                <>
+                                                    {historyPlays[10].name.length > 5
+                                                        ? historyPlays[10].name.substring(0, 5) + "..."
+                                                        : historyPlays[10].name
+                                                    }
+                                                </>
+                                                :
+                                                <>
+                                                    {historyPlays[10].name.length > 15
+                                                        ? historyPlays[10].name.substring(0, 15) + "..."
+                                                        : historyPlays[10].name
+                                                    }
+                                                </>
+                                            }
                                         </>
                                         :
-                                        historyPlays[10].account.substring(0, 6).toLowerCase() + "..."
+                                        <>
+                                            {props.isMobileResolution
+                                                ? historyPlays[10].account.substring(0, 5).toLowerCase() + "..."
+                                                : historyPlays[10].account.substring(0, 5).toLowerCase() + "..." + historyPlays[10].account.substring(38, 42).toLowerCase()
+                                            }
+                                        </>
+
                                     }
                                     {" played " + historyPlays[10].maticAmount + " MATIC and"}
                                     <span style={{ color: historyPlays[10].result ? "mediumseagreen" : "crimson" }}>
@@ -551,12 +771,32 @@ export default function ReadAllGames(props) {
                                 <div className="title mb-auto ms-2">
                                     <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[11].photo}`} />
                                     &nbsp;
-                                    {historyPlays[11].name !== 'ClubUser' ?
+                                    {historyPlays[11].name !== '' ?
                                         <>
-                                            {props.isMobileResolution && historyPlays[11].name.length > 6 ? historyPlays[11].name.substring(0, 6) + "..." : historyPlays[11].name}
+                                            {props.isMobileResolution ?
+                                                <>
+                                                    {historyPlays[11].name.length > 5
+                                                        ? historyPlays[11].name.substring(0, 5) + "..."
+                                                        : historyPlays[11].name
+                                                    }
+                                                </>
+                                                :
+                                                <>
+                                                    {historyPlays[11].name.length > 15
+                                                        ? historyPlays[11].name.substring(0, 15) + "..."
+                                                        : historyPlays[11].name
+                                                    }
+                                                </>
+                                            }
                                         </>
                                         :
-                                        historyPlays[11].account.substring(0, 6).toLowerCase() + "..."
+                                        <>
+                                            {props.isMobileResolution
+                                                ? historyPlays[11].account.substring(0, 5).toLowerCase() + "..."
+                                                : historyPlays[11].account.substring(0, 5).toLowerCase() + "..." + historyPlays[11].account.substring(38, 42).toLowerCase()
+                                            }
+                                        </>
+
                                     }
                                     {" played " + historyPlays[11].maticAmount + " MATIC and"}
                                     <span style={{ color: historyPlays[11].result ? "mediumseagreen" : "crimson" }}>

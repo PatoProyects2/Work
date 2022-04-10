@@ -112,7 +112,7 @@ function ChatMessage({ text, uid, photo, name, level, auth, id, userClub }) {
                                     {(userData[0] && rpsStats) &&
                                         <div className="game-stats">
                                             <div className="row header-row text-center mb-2">
-                                                <div className='col-4'>Day Streak</div>
+                                                <div className='col-4'>Win Streak</div>
                                                 <div className='col-2'>Rock</div>
                                                 <div className='col-3'>Paper</div>
                                                 <div className='col-3'>Scissors</div>

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import ChatRoom from '../../components/chat/ChatRoom';
 import Footer from '../footer/Footer'
-import { Navbar } from '../ui/navbar/Navbar';
+import { NavbarDesktop } from '../ui/navbar/NavbarDesktop';
 import { Context } from '../../context/Context';
 export function MainLayout() {
   const [showChat, setShowChat] = useState(false);
@@ -12,7 +12,7 @@ export function MainLayout() {
   return (
     <Context.Provider value={{ balance, setBalance, discordId, setDiscordId }}>
       <header>
-        <Navbar navType="rps" />
+        <NavbarDesktop />
       </header>
       <main className="wrapper-main">
         <section>

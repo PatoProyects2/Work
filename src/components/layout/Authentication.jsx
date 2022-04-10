@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap'
 import { useNavigate } from 'react-router-dom'
 import DiscordOauth2 from "discord-oauth2"
@@ -40,7 +40,7 @@ export default function AccountFirebase() {
         code: url,
         scope: "identify email",
         grantType: "authorization_code",
-        redirectUri: "https://patoproyects2.github.io/Work/",
+        redirectUri: "https://0689-81-32-7-32.ngrok.io/",
       })
       if (res) {
         window.localStorage.setItem('loggedUser', res.access_token)
@@ -65,6 +65,10 @@ export default function AccountFirebase() {
           const document = await getDoc(doc(db, "clubUsers", userData.id))
           const data = document.data()
           if (data) {
+            updateDoc(doc(db, "clubUsers", userData.id), {
+              name: userData.username,
+              photo: `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}`,
+            })
             setBaseData(data)
           } else {
             var unixTimeStamp = Math.round((new Date()).getTime() / 1000);
@@ -167,7 +171,7 @@ export default function AccountFirebase() {
   }
 
   const getToken = () => {
-    const ouathLink = 'https://discord.com/api/oauth2/authorize?client_id=961656991149875232&redirect_uri=https%3A%2F%2Fpatoproyects2.github.io%2FWork%2F&response_type=code&scope=identify%20email'
+    const ouathLink = 'https://discord.com/api/oauth2/authorize?client_id=961656991149875232&redirect_uri=https%3A%2F%2F0689-81-32-7-32.ngrok.io%2F&response_type=code&scope=identify%20email'
     location.href = ouathLink
   }
 

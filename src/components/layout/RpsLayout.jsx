@@ -1,15 +1,15 @@
 import React, { useState } from 'react'
 import { Outlet } from 'react-router-dom'
-import {Context} from '../../context/Context';
-import { Navbar } from '../ui/navbar/Navbar';
+import { Context } from '../../context/Context';
+import { NavbarDesktop } from '../ui/navbar/NavbarDesktop';
 export function RpsLayout() {
   const [balance, setBalance] = useState('');
   const [discordId, setDiscordId] = useState('');
 
   return (
-    <Context.Provider value={{balance, setBalance, discordId, setDiscordId}}>
+    <Context.Provider value={{ balance, setBalance, discordId, setDiscordId }}>
       <header>
-        <Navbar navType="rps" />
+        <NavbarDesktop />
       </header>
       <main className='wrapper'>
         <section>

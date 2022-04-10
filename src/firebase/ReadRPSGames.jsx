@@ -198,7 +198,7 @@ export default function ReadRPSGames(props) {
                         <DropdownItem className="dd-menu-item">
                             <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[0].photo}`} />
                             &nbsp;
-                            {historyPlays[0].name !== 'ClubUser' ?
+                            {historyPlays[0].name !== '' ?
                                 <>
                                     {props.isMobileResolution && historyPlays[0].name.length > 6 ? historyPlays[0].name.substring(0, 6) + "..." : historyPlays[0].name}
                                 </>
@@ -228,7 +228,7 @@ export default function ReadRPSGames(props) {
                         <DropdownItem className="dd-menu-item">
                             <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[1].photo}`} />
                             &nbsp;
-                            {historyPlays[1].name !== 'ClubUser' ?
+                            {historyPlays[1].name !== '' ?
                                 <>
                                     {props.isMobileResolution && historyPlays[1].name.length > 6 ? historyPlays[1].name.substring(0, 6) + "..." : historyPlays[1].name}
                                 </>
@@ -258,7 +258,7 @@ export default function ReadRPSGames(props) {
                         <DropdownItem className="dd-menu-item">
                             <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[2].photo}`} />
                             &nbsp;
-                            {historyPlays[2].name !== 'ClubUser' ?
+                            {historyPlays[2].name !== '' ?
                                 <>
                                     {props.isMobileResolution && historyPlays[2].name.length > 6 ? historyPlays[2].name.substring(0, 6) + "..." : historyPlays[2].name}
                                 </>
@@ -288,7 +288,7 @@ export default function ReadRPSGames(props) {
                         <DropdownItem className="dd-menu-item">
                             <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[3].photo}`} />
                             &nbsp;
-                            {historyPlays[3].name !== 'ClubUser' ?
+                            {historyPlays[3].name !== '' ?
                                 <>
                                     {props.isMobileResolution && historyPlays[3].name.length > 6 ? historyPlays[3].name.substring(0, 6) + "..." : historyPlays[3].name}
                                 </>
@@ -318,7 +318,7 @@ export default function ReadRPSGames(props) {
                         <DropdownItem className="dd-menu-item">
                             <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[4].photo}`} />
                             &nbsp;
-                            {historyPlays[4].name !== 'ClubUser' ?
+                            {historyPlays[4].name !== '' ?
                                 <>
                                     {props.isMobileResolution && historyPlays[4].name.length > 6 ? historyPlays[4].name.substring(0, 6) + "..." : historyPlays[4].name}
                                 </>
@@ -348,7 +348,7 @@ export default function ReadRPSGames(props) {
                         <DropdownItem className="dd-menu-item">
                             <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[5].photo}`} />
                             &nbsp;
-                            {historyPlays[5].name !== 'ClubUser' ?
+                            {historyPlays[5].name !== '' ?
                                 <>
                                     {props.isMobileResolution && historyPlays[5].name.length > 6 ? historyPlays[5].name.substring(0, 6) + "..." : historyPlays[5].name}
                                 </>
@@ -378,7 +378,7 @@ export default function ReadRPSGames(props) {
                         <DropdownItem className="dd-menu-item">
                             <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[6].photo}`} />
                             &nbsp;
-                            {historyPlays[6].name !== 'ClubUser' ?
+                            {historyPlays[6].name !== '' ?
                                 <>
                                     {props.isMobileResolution && historyPlays[6].name.length > 6 ? historyPlays[6].name.substring(0, 6) + "..." : historyPlays[6].name}
                                 </>
@@ -408,7 +408,7 @@ export default function ReadRPSGames(props) {
                         <DropdownItem className="dd-menu-item">
                             <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[7].photo}`} />
                             &nbsp;
-                            {historyPlays[7].name !== 'ClubUser' ?
+                            {historyPlays[7].name !== '' ?
                                 <>
                                     {props.isMobileResolution && historyPlays[7].name.length > 6 ? historyPlays[7].name.substring(0, 6) + "..." : historyPlays[7].name}
                                 </>
@@ -438,7 +438,7 @@ export default function ReadRPSGames(props) {
                         <DropdownItem className="dd-menu-item">
                             <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[8].photo}`} />
                             &nbsp;
-                            {historyPlays[8].name !== 'ClubUser' ?
+                            {historyPlays[8].name !== '' ?
                                 <>
                                     {props.isMobileResolution && historyPlays[8].name.length > 6 ? historyPlays[8].name.substring(0, 6) + "..." : historyPlays[8].name}
                                 </>
@@ -468,7 +468,7 @@ export default function ReadRPSGames(props) {
                         <DropdownItem className="dd-menu-item">
                             <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[9].photo}`} />
                             &nbsp;
-                            {historyPlays[9].name !== 'ClubUser' ?
+                            {historyPlays[9].name !== '' ?
                                 <>
                                     {props.isMobileResolution && historyPlays[9].name.length > 6 ? historyPlays[9].name.substring(0, 6) + "..." : historyPlays[9].name}
                                 </>
@@ -498,7 +498,7 @@ export default function ReadRPSGames(props) {
                         <DropdownItem className="dd-menu-item">
                             <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[10].photo}`} />
                             &nbsp;
-                            {historyPlays[10].name !== 'ClubUser' ?
+                            {historyPlays[10].name !== '' ?
                                 <>
                                     {props.isMobileResolution && historyPlays[10].name.length > 6 ? historyPlays[10].name.substring(0, 6) + "..." : historyPlays[10].name}
                                 </>
@@ -528,7 +528,7 @@ export default function ReadRPSGames(props) {
                         <DropdownItem className="dd-menu-item">
                             <img width="25" height="25" className="rounded-circle" alt="" src={`${historyPlays[11].photo}`} />
                             &nbsp;
-                            {historyPlays[11].name !== 'ClubUser' ?
+                            {historyPlays[11].name !== '' ?
                                 <>
                                     {props.isMobileResolution && historyPlays[11].name.length > 6 ? historyPlays[11].name.substring(0, 6) + "..." : historyPlays[11].name}
                                 </>
