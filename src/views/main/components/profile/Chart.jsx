@@ -11,7 +11,7 @@ export default function Chart({ userData }) {
       return Math.round(this * pow) / pow;
     }
     if (userData) {
-      const q = query(collection(db, "allGames"), where("createdAt", ">", 0), where("account", "==", userData.account))
+      const q = query(collection(db, "allGames"), where("createdAt", ">", 0), where("uid", "==", userData.uid))
       getDocs(q)
         .then(document => {
           const documents = document._snapshot.docChanges

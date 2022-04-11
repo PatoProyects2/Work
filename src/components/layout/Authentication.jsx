@@ -34,22 +34,24 @@ export default function AccountFirebase() {
   }, [url])
 
   const getAccessToken = async () => {
-    try {
-      let res = await oauth.tokenRequest({
-        clientId: process.env.REACT_APP_DISCORD_CLIENTID,
-        clientSecret: process.env.REACT_APP_DISCORD_CLIENTSECRET,
-        code: url,
-        scope: "identify email",
-        grantType: "authorization_code",
-        redirectUri: "https://patoproyects2.github.io/Work/",
-      })
-      if (res) {
-        window.localStorage.setItem('loggedUser', res.access_token)
-        setAccessToken(res.access_token)
-        oauth.getUserGuilds(res.access_token).then(console.log);
-      }
-    } catch (e) {
+    let token = window.localStorage.getItem('loggedUser')
+    if (!token) {
+      try {
+        let res = await oauth.tokenRequest({
+          clientId: process.env.REACT_APP_DISCORD_CLIENTID,
+          clientSecret: process.env.REACT_APP_DISCORD_CLIENTSECRET,
+          code: url,
+          scope: "identify email",
+          grantType: "authorization_code",
+          redirectUri: "https://4d68-81-33-62-198.ngrok.io/",
+        })
+        if (res) {
+          window.localStorage.setItem('loggedUser', res.access_token)
+          setAccessToken(res.access_token)
+        }
+      } catch (e) {
 
+      }
     }
   }
 
@@ -106,10 +108,16 @@ export default function AccountFirebase() {
                 setUserRole('962764502615588924')
               }
             }
-            updateDoc(doc(db, "clubUsers", userData.id), {
-              name: userData.username,
-              photo: `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}`,
-            })
+            if (userData.username !== data.name) {
+              updateDoc(doc(db, "clubUsers", userData.id), {
+                name: userData.username
+              })
+            }
+            if (userData.avatar) {
+              updateDoc(doc(db, "clubUsers", userData.id), {
+                photo: `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}`
+              })
+            }
             setBaseData(data)
           } else {
             var unixTimeStamp = Math.round((new Date()).getTime() / 1000);
@@ -212,7 +220,7 @@ export default function AccountFirebase() {
   }
 
   const getToken = () => {
-    const ouathLink = 'https://discord.com/api/oauth2/authorize?client_id=961656991149875232&redirect_uri=https%3A%2F%2Fpatoproyects2.github.io%2FWork%2F&response_type=code&scope=identify%20email'
+    const ouathLink = 'https://discord.com/api/oauth2/authorize?client_id=961656991149875232&redirect_uri=https%3A%2F%2F4d68-81-33-62-198.ngrok.io%2F&response_type=code&scope=identify%20email'
     location.href = ouathLink
   }
 

@@ -3,7 +3,7 @@ import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Modal, ModalBody 
 import { query, where, collection, limit, onSnapshot, updateDoc, arrayUnion, doc } from "firebase/firestore";
 import { db } from '../../firebase/firesbaseConfig'
 import Chart from '../../views/main/components/profile/Chart'
-function ChatMessage({ text, uid, photo, name, level, auth, id, userClub }) {
+function ChatMessage({ text, uid, photo, name, level, auth, dsId, userClub }) {
     const [userData, setUserData] = useState({});
     const [dropdown, setDropdown] = useState(false);
     const [stats, setStats] = useState(false);
@@ -100,7 +100,7 @@ function ChatMessage({ text, uid, photo, name, level, auth, id, userClub }) {
                                     <div className={xpClass()}>
                                         <div className="circle"><span>{level}</span></div>
                                     </div>
-                                    <span className="chat_user_name">{name + "#" + id}</span>
+                                    <span className="chat_user_name">{name + "#" + dsId}</span>
                                 </div>
                             </div>
                             <div className="user-daily-stats">

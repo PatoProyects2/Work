@@ -118,7 +118,7 @@ function ChatRoom() {
         name: userClub.name.stringValue,
         level: userClub.level.integerValue,
         photo: userClub.photo.stringValue,
-        id: userClub.id.stringValue
+        dsId: userClub.id.stringValue
       })
     }
     setFormValue('')

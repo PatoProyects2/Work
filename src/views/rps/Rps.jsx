@@ -95,7 +95,7 @@ export default function Rps() {
   }, [account, discordId])
 
   const loadUserGame = async () => {
-    mixpanel.init('07cdb36cf270a17ef7095ffc2aacb29d', { debug: false });
+    mixpanel.init(process.env.REACT_APP_MIXPANEL_KEY, { debug: false });
     mixpanel.track('Sign up');
     if (discordId !== '') {
       const document = await getDoc(doc(db, "clubUsers", discordId))
@@ -105,7 +105,7 @@ export default function Rps() {
         if (data.account === '' && account !== '0x000000000000000000000000000000000000dEaD') {
           updateDoc(doc(db, "clubUsers", discordId), {
             account: account
-          }).then(window.location.reload())
+          }).then(loadUserGame())
         }
         if (data.rps.totalGames > 9 && data.rps.totalGames < 20 && data.level < 2) {
           updateDoc(doc(db, "clubUsers", discordId), {
@@ -299,34 +299,20 @@ export default function Rps() {
             icon: '🆙',
           });
         }
-      } else {
-        const anonDoc = await getDoc(doc(db, "anonUsers", account))
-        const anonData = anonDoc.data()
-        if (!anonData) {
-          if (account !== '0x000000000000000000000000000000000000dEaD') {
-            const arrayData = {
-              uid: 'anonymous',
-              account: account,
-              name: '',
-              photo: 'https://firebasestorage.googleapis.com/v0/b/games-club-dce4d.appspot.com/o/ClubLogo.png?alt=media&token=5dd64484-c99f-4ce9-a06b-0a3ee112b37b',
-              level: 1,
-              rps: {
-                rock: 0,
-                paper: 0,
-                scissors: 0,
-                dayWinStreak: 0,
-                winStreakTime: 0,
-                gameWon: 0,
-                gameLoss: 0,
-                amountWon: 0,
-                amountLoss: 0,
-                totalGames: 0,
-                totalAmount: 0,
-                lastGameBlock: 0,
-              }
-            }
-            setDoc(doc(db, "anonUsers", account), arrayData).then(window.location.reload())
+      }
+    } else {
+      const anonDoc = await getDoc(doc(db, "anonUsers", account))
+      const anonData = anonDoc.data()
+      if (!anonData) {
+        if (account !== '0x000000000000000000000000000000000000dEaD') {
+          const arrayData = {
+            uid: 'anonymous',
+            account: account,
+            name: '',
+            photo: 'https://firebasestorage.googleapis.com/v0/b/games-club-dce4d.appspot.com/o/ClubLogo.png?alt=media&token=5dd64484-c99f-4ce9-a06b-0a3ee112b37b',
+            level: 1,
           }
+          setDoc(doc(db, "anonUsers", account), arrayData).then(loadUserGame())
         }
       }
     }
@@ -479,11 +465,6 @@ export default function Rps() {
   }
 
   const doubleOrNothing = async () => {
-    var time = unixTimeStamp
-    setDoubleOrNothingStatus(true)
-    const sleep = (milliseconds) => {
-      return new Promise(resolve => setTimeout(resolve, milliseconds))
-    }
     if (document.getElementById('rock').checked || document.getElementById('paper').checked || document.getElementById('scissors').checked) {
       setUserhand(usergame.hand)
     } else {
@@ -498,77 +479,76 @@ export default function Rps() {
       setDoubleOrNothingStatus(false)
       return false
     }
+
+    var time = unixTimeStamp
+    const sleep = (milliseconds) => {
+      return new Promise(resolve => setTimeout(resolve, milliseconds))
+    }
+    setDoubleOrNothingStatus(true)
     setPlaying(true)
     setAnimation(true)
+
     let myEvents = []
     let actuallBlock = 0
+    let dayBlock = 0
+    let maticPrice = 0
+    let profit = 0
+    let calculateValue = 0
+    let usdAmount = 0
+    let options = {}
+    const inputAmount = web3.utils.toWei(usergame.amount.toString(), "ether")
     try {
       actuallBlock = await web3.eth.getBlockNumber()
+      calculateValue = await rpsgame.methods.calculateValue(inputAmount).call()
+      maticPrice = await swapPolygon.methods.getAmountsOut(decimal.toString(), [maticContract, usdcContract]).call()
+      usdAmount = (parseInt(maticPrice[1] / 10000) / 100) * usergame.amount
+      dayBlock = actuallBlock - 43200
+      options = {
+        filter: {
+          _to: account
+        },
+        fromBlock: actuallBlock,
+        toBlock: 'latest'
+      };
+      rpsgame.methods
+        .play(inputAmount)
+        .send({
+          from: account,
+          value: calculateValue,
+          gasPrice: '40000000000'
+        })
+        .catch((err) => {
+          if (err.code === 4001) {
+            toast.error("User denied transaction signature")
+            myEvents[0] = false
+            setDoubleOrNothingStatus(false)
+            setPlaying(false)
+            setAnimation(false)
+            return false
+          } else {
+            toast.warning("Pending transaction")
+          }
+        });
     } catch (e) {
 
     }
-    const dayBlock = actuallBlock - 43200
-    const q = doc(db, "clubUsers", discordId)
-    const d = await getDoc(q)
-    let playerDocument = d.data()
-    if (playerDocument) {
+
+    do {
+      try {
+        myEvents = await rpsgame.getPastEvents('Play', options)
+      } catch (e) {
+
+      }
+      await sleep(1000)
+    } while (myEvents[0] === undefined);
+
+    if (discordId !== '') {
+      const q = doc(db, "clubUsers", discordId)
+      const d = await getDoc(q)
+      let playerDocument = d.data()
       if (playerDocument.rps.lastGameBlock < actuallBlock) {
-        const inputAmount = web3.utils.toWei(usergame.amount.toString(), "ether")
-        let calculateValue = 0
-        try {
-          calculateValue = await rpsgame.methods.calculateValue(inputAmount).call()
-        } catch (e) {
-
-        }
-        rpsgame.methods
-          .play(inputAmount)
-          .send({
-            from: account,
-            value: calculateValue,
-            gasPrice: '40000000000'
-          })
-          .catch((err) => {
-            if (err.code === 4001) {
-              toast.error("User denied transaction signature")
-              myEvents[0] = false
-              setDoubleOrNothingStatus(false)
-              setPlaying(false)
-              setAnimation(false)
-              return false
-            } else {
-              toast.warning("Pending transaction")
-            }
-          });
-
-        let options = {
-          filter: {
-            _to: account
-          },
-          fromBlock: actuallBlock,
-          toBlock: 'latest'
-        };
-
-        do {
-          try {
-            myEvents = await rpsgame.getPastEvents('Play', options)
-          } catch (e) {
-
-          }
-          await sleep(1000)
-        } while (myEvents[0] === undefined);
-
         if (myEvents[0]) {
           if (myEvents[0].blockNumber > playerDocument.rps.lastGameBlock) {
-            let maticPrice = 0
-            try {
-              maticPrice = await swapPolygon.methods.getAmountsOut(decimal.toString(), [maticContract, usdcContract]).call()
-            } catch (e) {
-
-            }
-            const userAmount = web3.utils.fromWei(myEvents[0].returnValues[1], 'ether')
-            const usdAmount = (parseInt(maticPrice[1] / 10000) / 100) * userAmount
-            let profit = 0
-
             updateDoc(doc(db, "clubUsers", discordId), {
               "rps.totalGames": playerDocument.rps.totalGames + 1,
               "rps.totalAmount": playerDocument.rps.totalAmount + usdAmount,
@@ -617,7 +597,7 @@ export default function Rps() {
               photo: playerDocument.photo,
               account: myEvents[0].returnValues[0].toLowerCase(),
               amount: usdAmount,
-              maticAmount: parseInt(userAmount),
+              maticAmount: parseInt(usergame.amount),
               streak: parseInt(myEvents[0].returnValues[2]),
               result: myEvents[0].returnValues[3],
               game: 'RPS',
@@ -648,86 +628,32 @@ export default function Rps() {
       const anonQ = doc(db, "anonUsers", account)
       const anonD = await getDoc(anonQ)
       let anonymousDocument = anonD.data()
-      if (anonymousDocument) {
-        const inputAmount = web3.utils.toWei(usergame.amount.toString(), "ether")
-        let calculateValue = 0
-        try {
-          calculateValue = await rpsgame.methods.calculateValue(inputAmount).call()
-        } catch (e) {
-
-        }
-        rpsgame.methods
-          .play(inputAmount)
-          .send({
-            from: account,
-            value: calculateValue,
-            gasPrice: '40000000000'
-          })
-          .catch((err) => {
-            if (err.code === 4001) {
-              toast.error("User denied transaction signature")
-              myEvents[0] = false
-              setDoubleOrNothingStatus(false)
-              setPlaying(false)
-              setAnimation(false)
-              return false
-            } else {
-              toast.warning("Pending transaction")
-            }
-          });
-
-        let options = {
-          filter: {
-            _to: account
-          },
-          fromBlock: actuallBlock,
-          toBlock: 'latest'
-        };
-
-        do {
-          try {
-            myEvents = await rpsgame.getPastEvents('Play', options)
-          } catch (e) {
-
+      if (myEvents[0] && anonymousDocument) {
+        addDoc(collection(db, "allGames"), {
+          createdAt: time,
+          uid: anonymousDocument.uid,
+          block: myEvents[0].blockNumber,
+          name: anonymousDocument.name,
+          photo: anonymousDocument.photo,
+          account: myEvents[0].returnValues[0].toLowerCase(),
+          amount: usdAmount,
+          maticAmount: parseInt(usergame.amount),
+          streak: parseInt(myEvents[0].returnValues[2]),
+          result: myEvents[0].returnValues[3],
+          game: 'RPS',
+        })
+        mixpanel.track(
+          "rps",
+          {
+            "account": myEvents[0].returnValues[0].toLowerCase(),
+            "result": myEvents[0].returnValues[3],
+            "streak": parseInt(myEvents[0].returnValues[2])
           }
-          await sleep(1000)
-        } while (myEvents[0] === undefined);
-        if (myEvents[0]) {
-
-          let maticPrice = 0
-          try {
-            maticPrice = await swapPolygon.methods.getAmountsOut(decimal.toString(), [maticContract, usdcContract]).call()
-          } catch (e) {
-
-          }
-          const userAmount = web3.utils.fromWei(myEvents[0].returnValues[1], 'ether')
-          const usdAmount = (parseInt(maticPrice[1] / 10000) / 100) * userAmount
-          addDoc(collection(db, "allGames"), {
-            createdAt: time,
-            uid: anonymousDocument.uid,
-            block: myEvents[0].blockNumber,
-            name: anonymousDocument.name,
-            photo: anonymousDocument.photo,
-            account: myEvents[0].returnValues[0].toLowerCase(),
-            amount: usdAmount,
-            maticAmount: parseInt(userAmount),
-            streak: parseInt(myEvents[0].returnValues[2]),
-            result: myEvents[0].returnValues[3],
-            game: 'RPS',
-          })
-          mixpanel.track(
-            "rps",
-            {
-              "account": myEvents[0].returnValues[0].toLowerCase(),
-              "result": myEvents[0].returnValues[3],
-              "streak": parseInt(myEvents[0].returnValues[2])
-            }
-          );
-          setUserGameResult(myEvents[0].returnValues[3])
-          setUserGameStreak(myEvents[0].returnValues[2])
-          setShowGameResult(true)
-          setDoubleOrNothingStatus(false)
-        }
+        );
+        setUserGameResult(myEvents[0].returnValues[3])
+        setUserGameStreak(myEvents[0].returnValues[2])
+        setShowGameResult(true)
+        setDoubleOrNothingStatus(false)
       }
     }
   }
