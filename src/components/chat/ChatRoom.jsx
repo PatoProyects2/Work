@@ -1,12 +1,11 @@
 import React, { useEffect, useState, useRef, useContext } from "react"
-import { addDoc, onSnapshot, orderBy, collection, serverTimestamp, where, limit, getDocs, query, arrayRemove, updateDoc, doc } from "firebase/firestore";
+import { addDoc, onSnapshot, orderBy, collection, serverTimestamp, where, limit, getDocs, query, arrayRemove, updateDoc, doc } from "firebase/firestore"
 import Picker, { SKIN_TONE_MEDIUM_DARK } from 'emoji-picker-react';
 import { Modal, ModalBody, FormGroup, Dropdown, DropdownMenu, DropdownToggle, } from 'reactstrap'
 import { db } from "../../firebase/firesbaseConfig";
 import ChatMessage from './ChatMessage';
 import SendLogo from '../../assets/imgs/send.png'
-import { Context } from '../../context/Context';
-
+import { Context } from '../../context/Context'
 function ChatRoom() {
   const { discordId } = useContext(Context);
   const [userClub, setUserClub] = useState({})

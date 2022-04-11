@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { NavLink } from 'react-router-dom'
 import lodash from 'lodash'
-import { collection, getDocs, query, orderBy, setDoc, doc, where } from "firebase/firestore"
+import { collection, getDocs, query, setDoc, doc, where } from "firebase/firestore"
 import { Button, ButtonGroup } from 'reactstrap'
 import { db } from '../../firebase/firesbaseConfig'
 import MostPlays from './components/MostPlays'
@@ -13,9 +13,8 @@ import DiscordImg from '../../assets/imgs/discord_card.png'
 import TwitterImg from '../../assets/imgs/twitter_card.png'
 import FairPlayImg from '../../assets/imgs/fair_play_hover_card.png'
 import NFTImg from '../../assets/imgs/nft_hover_card.png'
-import { Context } from '../../context/Context';
+import { Context } from '../../context/Context'
 import { useMatchMedia } from '../../hooks/useMatchMedia'
-
 export default function Main() {
   const { discordId } = useContext(Context);
   const [leaderboard, setLeaderboard] = useState({});

@@ -9,10 +9,9 @@ import WalletLink from "walletlink";
 import { doc, getDoc, setDoc, updateDoc, collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { useMixpanel } from 'react-mixpanel-browser';
 import toast from 'react-hot-toast';
-import RpsGame from '../../abis/rpsGame/rpsGame.json'
 import RpsGamePolygon from '../../abis/rpsGamePolygon/rpsGame.json'
 import swapV2 from '../../abis/swap/IUniswapV2Router02.json'
-import { rpsGameContract, polygonSwapContract, maticContract, usdcContract, rpsGamePolygonContract } from '../../components/blockchain/Contracts'
+import { polygonSwapContract, maticContract, usdcContract, rpsGamePolygonContract } from '../../components/blockchain/Contracts'
 import HistoryGames from './components/HistoryGames'
 import ConnectWallet from './components/ConnectWallet'
 import WinStreakLeaderboard from './components/WinStreakLeaderboard'
@@ -25,13 +24,12 @@ import Paper from '../../assets/imgs/paper.gif'
 import Scissors from '../../assets/imgs/scissors.gif'
 import RPSAnimation from '../../assets/imgs/animation.gif'
 import RockLose from '../../assets/imgs/animations/RockLose.gif'
-import RockWin from '../../assets/imgs/animations/RockWin.gif'
+import RockWin from '../../assets/imgs/animations/RockWin.gif' 
 import PaperLose from '../../assets/imgs/animations/PaperLose.gif'
 import PaperWin from '../../assets/imgs/animations/PaperWin.gif'
 import ScissorsLose from '../../assets/imgs/animations/ScissorsLose.gif'
 import ScissorsWin from '../../assets/imgs/animations/ScissorsWin.gif'
-import { Context } from '../../context/Context';
-
+import { Context } from '../../context/Context'
 export default function Rps() {
   const { discordId } = useContext(Context);
   const { setBalance } = useContext(Context);
@@ -409,10 +407,10 @@ export default function Rps() {
         const rpsgame = new web3.eth.Contract(RpsGamePolygon.abi, rpsGamePolygonContract)
         setRpsgame(rpsgame)
       }
-      if (chainId === 80001) {
-        const rpsgame = new web3.eth.Contract(RpsGame.abi, rpsGameContract)
-        setRpsgame(rpsgame)
-      }
+      // if (chainId === 80001) {
+      //   const rpsgame = new web3.eth.Contract(RpsGame.abi, rpsGameContract)
+      //   setRpsgame(rpsgame)
+      // }
       ethereum.on('chainChanged', () => {
         window.location.reload()
       });
@@ -449,7 +447,7 @@ export default function Rps() {
   }
 
   const openGame = () => {
-    if (network === 80001 || network === 137) {
+    if (network === 137) {
       setActive(true)
     } else {
       toast.error("Select a valid network")

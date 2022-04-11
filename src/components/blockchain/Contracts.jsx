@@ -1,4 +1,3 @@
-export const rpsGameContract = "0xc227cB3a59b915808C6ED6c44e9d81C76e645d9e"
 export const polygonSwapContract = "0xa5E0829CaCEd8fFDD4De3c43696c57F7D7A678ff"
 export const rpsGamePolygonContract = "0x55bbD9Cd3c69E96B10506cecb44A55A5251B4579"
 export const maticContract = "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270"

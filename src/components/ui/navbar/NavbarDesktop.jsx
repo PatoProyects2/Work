@@ -139,7 +139,7 @@ export const NavbarDesktop = () => {
                                 Fair Play
                             </NavLink>
                             <a
-                                href="https://eu.mixpanel.com/public/XCghszDcX9eQ52ejMDG8V2"
+                                href="https://eu.mixpanel.com/p/KskavmfUxxoTotudH44Xmg"
                                 target="_blank"
                                 className="nav-item nav-link nav-link-primary d-flex align-items-center c-pointer"
                                 rel="noopener noreferrer"
