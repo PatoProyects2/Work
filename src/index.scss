@@ -594,6 +594,10 @@ a.btn-hover {
 
 /* ROADMAP */
 
+.sm-image {
+    border-radius: 50%;
+}
+
 .indexedStep {
     color: white;
     width: 18px;
@@ -632,7 +636,6 @@ a.btn-hover {
     min-width: 60px;
 }
 
-//   #78350f
 .pop-up {
     margin-top: 45px;
 }
@@ -697,7 +700,7 @@ a.btn-hover {
 
 .profile-chart-container {
     display: flex;
-    max-height: 320px;
+    // max-height: 320px;
     padding: 2rem;
     background-color: #232c31;
     border-radius: 1rem;

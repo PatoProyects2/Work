@@ -133,7 +133,7 @@ function ChatRoom() {
 
   const removeIgnoredUsers = (event) => {
     if (userClub) {
-      updateDoc(doc(db, "clubUsers", userClub.account.stringValue), {
+      updateDoc(doc(db, "clubUsers", userClub.uid.stringValue), {
         ignored: arrayRemove(event)
       })
     }
@@ -172,7 +172,7 @@ function ChatRoom() {
             <div ref={messagesEndRef}></div>
           </ul>
         </div>
-        {discordId !== '' && userGames > 0 ?
+        {discordId !== '' ?
           <form onSubmit={sendMessage}>
             <div className="chat_input_contain">
               <button type="button" className="btn btn-transparent" onClick={openChatSettings}>

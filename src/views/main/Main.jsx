@@ -59,7 +59,8 @@ export default function Main() {
             account: data.account,
             photo: data.photo,
             name: data.name,
-            amount: data.amount
+            amount: data.amount,
+            uid: data.uid
           }
           dayGames = dayGames.concat(array0)
         }
@@ -68,7 +69,9 @@ export default function Main() {
             account: data.account,
             photo: data.photo,
             name: data.name,
-            amount: data.amount
+            amount: data.amount,
+            uid: data.uid
+
           }
           weekGames = weekGames.concat(array1)
         }
@@ -77,7 +80,8 @@ export default function Main() {
             account: data.account,
             photo: data.photo,
             name: data.name,
-            amount: data.amount
+            amount: data.amount,
+            uid: data.uid
           }
           monthGames = monthGames.concat(array2)
         }
@@ -85,17 +89,18 @@ export default function Main() {
           account: data.account,
           photo: data.photo,
           name: data.name,
-          amount: data.amount
+          amount: data.amount,
+          uid: data.uid
         }
         globalGames = globalGames.concat(array3)
       });
 
       let dayObject = []
       dayGames.forEach(x => {
-        if (!dayObject.hasOwnProperty(x.account)) {
-          dayObject[x.account] = []
+        if (!dayObject.hasOwnProperty(x.uid)) {
+          dayObject[x.uid] = []
         }
-        dayObject[x.account].push({
+        dayObject[x.uid].push({
           account: x.account,
           photo: x.photo,
           name: x.name,
@@ -105,10 +110,10 @@ export default function Main() {
 
       let weekObject = []
       weekGames.forEach(x => {
-        if (!weekObject.hasOwnProperty(x.account)) {
-          weekObject[x.account] = []
+        if (!weekObject.hasOwnProperty(x.uid)) {
+          weekObject[x.uid] = []
         }
-        weekObject[x.account].push({
+        weekObject[x.uid].push({
           account: x.account,
           photo: x.photo,
           name: x.name,
@@ -119,10 +124,10 @@ export default function Main() {
 
       let monthObject = []
       monthGames.forEach(x => {
-        if (!monthObject.hasOwnProperty(x.account)) {
-          monthObject[x.account] = []
+        if (!monthObject.hasOwnProperty(x.uid)) {
+          monthObject[x.uid] = []
         }
-        monthObject[x.account].push({
+        monthObject[x.uid].push({
           account: x.account,
           photo: x.photo,
           name: x.name,
@@ -132,10 +137,10 @@ export default function Main() {
 
       let globalObject = []
       globalGames.forEach(x => {
-        if (!globalObject.hasOwnProperty(x.account)) {
-          globalObject[x.account] = []
+        if (!globalObject.hasOwnProperty(x.uid)) {
+          globalObject[x.uid] = []
         }
-        globalObject[x.account].push({
+        globalObject[x.uid].push({
           account: x.account,
           photo: x.photo,
           name: x.name,

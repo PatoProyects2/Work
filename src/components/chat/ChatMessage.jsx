@@ -32,7 +32,7 @@ function ChatMessage({ text, uid, photo, name, level, auth, dsId, userClub }) {
 
     const IgnoreUser = () => {
         if (uid && userClub.account) {
-            updateDoc(doc(db, "clubUsers", userClub.account.stringValue), {
+            updateDoc(doc(db, "clubUsers", userClub.uid.stringValue), {
                 ignored: arrayUnion(uid)
             })
         }
@@ -78,7 +78,7 @@ function ChatMessage({ text, uid, photo, name, level, auth, dsId, userClub }) {
                         <DropdownItem className="dd-menu-item" onClick={OpenStatModal}>Stats</DropdownItem>
                         {auth &&
                             <>
-                                {uid !== auth && userClub[0]
+                                {uid !== auth && userClub
                                     ? <DropdownItem className="dd-menu-item" onClick={IgnoreUser}>Ignore</DropdownItem>
                                     : <DropdownItem className="dd-menu-item" disabled={true}>Ignore</DropdownItem>
                                 }

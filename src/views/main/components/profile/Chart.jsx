@@ -21,7 +21,10 @@ export default function Chart({ userData }) {
             var date = new Date(created * 1000);
             let top = undefined
             if (data.uid.stringValue !== 'anonymous') {
-              const profit = data.profit.doubleValue.toFixedNumber(2)
+              let profit = 0
+              if (data.profit.doubleValue) {
+                profit = data.profit.doubleValue.toFixedNumber(2)
+              }
               var createdTime = date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds()
               top = {
                 profit: profit,

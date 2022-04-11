@@ -6,8 +6,8 @@ export default function Presence() {
     useEffect(() => {
         const readData = async () => {
             var unixTimeStamp = Math.round((new Date()).getTime() / 1000);
-            let lastHour = unixTimeStamp - 3600
-            const q1 = query(collection(db, 'status'), where('state', '==', 'online'), where('time', '>', lastHour))
+            let lastDay = unixTimeStamp - 86400
+            const q1 = query(collection(db, 'status'), where('state', '==', 'online'), where('time', '>', lastDay))
             const d1 = await getDocs(q1)
             setActive(d1._snapshot.docChanges.length)
         }

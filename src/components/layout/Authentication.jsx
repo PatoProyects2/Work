@@ -43,7 +43,7 @@ export default function AccountFirebase() {
           code: url,
           scope: "identify email",
           grantType: "authorization_code",
-          redirectUri: "https://patoproyects2.github.io/Work/",
+          redirectUri: "https://www.rpsgames.club/",
         })
         if (res) {
           window.localStorage.setItem('loggedUser', res.access_token)
@@ -54,25 +54,6 @@ export default function AccountFirebase() {
       }
     }
   }
-
-  // useEffect(() => {
-  //   const guildId = process.env.REACT_APP_DISCORD_GUILDID
-  //   const api = `https://discord.com/api/v9/guilds/${guildId}/members/${baseData.uid}/role/${userRole}`
-
-  //   const putMethod = {
-  //     method: 'PUT', // Method itself
-  //     headers: {
-  //       'Content-type': 'application/json; charset=UTF-8',
-  //     },
-  //     body: JSON.stringify('OTYxNjU2OTkxMTQ5ODc1MjMy.Yk8K3Q.dTANWuQKWUK48iNH58sv0W0r5S4')
-  //   }
-  //   console.log(baseData.uid)
-  //   console.log(userRole)
-  //   fetch(api, putMethod)
-  //     .then(response => response.json())
-  //     .then(data => console.log(data))
-  //     .catch(err => console.log(err))
-  // }, [baseData, userRole])
 
   useEffect(() => {
     readUserData()
@@ -220,7 +201,7 @@ export default function AccountFirebase() {
   }
 
   const getToken = () => {
-    const ouathLink = 'https://discord.com/api/oauth2/authorize?client_id=961656991149875232&redirect_uri=https%3A%2F%2Fpatoproyects2.github.io%2FWork%2F&response_type=code&scope=identify%20email'
+    const ouathLink = 'https://discord.com/api/oauth2/authorize?client_id=961656991149875232&redirect_uri=https%3A%2F%2Fwww.rpsgames.club%2F&response_type=code&scope=identify%20email'
     location.href = ouathLink
   }
 

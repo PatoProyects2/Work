@@ -66,10 +66,10 @@
 }
 
 .nft-roadmap__img-content {
-    width: 60%;  
+    width: 60%;
 }
 
-.nft-roadmap__img-content img{
+.nft-roadmap__img-content img {
     width: 100%;
     height: auto;
 }
@@ -82,7 +82,7 @@
     margin-left: 0;
 }
 
-.nft-roadmap__section:nth-child(odd) .nft-roadmap__img-content{
+.nft-roadmap__section:nth-child(odd) .nft-roadmap__img-content {
     margin-right: 0;
     margin-left: 0;
 }
@@ -99,40 +99,31 @@
     .nft-roadmap__content {
         flex-direction: row;
     }
-
     .nft-roadmap__line,
     .nft-roadmap__head {
         left: calc(50%);
     }
-
     .nft-roadmap__head {
         top: 20%;
     }
-
     .nft-roadmap__text-content {
         width: calc(50% - 2rem);
     }
-
     .nft-roadmap__img-content {
-        width: 40%;  
+        width: 40%;
     }
-
     .nft-roadmap__img-content img {
         max-width: 350px;
     }
-
-    .nft-roadmap__section:nth-child(odd) .nft-roadmap__content{
+    .nft-roadmap__section:nth-child(odd) .nft-roadmap__content {
         flex-direction: row-reverse;
     }
-
     .nft-roadmap__section:nth-child(even) .nft-roadmap__img-content {
         margin-left: 5rem;
     }
-    
     .nft-roadmap__section:nth-child(odd) .nft-roadmap__img-content {
         margin-right: 5rem;
     }
-
     .nft-roadmap__text-content {
         width: calc(45% - 2rem);
     }
