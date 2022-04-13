@@ -445,8 +445,8 @@ a.btn-hover {
     transform: matrix(1, -0.05, 0.05, 1, 0, 0);
 }
 
-.game-card:hover .card-bg,
-.social-card:hover .card-bg {
+.game-card a:hover .card-bg,
+.social-card a:hover .card-bg {
     opacity: 1;
     transform: scale(1.5);
 }
@@ -707,7 +707,7 @@ a.btn-hover {
     border-radius: 1rem;
 }
 
-.profile-chart-container div,
+.profile-chart-container>div,
 .profile-chart-container canvas {
     width: 100% !important;
 }
@@ -757,9 +757,9 @@ a.btn-hover {
         background-color: #232c31;
         border-radius: 1rem;
     }
-    .profile-chart-container canvas {
-        width: 1000px !important;
-    }
+    // .profile-chart-container canvas {
+    //     width: 1000px !important;
+    // }
 }
 
 @media (min-width: 990px) and (max-width: 1100px) {
@@ -767,11 +767,14 @@ a.btn-hover {
         flex-direction: column;
     }
     .content-section.expanded .profile-info-container {
-        width: 70%;
+        width: 95%;
         margin-left: 0;
     }
     .content-section.expanded .profile-container {
         width: 95%;
+    }
+    .content-section.expanded .profile-data-container {
+        width: 100%;
     }
 }
 

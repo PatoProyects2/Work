@@ -17,6 +17,7 @@ import { Context } from '../../context/Context'
 import { useMatchMedia } from '../../hooks/useMatchMedia'
 export default function Main() {
   const { discordId } = useContext(Context);
+  const { unixTime } = useContext(Context);
   const [leaderboard, setLeaderboard] = useState({});
   const [liveBets, setLiveBets] = useState(true);
   const [mostPlays, setMostPlays] = useState(false);
@@ -33,15 +34,12 @@ export default function Main() {
 
   useEffect(() => {
     const readLeaderboard = async () => {
-      var unixTimeStamp = Math.round((new Date()).getTime() / 1000);
-
       if (discordId !== '') {
-        setDoc(doc(db, "status", discordId), { state: 'online', time: unixTimeStamp })
+        setDoc(doc(db, "status", discordId), { state: 'online', time: unixTime })
       }
-
-      var lastDay = unixTimeStamp - 86400
-      var lastWeek = unixTimeStamp - 604800
-      var lastMonth = unixTimeStamp - 2592000
+      var lastDay = unixTime - 86400
+      var lastWeek = unixTime - 604800
+      var lastMonth = unixTime - 2592000
 
       let dayGames = []
       let weekGames = []
@@ -353,8 +351,6 @@ export default function Main() {
     }
   }
 
-
-
   return (
     <>
       <div className='cards-container'>
@@ -388,12 +384,16 @@ export default function Main() {
         </div>
         <div className='row text-center mb-2'>
           <div className='social-card col-6 mx-auto'>
-            <div className='card-bg twitter-bg'></div>
-            <a href='https://twitter.com/RPSGamesClub' target="_blank" rel="noreferrer"><img src={TwitterImg} width='400' /></a>
+            <a href='https://twitter.com/RPSGamesClub' target="_blank" rel="noreferrer">
+              <div className='card-bg twitter-bg'></div>
+              <img src={TwitterImg} width='400' />
+            </a>
           </div>
           <div className='social-card col-6 mx-auto'>
-            <div className='card-bg discord-bg'></div>
-            <a href="https://discord.gg/AM65VtvP2Q" target="_blank" rel="noreferrer"><img src={DiscordImg} width='400' /></a>
+            <a href="https://discord.gg/AM65VtvP2Q" target="_blank" rel="noreferrer">
+              <div className='card-bg discord-bg'></div>
+              <img src={DiscordImg} width='400' />
+            </a>
           </div>
         </div>
       </div>

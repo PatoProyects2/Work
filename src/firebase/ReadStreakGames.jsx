@@ -1,14 +1,19 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { collection, query, onSnapshot, orderBy, limit, where } from "firebase/firestore";
-import { DropdownItem, DropdownMenu } from 'reactstrap'
+import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap'
+import { collection, where, query, orderBy, onSnapshot } from "firebase/firestore";
 import { db } from './firesbaseConfig'
 import { Context } from '../context/Context'
-export default function ReadAllGames(props) {
+export default function ReadStreakGames(props) {
     const { unixTime } = useContext(Context);
+    const [dropdown, setDropdown] = useState(false);
     const [historyPlays, setHistoryPlays] = useState(false);
 
+    const toggleMenu = () => {
+        setDropdown(!dropdown);
+    }
+
     useEffect(() => {
-        const q = query(collection(db, "allGames"), where("game", "==", "RPS"), orderBy("createdAt", "desc"), limit(12))
+        const q = query(collection(db, "clubUsers"), where("rps.dayWinStreak", ">", 2), orderBy("rps.dayWinStreak", "desc"))
         const unsub = onSnapshot(q, (doc) => {
             const played = doc.docs.map(document => {
                 const newData = {
@@ -42,6 +47,7 @@ export default function ReadAllGames(props) {
         });
         return () => unsub()
     }, [])
+
 
     return (
         <>
@@ -78,12 +84,7 @@ export default function ReadAllGames(props) {
                                             }
                                         </>
                                     }
-                                    {" played " + games.maticAmount + " MATIC and"}
-                                    <span style={{ color: games.result ? "mediumseagreen" : "crimson" }}>
-                                        {games.result === false ? " lost all " : ""}{games.result === true ? " doubled " : ""}
-                                    </span>
-                                    {games.streak > 1 ? games.streak + " times " : ""}
-
+                                    {" is on a " + games.streak + " win streak"}
                                     <small className="d-flex justify-content-end" key={games.second}>
                                         {games.second < 0 || games.second === 0 ? "now" : ""}
                                         {games.second > 0 && games.second < 60 ? games.second + " seconds ago" : ""}
@@ -102,5 +103,5 @@ export default function ReadAllGames(props) {
                 }
             </DropdownMenu>
         </>
-    );
+    )
 }

@@ -70,7 +70,6 @@ ReactDOM.render(
           )}
         </Toaster>
         <Routes>
-
           <Route path="/" element={<GlobalLayout />}>
             <Route index element={<Main />} />
             <Route path="rps" element={<Rps />} />
@@ -85,7 +84,7 @@ ReactDOM.render(
             <Route path="*" element={<Navigate replace to="/" />} />
           </Route>
 
-          {/* <Route index element={<Maintenance />} /> */} // Remplazarlo por la etiqueta Route de arriba
+          {/* <Route index element={<Maintenance />} /> // Remplazarlo por la etiqueta Route de arriba */}
 
         </Routes>
       </ScrollToTop>

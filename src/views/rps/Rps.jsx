@@ -4,9 +4,7 @@ import { useMixpanel } from 'react-mixpanel-browser';
 import toast from 'react-hot-toast';
 import HistoryGames from './components/HistoryGames'
 import ConnectWallet from './components/ConnectWallet'
-import WinStreakLeaderboard from './components/WinStreakLeaderboard'
 import ReadAllGames from '../../firebase/ReadAllGames'
-import { ReadUnixTime } from '../../firebase/ReadUnixTime'
 import { db } from '../../firebase/firesbaseConfig'
 import { useMatchMedia } from '../../hooks/useMatchMedia'
 import Rock from '../../assets/imgs/rock.gif'
@@ -23,6 +21,7 @@ import { Context } from '../../context/Context'
 import { useWeb3 } from '../../hooks/useWeb3'
 export default function Rps() {
   const { discordId } = useContext(Context);
+  const { unixTime } = useContext(Context);
   const { balance } = useContext(Context);
   const [userData, setUserData] = useState({});
   const [usergame, setUsergame] = useState({
@@ -41,7 +40,6 @@ export default function Rps() {
   const [doubleOrNothingStatus, setDoubleOrNothingStatus] = useState(undefined);
   const [showGameResult, setShowGameResult] = useState(false);
   const isMobileResolution = useMatchMedia('(max-width:650px)', false);
-  const unixTimeStamp = ReadUnixTime();
   const mixpanel = useMixpanel();
   const {
     web3,
@@ -354,7 +352,7 @@ export default function Rps() {
       const d = await getDoc(q)
       let playerDocument = d.data()
       if (playerDocument.rps.lastGameBlock < actuallBlock) {
-        var time = unixTimeStamp
+        var time = unixTime
         const sleep = (milliseconds) => {
           return new Promise(resolve => setTimeout(resolve, milliseconds))
         }
@@ -544,15 +542,10 @@ export default function Rps() {
     <>
       {isMobileResolution ?
         <div className="d-flex flex-row justify-content-start gap-1">
-          {account !== undefined && account !== '0x000000000000000000000000000000000000dEaD' ?
+          {account !== undefined && account !== '0x000000000000000000000000000000000000dEaD' &&
             <>
               <HistoryGames
                 isMobileResolution={isMobileResolution}
-                unixTimeStamp={unixTimeStamp}
-              />
-              <WinStreakLeaderboard
-                isMobileResolution={isMobileResolution}
-                unixTimeStamp={unixTimeStamp}
               />
               <ConnectWallet
                 decimal={decimal}
@@ -565,22 +558,15 @@ export default function Rps() {
                 toast={toast}
               />
             </>
-            :
-            ""
           }
         </div>
         :
         <div className="d-flex flex-row justify-content-between mt-3">
-          {account !== undefined && account !== '0x000000000000000000000000000000000000dEaD' ?
+          {account !== undefined && account !== '0x000000000000000000000000000000000000dEaD' &&
             <>
               <div className="d-flex flex-row gap-3">
                 <HistoryGames
                   isMobileResolution={isMobileResolution}
-                  unixTimeStamp={unixTimeStamp}
-                />
-                <WinStreakLeaderboard
-                  isMobileResolution={isMobileResolution}
-                  unixTimeStamp={unixTimeStamp}
                 />
                 <ConnectWallet
                   decimal={decimal}
@@ -594,8 +580,6 @@ export default function Rps() {
                 />
               </div>
             </>
-            :
-            ""
           }
         </div>
       }
