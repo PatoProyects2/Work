@@ -161,7 +161,7 @@ export const NavbarDesktop = () => {
                             </a>
                             <NavLink
                                 onClick={() => setShowOffCanvas(false)}
-                                className={({ isActive }) => "nav-item nav-link nav-link-primary d-flex align-items-center" + (isActive ? ' active' : '')} to="/rps/demo">
+                                className={({ isActive }) => "nav-item nav-link nav-link-primary d-flex align-items-center" + (isActive ? ' active' : '')} to="/demo">
                                 <svg
                                     width="20"
                                     height="20"

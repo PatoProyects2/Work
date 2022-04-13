@@ -658,7 +658,7 @@ a.btn-hover {
     margin-top: 3rem;
     margin-left: auto;
     margin-right: auto;
-    padding: 1rem;
+    padding: 1.5em 1rem;
     width: 90%;
 }
 
@@ -670,7 +670,7 @@ a.btn-hover {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    gap: 1rem
+    gap: 2rem;
 }
 
 .profile-info-container {
@@ -682,7 +682,7 @@ a.btn-hover {
     padding-bottom: 1rem;
     background-color: #232c31;
     border-radius: 1rem;
-    width: 30%;
+    width: 35%;
 }
 
 .profile-data-container {
@@ -690,6 +690,8 @@ a.btn-hover {
     flex-direction: column;
     justify-content: space-between;
     gap: 2rem;
+    width: 65%;
+    padding-right: 1rem;
 }
 
 .profile-stats-container {
@@ -700,14 +702,14 @@ a.btn-hover {
 
 .profile-chart-container {
     display: flex;
-    // max-height: 320px;
     padding: 2rem;
     background-color: #232c31;
     border-radius: 1rem;
 }
 
+.profile-chart-container div,
 .profile-chart-container canvas {
-    max-width: 100%;
+    width: 100% !important;
 }
 
 .profile-game-stats,
@@ -775,7 +777,7 @@ a.btn-hover {
 
 @media (min-width: 990px) {
     .profile-container {
-        width: 80%;
+        width: 95%;
     }
 }
 
@@ -785,18 +787,16 @@ a.btn-hover {
     }
 }
 
-@media (min-width: 1380px) {
-    .profile-container {
-        width: 60%;
-    }
-}
-
-@media (min-width: 1550px) {
-    .profile-container {
-        width: 50%;
-    }
-}
-
+// @media (min-width: 1380px) {
+//     .profile-container {
+//         width: 60%;
+//     }
+// }
+// @media (min-width: 1550px) {
+//     .profile-container {
+//         width: 90%;
+//     }
+// }
 
 /* CHAT */
 

@@ -43,7 +43,7 @@ export default function dayWinStreakLeaderboard(props) {
     }
 
     useEffect(() => {
-        const q = query(collection(db, "clubUsers"), where("rps.dayWinStreak", ">", 0), orderBy("rps.dayWinStreak", "desc"))
+        const q = query(collection(db, "clubUsers"), where("rps.dayWinStreak", ">", 2), orderBy("rps.dayWinStreak", "desc"))
         const unsub = onSnapshot(q, (doc) => {
             const streaks = doc.docs.map(winStreak => winStreak.data())
             setStreakData(streaks)

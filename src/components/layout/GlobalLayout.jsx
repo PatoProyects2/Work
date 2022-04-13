@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { Outlet } from 'react-router-dom'
-import ChatRoom from '../../components/chat/ChatRoom';
+import ChatRoom from '../chat/ChatRoom';
 import Footer from '../footer/Footer'
 import { NavbarDesktop } from '../ui/navbar/NavbarDesktop';
 import { Context } from '../../context/Context';
-export function MainLayout() {
+export function GlobalLayout() {
   const [showChat, setShowChat] = useState(false);
   const [balance, setBalance] = useState('');
   const [discordId, setDiscordId] = useState('');
@@ -19,7 +19,6 @@ export function MainLayout() {
           <div className={`chat-section ${showChat ? 'expanded' : ''}`}>
             <ChatRoom />
           </div>
-
           <div className="chat_expand">
             <span className={`chat_collapse_ico ${showChat ? 'expanded' : ''}`} onClick={() => setShowChat(!showChat)}></span>
           </div>

@@ -48,11 +48,7 @@ export default function Chart({ userData }) {
     <>
       {userData &&
         <>
-          {userData.rps.totalGames > 0 ?
-            <DataChart data={data} />
-            :
-            <span>No games found</span>
-          }
+          {userData.rps.totalGames > 0 ? <DataChart data={data} /> : <span>No games found</span>}
         </>
       }
     </>

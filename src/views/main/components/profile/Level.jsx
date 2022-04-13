@@ -25,7 +25,7 @@ const ProgressExp = ({ maxGames, minGames, cGames, xpClass }) => {
   );
 }
 
-export default function Level({ userData }) {
+export default function Level({ userData, showLvl = true }) {
   const totalGamesPerLevel = [10, 20, 30, 40, 50, 65, 80, 95, 110, 125, 150, 200, 250, 300, 350, 390, 430, 470, 510, 550, 600, 650, 700, 750];
 
   const getMinMaxGames = (level) => {
@@ -58,16 +58,19 @@ export default function Level({ userData }) {
     <>
       {userData[0] &&
         <>
-          <div className='d-flex justify-content-between align-items-center my-2'>
-            <span>Current level:</span>
-            <div className={xpClass(userData[0].level)[0]}>
-              <span className="circle">
-                <span>{userData[0].level}</span>
-              </span>
+          {showLvl && (
+            <div className='d-flex justify-content-between align-items-center my-2'>
+              <span>Current level:</span>
+              <div className={xpClass(userData[0].level)[0]}>
+                <span className="circle">
+                  <span>{userData[0].level}</span>
+                </span>
+              </div>
             </div>
-          </div>
+          )}
+
           <div className='my-2'>
-            <ProgressExp {...getMinMaxGames(userData[0].level)} cGames={userData[0].rps.totalGames} xpClass={xpClass(userData[0].level)[1]}/> 
+            <ProgressExp {...getMinMaxGames(userData[0].level)} cGames={userData[0].rps.totalGames} xpClass={xpClass(userData[0].level)[1]} />
           </div>
         </>
       }

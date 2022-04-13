@@ -6,13 +6,13 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
+import 'bootstrap/dist/css/bootstrap.css'
 import { Toaster, ToastBar, toast } from 'react-hot-toast';
 import { MixpanelProvider } from 'react-mixpanel-browser';
-import { MainLayout } from './components/layout/MainLayout'
+import { GlobalLayout } from './components/layout/GlobalLayout'
 import Main from './views/main/Main'
 import MainAbout from './views/main/components/about/About'
 import MainProfile from './views/main/components/profile/Profile'
-import { RpsLayout } from './components/layout/RpsLayout'
 import Rps from './views/rps/Rps'
 import Demo from './views/rps/Demo'
 import RpsAbout from './views/rps/components/about/About'
@@ -20,10 +20,11 @@ import Nfts from './views/main/components/nfts/Nfts';
 import Fairplay from './views/main/components/fairplay/Fairplay';
 import RefundPolicy from './views/main/refundPolicy/RefundPolicy';
 import Terms from './views/main/terms/Terms';
-import * as serviceWorker from './serviceWorker'
-import 'bootstrap/dist/css/bootstrap.css'
-import './index.scss'
+import Maintenance from './views/status/Maintenance';
 import ScrollToTop from './components/ui/ScrollToTop';
+import * as serviceWorker from './serviceWorker'
+import './index.scss'
+
 
 ReactDOM.render(
   <MixpanelProvider>
@@ -69,22 +70,23 @@ ReactDOM.render(
           )}
         </Toaster>
         <Routes>
-          <Route path="/" element={<MainLayout />}>
+
+          <Route path="/" element={<GlobalLayout />}>
             <Route index element={<Main />} />
+            <Route path="rps" element={<Rps />} />
             <Route path="nfts" element={<Nfts />} />
             <Route path="fair-play" element={<Fairplay />} />
             <Route path="about" element={<MainAbout />} />
             <Route path="profile" element={<MainProfile />} />
             <Route path="refund-policy" element={<RefundPolicy />} />
             <Route path="terms" element={<Terms />} />
-            <Route path="*" element={<Navigate replace to="/" />} />
-          </Route>
-          <Route path="/rps" element={<RpsLayout />}>
-            <Route index element={<Rps />} />
             <Route path="demo" element={<Demo />} />
             <Route path="about" element={<RpsAbout />} />
-            <Route path="*" element={<Navigate replace to="/rps" />} />
+            <Route path="*" element={<Navigate replace to="/" />} />
           </Route>
+
+          {/* <Route index element={<Maintenance />} /> */} // Remplazarlo por la etiqueta Route de arriba
+
         </Routes>
       </ScrollToTop>
     </BrowserRouter >

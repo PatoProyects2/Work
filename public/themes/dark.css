@@ -146,6 +146,7 @@ input[type=radio][name=pic1]:checked+img {
 }
 
 .d-modal .btn-close,
+.chat-userstats-modal .btn-close,
 .oc-header .btn-close {
     background: #ffb74d !important;
     -webkit-mask-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/%3e%3c/svg%3e") !important;
@@ -213,11 +214,17 @@ svg:hover>g.brand-icon {
     background-color: #292b2c !important;
 }
 
-.d-modal .btn.btn-transparent {
+.chat-userstats-modal .modal-content {
+    background-color: #212529 !important;
+}
+
+.d-modal .btn.btn-transparent,
+.chat-userstats-modal .btn.btn-transparent {
     color: #ffb74d !important;
 }
 
-.d-modal {
+.d-modal,
+.chat-userstats-modal {
     color: whitesmoke;
 }
 
@@ -440,7 +447,10 @@ svg:hover>g.brand-icon {
     display: flex;
     justify-content: space-between;
     margin-top: 1rem;
-    background: #535759;
+    margin-left: 1rem;
+    margin-right: 1rem;
+    /* background: #535759; */
+    background: #232c31;
     padding: 15px;
     border-radius: 5px;
 }
@@ -468,7 +478,7 @@ svg:hover>g.brand-icon {
 .user-daily-stats {
     display: flex;
     flex-direction: column;
-    background-color: #2f3e45;
+    /* background-color: #2f3e45; */
     border-radius: 5px;
     padding: 10px;
     width: 60%;
@@ -548,7 +558,8 @@ svg:hover>g.brand-icon {
     margin-top: 1.2rem;
     margin-left: 1rem;
     margin-right: 1rem;
-    background: #535759;
+    /* background: #535759; */
+    background-color: #232c31;
     border-radius: 5px;
     padding: 10px;
 }

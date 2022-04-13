@@ -1,17 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react'
-import Web3 from 'web3'
-import Web3Modal from "web3modal";
-import WalletConnectProvider from "@walletconnect/web3-provider";
-import Torus from "@toruslabs/torus-embed";
-import Portis from "@portis/web3";
-import ethProvider from "eth-provider";
-import WalletLink from "walletlink";
 import { doc, getDoc, setDoc, updateDoc, collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { useMixpanel } from 'react-mixpanel-browser';
 import toast from 'react-hot-toast';
-import RpsGamePolygon from '../../abis/rpsGamePolygon/rpsGame.json'
-import swapV2 from '../../abis/swap/IUniswapV2Router02.json'
-import { polygonSwapContract, maticContract, usdcContract, rpsGamePolygonContract } from '../../components/blockchain/Contracts'
 import HistoryGames from './components/HistoryGames'
 import ConnectWallet from './components/ConnectWallet'
 import WinStreakLeaderboard from './components/WinStreakLeaderboard'
@@ -24,27 +14,21 @@ import Paper from '../../assets/imgs/paper.gif'
 import Scissors from '../../assets/imgs/scissors.gif'
 import RPSAnimation from '../../assets/imgs/animation.gif'
 import RockLose from '../../assets/imgs/animations/RockLose.gif'
-import RockWin from '../../assets/imgs/animations/RockWin.gif' 
+import RockWin from '../../assets/imgs/animations/RockWin.gif'
 import PaperLose from '../../assets/imgs/animations/PaperLose.gif'
 import PaperWin from '../../assets/imgs/animations/PaperWin.gif'
 import ScissorsLose from '../../assets/imgs/animations/ScissorsLose.gif'
 import ScissorsWin from '../../assets/imgs/animations/ScissorsWin.gif'
 import { Context } from '../../context/Context'
+import { useWeb3 } from '../../hooks/useWeb3'
 export default function Rps() {
   const { discordId } = useContext(Context);
-  const { setBalance } = useContext(Context);
-  const [web3, setWeb3] = useState({});
-  const [rpsgame, setRpsgame] = useState({});
-  const [swapPolygon, setSwapPolygon] = useState({});
+  const { balance } = useContext(Context);
   const [userData, setUserData] = useState({});
-  const [web3ModalInfo, setWeb3ModalInfo] = useState({});
   const [usergame, setUsergame] = useState({
     hand: '',
     amount: 0
   });
-  const [account, setAccount] = useState('0x000000000000000000000000000000000000dEaD');
-  const [walletBalance, setWalletBalance] = useState(0);
-  const [network, setNetwork] = useState(0);
   const [decimal, setDecimal] = useState(1000000000000000000);
   const [userGameStreak, setUserGameStreak] = useState(0);
   const [userhand, setUserhand] = useState(0);
@@ -59,10 +43,19 @@ export default function Rps() {
   const isMobileResolution = useMatchMedia('(max-width:650px)', false);
   const unixTimeStamp = ReadUnixTime();
   const mixpanel = useMixpanel();
+  const {
+    web3,
+    rpsgame,
+    network,
+    account,
+    maticPrice,
+    readBlockchainData,
+    disconnectWallet,
+  } = useWeb3()
 
   useEffect(() => {
-    let token = window.localStorage.getItem('loggedUser')
-    if (!token) {
+    const local = window.localStorage.getItem('loggedUser')
+    if (!local) {
       toast('Log in if you want to save you game stats and ahievements', {
         duration: 30000,
         position: 'top-right',
@@ -83,7 +76,7 @@ export default function Rps() {
         },
       });
     }
-  }, [discordId])
+  }, [])
 
   useEffect(() => {
     loadUserGame()
@@ -299,151 +292,23 @@ export default function Rps() {
         }
       }
     } else {
-      const anonDoc = await getDoc(doc(db, "anonUsers", account))
-      const anonData = anonDoc.data()
-      if (!anonData) {
-        if (account !== '0x000000000000000000000000000000000000dEaD') {
-          const arrayData = {
-            uid: 'anonymous',
-            account: account,
-            name: '',
-            photo: 'https://firebasestorage.googleapis.com/v0/b/games-club-dce4d.appspot.com/o/ClubLogo.png?alt=media&token=5dd64484-c99f-4ce9-a06b-0a3ee112b37b',
-            level: 1,
+      if (account !== undefined) {
+        const anonDoc = await getDoc(doc(db, "anonUsers", account))
+        const anonData = anonDoc.data()
+        if (!anonData) {
+          if (account !== '0x000000000000000000000000000000000000dEaD') {
+            const arrayData = {
+              uid: 'anonymous',
+              account: account,
+              name: '',
+              photo: 'https://firebasestorage.googleapis.com/v0/b/games-club-dce4d.appspot.com/o/ClubLogo.png?alt=media&token=5dd64484-c99f-4ce9-a06b-0a3ee112b37b',
+              level: 1,
+            }
+            setDoc(doc(db, "anonUsers", account), arrayData).then(loadUserGame())
           }
-          setDoc(doc(db, "anonUsers", account), arrayData).then(loadUserGame())
         }
       }
     }
-  }
-
-  const connectWeb3Modal = async () => {
-    const providerOptions = {
-      walletconnect: {
-        display: {
-          description: " ",
-        },
-        package: WalletConnectProvider,
-        options: {
-          rpc: {
-            137: "https://polygon-mainnet.infura.io/v3/90d296c660054ac58664fde980846688",
-          },
-        }
-      },
-      torus: {
-        display: {
-          description: " ",
-        },
-        package: Torus,
-        options: {
-          networkParams: {
-            host: "https://polygon-mainnet.infura.io/v3/90d296c660054ac58664fde980846688",
-            chainId: 137,
-            networkId: 137,
-            blockExplorer: "https://polygonscan.com/",
-            ticker: "MATIC",
-            tickerName: "MATIC",
-          },
-        }
-      },
-      portis: {
-        display: {
-          description: " ",
-        },
-        package: Portis,
-        options: {
-          id: "fc6fd5a9-493b-4806-858d-ff67918ea1dc",
-          network: "matic",
-        },
-      },
-      walletlink: {
-        display: {
-          description: " ",
-        },
-        package: WalletLink,
-        options: {
-          appName: "RPS",
-          rpc: "https://polygon-mainnet.infura.io/v3/90d296c660054ac58664fde980846688",
-          chainId: 137,
-          appLogoUrl: null,
-          darkMode: false
-        },
-      },
-      frame: {
-        display: {
-          description: " ",
-        },
-        package: ethProvider
-      },
-    };
-    const web3Modal = new Web3Modal({
-      cacheProvider: false,
-      providerOptions,
-      //theme: theme
-    });
-    setWeb3ModalInfo(web3Modal)
-    try {
-      const provider = await web3Modal.connect();
-      if (provider._portis) {
-        provider._portis.showPortis();
-      }
-      const web3 = new Web3(provider);
-      setWeb3(web3)
-      const accounts = await web3.eth.getAccounts();
-      setAccount(accounts[0].toLowerCase())
-      ethereum.on('accountsChanged', () => {
-        window.location.reload()
-      });
-      web3.eth.getBalance(accounts[0])
-        .then(b => {
-          setBalance(b)
-          setWalletBalance(b)
-        })
-        .catch(err => console.log(err))
-      const chainId = await web3.eth.getChainId();
-      setNetwork(chainId)
-      if (chainId === 137) {
-        const polygonSwap = new web3.eth.Contract(swapV2.abi, polygonSwapContract)
-        setSwapPolygon(polygonSwap)
-        const rpsgame = new web3.eth.Contract(RpsGamePolygon.abi, rpsGamePolygonContract)
-        setRpsgame(rpsgame)
-      }
-      // if (chainId === 80001) {
-      //   const rpsgame = new web3.eth.Contract(RpsGame.abi, rpsGameContract)
-      //   setRpsgame(rpsgame)
-      // }
-      ethereum.on('chainChanged', () => {
-        window.location.reload()
-      });
-      if (chainId !== 137) {
-        try {
-          await ethereum.sendAsync({
-            method: 'wallet_addEthereumChain',
-            params: [{
-              chainId: "0x89",
-              chainName: "Polygon Mainnet",
-              rpcUrls: ["https://polygon-rpc.com/"],
-              iconUrls: [""],
-              nativeCurrency: {
-                name: "MATIC",
-                symbol: "MATIC",
-                decimals: 18,
-              },
-              blockExplorerUrls: ["https://explorer.matic.network/"],
-            }],
-          });
-        } catch (error) {
-
-        }
-      }
-    } catch (e) {
-
-    }
-  }
-
-  const disconnectWallet = () => {
-    web3ModalInfo.clearCachedProvider();
-    setActive(false)
-    setAccount('0x000000000000000000000000000000000000dEaD')
   }
 
   const openGame = () => {
@@ -477,74 +342,76 @@ export default function Rps() {
       setDoubleOrNothingStatus(false)
       return false
     }
-
-    var time = unixTimeStamp
-    const sleep = (milliseconds) => {
-      return new Promise(resolve => setTimeout(resolve, milliseconds))
-    }
-    setDoubleOrNothingStatus(true)
-    setPlaying(true)
-    setAnimation(true)
-
-    let myEvents = []
     let actuallBlock = 0
-    let dayBlock = 0
-    let maticPrice = 0
-    let profit = 0
-    let calculateValue = 0
-    let usdAmount = 0
-    let options = {}
-    const inputAmount = web3.utils.toWei(usergame.amount.toString(), "ether")
     try {
       actuallBlock = await web3.eth.getBlockNumber()
-      calculateValue = await rpsgame.methods.calculateValue(inputAmount).call()
-      maticPrice = await swapPolygon.methods.getAmountsOut(decimal.toString(), [maticContract, usdcContract]).call()
-      usdAmount = (parseInt(maticPrice[1] / 10000) / 100) * usergame.amount
-      dayBlock = actuallBlock - 43200
-      options = {
-        filter: {
-          _to: account
-        },
-        fromBlock: actuallBlock,
-        toBlock: 'latest'
-      };
-      rpsgame.methods
-        .play(inputAmount)
-        .send({
-          from: account,
-          value: calculateValue,
-          gasPrice: '40000000000'
-        })
-        .catch((err) => {
-          if (err.code === 4001) {
-            toast.error("User denied transaction signature")
-            myEvents[0] = false
-            setDoubleOrNothingStatus(false)
-            setPlaying(false)
-            setAnimation(false)
-            return false
-          } else {
-            toast.warning("Pending transaction")
-          }
-        });
-    } catch (e) {
+    } catch (err) {
 
     }
-
-    do {
-      try {
-        myEvents = await rpsgame.getPastEvents('Play', options)
-      } catch (e) {
-
-      }
-      await sleep(1000)
-    } while (myEvents[0] === undefined);
 
     if (discordId !== '') {
       const q = doc(db, "clubUsers", discordId)
       const d = await getDoc(q)
       let playerDocument = d.data()
       if (playerDocument.rps.lastGameBlock < actuallBlock) {
+        var time = unixTimeStamp
+        const sleep = (milliseconds) => {
+          return new Promise(resolve => setTimeout(resolve, milliseconds))
+        }
+        setDoubleOrNothingStatus(true)
+        setPlaying(true)
+        setAnimation(true)
+
+        let myEvents = []
+        let dayBlock = 0
+        let profit = 0
+        let calculateValue = 0
+        let usdAmount = 0
+        let options = {}
+        const inputAmount = web3.utils.toWei(usergame.amount.toString(), "ether")
+        try {
+          calculateValue = await rpsgame.methods.calculateValue(inputAmount).call()
+          usdAmount = parseInt(usergame.amount) * maticPrice
+          dayBlock = actuallBlock - 43200
+          options = {
+            filter: {
+              _to: account
+            },
+            fromBlock: actuallBlock,
+            toBlock: 'latest'
+          };
+          rpsgame.methods
+            .play(inputAmount)
+            .send({
+              from: account,
+              value: calculateValue,
+              gasPrice: '40000000000'
+            })
+            .catch((err) => {
+              if (err.code === 4001) {
+                toast.error("User denied transaction signature")
+                myEvents[0] = false
+                setDoubleOrNothingStatus(false)
+                setPlaying(false)
+                setAnimation(false)
+                return false
+              } else {
+                toast.warning("Pending transaction")
+              }
+            });
+        } catch (e) {
+
+        }
+
+        do {
+          try {
+            myEvents = await rpsgame.getPastEvents('Play', options)
+          } catch (err) {
+
+          }
+          await sleep(1000)
+        } while (myEvents[0] === undefined);
+
         if (myEvents[0]) {
           if (myEvents[0].blockNumber > playerDocument.rps.lastGameBlock) {
             updateDoc(doc(db, "clubUsers", discordId), {
@@ -660,16 +527,10 @@ export default function Rps() {
     if (userGameResult) {
       toast.success("You doubled your money, congrats!")
     }
-    web3.eth.getBalance(account)
-      .then(b => {
-        setBalance(b)
-        setWalletBalance(b)
-      })
-      .catch(err => console.log(err))
-    loadUserGame()
     setAnimation(false)
     setShowGameResult(false)
     setGameResult(true)
+    loadUserGame()
   }
 
   const backGame = () => {
@@ -683,7 +544,7 @@ export default function Rps() {
     <>
       {isMobileResolution ?
         <div className="d-flex flex-row justify-content-start gap-1">
-          {account !== '0x000000000000000000000000000000000000dEaD' ?
+          {account !== undefined && account !== '0x000000000000000000000000000000000000dEaD' ?
             <>
               <HistoryGames
                 isMobileResolution={isMobileResolution}
@@ -697,7 +558,7 @@ export default function Rps() {
                 decimal={decimal}
                 web3={web3}
                 account={account}
-                walletBalance={walletBalance}
+                balance={balance}
                 disconnectWallet={disconnectWallet}
                 userData={userData}
                 user={discordId}
@@ -710,7 +571,7 @@ export default function Rps() {
         </div>
         :
         <div className="d-flex flex-row justify-content-between mt-3">
-          {account !== '0x000000000000000000000000000000000000dEaD' ?
+          {account !== undefined && account !== '0x000000000000000000000000000000000000dEaD' ?
             <>
               <div className="d-flex flex-row gap-3">
                 <HistoryGames
@@ -725,7 +586,7 @@ export default function Rps() {
                   decimal={decimal}
                   web3={web3}
                   account={account}
-                  walletBalance={walletBalance}
+                  balance={balance}
                   disconnectWallet={disconnectWallet}
                   userData={userData}
                   user={discordId}
@@ -876,7 +737,7 @@ export default function Rps() {
                 <img className="my-3 img-fluid" src={Scissors} alt="Scissors" />
               </div>
             </div>
-            {account !== '0x000000000000000000000000000000000000dEaD' ?
+            {account !== undefined && account !== '0x000000000000000000000000000000000000dEaD' ?
               <>
                 <div className="text-center">
                   <button className="btn-hover btn-start" onClick={openGame}>DOUBLE OR NOTHING</button>
@@ -885,7 +746,7 @@ export default function Rps() {
               </>
               :
               <>
-                <ConnectWallet toast={toast} connectWeb3Modal={connectWeb3Modal} decimal={decimal} web3={web3} account={account} />
+                <ConnectWallet toast={toast} readBlockchainData={readBlockchainData} decimal={decimal} web3={web3} account={account} />
               </>
             }
           </>

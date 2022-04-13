@@ -8,8 +8,7 @@ import SendLogo from '../../assets/imgs/send.png'
 import { Context } from '../../context/Context'
 function ChatRoom() {
   const { discordId } = useContext(Context);
-  const [userClub, setUserClub] = useState({})
-  const [userGames, setUserGames] = useState(0)
+  const [userClub, setUserClub] = useState('')
   const [messages, setMessages] = useState([])
   const [ignoredUsers, setIgnoredUsers] = useState([])
   const [formValue, setFormValue] = useState('')
@@ -29,23 +28,16 @@ function ChatRoom() {
   };
 
   useEffect(() => {
-    const readUserProfile = () => {
-      try {
-        const q = query(collection(db, "clubUsers"), where("uid", "==", discordId))
-        const unsub = onSnapshot(q, (doc) => {
-          const userData = doc._snapshot.docChanges[0]
-          if (userData) {
-            setUserClub(userData.doc.data.value.mapValue.fields)
-            setUserGames(userData.doc.data.value.mapValue.fields.rps.mapValue.fields.totalGames.integerValue)
-          }
-        });
-        return () => unsub()
-      } catch (e) {
-
-      }
+    if (discordId !== '') {
+      const q = query(collection(db, "clubUsers"), where("uid", "==", discordId))
+      const unsub = onSnapshot(q, (doc) => {
+        const userData = doc._snapshot.docChanges[0]
+        if (userData) {
+          setUserClub(userData.doc.data.value.mapValue.fields)
+        }
+      });
+      return () => unsub()
     }
-
-    readUserProfile()
   }, [discordId])
 
 
@@ -114,10 +106,6 @@ function ChatRoom() {
         text: formValue.trim(),
         createdAt: serverTimestamp(),
         uid: discordId,
-        name: userClub.name.stringValue,
-        level: userClub.level.integerValue,
-        photo: userClub.photo.stringValue,
-        dsId: userClub.id.stringValue
       })
     }
     setFormValue('')
@@ -168,7 +156,7 @@ function ChatRoom() {
       <div className="chat_input_hold">
         <div className="chat_msgs">
           <ul className="messages">
-            {messages && messages.map(msg => <ChatMessage key={msg.id} {...msg} auth={discordId} userClub={userClub} />)}
+            {messages && messages.map(msg => <ChatMessage key={msg.id} {...msg} userClub={userClub} />)}
             <div ref={messagesEndRef}></div>
           </ul>
         </div>
@@ -216,7 +204,7 @@ function ChatRoom() {
           </form>
           :
           <div className="chat_input_contain disabled">
-            <input type="text" className="chat_input" maxLength="500" placeholder="Sign up and play to start chatting" disabled="" />
+            <input type="text" className="chat_input" maxLength="500" placeholder="Log in with discord to start chatting" disabled={true} />
           </div>
         }
         <Modal isOpen={settings} className="d-modal" size="lg">

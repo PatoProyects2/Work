@@ -24,13 +24,13 @@ export default function MaticBalance(props) {
                                 <img src={MaticLogo} className='image-reverse' alt="Matic Amount" width='30' height='30' />
                             </div>
                         </div>
-                        <span>{(balance / 1000000000000000000).toFixed(3)}</span>
+                        <span>{balance}</span>
                     </div>
                     :
                     <>
                         {props.isMobileResolution &&
                             <Button onClick={openMetamask} color="danger">
-                               OPEN APP
+                                OPEN APP
                             </Button>
                         }
                     </>

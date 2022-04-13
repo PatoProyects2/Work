@@ -17,7 +17,7 @@ export const roadmapData = [{
     },
     {
         title: "Security",
-        text: "The security of our holders is of paramount importance to us, therefore we are implementing all the safety measures to protect our holders and the community wallets. RPS Games Club smart contract communicates with an off-chain service powered by ChainLink which ensures the randomness of the results and prevents the system from being exploited and hacked-",
+        text: "The security of our holders is of paramount importance to us, therefore we are implementing all the safety measures to protect our holders and the community wallets. RPS Games Club smart contract communicates with an off-chain service powered by ChainLink which ensures the randomness of the results and prevents the system from being exploited and hacked.",
         img: { SecurityCard }
     },
     {

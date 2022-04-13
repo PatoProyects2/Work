@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Button, Modal, ModalBody, ModalFooter, FormGroup, Input, Label } from 'reactstrap'
-
 export default function ConnectWallet(props) {
+
   const [userInfo, setUserInfo] = useState({
     displayName: '',
     photoURL: 'https://ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh'
@@ -28,6 +28,14 @@ export default function ConnectWallet(props) {
     setDropdown(!dropdown);
   }
 
+  const connectWallet = () => {
+    if (document.getElementById('age').checked === false) {
+      props.toast.error('Confirm that you are at least 18 years old')
+      return false
+    }
+    props.readBlockchainData()
+  }
+ 
   const sendMatic = () => {
     if (send === false) {
       setSend(true);
@@ -85,18 +93,9 @@ export default function ConnectWallet(props) {
     });
   }
 
-
-  const connectWallet = () => {
-    if (document.getElementById('age').checked === false) {
-      props.toast.error('Confirm that you are at least 18 years old')
-      return false
-    }
-    props.connectWeb3Modal()
-  }
-
   return (
     <>
-      {props.account !== '0x000000000000000000000000000000000000dEaD' ?
+      {props.account !== undefined && props.account !== '0x000000000000000000000000000000000000dEaD' ?
         <>
           <Dropdown className="dd-profile" isOpen={dropdown} toggle={toggleMenu} direction="down" size="md">
             <DropdownToggle color='transparent' className='p-0'>
