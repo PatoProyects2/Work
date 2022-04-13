@@ -28,7 +28,7 @@ export const useAuth = () => {
                 code: url,
                 scope: "identify email",
                 grantType: "authorization_code",
-                redirectUri: "https://9e08-81-33-62-198.ngrok.io/",
+                redirectUri: "https://www.rpsgames.club/",
             }
             oauth.tokenRequest(config)
                 .then(res => {
