@@ -15,9 +15,9 @@ import FairPlayImg from '../../assets/imgs/fair_play_hover_card.png'
 import NFTImg from '../../assets/imgs/nft_hover_card.png'
 import { Context } from '../../context/Context'
 import { useMatchMedia } from '../../hooks/useMatchMedia'
+import { useTime } from '../../hooks/useTime'
 export default function Main() {
   const { discordId } = useContext(Context);
-  const { unixTime } = useContext(Context);
   const [leaderboard, setLeaderboard] = useState({});
   const [liveBets, setLiveBets] = useState(true);
   const [mostPlays, setMostPlays] = useState(false);
@@ -31,7 +31,7 @@ export default function Main() {
   const [monthlyAmount, setMonthlyAmount] = useState(false);
   const [globalAmount, setGlobalAmount] = useState(false);
   const isMobileResolution = useMatchMedia('(max-width:650px)', false);
-
+  const unixTime = useTime()
   useEffect(() => {
     const readLeaderboard = async () => {
       if (discordId !== '') {

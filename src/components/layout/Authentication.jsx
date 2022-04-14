@@ -5,13 +5,12 @@ import { useAuth } from '../../hooks/useAuth'
 export default function AccountFirebase() {
   const [dropdown, setDropdown] = useState(false);
   const { appStorage, baseData } = useAuth()
-
   let navigate = useNavigate()
 
   const toggleMenu = () => {
     setDropdown(!dropdown);
   }
- 
+
   const xpClass = (level) => {
     if (level <= 4) {
       return 'xp-user-badge badge-white';
@@ -29,7 +28,7 @@ export default function AccountFirebase() {
   }
 
   const getToken = () => {
-    const ouathLink = 'https://discord.com/api/oauth2/authorize?client_id=961656991149875232&redirect_uri=https%3A%2F%2Fwww.rpsgames.club%2F&response_type=code&scope=identify%20email'
+    const ouathLink = 'https://discord.com/api/oauth2/authorize?client_id=961656991149875232&redirect_uri=https%3A%2F%2Fwww.rpsgames.club%2F&response_type=code&scope=email%20identify'
     location.href = ouathLink
   }
 
