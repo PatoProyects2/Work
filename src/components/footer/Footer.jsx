@@ -10,6 +10,11 @@ const Footer = () => {
           <i className="fab fa-2x fa-discord"></i>
         </a>
       </div>
+      <div className="version-info">
+        <span className="text-white">
+          v1.0.0
+        </span>
+      </div>
     </>
   )
 }

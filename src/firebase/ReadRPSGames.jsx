@@ -101,7 +101,7 @@ export default function ReadRPSGames(props) {
                                         {games.second > 3599 && games.second < 7200 ? games.hour + " hour ago" : ""}
                                         {games.second > 7199 && games.second < 86400 ? games.hour + " hours ago" : ""}
                                         {games.second > 86399 && games.second < 172800 ? games.day + " day ago" : ""}
-                                        {games.second > 172799 ? day0 + " days ago" : ""}
+                                        {games.second > 172799 ? games.day + " days ago" : ""}
                                     </small>
                                 </DropdownItem>
                             )

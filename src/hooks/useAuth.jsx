@@ -18,7 +18,7 @@ export const useAuth = () => {
     }, [url])
 
     const getAccessToken = () => {
-        const local = window.localStorage.getItem('loggedUser')
+        const local = window.localStorage.getItem('discord')
         const storage = JSON.parse(local)
         setAppStorage(storage)
         if (!local) {
@@ -34,7 +34,7 @@ export const useAuth = () => {
                 .then(res => {
                     oauth.getUser(res.access_token)
                         .then(userData => {
-                            window.localStorage.setItem('loggedUser', JSON.stringify({ access_token: res.access_token, id: userData.id }))
+                            window.localStorage.setItem('discord', JSON.stringify({ access_token: res.access_token, id: userData.id }))
                             setDiscordId(userData.id)
                             setAppStorage({ access_token: res.access_token, id: userData.id })
                             getDoc(doc(db, "clubUsers", userData.id))

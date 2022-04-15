@@ -10,12 +10,12 @@ import 'bootstrap/dist/css/bootstrap.css'
 import { Toaster, ToastBar, toast } from 'react-hot-toast';
 import { MixpanelProvider } from 'react-mixpanel-browser';
 import { GlobalLayout } from './components/layout/GlobalLayout'
+import { TestLayout } from './components/layout/TestLayout'
 import Main from './views/main/Main'
 import MainAbout from './views/main/components/about/About'
 import MainProfile from './views/main/components/profile/Profile'
 import Rps from './views/rps/Rps'
 import Demo from './views/rps/Demo'
-import RpsAbout from './views/rps/components/about/About'
 import Nfts from './views/main/components/nfts/Nfts';
 import Fairplay from './views/main/components/fairplay/Fairplay';
 import RefundPolicy from './views/main/refundPolicy/RefundPolicy';
@@ -70,6 +70,7 @@ ReactDOM.render(
           )}
         </Toaster>
         <Routes>
+
           <Route path="/" element={<GlobalLayout />}>
             <Route index element={<Main />} />
             <Route path="rps" element={<Rps />} />
@@ -80,11 +81,14 @@ ReactDOM.render(
             <Route path="refund-policy" element={<RefundPolicy />} />
             <Route path="terms" element={<Terms />} />
             <Route path="demo" element={<Demo />} />
-            <Route path="about" element={<RpsAbout />} />
-            <Route path="*" element={<Navigate replace to="/" />} />
           </Route>
 
-          {/* <Route index element={<Maintenance />} /> // Remplazarlo por la etiqueta Route de arriba */}
+          {/* <Route path="/" element={<TestLayout />}>
+            <Route index element={<Maintenance />} />
+            <Route path="*" element={<Navigate replace to="/" />} />
+          </Route> */}
+
+          <Route path="*" element={<Navigate replace to="/" />} />
 
         </Routes>
       </ScrollToTop>

@@ -32,14 +32,17 @@ export default function Main() {
   const [globalAmount, setGlobalAmount] = useState(false);
   const isMobileResolution = useMatchMedia('(max-width:650px)', false);
   const unixTime = useTime()
+
   useEffect(() => {
     const readLeaderboard = async () => {
-      if (discordId !== '') {
+      const unixTime = Math.round((new Date()).getTime() / 1000)
+      const lastDay = unixTime - 86400
+      const lastWeek = unixTime - 604800
+      const lastMonth = unixTime - 2592000
+
+      if (discordId !== '' && unixTime > 0) {
         setDoc(doc(db, "status", discordId), { state: 'online', time: unixTime })
       }
-      var lastDay = unixTime - 86400
-      var lastWeek = unixTime - 604800
-      var lastMonth = unixTime - 2592000
 
       let dayGames = []
       let weekGames = []

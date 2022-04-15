@@ -7,8 +7,9 @@ import Portis from "@portis/web3";
 import ethProvider from "eth-provider";
 import WalletLink from "walletlink";
 import RpsGamePolygon from '../abis/rpsGamePolygon/rpsGame.json'
+import RpsGameMumbai from '../abis/rpsGameMumbai/rpsGame.json'
 import swapV2 from '../abis/swap/IUniswapV2Router02.json'
-import { polygonSwapContract, maticContract, usdcContract, rpsGamePolygonContract } from '../components/blockchain/Contracts'
+import { rpsGameMumbaiContract, polygonSwapContract, maticContract, usdcContract, rpsGamePolygonContract } from '../components/blockchain/Contracts'
 import { Context } from "../context/Context"
 
 export const useWeb3 = () => {
@@ -127,6 +128,10 @@ export const useWeb3 = () => {
                 const rpsgame = new web3.eth.Contract(RpsGamePolygon.abi, rpsGamePolygonContract)
                 setRpsgame(rpsgame)
             }
+            // if (chainId === 80001) {
+            //     const rpsgame = new web3.eth.Contract(RpsGameMumbai.abi, rpsGameMumbaiContract)
+            //     setRpsgame(rpsgame)
+            // }
             ethereum.on('chainChanged', () => {
                 window.location.reload()
             });
