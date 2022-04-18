@@ -15,10 +15,14 @@ import FairPlayImg from '../../assets/imgs/fair_play_hover_card.png'
 import NFTImg from '../../assets/imgs/nft_hover_card.png'
 import { Context } from '../../context/Context'
 import { useMatchMedia } from '../../hooks/useMatchMedia'
-import { useTime } from '../../hooks/useTime'
 export default function Main() {
   const { discordId } = useContext(Context);
-  const [leaderboard, setLeaderboard] = useState({});
+  const [topGames, setTopGames] = useState([]);
+  const [topAmount, setTopAmount] = useState([]);
+  const [topDay, setTopDay] = useState([]);
+  const [topWeek, setTopWeek] = useState([]);
+  const [topMonth, setTopMonth] = useState([]);
+  const [topGlobal, setTopGlobal] = useState([]);
   const [liveBets, setLiveBets] = useState(true);
   const [mostPlays, setMostPlays] = useState(false);
   const [dailyGame, setDailyGame] = useState(false);
@@ -31,7 +35,6 @@ export default function Main() {
   const [monthlyAmount, setMonthlyAmount] = useState(false);
   const [globalAmount, setGlobalAmount] = useState(false);
   const isMobileResolution = useMatchMedia('(max-width:650px)', false);
-  const unixTime = useTime()
 
   useEffect(() => {
     const readLeaderboard = async () => {
@@ -225,30 +228,53 @@ export default function Main() {
         return top
       })
 
-      var leaderboard = {
-        games: {},
-        amount: {},
-      }
+      setTopDay(day)
+      setTopWeek(week)
+      setTopMonth(month)
+      setTopGlobal(global)
 
-      leaderboard.games.day = day.sort(((a, b) => b[3] - a[3]))
-      leaderboard.amount.day = day.sort(((a, b) => b[4] - a[4]))
-
-      leaderboard.games.week = week.sort(((a, b) => b[3] - a[3]))
-      leaderboard.amount.week = week.sort(((a, b) => b[4] - a[4]))
-
-      leaderboard.games.month = month.sort(((a, b) => b[3] - a[3]))
-      leaderboard.amount.month = month.sort(((a, b) => b[4] - a[4]))
-
-      leaderboard.games.global = global.sort(((a, b) => b[3] - a[3]))
-      leaderboard.amount.global = global.sort(((a, b) => b[4] - a[4]))
-
-      setLeaderboard(leaderboard)
     }
     readLeaderboard()
     return () => {
-      setLeaderboard({});
+      setTopDay([])
+      setTopWeek([])
+      setTopMonth([])
+      setTopGlobal([])
     };
   }, [discordId])
+
+  useEffect(() => {
+    var games = {}
+
+    const day = topDay.map(data => data)
+    const week = topWeek.map(data => data)
+    const month = topMonth.map(data => data)
+    const global = topGlobal.map(data => data)
+
+    games.day = day.sort(function (a, b) { return b[3] - a[3] })
+    games.week = week.sort(function (a, b) { return b[3] - a[3] })
+    games.month = month.sort(function (a, b) { return b[3] - a[3] })
+    games.global = global.sort(function (a, b) { return b[3] - a[3] })
+
+
+    setTopGames(games)
+  }, [topDay, topWeek, topMonth, topGlobal])
+
+  useEffect(() => {
+    var amount = {}
+
+    const day = topDay.map(data => data)
+    const week = topWeek.map(data => data)
+    const month = topMonth.map(data => data)
+    const global = topGlobal.map(data => data)
+
+    amount.day = day.sort(function (a, b) { return b[4] - a[4] })
+    amount.week = week.sort(function (a, b) { return b[4] - a[4] })
+    amount.month = month.sort(function (a, b) { return b[4] - a[4] })
+    amount.global = global.sort(function (a, b) { return b[4] - a[4] })
+
+    setTopAmount(amount)
+  }, [topDay, topWeek, topMonth, topGlobal])
 
   const liveBetsModal = () => {
     if (!liveBets) {
@@ -433,70 +459,70 @@ export default function Main() {
 
         {isMobileResolution ?
           <>
-            {mostPlays && leaderboard.games &&
+            {mostPlays && topGames &&
               <>
                 {dailyGame &&
-                  <MostPlays leaderboard={leaderboard.games.day} isMobileResolution={isMobileResolution} />
+                  <MostPlays leaderboard={topGames.day} isMobileResolution={isMobileResolution} />
                 }
                 {weeklyGame &&
-                  <MostPlays leaderboard={leaderboard.games.week} isMobileResolution={isMobileResolution} />
+                  <MostPlays leaderboard={topGames.week} isMobileResolution={isMobileResolution} />
                 }
                 {monthlyGame &&
-                  <MostPlays leaderboard={leaderboard.games.month} isMobileResolution={isMobileResolution} />
+                  <MostPlays leaderboard={topGames.month} isMobileResolution={isMobileResolution} />
                 }
                 {globalGame &&
-                  <MostPlays leaderboard={leaderboard.games.global} isMobileResolution={isMobileResolution} />
+                  <MostPlays leaderboard={topGames.global} isMobileResolution={isMobileResolution} />
                 }
               </>
             }
-            {mostAmount && leaderboard.amount &&
+            {mostAmount && topAmount &&
               <>
                 {dailyAmount &&
-                  <MostAmount leaderboard={leaderboard.amount.day} isMobileResolution={isMobileResolution} />
+                  <MostAmount leaderboard={topAmount.day} isMobileResolution={isMobileResolution} />
                 }
                 {weeklyAmount &&
-                  <MostAmount leaderboard={leaderboard.amount.week} isMobileResolution={isMobileResolution} />
+                  <MostAmount leaderboard={topAmount.week} isMobileResolution={isMobileResolution} />
                 }
                 {monthlyAmount &&
-                  <MostAmount leaderboard={leaderboard.amount.month} isMobileResolution={isMobileResolution} />
+                  <MostAmount leaderboard={topAmount.month} isMobileResolution={isMobileResolution} />
                 }
                 {globalAmount &&
-                  <MostAmount leaderboard={leaderboard.amount.global} isMobileResolution={isMobileResolution} />
+                  <MostAmount leaderboard={topAmount.global} isMobileResolution={isMobileResolution} />
                 }
               </>
             }
           </>
           :
           <>
-            {mostPlays && leaderboard.games &&
+            {mostPlays && topGames &&
               <>
                 {dailyGame &&
-                  <MostPlays leaderboard={leaderboard.games.day} isMobileResolution={isMobileResolution} />
+                  <MostPlays leaderboard={topGames.day} isMobileResolution={isMobileResolution} />
                 }
                 {weeklyGame &&
-                  <MostPlays leaderboard={leaderboard.games.week} isMobileResolution={isMobileResolution} />
+                  <MostPlays leaderboard={topGames.week} isMobileResolution={isMobileResolution} />
                 }
                 {monthlyGame &&
-                  <MostPlays leaderboard={leaderboard.games.month} isMobileResolution={isMobileResolution} />
+                  <MostPlays leaderboard={topGames.month} isMobileResolution={isMobileResolution} />
                 }
                 {globalGame &&
-                  <MostPlays leaderboard={leaderboard.games.global} isMobileResolution={isMobileResolution} />
+                  <MostPlays leaderboard={topGames.global} isMobileResolution={isMobileResolution} />
                 }
               </>
             }
-            {mostAmount && leaderboard.amount &&
+            {mostAmount && topAmount &&
               <>
                 {dailyAmount &&
-                  <MostAmount leaderboard={leaderboard.amount.day} isMobileResolution={isMobileResolution} />
+                  <MostAmount leaderboard={topAmount.day} isMobileResolution={isMobileResolution} />
                 }
                 {weeklyAmount &&
-                  <MostAmount leaderboard={leaderboard.amount.week} isMobileResolution={isMobileResolution} />
+                  <MostAmount leaderboard={topAmount.week} isMobileResolution={isMobileResolution} />
                 }
                 {monthlyAmount &&
-                  <MostAmount leaderboard={leaderboard.amount.month} isMobileResolution={isMobileResolution} />
+                  <MostAmount leaderboard={topAmount.month} isMobileResolution={isMobileResolution} />
                 }
                 {globalAmount &&
-                  <MostAmount leaderboard={leaderboard.amount.global} isMobileResolution={isMobileResolution} />
+                  <MostAmount leaderboard={topAmount.global} isMobileResolution={isMobileResolution} />
                 }
               </>
             }

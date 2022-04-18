@@ -47,7 +47,7 @@ ReactDOM.render(
             },
             // Default options for specific types
             success: {
-              duration: 3000,
+              duration: 5000,
               theme: {
                 primary: 'green',
                 secondary: 'black',
@@ -61,9 +61,6 @@ ReactDOM.render(
                 <>
                   {icon}
                   {message}
-                  {t.type !== 'loading' && (
-                    <span className='toast-close' onClick={() => toast.dismiss(t.id)}><i className='fa-solid fa-xmark fa-lg'></i></span>
-                  )}
                 </>
               )}
             </ToastBar>

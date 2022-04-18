@@ -34,6 +34,7 @@ export default function Rps() {
     hand: '',
     amount: 0
   });
+
   const [gameLog, setGameLog] = useState('');
   const [userGameStreak, setUserGameStreak] = useState(0);
   const [randomItem, setRandomItem] = useState('');
@@ -46,6 +47,7 @@ export default function Rps() {
   const [gameResult, setGameResult] = useState(undefined);
   const [doubleOrNothingStatus, setDoubleOrNothingStatus] = useState(undefined);
   const [showGameResult, setShowGameResult] = useState(false);
+  const [busyNetwork, setBusyNetwork] = useState(false);
   const isMobileResolution = useMatchMedia('(max-width:650px)', false);
   const decimal = 1000000000000000000
   const mixpanel = useMixpanel();
@@ -120,7 +122,9 @@ export default function Rps() {
               name: '',
               photo: 'https://firebasestorage.googleapis.com/v0/b/games-club-dce4d.appspot.com/o/ClubLogo.png?alt=media&token=5dd64484-c99f-4ce9-a06b-0a3ee112b37b',
               level: 1,
-              lastGameBlock: 0
+              rps: {
+                lastGameBlock: 0
+              }
             }
             setDoc(doc(db, "anonUsers", account), arrayData).then(loadUserGame())
           }
@@ -133,13 +137,12 @@ export default function Rps() {
     let arrayOptions = ['a', 'b', 'c']
     var randomArray = Math.random() * arrayOptions.length | 0;
     var result = arrayOptions[randomArray]
-    setRandomItem(result)
-    if (network === 137) {
-      setActive(true)
-    } else {
+    if (network !== 137) {
       toast.error("Select a valid network")
       return false
     }
+    setRandomItem(result)
+    setActive(true)
   }
 
   const handleInputChange = (event) => {
@@ -174,13 +177,10 @@ export default function Rps() {
   }
 
   const doubleOrNothing = async () => {
-    const sleep = (milliseconds) => { return new Promise(resolve => setTimeout(resolve, milliseconds)) }
-    let myEvents = []
     let playerDocument = {}
     let actuallBlock = 0
     let inputAmount = 0
     let calculateValue = 0
-    let lastGame = 0
     try {
       actuallBlock = await web3.eth.getBlockNumber()
       inputAmount = web3.utils.toWei(usergame.amount.toString(), "ether")
@@ -190,13 +190,6 @@ export default function Rps() {
     }
     const usdAmount = parseInt(usergame.amount) * maticPrice
     const dayBlock = actuallBlock - 43200
-    const options = {
-      filter: {
-        _to: account
-      },
-      fromBlock: actuallBlock,
-      toBlock: 'latest'
-    };
 
     if (discordId !== '') {
       const q0 = doc(db, "clubUsers", discordId)
@@ -207,38 +200,60 @@ export default function Rps() {
       let doc2 = await getDoc(q1)
       playerDocument = doc2.data()
     }
-
-    lastGame = playerDocument.rps.lastGameBlock
+    let gameBlock = 0
+    const lastGame = playerDocument.rps.lastGameBlock
     if (actuallBlock > lastGame) {
-      rpsgame.methods
-        .play(inputAmount)
-        .send({
-          from: account,
-          value: calculateValue,
-          gasPrice: '40000000000'
-        })
-        .then(() => {
-          setGameLog('PLAYING')
-        })
-        .catch((err) => {
-          if (err.code === 4001) {
-            toast.error("User denied transaction signature")
-            myEvents[0] = false
-            setDoubleOrNothingStatus(false)
-            setPlaying(false)
-            setAnimation(false)
-            return false
-          } else {
-            toast.error("This transaction is taking too long, please wait")
+      let myEvents = undefined
+      try {
+        myEvents = await rpsgame.methods
+          .play(inputAmount)
+          .send({
+            from: account,
+            value: calculateValue,
+            gasPrice: '40000000000'
+          })
+      } catch (err) {
+        if (err.code === 4001) {
+          toast.error("You denied transaction signature")
+          setDoubleOrNothingStatus(false)
+          setPlaying(false)
+          setAnimation(false)
+          return false
+        } else {
+          let myEvents2 = undefined
+          const sleep = (milliseconds) => { return new Promise(resolve => setTimeout(resolve, milliseconds)) }
+          setBusyNetwork(true)
+          const warningBlockchain = toast.loading("This transaction is taking too long because the network is busy, please check the status of your transaction in your wallet")
+          const options = {
+            filter: {
+              _to: account
+            },
+            fromBlock: actuallBlock,
+            toBlock: 'latest'
+          };
+          for (let i = 0; i < 1000; i++) {
+            try {
+              myEvents2 = await rpsgame.getPastEvents('Play', options)
+            } catch (err) {
+              console.log(err)
+            }
+            await sleep(1000)
+            if (myEvents2[0]) break;
           }
-        });
-
-      for (let i = 0; i < 1000; i++) {
-        myEvents = await rpsgame.getPastEvents('Play', options)
-        await sleep(1000)
-        if (myEvents[0]) break;
+          if (myEvents2[0]) {
+            toast.dismiss(warningBlockchain);
+            setGameLog('PLAYING')
+            setBusyNetwork(false)
+            savePastEvents(usdAmount, dayBlock, playerDocument, myEvents2)
+          }
+        }
       }
-      if (myEvents[0]) readBlockchainEvents(usdAmount, dayBlock, playerDocument, myEvents)
+      if (myEvents) {
+        setGameLog('PLAYING')
+        let myEvent = myEvents.events.Play.returnValues
+        gameBlock = myEvents.blockNumber
+        saveBlockchainEvents(usdAmount, dayBlock, playerDocument, myEvent, gameBlock)
+      }
     } else {
       toast.error("Wait some seconds to play again")
       setDoubleOrNothingStatus(false)
@@ -248,111 +263,189 @@ export default function Rps() {
     }
   }
 
-  const readBlockchainEvents = async (usdAmount, dayBlock, playerDocument, myEvents) => {
+  const savePastEvents = (usdAmount, dayBlock, playerDocument, myEvents2) => {
+    let myEvent = myEvents2[0].returnValues
+    mixpanel.track(
+      "rps",
+      {
+        "account": myEvent[0].toLowerCase(),
+        "result": myEvent[3],
+        "streak": parseInt(myEvent[2])
+      }
+    );
+    setUserGameResult(myEvent[3])
+    setUserGameStreak(myEvent[2])
+    setShowGameResult(true)
+    setDoubleOrNothingStatus(false)
+
     if (discordId !== '') {
       let profit = 0
-      if (myEvents[0]) {
+      const level = playerDocument.level
+      const totalGames = playerDocument.rps.totalGames + 1
+      useStats({ level, totalGames, discordId })
+      updateDoc(doc(db, "clubUsers", discordId), {
+        "rps.totalGames": playerDocument.rps.totalGames + 1,
+        "rps.totalAmount": playerDocument.rps.totalAmount + usdAmount,
+        "rps.lastGameBlock": myEvents2[0].blockNumber
+      })
+      if (myEvent[3] === true) {
         updateDoc(doc(db, "clubUsers", discordId), {
-          "rps.totalGames": playerDocument.rps.totalGames + 1,
-          "rps.totalAmount": playerDocument.rps.totalAmount + usdAmount,
-          "rps.lastGameBlock": myEvents[0].blockNumber
+          "rps.gameWon": playerDocument.rps.gameWon + 1,
+          "rps.amountWon": playerDocument.rps.amountWon + usdAmount
         })
-        if (myEvents[0].returnValues[3] === true) {
-          updateDoc(doc(db, "clubUsers", discordId), {
-            "rps.gameWon": playerDocument.rps.gameWon + 1,
-            "rps.amountWon": playerDocument.rps.amountWon + usdAmount
-          })
-          profit = (playerDocument.rps.amountWon - playerDocument.rps.amountLoss) + usdAmount
-        }
-        if (myEvents[0].returnValues[3] === false) {
-          updateDoc(doc(db, "clubUsers", discordId), {
-            "rps.gameLoss": playerDocument.rps.gameLoss + 1,
-            "rps.amountLoss": playerDocument.rps.amountLoss + usdAmount
-          })
-          profit = (playerDocument.rps.amountWon - playerDocument.rps.amountLoss) - usdAmount
-        }
-        if (myEvents[0].returnValues[2] > playerDocument.rps.dayWinStreak || dayBlock > playerDocument.rps.winStreakTime) {
-          updateDoc(doc(db, "clubUsers", discordId), {
-            "rps.dayWinStreak": parseInt(myEvents[0].returnValues[2]),
-            "rps.winStreakTime": unixTime
-          })
-        }
-        if (usergame.hand === 'ROCK') {
-          updateDoc(doc(db, "clubUsers", discordId), {
-            "rps.rock": playerDocument.rps.rock + 1,
-          })
-        }
-        if (usergame.hand === 'PAPER') {
-          updateDoc(doc(db, "clubUsers", discordId), {
-            "rps.paper": playerDocument.rps.paper + 1,
-          })
-        }
-        if (usergame.hand === 'SCISSORS') {
-          updateDoc(doc(db, "clubUsers", discordId), {
-            "rps.scissors": playerDocument.rps.scissors + 1,
-          })
-        }
-        addDoc(collection(db, "allGames"), {
-          createdAt: unixTime,
-          uid: playerDocument.uid,
-          block: myEvents[0].blockNumber,
-          name: playerDocument.name,
-          photo: playerDocument.photo,
-          account: myEvents[0].returnValues[0].toLowerCase(),
-          amount: usdAmount,
-          maticAmount: parseInt(usergame.amount),
-          streak: parseInt(myEvents[0].returnValues[2]),
-          result: myEvents[0].returnValues[3],
-          game: 'RPS',
-          profit: profit
-        })
-        mixpanel.track(
-          "rps",
-          {
-            "account": myEvents[0].returnValues[0].toLowerCase(),
-            "result": myEvents[0].returnValues[3],
-            "streak": parseInt(myEvents[0].returnValues[2])
-          }
-        );
-        setUserGameResult(myEvents[0].returnValues[3])
-        setUserGameStreak(myEvents[0].returnValues[2])
-        setShowGameResult(true)
-        setDoubleOrNothingStatus(false)
-        const level = playerDocument.level
-        const totalGames = playerDocument.rps.totalGames + 1
-        useStats({ level, totalGames, discordId })
+        profit = (playerDocument.rps.amountWon - playerDocument.rps.amountLoss) + usdAmount
       }
+      if (myEvent[3] === false) {
+        updateDoc(doc(db, "clubUsers", discordId), {
+          "rps.gameLoss": playerDocument.rps.gameLoss + 1,
+          "rps.amountLoss": playerDocument.rps.amountLoss + usdAmount
+        })
+        profit = (playerDocument.rps.amountWon - playerDocument.rps.amountLoss) - usdAmount
+      }
+      if (myEvent[2] > playerDocument.rps.dayWinStreak || dayBlock > playerDocument.rps.winStreakTime) {
+        updateDoc(doc(db, "clubUsers", discordId), {
+          "rps.dayWinStreak": parseInt(myEvent[2]),
+          "rps.winStreakTime": unixTime
+        })
+      }
+      if (usergame.hand === 'ROCK') {
+        updateDoc(doc(db, "clubUsers", discordId), {
+          "rps.rock": playerDocument.rps.rock + 1,
+        })
+      }
+      if (usergame.hand === 'PAPER') {
+        updateDoc(doc(db, "clubUsers", discordId), {
+          "rps.paper": playerDocument.rps.paper + 1,
+        })
+      }
+      if (usergame.hand === 'SCISSORS') {
+        updateDoc(doc(db, "clubUsers", discordId), {
+          "rps.scissors": playerDocument.rps.scissors + 1,
+        })
+      }
+      addDoc(collection(db, "allGames"), {
+        createdAt: unixTime,
+        uid: playerDocument.uid,
+        block: myEvents2[0].blockNumber,
+        name: playerDocument.name,
+        photo: playerDocument.photo,
+        account: myEvent[0].toLowerCase(),
+        amount: usdAmount,
+        maticAmount: parseInt(usergame.amount),
+        streak: parseInt(myEvent[2]),
+        result: myEvent[3],
+        game: 'RPS',
+        profit: profit
+      })
     } else {
-      if (myEvents[0]) {
-        updateDoc(doc(db, "anonUsers", account), {
-          "lastGameBlock": myEvents[0].blockNumber
-        })
-        addDoc(collection(db, "allGames"), {
-          createdAt: unixTime,
-          uid: playerDocument.uid,
-          block: myEvents[0].blockNumber,
-          name: playerDocument.name,
-          photo: playerDocument.photo,
-          account: myEvents[0].returnValues[0].toLowerCase(),
-          amount: usdAmount,
-          maticAmount: parseInt(usergame.amount),
-          streak: parseInt(myEvents[0].returnValues[2]),
-          result: myEvents[0].returnValues[3],
-          game: 'RPS',
-        })
-        mixpanel.track(
-          "rps",
-          {
-            "account": myEvents[0].returnValues[0].toLowerCase(),
-            "result": myEvents[0].returnValues[3],
-            "streak": parseInt(myEvents[0].returnValues[2])
-          }
-        );
-        setUserGameResult(myEvents[0].returnValues[3])
-        setUserGameStreak(myEvents[0].returnValues[2])
-        setShowGameResult(true)
-        setDoubleOrNothingStatus(false)
+      updateDoc(doc(db, "anonUsers", account), {
+        "rps.lastGameBlock": myEvents2[0].blockNumber
+      })
+      addDoc(collection(db, "allGames"), {
+        createdAt: unixTime,
+        uid: playerDocument.uid,
+        block: myEvents2[0].blockNumber,
+        name: playerDocument.name,
+        photo: playerDocument.photo,
+        account: myEvent[0].toLowerCase(),
+        amount: usdAmount,
+        maticAmount: parseInt(usergame.amount),
+        streak: parseInt(myEvent[2]),
+        result: myEvent[3],
+        game: 'RPS',
+      })
+    }
+  }
+
+  const saveBlockchainEvents = async (usdAmount, dayBlock, playerDocument, myEvent, gameBlock) => {
+    mixpanel.track(
+      "rps",
+      {
+        "account": myEvent[0].toLowerCase(),
+        "result": myEvent[3],
+        "streak": parseInt(myEvent[2])
       }
+    );
+    setUserGameResult(myEvent[3])
+    setUserGameStreak(myEvent[2])
+    setShowGameResult(true)
+    setDoubleOrNothingStatus(false)
+    if (discordId !== '') {
+      let profit = 0
+      const level = playerDocument.level
+      const totalGames = playerDocument.rps.totalGames + 1
+      useStats({ level, totalGames, discordId })
+      updateDoc(doc(db, "clubUsers", discordId), {
+        "rps.totalGames": playerDocument.rps.totalGames + 1,
+        "rps.totalAmount": playerDocument.rps.totalAmount + usdAmount,
+        "rps.lastGameBlock": gameBlock
+      })
+      if (myEvent[3] === true) {
+        updateDoc(doc(db, "clubUsers", discordId), {
+          "rps.gameWon": playerDocument.rps.gameWon + 1,
+          "rps.amountWon": playerDocument.rps.amountWon + usdAmount
+        })
+        profit = (playerDocument.rps.amountWon - playerDocument.rps.amountLoss) + usdAmount
+      }
+      if (myEvent[3] === false) {
+        updateDoc(doc(db, "clubUsers", discordId), {
+          "rps.gameLoss": playerDocument.rps.gameLoss + 1,
+          "rps.amountLoss": playerDocument.rps.amountLoss + usdAmount
+        })
+        profit = (playerDocument.rps.amountWon - playerDocument.rps.amountLoss) - usdAmount
+      }
+      if (myEvent[2] > playerDocument.rps.dayWinStreak || dayBlock > playerDocument.rps.winStreakTime) {
+        updateDoc(doc(db, "clubUsers", discordId), {
+          "rps.dayWinStreak": parseInt(myEvent[2]),
+          "rps.winStreakTime": unixTime
+        })
+      }
+      if (usergame.hand === 'ROCK') {
+        updateDoc(doc(db, "clubUsers", discordId), {
+          "rps.rock": playerDocument.rps.rock + 1,
+        })
+      }
+      if (usergame.hand === 'PAPER') {
+        updateDoc(doc(db, "clubUsers", discordId), {
+          "rps.paper": playerDocument.rps.paper + 1,
+        })
+      }
+      if (usergame.hand === 'SCISSORS') {
+        updateDoc(doc(db, "clubUsers", discordId), {
+          "rps.scissors": playerDocument.rps.scissors + 1,
+        })
+      }
+      addDoc(collection(db, "allGames"), {
+        createdAt: unixTime,
+        uid: playerDocument.uid,
+        block: gameBlock,
+        name: playerDocument.name,
+        photo: playerDocument.photo,
+        account: myEvent[0].toLowerCase(),
+        amount: usdAmount,
+        maticAmount: parseInt(usergame.amount),
+        streak: parseInt(myEvent[2]),
+        result: myEvent[3],
+        game: 'RPS',
+        profit: profit
+      })
+    } else {
+      updateDoc(doc(db, "anonUsers", account), {
+        "rps.lastGameBlock": gameBlock
+      })
+      addDoc(collection(db, "allGames"), {
+        createdAt: unixTime,
+        uid: playerDocument.uid,
+        block: gameBlock,
+        name: playerDocument.name,
+        photo: playerDocument.photo,
+        account: myEvent[0].toLowerCase(),
+        amount: usdAmount,
+        maticAmount: parseInt(usergame.amount),
+        streak: parseInt(myEvent[2]),
+        result: myEvent[3],
+        game: 'RPS',
+      })
     }
   }
 
@@ -363,7 +456,7 @@ export default function Rps() {
 
     if (userGameResult) {
       const winOptions = {
-        duration: 3000,
+        duration: 5000,
         position: 'bottom-left',
         // Styling
         style: {},
@@ -389,7 +482,7 @@ export default function Rps() {
       }
     } else {
       const loseOptions = {
-        duration: 3000,
+        duration: 5000,
         position: 'bottom-left',
         // Styling
         style: {},
@@ -426,8 +519,6 @@ export default function Rps() {
     setUserGameResult(undefined)
     setGameResult(undefined)
   }
-
-
 
   return (
     <>
@@ -489,6 +580,13 @@ export default function Rps() {
                         <span >{" FOR "}</span>
                         <span className='text-decoration-underline'>{useramount + " MATIC"}</span>
                       </h3>
+                    </>
+                  }
+                  {busyNetwork &&
+                    <>
+                      <br></br>
+                      <h3 className='text-warning'>{'SEARCHING YOUR GAME' + dotLog}</h3>
+                      <h3 className='text-danger'>DON´T CLOSE THIS WINDOW!</h3>
                     </>
                   }
                   {showGameResult && <button className="btn-hover btn-green" onClick={showResult}>SEE RESULT</button>}

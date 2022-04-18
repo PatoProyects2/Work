@@ -33,7 +33,7 @@ export default function AccountFirebase() {
   }
 
   const removeToken = () => {
-    window.localStorage.removeItem('loggedUser')
+    window.localStorage.removeItem('discord')
     window.location.reload()
   }
 

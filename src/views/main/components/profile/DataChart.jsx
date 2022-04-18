@@ -7,7 +7,7 @@ export default function DataChart({ data }) {
     yField: 'profit',
     color: '#FFD500',
     point: {
-      size: 5,
+      size: 2,
       shape: 'circle',
       style: {
         fill: 'orange',
@@ -15,23 +15,6 @@ export default function DataChart({ data }) {
         lineWidth: 2,
       },
     },
-    tooltip: {
-      showMarkers: false,
-    },
-    state: {
-      active: {
-        style: {
-          shadowBlur: 4,
-          stroke: '#000',
-          fill: 'red',
-        },
-      },
-    },
-    interactions: [
-      {
-        type: 'marker-active',
-      },
-    ],
     annotations: [
       {
         type: 'line',

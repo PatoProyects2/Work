@@ -1,13 +1,14 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect } from 'react'
 import { collection, query, getDocs, where } from "firebase/firestore";
 import { db } from "./firesbaseConfig";
-import { Context } from '../context/Context'
+
 export default function Presence() {
-    const { unixTime } = useContext(Context);
     const [active, setActive] = useState(0);
+
     useEffect(() => {
         const readData = async () => {
-            let lastDay = unixTime - 86400
+            const time = Math.round((new Date()).getTime() / 1000)
+            const lastDay = time - 86400
             const q1 = query(collection(db, 'status'), where('state', '==', 'online'), where('time', '>', lastDay))
             const d1 = await getDocs(q1)
             setActive(d1._snapshot.docChanges.length)

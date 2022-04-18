@@ -7,7 +7,7 @@ export default function MaticBalance(props) {
     const { balance } = useContext(Context);
 
     const openMetamask = () => {
-        const ouathLink = 'https://metamask.app.link/dapp/rpsgames.vercel.app/'
+        const ouathLink = 'https://metamask.app.link/dapp/rpsgames.club/'
         location.href = ouathLink
     }
 
