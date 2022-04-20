@@ -381,7 +381,7 @@ export default function Main() {
   }
 
   return (
-    <>
+<>
       <div className='cards-container'>
         <div className='row text-center mb-2 mb-md-5'>
           <div className='game-card rps col-md-6 col-12 mx-auto'>

@@ -202,16 +202,32 @@ a.btn-hover {
 .version-info {
     position: fixed;
     bottom: 25px;
-    left: 20px;
+    left: 10px;
     background-color: #1F252B;
     padding: 5px;
+    z-index: 999;
+    border-radius: 5px;
 }
 
 .sound-toggle {
     position: fixed;
-    bottom: 25px;
-    left: 150px;
+    bottom: 85px;
+    left: 10px;
     padding: 5px;
+    z-index: 999;
+}
+
+.sound-toggle button {
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    border: none;
+    color: white;
+    background-color: rgb(81, 88, 94);
+}
+
+.sound-toggle button:hover {
+    background-color: rgba(81, 88, 94, 0.7);
 }
 
 .text-justify {
@@ -222,7 +238,7 @@ a.btn-hover {
 .g-btn-historygames {
     display: flex;
     flex-direction: row;
-    justify-content: end;
+    justify-content: flex-end;
     grid-gap: 0.5rem;
     gap: 0.5rem;
     width: 100%;
@@ -332,7 +348,7 @@ a.btn-hover {
         border: 3px solid white;
     }
     @media (min-width: 992px) {
-        max-width: 70%;
+        max-width: 100%;
     }
     @media (min-width: 768px) {
         .rps-img {
@@ -532,7 +548,7 @@ a.btn-hover {
 }
 
 .dd-menu.history-menu {
-    margin-top: 0.75rem;
+    top: 0.75rem !important;
     border: 1px solid gray;
 }
 
@@ -1546,4 +1562,12 @@ input[type="file"]::-webkit-file-upload-button {
 
 .bg-awesome {
     background-color: purple;
+}
+
+.text-blue {
+    color: #4752c9;
+}
+
+.text-yellow {
+    color: #ffb74d;
 }
