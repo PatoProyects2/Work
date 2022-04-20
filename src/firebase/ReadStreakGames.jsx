@@ -52,7 +52,7 @@ export default function ReadStreakGames(props) {
 
     return (
         <>
-            <DropdownMenu className="dd-menu">
+            <DropdownMenu className="dd-menu history-menu">
                 {historyPlays &&
                     <>
                         {historyPlays.map((games, index) => {

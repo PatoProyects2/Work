@@ -6,7 +6,7 @@
     "license": "MIT",
     "homepage": "https://www.rpsgames.club/",
     "dependencies": {
-        "@ant-design/charts": "^1.3.6",
+        "@ant-design/charts": "1.3.6",
         "@ant-design/icons": "4.7.0",
         "@ant-design/plots": "1.0.9",
         "@portis/web3": "4.0.7",

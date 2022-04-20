@@ -8,8 +8,9 @@ export function GlobalLayout() {
   const [showChat, setShowChat] = useState(false);
   const [balance, setBalance] = useState('');
   const [discordId, setDiscordId] = useState('');
+  const [soundToggle, setSoundToggle] = useState(true);
   return (
-    <Context.Provider value={{ balance, setBalance, discordId, setDiscordId }}>
+    <Context.Provider value={{ balance, setBalance, discordId, setDiscordId, soundToggle, setSoundToggle }}>
       <header>
         <NavbarDesktop />
       </header>

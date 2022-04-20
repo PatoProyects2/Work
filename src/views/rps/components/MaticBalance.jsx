@@ -29,8 +29,8 @@ export default function MaticBalance(props) {
                     :
                     <>
                         {props.isMobileResolution &&
-                            <Button onClick={openMetamask} color="danger">
-                                OPEN APP
+                            <Button onClick={openMetamask} color="warning">
+                                <span>OPEN</span> <img src={MetamaskLogo} className="mb-1" width="20" height="20" alt="fox" />
                             </Button>
                         }
                     </>

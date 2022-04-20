@@ -131,7 +131,7 @@ export default function Demo() {
                         <img className="result-rps-image" src={ScissorsLose} alt="Scissors Loses" />
                       </div>
                     }
-                    <div className="d-flex flex-column flex-md-row justify-content-between w-50 mx-auto mt-4">
+                    <div className="d-flex flex-column justify-content-between w-50 mx-auto mt-4">
                       <div className="d-flex flex-column justify-content-center">
                         <span className="rps-result-title">{userGameResult === true ? " YOU WON " : ""}{userGameResult === false ? " YOU LOST " : ""}</span>
                         <span className="rps-result-amount" style={{ color: userGameResult ? "mediumseagreen" : "crimson" }}>

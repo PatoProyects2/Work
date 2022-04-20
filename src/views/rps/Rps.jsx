@@ -21,14 +21,17 @@ import win1 from '../../assets/imgs/result/win1.gif'
 import win2 from '../../assets/imgs/result/win2.png'
 import lose1 from '../../assets/imgs/result/lose1.gif'
 import lose2 from '../../assets/imgs/result/lose2.png'
+import winSound from '../../assets/audio/win_sound.mpeg'
 import { Context } from '../../context/Context'
 import { useWeb3 } from '../../hooks/useWeb3'
 import { useTime } from '../../hooks/useTime'
 import { useLoad } from '../../hooks/useLoad'
 import { useStats } from '../../hooks/useStats'
+import { useGasTracker } from '../../hooks/useGasTracker'
 export default function Rps() {
   const { discordId } = useContext(Context);
   const { balance } = useContext(Context);
+  const { soundToggle } = useContext(Context);
   const [userData, setUserData] = useState({});
   const [usergame, setUsergame] = useState({
     hand: '',
@@ -50,6 +53,7 @@ export default function Rps() {
   const [busyNetwork, setBusyNetwork] = useState(false);
   const isMobileResolution = useMatchMedia('(max-width:650px)', false);
   const decimal = 1000000000000000000
+  const gasTrack = useGasTracker();
   const mixpanel = useMixpanel();
   const unixTime = useTime()
   const dotLog = useLoad()
@@ -62,6 +66,7 @@ export default function Rps() {
     readBlockchainData,
     disconnectWallet,
   } = useWeb3()
+  const music = new Audio(winSound);
 
   useEffect(() => {
     const local = window.localStorage.getItem('discord')
@@ -93,7 +98,7 @@ export default function Rps() {
     return () => {
       setUserData({});
     };
-  }, [account, discordId])
+  }, [account, discordId, rpsgame])
 
   const loadUserGame = async () => {
     mixpanel.init(process.env.REACT_APP_MIXPANEL_KEY, { debug: false });
@@ -107,6 +112,95 @@ export default function Rps() {
           updateDoc(doc(db, "clubUsers", discordId), {
             account: account
           }).then(loadUserGame())
+        }
+        if (rpsgame) {
+          rpsgame.events.Play({
+            filter: {
+              _to: account
+            },
+            fromBlock: data.rps.lastGameBlock + 1
+          }, function (error, event) { console.log(event); })
+            .on("connected", function (subscriptionId) {
+
+            })
+            .on('data', function (event) {
+              console.log('GAME FOUND NOT SAVED')
+              let myEvent = event.returnValues
+              let inputAmount = web3.utils.toWei(myEvent[1], "ether")
+              let usdAmount = parseInt(inputAmount) * maticPrice
+              mixpanel.track(
+                "rps",
+                {
+                  "account": myEvent[0].toLowerCase(),
+                  "result": myEvent[3],
+                  "streak": parseInt(myEvent[2])
+                }
+              );
+              let profit = 0
+              const level = data.level
+              const totalGames = data.rps.totalGames + 1
+              useStats({ level, totalGames, discordId })
+              updateDoc(doc(db, "clubUsers", discordId), {
+                "rps.totalGames": data.rps.totalGames + 1,
+                "rps.totalAmount": data.rps.totalAmount + usdAmount,
+                "rps.lastGameBlock": myEvent[0].blockNumber
+              })
+              if (myEvent[3] === true) {
+                updateDoc(doc(db, "clubUsers", discordId), {
+                  "rps.gameWon": data.rps.gameWon + 1,
+                  "rps.amountWon": data.rps.amountWon + usdAmount
+                })
+                profit = (data.rps.amountWon - data.rps.amountLoss) + usdAmount
+              }
+              if (myEvent[3] === false) {
+                updateDoc(doc(db, "clubUsers", discordId), {
+                  "rps.gameLoss": data.rps.gameLoss + 1,
+                  "rps.amountLoss": data.rps.amountLoss + usdAmount
+                })
+                profit = (data.rps.amountWon - data.rps.amountLoss) - usdAmount
+              }
+              if (myEvent[2] > data.rps.dayWinStreak || dayBlock > data.rps.winStreakTime) {
+                updateDoc(doc(db, "clubUsers", discordId), {
+                  "rps.dayWinStreak": parseInt(myEvent[2]),
+                  "rps.winStreakTime": unixTime
+                })
+              }
+              if (usergame.hand === 'ROCK') {
+                updateDoc(doc(db, "clubUsers", discordId), {
+                  "rps.rock": data.rps.rock + 1,
+                })
+              }
+              if (usergame.hand === 'PAPER') {
+                updateDoc(doc(db, "clubUsers", discordId), {
+                  "rps.paper": data.rps.paper + 1,
+                })
+              }
+              if (usergame.hand === 'SCISSORS') {
+                updateDoc(doc(db, "clubUsers", discordId), {
+                  "rps.scissors": data.rps.scissors + 1,
+                })
+              }
+              addDoc(collection(db, "allGames"), {
+                createdAt: unixTime,
+                uid: data.uid,
+                block: myEvent[0].blockNumber,
+                name: data.name,
+                photo: data.photo,
+                account: myEvent[0].toLowerCase(),
+                amount: usdAmount,
+                maticAmount: parseInt(usergame.amount),
+                streak: parseInt(myEvent[2]),
+                result: myEvent[3],
+                game: 'RPS',
+                profit: profit
+              })
+            })
+            .on('changed', function (event) {
+
+            })
+            .on('error', function (error, receipt) {
+
+            });
         }
 
       }
@@ -210,7 +304,7 @@ export default function Rps() {
           .send({
             from: account,
             value: calculateValue,
-            gasPrice: '40000000000'
+            gasPrice: gasTrack.fastest > 80 ? 80000000000 : gasTrack.fastest * 1000000000
           })
       } catch (err) {
         if (err.code === 4001) {
@@ -235,7 +329,7 @@ export default function Rps() {
             try {
               myEvents2 = await rpsgame.getPastEvents('Play', options)
             } catch (err) {
-              console.log(err)
+
             }
             await sleep(1000)
             if (myEvents2[0]) break;
@@ -286,7 +380,7 @@ export default function Rps() {
       updateDoc(doc(db, "clubUsers", discordId), {
         "rps.totalGames": playerDocument.rps.totalGames + 1,
         "rps.totalAmount": playerDocument.rps.totalAmount + usdAmount,
-        "rps.lastGameBlock": myEvents2[0].blockNumber
+        "rps.lastGameBlock": myEvent[0].blockNumber
       })
       if (myEvent[3] === true) {
         updateDoc(doc(db, "clubUsers", discordId), {
@@ -326,7 +420,7 @@ export default function Rps() {
       addDoc(collection(db, "allGames"), {
         createdAt: unixTime,
         uid: playerDocument.uid,
-        block: myEvents2[0].blockNumber,
+        block: myEvent[0].blockNumber,
         name: playerDocument.name,
         photo: playerDocument.photo,
         account: myEvent[0].toLowerCase(),
@@ -339,12 +433,12 @@ export default function Rps() {
       })
     } else {
       updateDoc(doc(db, "anonUsers", account), {
-        "rps.lastGameBlock": myEvents2[0].blockNumber
+        "rps.lastGameBlock": myEvent[0].blockNumber
       })
       addDoc(collection(db, "allGames"), {
         createdAt: unixTime,
         uid: playerDocument.uid,
-        block: myEvents2[0].blockNumber,
+        block: myEvent[0].blockNumber,
         name: playerDocument.name,
         photo: playerDocument.photo,
         account: myEvent[0].toLowerCase(),
@@ -455,6 +549,9 @@ export default function Rps() {
     var result = arrayOptions[randomArray]
 
     if (userGameResult) {
+      if (soundToggle) {
+        music.play()
+      }
       const winOptions = {
         duration: 5000,
         position: 'bottom-left',
@@ -523,7 +620,7 @@ export default function Rps() {
   return (
     <>
       {isMobileResolution ?
-        <div className="d-flex flex-row justify-content-start gap-1">
+        <div className="g-btn-historygames">
           {account !== undefined && account !== '0x000000000000000000000000000000000000dEaD' &&
             <>
               <HistoryGames
@@ -543,24 +640,22 @@ export default function Rps() {
           }
         </div>
         :
-        <div className="d-flex flex-row justify-content-between mt-3">
+        <div className="g-btn-historygames">
           {account !== undefined && account !== '0x000000000000000000000000000000000000dEaD' &&
             <>
-              <div className="d-flex flex-row gap-3">
-                <HistoryGames
-                  isMobileResolution={isMobileResolution}
-                />
-                <ConnectWallet
-                  decimal={decimal}
-                  web3={web3}
-                  account={account}
-                  balance={balance}
-                  disconnectWallet={disconnectWallet}
-                  userData={userData}
-                  user={discordId}
-                  toast={toast}
-                />
-              </div>
+              <HistoryGames
+                isMobileResolution={isMobileResolution}
+              />
+              <ConnectWallet
+                decimal={decimal}
+                web3={web3}
+                account={account}
+                balance={balance}
+                disconnectWallet={disconnectWallet}
+                userData={userData}
+                user={discordId}
+                toast={toast}
+              />
             </>
           }
         </div>
@@ -628,7 +723,7 @@ export default function Rps() {
                           <img className="result-rps-image" src={ScissorsLose} alt="Scissors Loses" />
                         </div>
                       }
-                      <div className="d-flex flex-column flex-md-row justify-content-between w-50 mx-auto mt-4">
+                      <div className="d-flex flex-column justify-content-between w-50 mx-auto mt-4">
                         <div className="d-flex flex-column justify-content-center">
                           <span className="rps-result-title">{userGameResult === true ? " YOU WON " : ""}{userGameResult === false ? " YOU LOST " : ""}</span>
                           <span className="rps-result-amount" style={{ color: userGameResult ? "mediumseagreen" : "crimson" }}>

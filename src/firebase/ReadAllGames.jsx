@@ -89,8 +89,8 @@ export default function ReadAllGames(props) {
                                             </>
                                         }
                                         {" played " + games.maticAmount + " MATIC and"}
-                                        <span style={{ color: games.result ? "mediumseagreen" : "crimson" }}>
-                                            {games.result === false ? " lost all " : ""}{games.result === true ? " doubled " : ""}
+                                        <span style={{ color: games.result && "mediumseagreen"}}>
+                                            {games.result === false ? " went bankrupt " : ""}{games.result === true ? " doubled " : ""}
                                         </span>
                                         {games.streak > 1 ? games.streak + " times " : ""}
                                     </div>

@@ -15,9 +15,9 @@ import { Context } from "../context/Context"
 export const useWeb3 = () => {
     const { setBalance } = useContext(Context);
     const [web3, setWeb3] = useState(false);
-    const [rpsgame, setRpsgame] = useState({});
-    const [swapPolygon, setSwapPolygon] = useState(false);
+    const [rpsgame, setRpsgame] = useState(false);
     const [web3ModalInfo, setWeb3ModalInfo] = useState({});
+    const [swapPolygon, setSwapPolygon] = useState(false);
     const [network, setNetwork] = useState(0);
     const [maticPrice, setMaticPrice] = useState(0);
     const [account, setAccount] = useState('0x000000000000000000000000000000000000dEaD');

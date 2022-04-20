@@ -36,7 +36,7 @@ export const useAuth = () => {
                     client_secret: clientSecret,
                     code: url,
                     grant_type: 'authorization_code',
-                    redirect_uri: `https://www.rpsgames.club/`,
+                    redirect_uri: 'https://95d5-81-33-62-198.ngrok.io/',
                     scope: 'identify email',
                 }),
                 headers: {
