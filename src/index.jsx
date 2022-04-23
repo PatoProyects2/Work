@@ -1,13 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom'
-import {
-  BrowserRouter,
-  Route,
-  Routes,
-  Navigate,
-} from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.css'
-import { Toaster, ToastBar, toast } from 'react-hot-toast';
 import { MixpanelProvider } from 'react-mixpanel-browser';
 import { GlobalLayout } from './components/layout/GlobalLayout'
 import { TestLayout } from './components/layout/TestLayout'
@@ -25,49 +19,11 @@ import ScrollToTop from './components/ui/ScrollToTop';
 import * as serviceWorker from './serviceWorker'
 import './index.scss'
 
-
 ReactDOM.render(
   <MixpanelProvider>
     <BrowserRouter>
       <ScrollToTop>
-        <Toaster
-          position="top-right"
-          reverseOrder={false}
-          gutter={8}
-          containerClassName=""
-          containerStyle={{}}
-          className='toast-modal'
-          toastOptions={{
-            // Define default options
-            className: 'mt-5',
-            duration: 5000,
-            style: {
-              background: 'rgba(28, 31, 35, 1)',
-              color: 'whitesmoke'
-            },
-            // Default options for specific types
-            success: {
-              duration: 5000,
-              theme: {
-                primary: 'green',
-                secondary: 'black',
-              },
-            },
-          }}
-        >
-          {(t) => (
-            <ToastBar toast={t}>
-              {({ icon, message }) => (
-                <>
-                  {icon}
-                  {message}
-                </>
-              )}
-            </ToastBar>
-          )}
-        </Toaster>
         <Routes>
-
           <Route path="/" element={<GlobalLayout />}>
             <Route index element={<Main />} />
             <Route path="rps" element={<Rps />} />
@@ -94,7 +50,4 @@ ReactDOM.render(
   document.getElementById('root')
 );
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.unregister();

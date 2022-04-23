@@ -102,32 +102,32 @@ export default function Demo() {
                       </div>
                     }
                     {userhand === 'ROCK' && userGameResult === true &&
-                      <div className="d-flex justify-content-center mt-4">
+                      <div className="anim-win-lose">
                         <img className="result-rps-image" src={RockWin} alt="Rock Wins" />
                       </div>
                     }
                     {userhand === 'PAPER' && userGameResult === true &&
-                      <div className="d-flex justify-content-center mt-4">
+                      <div className="anim-win-lose">
                         <img className="result-rps-image" src={PaperWin} alt="Paper Wins" />
                       </div>
                     }
                     {userhand === 'SCISSORS' && userGameResult === true &&
-                      <div className="d-flex justify-content-center mt-4">
+                      <div className="anim-win-lose">
                         <img className="result-rps-image" src={ScissorsWin} alt="Scissors Wins" />
                       </div>
                     }
                     {userhand === 'ROCK' && userGameResult === false &&
-                      <div className="d-flex justify-content-center mt-4">
+                      <div className="anim-win-lose">
                         <img className="result-rps-image" src={RockLose} alt="Rock Loses" />
                       </div>
                     }
                     {userhand === 'PAPER' && userGameResult === false &&
-                      <div className="d-flex justify-content-center mt-4">
+                      <div className="anim-win-lose">
                         <img className="result-rps-image" src={PaperLose} alt="Paper Loses" />
                       </div>
                     }
                     {userhand === 'SCISSORS' && userGameResult === false &&
-                      <div className="d-flex justify-content-center mt-4">
+                      <div className="anim-win-lose">
                         <img className="result-rps-image" src={ScissorsLose} alt="Scissors Loses" />
                       </div>
                     }

@@ -1,8 +1,11 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useGasTracker } from '../../hooks/useGasTracker'
 import { Context } from '../../context/Context'
+
 const Footer = () => {
   const { soundToggle, setSoundToggle } = useContext(Context);
+  const [gasClass, setGasClass] = useState("");
+
   const gasTrack = useGasTracker()
 
   const gameSound = () => {
@@ -11,7 +14,17 @@ const Footer = () => {
     } else {
       setSoundToggle(true)
     }
-  }
+  }  
+
+  useEffect(() => {
+    if(gasTrack.fastest < 40){
+      setGasClass('text-success');
+    } else if (gasTrack.fastest >= 40 && gasTrack.fastest < 80){
+      setGasClass('text-warning');
+    } else {
+      setGasClass('text-danger');
+    }
+  }, [gasTrack.fastest])
 
   return (
     <>
@@ -26,7 +39,7 @@ const Footer = () => {
       <div className="version-info">
         <span className="text-white">Version: 1.0.0</span>
         <br />
-        <span className="text-white">Gas: {gasTrack.fastest} Gwei</span>
+        <span className="text-white">Gas: <span className={gasClass}>{gasTrack.fastest}</span> Gwei</span>
       </div>
       <div className="sound-toggle">
         {soundToggle

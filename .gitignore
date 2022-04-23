@@ -3,3 +3,5 @@
 yarn-error.log
 yarn.lock
 .env.local
+startBuild.sh
+.git

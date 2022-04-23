@@ -1,10 +1,13 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
+import { Context } from '../../context/Context'
 export default function AccountFirebase() {
+  const { discordId } = useContext(Context);
   const [dropdown, setDropdown] = useState(false);
-  const { appStorage, baseData } = useAuth()
+  const { baseData } = useAuth()
+
   let navigate = useNavigate()
 
   const toggleMenu = () => {
@@ -28,7 +31,7 @@ export default function AccountFirebase() {
   }
 
   const getToken = () => {
-    const ouathLink = 'https://discord.com/api/oauth2/authorize?client_id=961656991149875232&redirect_uri=https%3A%2F%2F95d5-81-33-62-198.ngrok.io%2F&response_type=code&scope=identify%20email'
+    const ouathLink = 'https://discord.com/api/oauth2/authorize?client_id=961656991149875232&redirect_uri=https%3A%2F%2Fwww.rpsgames.club%2F&response_type=code&scope=identify%20email'
     location.href = ouathLink
   }
 
@@ -39,7 +42,7 @@ export default function AccountFirebase() {
 
   return (
     <>
-      {appStorage !== '' && appStorage !== null && baseData !== '' && baseData !== null ?
+      {discordId !== '' && baseData !== '' ?
         <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="md" className="dd-profile">
           <DropdownToggle color='transparent' className='dd-toggle' caret>
             <div className="d-inline-flex">

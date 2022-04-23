@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useContext } from "react";
 import Web3 from 'web3'
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
@@ -29,7 +29,7 @@ export const useWeb3 = () => {
             package: WalletConnectProvider,
             options: {
                 rpc: {
-                    137: "https://polygon-mainnet.infura.io/v3/90d296c660054ac58664fde980846688",
+                    137: 'https://polygon-rpc.com/',
                 },
             }
         },
@@ -40,7 +40,7 @@ export const useWeb3 = () => {
             package: Torus,
             options: {
                 networkParams: {
-                    host: "https://polygon-mainnet.infura.io/v3/90d296c660054ac58664fde980846688",
+                    host: process.env.REACT_APP_INFURA_RPC,
                     chainId: 137,
                     networkId: 137,
                     blockExplorer: "https://polygonscan.com/",
@@ -65,8 +65,8 @@ export const useWeb3 = () => {
             },
             package: WalletLink,
             options: {
-                appName: "RPS",
-                rpc: "https://polygon-mainnet.infura.io/v3/90d296c660054ac58664fde980846688",
+                appName: "Games Club",
+                rpc: 'https://polygon-rpc.com/',
                 chainId: 137,
                 appLogoUrl: null,
                 darkMode: false
