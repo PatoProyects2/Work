@@ -28,6 +28,7 @@ import { useTime } from '../../hooks/useTime'
 import { useLoad } from '../../hooks/useLoad'
 import { useStats } from '../../hooks/useStats'
 import { useGasTracker } from '../../hooks/useGasTracker'
+
 export default function Rps() {
   const { discordId } = useContext(Context);
   const { balance } = useContext(Context);
@@ -715,7 +716,7 @@ export default function Rps() {
                       <h3 className='text-yellow'>DON'T CLOSE THIS WINDOW!</h3>
                     </>
                   }
-                  {showGameResult && <button className="btn-hover btn-green" onClick={showResult}>SEE RESULT</button>}
+                  {showGameResult && <button className="btn-hover btn-green" onClick={showResult}>SHOW RESULT</button>}
                   {gameResult &&
                     <>
                       {userGameStreak > 1 &&

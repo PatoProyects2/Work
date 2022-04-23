@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import ChatRoom from '../chat/ChatRoom';
 import Footer from '../footer/Footer'
-import { Toaster, ToastBar } from 'react-hot-toast';
+import { Toaster, ToastBar, toast } from 'react-hot-toast';
 import { NavbarDesktop } from '../ui/navbar/NavbarDesktop';
 import { Context } from '../../context/Context';
 import { useMatchMedia } from '../../hooks/useMatchMedia'

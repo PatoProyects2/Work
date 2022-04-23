@@ -4,7 +4,7 @@
     "description": "Rock, Papper and Scissors",
     "author": "RPS",
     "license": "MIT",
-    "homepage": "https://www.rpsgames.club/",
+    "homepage": "./",
     "dependencies": {
         "@ant-design/charts": "1.3.6",
         "@ant-design/icons": "4.7.0",

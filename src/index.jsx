@@ -38,7 +38,6 @@ ReactDOM.render(
 
           {/* <Route path="/" element={<TestLayout />}>
             <Route index element={<Maintenance />} />
-            <Route path="*" element={<Navigate replace to="/" />} />
           </Route> */}
 
           <Route path="*" element={<Navigate replace to="/" />} />
