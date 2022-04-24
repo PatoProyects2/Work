@@ -28,6 +28,8 @@ import { useTime } from '../../hooks/useTime'
 import { useLoad } from '../../hooks/useLoad'
 import { useStats } from '../../hooks/useStats'
 import { useGasTracker } from '../../hooks/useGasTracker'
+import { ConsoleSqlOutlined } from '@ant-design/icons';
+import { IGraphCommandFactory } from '@antv/xflow-core';
 
 export default function Rps() {
   const { discordId } = useContext(Context);
@@ -45,6 +47,7 @@ export default function Rps() {
   const [usergame, setUsergame] = useState({ hand: '', amount: 0 });
   const [gameLog, setGameLog] = useState('');
   const [userGameStreak, setUserGameStreak] = useState(0);
+  const [userGameBlock, setUserGameBlock] = useState(0);
   const [randomItem, setRandomItem] = useState('');
   const [userhand, setUserhand] = useState(0);
   const [useramount, setUseramount] = useState(0);
@@ -54,6 +57,7 @@ export default function Rps() {
   const [gameResult, setGameResult] = useState(undefined);
   const [doubleOrNothingStatus, setDoubleOrNothingStatus] = useState(undefined);
   const [showGameResult, setShowGameResult] = useState(false);
+  const [save, setSave] = useState(false);
   const [busyNetwork, setBusyNetwork] = useState(false);
 
   const music = new Audio(winSound);
@@ -104,102 +108,26 @@ export default function Rps() {
             account: account
           }).then(loadUserGame())
         }
-        if (rpsgame) {
-          rpsgame.events.Play({
-            filter: {
-              user: account
-            },
-            fromBlock: data.rps.lastGameBlock + 1
-          }, function (error, event) { console.log(event); })
-            .on("connected", function (subscriptionId) {
+        // if (rpsgame) {
+        //   rpsgame.events.Play({
+        //     filter: {
+        //       user: account
+        //     },
+        //     fromBlock: data.rps.lastGameBlock + 1
+        //   }, function (error, event) { console.log(event); })
+        //     .on("connected", function (subscriptionId) {
 
-            })
-            .on('data', async function (event) {
-              console.log('GAME FOUND NOT SAVED')
-              let actuallBlock = 0
-              let myEvent = event.returnValues
-              let inputAmount = web3.utils.fromWei(myEvent[1], "ether")
-              let usdAmount = parseInt(inputAmount) * maticPrice
-              try {
-                actuallBlock = await web3.eth.getBlockNumber()
-              } catch (err) {
+        //     })
+        //     .on('data', async function (event) {
 
-              }
-              let dayBlock = actuallBlock - 43200
-              mixpanel.track(
-                "rps",
-                {
-                  "account": myEvent[0].toLowerCase(),
-                  "result": myEvent[3],
-                  "streak": parseInt(myEvent[2])
-                }
-              );
-              let profit = 0
-              const level = data.level
-              const totalGames = data.rps.totalGames + 1
-              useStats({ level, totalGames, discordId })
-              updateDoc(doc(db, "clubUsers", discordId), {
-                "rps.totalGames": data.rps.totalGames + 1,
-                "rps.totalAmount": data.rps.totalAmount + usdAmount,
-                "rps.lastGameBlock": event.blockNumber
-              })
-              if (myEvent[3] === true) {
-                updateDoc(doc(db, "clubUsers", discordId), {
-                  "rps.gameWon": data.rps.gameWon + 1,
-                  "rps.amountWon": data.rps.amountWon + usdAmount
-                })
-                profit = (data.rps.amountWon - data.rps.amountLoss) + usdAmount
-              }
-              if (myEvent[3] === false) {
-                updateDoc(doc(db, "clubUsers", discordId), {
-                  "rps.gameLoss": data.rps.gameLoss + 1,
-                  "rps.amountLoss": data.rps.amountLoss + usdAmount
-                })
-                profit = (data.rps.amountWon - data.rps.amountLoss) - usdAmount
-              }
-              if (myEvent[2] > data.rps.dayWinStreak || dayBlock > data.rps.winStreakTime) {
-                updateDoc(doc(db, "clubUsers", discordId), {
-                  "rps.dayWinStreak": parseInt(myEvent[2]),
-                  "rps.winStreakTime": unixTime
-                })
-              }
-              if (usergame.hand === 'ROCK') {
-                updateDoc(doc(db, "clubUsers", discordId), {
-                  "rps.rock": data.rps.rock + 1,
-                })
-              }
-              if (usergame.hand === 'PAPER') {
-                updateDoc(doc(db, "clubUsers", discordId), {
-                  "rps.paper": data.rps.paper + 1,
-                })
-              }
-              if (usergame.hand === 'SCISSORS') {
-                updateDoc(doc(db, "clubUsers", discordId), {
-                  "rps.scissors": data.rps.scissors + 1,
-                })
-              }
-              addDoc(collection(db, "allGames"), {
-                createdAt: unixTime,
-                uid: data.uid,
-                block: event.blockNumber,
-                name: data.name,
-                photo: data.photo,
-                account: myEvent[0].toLowerCase(),
-                amount: usdAmount,
-                maticAmount: parseInt(inputAmount),
-                streak: parseInt(myEvent[2]),
-                result: myEvent[3],
-                game: 'RPS',
-                profit: profit
-              })
-            })
-            .on('changed', function (event) {
+        //     })
+        //     .on('changed', function (event) {
 
-            })
-            .on('error', function (error, receipt) {
+        //     })
+        //     .on('error', function (error, receipt) {
 
-            });
-        }
+        //     });
+        // }
       }
     } else {
       if (account !== undefined) {
@@ -321,10 +249,10 @@ export default function Rps() {
           .send({
             from: account,
             value: calculateValue,
-            gasPrice: gas
+            gasPrice: gas,
+            gasLimit: 370800
           })
       } catch (err) {
-        console.log(err)
         if (err.code === -32603) {
           toast.error("This transaction needs more gas to be executed")
           setDoubleOrNothingStatus(false)
@@ -367,7 +295,7 @@ export default function Rps() {
             savePastEvents(usdAmount, dayBlock, playerDocument, myEvents2)
           }
         }
-        if(err.code !== -32603 && err.code !== 4001 && err.code !== -32005){
+        if (err.code !== -32603 && err.code !== 4001 && err.code !== -32005) {
           toast.error("Something unusual has happened, please try again in a few seconds")
           setDoubleOrNothingStatus(false)
           setPlaying(false)
@@ -391,6 +319,7 @@ export default function Rps() {
   }
 
   const savePastEvents = (usdAmount, dayBlock, playerDocument, myEvents2) => {
+    setSave(true)
     let myEvent = myEvents2[0].returnValues
     mixpanel.track(
       "rps",
@@ -485,6 +414,7 @@ export default function Rps() {
   }
 
   const saveBlockchainEvents = async (usdAmount, dayBlock, playerDocument, myEvent, gameBlock) => {
+    setSave(true)
     mixpanel.track(
       "rps",
       {
@@ -495,6 +425,7 @@ export default function Rps() {
     );
     setUserGameResult(myEvent[3])
     setUserGameStreak(myEvent[2])
+    setUserGameBlock(gameBlock)
     setShowGameResult(true)
     setDoubleOrNothingStatus(false)
     if (discordId !== '') {
@@ -576,7 +507,13 @@ export default function Rps() {
     }
   }
 
-  const showResult = () => {
+  const showResult = async () => {
+    const sleep = (milliseconds) => { return new Promise(resolve => setTimeout(resolve, milliseconds)) }
+
+    setAnimation(false)
+    setShowGameResult(false)
+    setGameResult(true)
+
     let arrayOptions = ['a', 'b']
     var randomArray = Math.random() * arrayOptions.length | 0;
     var result = arrayOptions[randomArray]
@@ -638,9 +575,20 @@ export default function Rps() {
       }
     }
 
-    setAnimation(false)
-    setShowGameResult(false)
-    setGameResult(true)
+    let actuallBlock = 0
+    while (actuallBlock < userGameBlock) {
+      actuallBlock = await web3.eth.getBlockNumber()
+      await sleep(1000)
+    }
+
+    for (let i = 0; i < 1000; i++) {
+      if (actuallBlock > userGameBlock) {
+        setSave(false)
+        break;
+      }
+      await sleep(1000)
+    }
+
   }
 
   const backGame = () => {
@@ -764,11 +712,18 @@ export default function Rps() {
                         </div>
                         <div className="d-flex justify-content-center">
                           {userGameResult ?
-                            <button className="btn-hover btn-green" onClick={backGame}>CLAIM REWARD</button>
+                            <div className="d-flex flex-column align-items-center">
+                              {save && <span className="rps-result-title">{"POLYGON IS PROCESSING YOUR GAME" + dotLog}</span>}
+                              <button className="btn-hover btn-green" onClick={backGame} disabled={save}>CLAIM REWARD</button>
+                            </div>
                             :
                             <div className="d-flex flex-column align-items-center">
-                              <span className="rps-result-title">TRY AGAIN?</span>
-                              <button className="btn-hover btn-start" onClick={backGame}>DOUBLE OR NOTHING</button>
+                              {save ?
+                                <span className="rps-result-title">{"POLYGON IS PROCESSING YOUR GAME" + dotLog}</span>
+                                :
+                                <span className="rps-result-title">TRY AGAIN?</span>
+                              }
+                              <button className="btn-hover btn-start" onClick={backGame} disabled={save}>DOUBLE OR NOTHING</button>
                             </div>
                           }
                         </div>
