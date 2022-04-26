@@ -229,17 +229,17 @@ export default function Demo() {
                     <label>
                       <input type="radio" name="hand" id="rock" onChange={handleInputChange} value="ROCK"></input>
                       <div className="rps-img rock-img"></div>
-                      <i className="fa-regular fa-circle-check fa-2xl fa-beat selected-option"></i>
+                      <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
                     </label>
                     <label>
                       <input type="radio" name="hand" id="paper" onChange={handleInputChange} value="PAPER"></input>
                       <div className="rps-img paper-img"></div>
-                      <i className="fa-regular fa-circle-check fa-2xl fa-beat selected-option"></i>
+                      <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
                     </label>
                     <label>
                       <input type="radio" name="hand" id="scissors" onChange={handleInputChange} value="SCISSORS"></input>
                       <div className="rps-img scissors-img"></div>
-                      <i className="fa-regular fa-circle-check fa-2xl fa-beat selected-option"></i>
+                      <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
                     </label>
                   </>
                 }
@@ -248,17 +248,17 @@ export default function Demo() {
                     <label>
                       <input type="radio" name="hand" id="scissors" onChange={handleInputChange} value="ROCK"></input>
                       <div className="rps-img rock-img"></div>
-                      <i className="fa-regular fa-circle-check fa-2xl fa-beat selected-option"></i>
+                      <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
                     </label>
                     <label>
                       <input type="radio" name="hand" id="paper" onChange={handleInputChange} value="SCISSORS"></input>
                       <div className="rps-img scissors-img"></div>
-                      <i className="fa-regular fa-circle-check fa-2xl fa-beat selected-option"></i>
+                      <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
                     </label>
                     <label>
                       <input type="radio" name="hand" id="rock" onChange={handleInputChange} value="PAPER"></input>
                       <div className="rps-img paper-img"></div>
-                      <i className="fa-regular fa-circle-check fa-2xl fa-beat selected-option"></i>
+                      <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
                     </label>
                   </>
                 }
@@ -267,17 +267,17 @@ export default function Demo() {
                     <label>
                       <input type="radio" name="hand" id="rock" onChange={handleInputChange} value="PAPER"></input>
                       <div className="rps-img paper-img"></div>
-                      <i className="fa-regular fa-circle-check fa-2xl fa-beat selected-option"></i>
+                      <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
                     </label>
                     <label>
                       <input type="radio" name="hand" id="paper" onChange={handleInputChange} value="SCISSORS"></input>
                       <div className="rps-img scissors-img"></div>
-                      <i className="fa-regular fa-circle-check fa-2xl fa-beat selected-option"></i>
+                      <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
                     </label>
                     <label>
                       <input type="radio" name="hand" id="scissors" onChange={handleInputChange} value="ROCK"></input>
                       <div className="rps-img rock-img"></div>
-                      <i className="fa-regular fa-circle-check fa-2xl fa-beat selected-option"></i>
+                      <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
                     </label>
                   </>
                 }
@@ -286,17 +286,17 @@ export default function Demo() {
                     <label>
                       <input type="radio" name="hand" id="rock" onChange={handleInputChange} value="PAPER"></input>
                       <div className="rps-img paper-img"></div>
-                      <i className="fa-regular fa-circle-check fa-2xl fa-beat selected-option"></i>
+                      <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
                     </label>
                     <label>
                       <input type="radio" name="hand" id="scissors" onChange={handleInputChange} value="ROCK"></input>
                       <div className="rps-img rock-img"></div>
-                      <i className="fa-regular fa-circle-check fa-2xl fa-beat selected-option"></i>
+                      <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
                     </label>
                     <label>
                       <input type="radio" name="hand" id="paper" onChange={handleInputChange} value="SCISSORS"></input>
                       <div className="rps-img scissors-img"></div>
-                      <i className="fa-regular fa-circle-check fa-2xl fa-beat selected-option"></i>
+                      <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
                     </label>
                   </>
                 }
@@ -305,17 +305,17 @@ export default function Demo() {
                     <label>
                       <input type="radio" name="hand" id="rock" onChange={handleInputChange} value="SCISSORS"></input>
                       <div className="rps-img scissors-img"></div>
-                      <i className="fa-regular fa-circle-check fa-2xl fa-beat selected-option"></i>
+                      <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
                     </label>
                     <label>
                       <input type="radio" name="hand" id="paper" onChange={handleInputChange} value="ROCK"></input>
                       <div className="rps-img rock-img"></div>
-                      <i className="fa-regular fa-circle-check fa-2xl fa-beat selected-option"></i>
+                      <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
                     </label>
                     <label>
                       <input type="radio" name="hand" id="scissors" onChange={handleInputChange} value="PAPER"></input>
                       <div className="rps-img paper-img"></div>
-                      <i className="fa-regular fa-circle-check fa-2xl fa-beat selected-option"></i>
+                      <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
                     </label>
                   </>
                 }
@@ -324,17 +324,17 @@ export default function Demo() {
                     <label>
                       <input type="radio" name="hand" id="paper" onChange={handleInputChange} value="SCISSORS"></input>
                       <div className="rps-img scissors-img"></div>
-                      <i className="fa-regular fa-circle-check fa-2xl fa-beat selected-option"></i>
+                      <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
                     </label>
                     <label>
                       <input type="radio" name="hand" id="rock" onChange={handleInputChange} value="PAPER"></input>
                       <div className="rps-img paper-img"></div>
-                      <i className="fa-regular fa-circle-check fa-2xl fa-beat selected-option"></i>
+                      <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
                     </label>
                     <label>
                       <input type="radio" name="hand" id="scissors" onChange={handleInputChange} value="ROCK"></input>
                       <div className="rps-img rock-img"></div>
-                      <i className="fa-regular fa-circle-check fa-2xl fa-beat selected-option"></i>
+                      <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
                     </label>
                   </>
                 }

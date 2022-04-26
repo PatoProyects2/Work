@@ -84,6 +84,7 @@ body {
 .dd-menu-item {
     background-color: #292b2c !important;
     color: whitesmoke !important;
+    border-bottom: 1px solid #6c757d !important;
 }
 
 .dd-menu-item:hover {

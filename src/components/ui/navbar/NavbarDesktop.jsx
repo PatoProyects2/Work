@@ -37,12 +37,14 @@ export const NavbarDesktop = () => {
                     </NavLink>
                     <div className="active-users-navbar">{<Presence />}</div>
                 </div>
-
+                                
                 <MaticBalance isMobileResolution={isMobileResolution} />
 
-                <div className='d-flex align-items-center gap-2'>
-                    {!isMobileResolution && <AccountFirebase />}
-                </div>
+                {!isMobileResolution && (
+                    <div className='d-flex align-items-center gap-2'>
+                        <AccountFirebase />
+                    </div>
+                )}                
 
                 <Offcanvas
                     direction="start"
@@ -232,7 +234,7 @@ export const NavbarDesktop = () => {
                             </a>
                         </Nav>
                         <div className="active-users-offcanvas">{<Presence />}</div>
-                        {isMobileResolution && <div className="d-flex justify-content-center mt-3"><AccountFirebase /></div>}
+                        {isMobileResolution && <div className="d-flex justify-content-center mt-3"><AccountFirebase showNavbar={setShowOffCanvas} /></div>}
 
                         <div className="d-flex flex-row gap-2 justify-content-center mt-3">
                             <a href="https://twitter.com/RPSGamesClub" className="twitter-icon" target="_blank" rel="noopener noreferrer">

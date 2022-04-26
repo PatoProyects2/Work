@@ -15,23 +15,42 @@ export default function MaticBalance(props) {
         <>
             {
                 (balance !== '') ?
-                    <div className='matic-balance-wrapper'>
-                        <div className='flip-image me-3'>
-                            <div className='flip-image-front'>
-                                <img src={MaticLogo} alt="Matic Amount" width='30' height='30' />
+                    <>{props.isMobileResolution ?
+                        <>
+                            <div className='matic-balance-wrapper-mobile'>
+                                <div className='flip-image me-3'>
+                                    <div className='flip-image-front'>
+                                        <img src={MaticLogo} alt="Matic Amount" width='30' height='30' />
+                                    </div>
+                                    <div className='flip-image-back'>
+                                        <img src={MaticLogo} className='image-reverse' alt="Matic Amount" width='30' height='30' />
+                                    </div>
+                                </div>
+                                <span>{balance}</span>
                             </div>
-                            <div className='flip-image-back'>
-                                <img src={MaticLogo} className='image-reverse' alt="Matic Amount" width='30' height='30' />
+                        </>
+                        :
+                        <div className='matic-balance-wrapper'>
+                            <div className='flip-image me-3'>
+                                <div className='flip-image-front'>
+                                    <img src={MaticLogo} alt="Matic Amount" width='30' height='30' />
+                                </div>
+                                <div className='flip-image-back'>
+                                    <img src={MaticLogo} className='image-reverse' alt="Matic Amount" width='30' height='30' />
+                                </div>
                             </div>
+                            <span>{balance}</span>
                         </div>
-                        <span>{balance}</span>
-                    </div>
+                    }
+                    </>
                     :
                     <>
                         {props.isMobileResolution &&
-                            <Button onClick={openMetamask} color="warning">
-                                <span>OPEN</span> <img src={MetamaskLogo} className="mb-1" width="20" height="20" alt="fox" />
-                            </Button>
+                            <div className='d-flex align-items-center gap-2'>
+                                <Button onClick={openMetamask} color="warning">
+                                    <span>OPEN</span> <img src={MetamaskLogo} className="mb-1" width="20" height="20" alt="fox" />
+                                </Button>
+                            </div>
                         }
                     </>
             }

@@ -1,35 +1,36 @@
 import React, { useEffect, useState } from 'react'
-import { collection, getDocs, query } from "firebase/firestore";
-import { db } from '../../../../firebase/firesbaseConfig'
+import Web3 from 'web3'
+import RpsGamePolygon from '../../../../abis/rpsGamePolygon/rpsGame.json'
+import { rpsGamePolygonContract } from '../../../../components/blockchain/Contracts'
 import FairGame from './FairGame'
+
 export default function Fairplay() {
   const [data, setData] = useState([]);
+
   useEffect(() => {
     const readFairGames = async () => {
-      const clubCollection = collection(db, "allGames")
-      const queryGames = query(clubCollection)
-      const documentGames = await getDocs(queryGames)
-      const games = documentGames._snapshot.docChanges
-      let array = games.map(games => games.doc.data.value.mapValue.fields.result.booleanValue)
-      const win = array.filter(x => x)
-      const lose = array.filter(x => !x)
-      let object = [
+      const web3 = new Web3(new Web3.providers.HttpProvider(process.env.REACT_APP_INFURA_POLYGON))
+      const rpsgame = new web3.eth.Contract(RpsGamePolygon.abi, rpsGamePolygonContract)
+      const winGames = await rpsgame.methods.totalWins().call()
+      const loseGames = await rpsgame.methods.totalLoses().call()
+      const games = [
         {
           type: 'Win Games',
-          value: win.length,
+          value: parseInt(winGames),
         },
         {
           type: 'Lose Games',
-          value: lose.length
+          value: parseInt(loseGames)
         },
       ]
-      setData(object)
+      setData(games)
     }
     readFairGames()
     return () => {
       setData([]);
     }
   }, [])
+
   return (
     <div className='fairplay-container'>
       <div className='text-justify fairplay-content'>
@@ -44,7 +45,7 @@ export default function Fairplay() {
           In our RPS game there are two possible outcomes: either you win or you lose. Our main principle is to build a fair and transparent system, where every game is completely randomized with 50% 50% odds. In order to fulfill one of our main premises (to be as transparent as possible), our house wallets will be of public access.
         </p>
       </div>
-      {data[0] &&
+      {data &&
         <div className='fairplay-stats'>
           <FairGame data={data} />
         </div>

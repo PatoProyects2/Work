@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { doc, getDoc, setDoc, updateDoc, collection, addDoc } from "firebase/firestore";
 import { useMixpanel } from 'react-mixpanel-browser';
+import { Progress } from 'reactstrap';
 import toast from 'react-hot-toast';
 import HistoryGames from './components/HistoryGames'
 import ConnectWallet from './components/ConnectWallet'
@@ -28,8 +29,6 @@ import { useTime } from '../../hooks/useTime'
 import { useLoad } from '../../hooks/useLoad'
 import { useStats } from '../../hooks/useStats'
 import { useGasTracker } from '../../hooks/useGasTracker'
-import { ConsoleSqlOutlined } from '@ant-design/icons';
-import { IGraphCommandFactory } from '@antv/xflow-core';
 
 export default function Rps() {
   const { discordId } = useContext(Context);
@@ -234,13 +233,13 @@ export default function Rps() {
     if (actuallBlock > lastGame) {
       let myEvents = undefined
       let gas = 0
-      if (gasTrack.fastest > 100) {
-        gas = 100000000000
+      if (gasTrack.fastest > 150) {
+        gas = 150000000000
       }
       if (gasTrack.fastest < 50) {
         gas = 50000000000
       }
-      if (gasTrack.fastest > 50 && gasTrack.fastest < 100) {
+      if (gasTrack.fastest > 50 && gasTrack.fastest < 150) {
         gas = gasTrack.fastest * 1000000000
       }
       try {
@@ -575,13 +574,8 @@ export default function Rps() {
       }
     }
 
-    let actuallBlock = 0
-    while (actuallBlock < userGameBlock) {
-      actuallBlock = await web3.eth.getBlockNumber()
-      await sleep(1000)
-    }
-
     for (let i = 0; i < 1000; i++) {
+      let actuallBlock = await web3.eth.getBlockNumber()
       if (actuallBlock > userGameBlock) {
         setSave(false)
         break;
@@ -645,12 +639,20 @@ export default function Rps() {
         {account !== undefined && account !== '0x000000000000000000000000000000000000dEaD' ?
           <>
             <div className="game-container">
+
               {playing ?
                 <div className="d-flex flex-column align-items-center">
                   {animation &&
                     <>
                       <img src={RPSAnimation} width="240" height="240" alt="Rock-Paper-Scissors" />
-                      {!showGameResult ? <h4>{gameLog + dotLog}</h4> : <h4>{gameLog}</h4>}
+                      {
+                        !showGameResult ?
+                          <div className="row w-100">
+                            <h5 className='col-9 text-end p-0'>{gameLog}</h5>
+                            <h5 className='col-3 text-start p-0'>{dotLog}</h5>
+                          </div>
+                          : <h5>{gameLog}</h5>
+                      }
                       <h3>
                         <span className='text-warning'>{userhand}</span>
                         <span >{" FOR "}</span>
@@ -659,10 +661,11 @@ export default function Rps() {
                     </>
                   }
                   {busyNetwork &&
-                    <>
-                      <h3 className='text-blue'>{'SEARCHING YOUR GAME' + dotLog}</h3>
-                      <h3 className='text-yellow'>DON'T CLOSE THIS WINDOW!</h3>
-                    </>
+                    <div className='row w-100'>
+                      <div className='col-9 text-end p-0'>SEARCHING YOUR GAME</div>
+                      <div className='col-3 text-start p-0'>{dotLog}</div>
+                      <h4 className='text-yellow'>DON'T CLOSE THIS WINDOW!</h4>
+                    </div>
                   }
                   {showGameResult && <button className="btn-hover btn-green" onClick={showResult}>SHOW RESULT</button>}
                   {gameResult &&
@@ -713,17 +716,51 @@ export default function Rps() {
                         <div className="d-flex justify-content-center">
                           {userGameResult ?
                             <div className="d-flex flex-column align-items-center">
-                              {save && <span className="rps-result-title">{"POLYGON IS PROCESSING YOUR GAME" + dotLog}</span>}
-                              <button className="btn-hover btn-green" onClick={backGame} disabled={save}>CLAIM REWARD</button>
+                              {
+                                save ?
+                                  <>
+                                    <span className="processing-title">POLYGON IS PROCESSING</span>
+                                    <div className="row w-100 processing-title">
+                                      <span className='col-9 text-end p-0'>YOUR GAME</span>
+                                      <span className='col-3 text-start p-0'>{dotLog}</span>
+                                    </div>
+                                    <button className="btn-hover btn-loading" disabled={true}>
+                                      PLEASE WAIT
+                                      <Progress
+                                        value={100}
+                                        animated={true}
+                                        color='dark'>
+                                      </Progress>
+                                    </button>
+                                  </>
+                                  :
+                                  <button className="btn-hover btn-green" onClick={backGame} disabled={save}>CLAIM REWARD</button>
+                              }
                             </div>
                             :
                             <div className="d-flex flex-column align-items-center">
                               {save ?
-                                <span className="rps-result-title">{"POLYGON IS PROCESSING YOUR GAME" + dotLog}</span>
+                                <>
+                                  <span className="processing-title">POLYGON IS PROCESSING</span>
+                                  <div className="row w-100 processing-title">
+                                    <span className='col-9 text-end p-0'>YOUR GAME</span>
+                                    <span className='col-3 text-start p-0'>{dotLog}</span>
+                                  </div>
+                                  <button className="btn-hover btn-loading" disabled={true}>
+                                    PLEASE WAIT
+                                    <Progress
+                                      value={100}
+                                      animated={true}
+                                      color='dark'>
+                                    </Progress>
+                                  </button>
+                                </>
                                 :
-                                <span className="rps-result-title">TRY AGAIN?</span>
+                                <>
+                                  <span className="processing-title">TRY AGAIN?</span>
+                                  <button className="btn-hover btn-start" onClick={backGame} disabled={save}>DOUBLE OR NOTHING</button>
+                                </>
                               }
-                              <button className="btn-hover btn-start" onClick={backGame} disabled={save}>DOUBLE OR NOTHING</button>
                             </div>
                           }
                         </div>
@@ -739,17 +776,17 @@ export default function Rps() {
                         <label>
                           <input type="radio" name="hand" id="rock" onChange={handleInputChange} value="ROCK"></input>
                           <div className="rps-img rock-img"></div>
-                          <i className="fa-regular fa-circle-check fa-2xl fa-beat selected-option"></i>
+                          <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
                         </label>
                         <label>
                           <input type="radio" name="hand" id="paper" onChange={handleInputChange} value="PAPER"></input>
                           <div className="rps-img paper-img"></div>
-                          <i className="fa-regular fa-circle-check fa-2xl fa-beat selected-option"></i>
+                          <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
                         </label>
                         <label>
                           <input type="radio" name="hand" id="scissors" onChange={handleInputChange} value="SCISSORS"></input>
                           <div className="rps-img scissors-img"></div>
-                          <i className="fa-regular fa-circle-check fa-2xl fa-beat selected-option"></i>
+                          <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
                         </label>
                       </>
                     }
@@ -758,17 +795,17 @@ export default function Rps() {
                         <label>
                           <input type="radio" name="hand" id="scissors" onChange={handleInputChange} value="ROCK"></input>
                           <div className="rps-img rock-img"></div>
-                          <i className="fa-regular fa-circle-check fa-2xl fa-beat selected-option"></i>
+                          <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
                         </label>
                         <label>
                           <input type="radio" name="hand" id="paper" onChange={handleInputChange} value="SCISSORS"></input>
                           <div className="rps-img scissors-img"></div>
-                          <i className="fa-regular fa-circle-check fa-2xl fa-beat selected-option"></i>
+                          <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
                         </label>
                         <label>
                           <input type="radio" name="hand" id="rock" onChange={handleInputChange} value="PAPER"></input>
                           <div className="rps-img paper-img"></div>
-                          <i className="fa-regular fa-circle-check fa-2xl fa-beat selected-option"></i>
+                          <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
                         </label>
                       </>
                     }
@@ -777,17 +814,17 @@ export default function Rps() {
                         <label>
                           <input type="radio" name="hand" id="rock" onChange={handleInputChange} value="PAPER"></input>
                           <div className="rps-img paper-img"></div>
-                          <i className="fa-regular fa-circle-check fa-2xl fa-beat selected-option"></i>
+                          <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
                         </label>
                         <label>
                           <input type="radio" name="hand" id="paper" onChange={handleInputChange} value="SCISSORS"></input>
                           <div className="rps-img scissors-img"></div>
-                          <i className="fa-regular fa-circle-check fa-2xl fa-beat selected-option"></i>
+                          <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
                         </label>
                         <label>
                           <input type="radio" name="hand" id="scissors" onChange={handleInputChange} value="ROCK"></input>
                           <div className="rps-img rock-img"></div>
-                          <i className="fa-regular fa-circle-check fa-2xl fa-beat selected-option"></i>
+                          <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
                         </label>
                       </>
                     }
@@ -796,17 +833,17 @@ export default function Rps() {
                         <label>
                           <input type="radio" name="hand" id="rock" onChange={handleInputChange} value="PAPER"></input>
                           <div className="rps-img paper-img"></div>
-                          <i className="fa-regular fa-circle-check fa-2xl fa-beat selected-option"></i>
+                          <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
                         </label>
                         <label>
                           <input type="radio" name="hand" id="scissors" onChange={handleInputChange} value="ROCK"></input>
                           <div className="rps-img rock-img"></div>
-                          <i className="fa-regular fa-circle-check fa-2xl fa-beat selected-option"></i>
+                          <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
                         </label>
                         <label>
                           <input type="radio" name="hand" id="paper" onChange={handleInputChange} value="SCISSORS"></input>
                           <div className="rps-img scissors-img"></div>
-                          <i className="fa-regular fa-circle-check fa-2xl fa-beat selected-option"></i>
+                          <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
                         </label>
                       </>
                     }
@@ -815,17 +852,17 @@ export default function Rps() {
                         <label>
                           <input type="radio" name="hand" id="rock" onChange={handleInputChange} value="SCISSORS"></input>
                           <div className="rps-img scissors-img"></div>
-                          <i className="fa-regular fa-circle-check fa-2xl fa-beat selected-option"></i>
+                          <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
                         </label>
                         <label>
                           <input type="radio" name="hand" id="paper" onChange={handleInputChange} value="ROCK"></input>
                           <div className="rps-img rock-img"></div>
-                          <i className="fa-regular fa-circle-check fa-2xl fa-beat selected-option"></i>
+                          <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
                         </label>
                         <label>
                           <input type="radio" name="hand" id="scissors" onChange={handleInputChange} value="PAPER"></input>
                           <div className="rps-img paper-img"></div>
-                          <i className="fa-regular fa-circle-check fa-2xl fa-beat selected-option"></i>
+                          <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
                         </label>
                       </>
                     }
@@ -834,17 +871,17 @@ export default function Rps() {
                         <label>
                           <input type="radio" name="hand" id="paper" onChange={handleInputChange} value="SCISSORS"></input>
                           <div className="rps-img scissors-img"></div>
-                          <i className="fa-regular fa-circle-check fa-2xl fa-beat selected-option"></i>
+                          <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
                         </label>
                         <label>
                           <input type="radio" name="hand" id="rock" onChange={handleInputChange} value="PAPER"></input>
                           <div className="rps-img paper-img"></div>
-                          <i className="fa-regular fa-circle-check fa-2xl fa-beat selected-option"></i>
+                          <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
                         </label>
                         <label>
                           <input type="radio" name="hand" id="scissors" onChange={handleInputChange} value="ROCK"></input>
                           <div className="rps-img rock-img"></div>
-                          <i className="fa-regular fa-circle-check fa-2xl fa-beat selected-option"></i>
+                          <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
                         </label>
                       </>
                     }

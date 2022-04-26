@@ -103,26 +103,33 @@ export const useAuth = () => {
 
     const loadActuallUser = async () => {
         const storage = JSON.parse(local)
-        const userResult = await fetch('https://discord.com/api/users/@me', {
-            headers: {
-                authorization: `Bearer ${storage.access_token}`,
-            },
-        });
-        const userData = await userResult.json()
-        setDiscordId(userData.id)
-        const arrayUpdate = {
-            name: userData.username,
-            photo: userData.avatar ? `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}` : 'https://firebasestorage.googleapis.com/v0/b/games-club-dce4d.appspot.com/o/ClubLogo.png?alt=media&token=5dd64484-c99f-4ce9-a06b-0a3ee112b37b',
+        const userData = false
+        try {
+            const userResult = await fetch('https://discord.com/api/users/@me', {
+                headers: {
+                    authorization: `Bearer ${storage.access_token}`,
+                },
+            });
+            userData = await userResult.json()
+        } catch (err) {
+            window.localStorage.removeItem('discord')
         }
-        updateDoc(doc(db, "clubUsers", userData.id), arrayUpdate).then(() => {
-            getDoc(doc(db, "clubUsers", userData.id))
-                .then(document => {
-                    const data = document.data()
-                    if (data) {
-                        setBaseData(data)
-                    }
-                })
-        })
+        if (userData !== false) {
+            setDiscordId(userData.id)
+            const arrayUpdate = {
+                name: userData.username,
+                photo: userData.avatar ? `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}` : 'https://firebasestorage.googleapis.com/v0/b/games-club-dce4d.appspot.com/o/ClubLogo.png?alt=media&token=5dd64484-c99f-4ce9-a06b-0a3ee112b37b',
+            }
+            updateDoc(doc(db, "clubUsers", userData.id), arrayUpdate).then(() => {
+                getDoc(doc(db, "clubUsers", userData.id))
+                    .then(document => {
+                        const data = document.data()
+                        if (data) {
+                            setBaseData(data)
+                        }
+                    })
+            })
+        }
     }
 
     return { baseData }

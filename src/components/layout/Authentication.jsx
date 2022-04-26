@@ -31,13 +31,20 @@ export default function AccountFirebase() {
   }
 
   const getToken = () => {
-    const ouathLink = 'https://discord.com/api/oauth2/authorize?client_id=961656991149875232&redirect_uri=https%3A%2F%2Fwww.rpsgames.club%2F&response_type=code&scope=identify%20email'
+    const ouathLink = 'https://discord.com/api/oauth2/authorize?client_id=961656991149875232&redirect_uri=https%3A%2F%2Frpsgames.club%2F&response_type=code&scope=identify%20email'
     location.href = ouathLink
   }
 
   const removeToken = () => {
     window.localStorage.removeItem('discord')
     window.location.reload()
+  }
+  
+  const handleClickProfile = () => {
+    if(showNavbar) {
+      showNavbar(false)
+    }    
+    navigate('/profile')
   }
 
   return (
@@ -55,7 +62,7 @@ export default function AccountFirebase() {
             </div>
           </DropdownToggle>
           <DropdownMenu >
-            <DropdownItem onClick={() => navigate('/profile')}><i className='fa-solid fa-user me-3'></i>My Profile</DropdownItem>
+            <DropdownItem onClick={handleClickProfile}><i className='fa-solid fa-user me-3'></i>My Profile</DropdownItem>
             <DropdownItem onClick={removeToken}><i className='fa-solid fa-right-from-bracket me-3 text-danger'></i>Logout</DropdownItem>
           </DropdownMenu>
         </Dropdown>
