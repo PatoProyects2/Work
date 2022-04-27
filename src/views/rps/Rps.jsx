@@ -639,19 +639,18 @@ export default function Rps() {
         {account !== undefined && account !== '0x000000000000000000000000000000000000dEaD' ?
           <>
             <div className="game-container">
-
               {playing ?
-                <div className="d-flex flex-column align-items-center">
+                <div className="game-playing-container">
                   {animation &&
                     <>
                       <img src={RPSAnimation} width="240" height="240" alt="Rock-Paper-Scissors" />
                       {
                         !showGameResult ?
                           <div className="row w-100">
-                            <h5 className='col-9 text-end p-0'>{gameLog}</h5>
-                            <h5 className='col-3 text-start p-0'>{dotLog}</h5>
+                            <div className='col-9 text-end p-0 processing-title'>{gameLog}</div>
+                            <div className='col-3 text-start p-0 processing-title'>{dotLog}</div>
                           </div>
-                          : <h5>{gameLog}</h5>
+                          : <span className='processing-title'>{gameLog}</span>
                       }
                       <h3>
                         <span className='text-warning'>{userhand}</span>
@@ -662,8 +661,8 @@ export default function Rps() {
                   }
                   {busyNetwork &&
                     <div className='row w-100'>
-                      <div className='col-9 text-end p-0'>SEARCHING YOUR GAME</div>
-                      <div className='col-3 text-start p-0'>{dotLog}</div>
+                      <div className='col-9 text-end p-0 processing-title'>SEARCHING YOUR GAME</div>
+                      <div className='col-3 text-start p-0 processing-title'>{dotLog}</div>
                       <h4 className='text-yellow'>DON'T CLOSE THIS WINDOW!</h4>
                     </div>
                   }
@@ -706,7 +705,7 @@ export default function Rps() {
                           <img className="result-rps-image" src={ScissorsLose} alt="Scissors Loses" />
                         </div>
                       }
-                      <div className="d-flex flex-column justify-content-between w-50 mx-auto mt-4">
+                      <div className="d-flex flex-column justify-content-between mx-auto mt-4">
                         <div className="d-flex flex-column justify-content-center">
                           <span className="rps-result-title">{userGameResult === true ? " YOU WON " : ""}{userGameResult === false ? " YOU LOST " : ""}</span>
                           <span className="rps-result-amount" style={{ color: userGameResult ? "mediumseagreen" : "crimson" }}>
@@ -889,7 +888,7 @@ export default function Rps() {
                   <h5 className="mt-5">FOR</h5>
                   <div className="d-flex justify-content-center my-4">
                     <label className="amount">
-                      <input type="radio" name="amount" id="amount1" onChange={handleInputChange} value="1" />
+                      <input type="radio" name="amount" id="amount1" onChange={handleInputChange} value="0.01" />
                       <span>1 MATIC</span>
                     </label>
                     <label className="amount">

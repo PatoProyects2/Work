@@ -441,20 +441,16 @@ a.btn-hover {
     }
 
     .game-selection-hand {
-        //d-flex justify-content-center mt-4
         display: flex;
         justify-content: center;
         margin-top: 3rem;
     }
 
-    @media (min-width: 992px) {
-        max-width: 100%;
-
-        .anim-win-lose {
-            max-width: 70%;
-            margin: 0 auto;
-            margin-top: 2rem;
-        }
+    .game-playing-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 80vw;
     }
 
     @media (min-width: 768px) {
@@ -472,6 +468,31 @@ a.btn-hover {
         label.amount span {
             font-size: 18px;
             padding: 10px;
+        }
+
+        .game-playing-container {           
+            width: 60vw;
+        }
+    }
+
+    @media (min-width: 992px) {
+        max-width: 100%;
+
+        .anim-win-lose {
+            max-width: 70%;
+            margin: 0 auto;
+            margin-top: 2rem;
+        }
+
+        .game-playing-container {           
+            width: 40vw;
+        }
+    }
+
+    @media (min-width: 1200px) {       
+
+        .game-playing-container {           
+            width: 30vw;
         }
     }
 }

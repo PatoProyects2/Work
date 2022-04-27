@@ -1,8 +1,8 @@
 {
     "name": "gamesclub",
-    "version": "0.1.0",
+    "version": "1.0.0",
     "description": "Rock, Papper and Scissors",
-    "author": "RPS",
+    "author": "RPSTeam",
     "license": "MIT",
     "homepage": "https://rpsgames.club/",
     "dependencies": {

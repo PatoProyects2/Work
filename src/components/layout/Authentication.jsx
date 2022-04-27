@@ -41,9 +41,6 @@ export default function AccountFirebase() {
   }
   
   const handleClickProfile = () => {
-    if(showNavbar) {
-      showNavbar(false)
-    }    
     navigate('/profile')
   }
 

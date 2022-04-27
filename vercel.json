@@ -1,8 +1,6 @@
 {
-  "rewrites": [
-    {
-      "source": "https://rpsgames.club/(.*)",
-      "destination": "https://rpsgames.club/"
-    }
+  "routes": [
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "status": 404, "dest": "https://rpsgames.club/" }
   ]
 }
