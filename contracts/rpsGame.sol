@@ -1,6 +1,7 @@
 //SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0 <0.9.0;
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard";
 
 interface IRandomNumberVRF{
     function getRandomNumber() external returns (bytes32 requestId);
@@ -9,7 +10,7 @@ interface IRandomNumberVRF{
 interface IstakingNFT{
     function newPlay() external payable;
 }
-contract rpsGame is Ownable  { 
+contract rpsGame is Ownable, ReentrancyGuard  { 
 
     //address owner; // Dueño del contrato, maximo rango de acceso (mover fondos de la pool)
     IRandomNumberVRF randomLinkContract; //Direccion de VRF random contract
@@ -57,14 +58,12 @@ contract rpsGame is Ownable  {
     constructor (        
         address _devWallet, 
         address payable _NFTholders,
-        IRandomNumberVRF _randomLinkContract,
         uint _maxDeal,
         uint _minBalanceToPay
     ){
         //addressStaking = _NFTholders;
         NFTHolders = IstakingNFT(_NFTholders);
         devWalletFees = _devWallet;
-        randomLinkContract = _randomLinkContract;
         maxDeal = _maxDeal * 1 ether;
         minBalanceToPay = _minBalanceToPay * 1 ether;
     }
@@ -72,7 +71,7 @@ contract rpsGame is Ownable  {
 //FUNCTIONS FOR USERS
 
     //MSG.value = deal + totalFEE%
-    function play( uint _value) public payable returns(bool results){
+    function play( uint _value) public payable nonReentrant returns(bool results){
         require(onOff == true, "Play in pause");
         require((timeLock[msg.sender] + protectedTime) < block.timestamp );
         uint fee = calculateFee(_value);
@@ -86,7 +85,7 @@ contract rpsGame is Ownable  {
         //getRandom is internal!
         uint rand = getRandomRangeLink(msg.sender,1,100);
         bool debt = false;
-        if(rand >= 50){
+        if(rand > 50){
             if(checkBalance(_value * 2)){
                 payable(msg.sender).transfer(_value * 2);
             }else {
@@ -115,7 +114,7 @@ contract rpsGame is Ownable  {
 
     }
 
-    function claimDebt() public {
+    function claimDebt() public nonReentrant{
         require (checkBalance(debtPerUser[msg.sender]) == true);
         require(debtPerUser[msg.sender] > 0, "no tiene fondos para claimear" );
         uint toPay = debtPerUser[msg.sender];
@@ -200,6 +199,10 @@ contract rpsGame is Ownable  {
         emit C_setMaxDeal(msg.sender,_newMaxDeal);
     }
 
+    function setIRandomNumberVRF(IRandomNumberVRF _randomLinkContract) public onlyOwner{
+        randomLinkContract = _randomLinkContract;
+    }
+
     //min balance in this contract, to pay 
     function setMinBalanceToPay(uint _minBalance) public onlyOwner(){
         minBalanceToPay =_minBalance;
@@ -224,13 +227,6 @@ contract rpsGame is Ownable  {
         return block.timestamp;
     }
 
-    /*TODO:
-    * Deploy otro staking
-    * transferirle fondos
-    * retirar fonods
-    * add:
-    * link 0x34ba13d0F2CC28036a815B2ab07C07939bD06A86
-    * Rps  0xAC6CEddB341497CEB8Ac2B48d4cC26aAEb05370A
-    * staking 0xb974Da4D0Ff78eA32B0ACB99EE09f72d00837B77
-    */
+    /* Development by @Patoverde - 2022*/
+    
 }

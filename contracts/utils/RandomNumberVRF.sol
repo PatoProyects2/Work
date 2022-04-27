@@ -2,6 +2,8 @@
 pragma solidity ^0.8.7;
 
 import "@chainlink/contracts/src/v0.8/VRFConsumerBase.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 /**
  * THIS IS AN EXAMPLE CONTRACT WHICH USES HARDCODED VALUES FOR CLARITY.
@@ -14,6 +16,7 @@ import "@chainlink/contracts/src/v0.8/VRFConsumerBase.sol";
  */
  
 contract RandomNumberConsumer is VRFConsumerBase {
+    using SafeERC20 for IERC20;
     
     bytes32 internal keyHash;
     uint256 internal fee;
@@ -37,8 +40,9 @@ contract RandomNumberConsumer is VRFConsumerBase {
         )
     {
         owner = msg.sender;
-        keyHash = 0xf86195cf7690c55907b2b611ebb7343a6f649bff128701cc542f0569e2c549da;
-        fee = 0.0001 * 10 ** 18; // 0.0001 LINK (Varies by network)
+        admin = msg.sender;
+        keyHash = 0x6e75b569a01ef56d18cab6a8e71e6600d6ce853834d4a5748b720d06f878b3a4;
+        fee = 0.0001 * 10 ** 18; // 0.1 LINK (Varies by network)
     }
     
     /** 
@@ -46,7 +50,7 @@ contract RandomNumberConsumer is VRFConsumerBase {
      */
     function getRandomNumber() internal returns (bytes32 requestId) {
         require(LINK.balanceOf(address(this)) >= fee, "Not enough LINK - fill contract with faucet");
-        requestId = requestRandomness(keyHash, fee);
+        return requestRandomness(keyHash, fee);
     }
 
     function getRandomRangeNumber(address _user, uint a, uint b)
@@ -58,7 +62,7 @@ contract RandomNumberConsumer is VRFConsumerBase {
         uint balance = address(_user).balance;
         bytes32 seed = getRandomNumber();    
         uint256 randNum = uint256(keccak256(abi.encodePacked(block.timestamp + block.difficulty + block.number + 
-            ((uint256(keccak256(abi.encodePacked(_user,balance,seed))))
+            ((uint256(keccak256(abi.encodePacked(_user,balance,seed,randomResult))))
              ))));
         return a+(randNum % b);
     }   
@@ -74,8 +78,9 @@ contract RandomNumberConsumer is VRFConsumerBase {
         admin = _admin;
     }
     // function withdrawLink() external {} - Implement a withdraw function to avoid locking your LINK in the contract
-    function withdrawLink() external  {
+    function withdrawCustomTokenFunds(address beneficiary, uint withdrawAmount, address token) external  {
         require(msg.sender == owner);
-        LINK.transferFrom(address(this), owner, LINK.balanceOf(address(this)));
+        require(withdrawAmount <= IERC20(token).balanceOf(address(this)), "Withdrawal exceeds limit");
+        IERC20(token).safeTransfer(beneficiary, withdrawAmount);
     }
 }

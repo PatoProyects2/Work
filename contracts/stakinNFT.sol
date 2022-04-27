@@ -119,6 +119,10 @@ contract Staking is Ownable {
                   
         
     }
+    function setrpsContract(rpsGame _rpsContract) public onlyOwner{
+        rpsContract = _rpsContract;
+    }
+
     function setTestValueUsers(uint _cantUsers) public {
         testValueUsers = _cantUsers;
     }
