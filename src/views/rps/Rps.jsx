@@ -63,7 +63,7 @@ export default function Rps() {
   const decimal = 1000000000000000000
 
   useEffect(() => {
-    const local = window.localStorage.getItem('discord')
+    const local = window.localStorage.getItem('token')
     if (local === null) {
       toast('Log in if you want to save you game stats and ahievements', {
         duration: 10000,
@@ -266,11 +266,11 @@ export default function Rps() {
           setAnimation(false)
           return false
         }
-        if (err.code === -32005) {
+        if (err.code !== -32603 && err.code !== 4001) {
           let myEvents2 = undefined
           const sleep = (milliseconds) => { return new Promise(resolve => setTimeout(resolve, milliseconds)) }
           setBusyNetwork(true)
-          const warningBlockchain = toast.loading("This transaction is taking too long because the network is busy, please check the status of your transaction in your wallet")
+          var warningBlockchain = toast.loading("This transaction is taking too long because the network is busy, please check the status of your transaction in your wallet")
           const options = {
             filter: {
               _to: account
@@ -288,18 +288,11 @@ export default function Rps() {
             if (myEvents2[0]) break;
           }
           if (myEvents2[0]) {
-            toast.dismiss(warningBlockchain);
             setGameLog('PLAYING')
             setBusyNetwork(false)
+            toast.dismiss(warningBlockchain);
             savePastEvents(usdAmount, dayBlock, playerDocument, myEvents2)
           }
-        }
-        if (err.code !== -32603 && err.code !== 4001 && err.code !== -32005) {
-          toast.error("Something unusual has happened, please try again in a few seconds")
-          setDoubleOrNothingStatus(false)
-          setPlaying(false)
-          setAnimation(false)
-          return false
         }
       }
       if (myEvents) {
@@ -320,18 +313,6 @@ export default function Rps() {
   const savePastEvents = (usdAmount, dayBlock, playerDocument, myEvents2) => {
     setSave(true)
     let myEvent = myEvents2[0].returnValues
-    mixpanel.track(
-      "rps",
-      {
-        "account": myEvent[0].toLowerCase(),
-        "result": myEvent[3],
-        "streak": parseInt(myEvent[2])
-      }
-    );
-    setUserGameResult(myEvent[3])
-    setUserGameStreak(myEvent[2])
-    setShowGameResult(true)
-    setDoubleOrNothingStatus(false)
 
     if (discordId !== '') {
       let profit = 0
@@ -341,7 +322,7 @@ export default function Rps() {
       updateDoc(doc(db, "clubUsers", discordId), {
         "rps.totalGames": playerDocument.rps.totalGames + 1,
         "rps.totalAmount": playerDocument.rps.totalAmount + usdAmount,
-        "rps.lastGameBlock": myEvent[0].blockNumber
+        "rps.lastGameBlock": myEvents2[0].blockNumber
       })
       if (myEvent[3] === true) {
         updateDoc(doc(db, "clubUsers", discordId), {
@@ -381,7 +362,7 @@ export default function Rps() {
       addDoc(collection(db, "allGames"), {
         createdAt: unixTime,
         uid: playerDocument.uid,
-        block: myEvent[0].blockNumber,
+        block: myEvents2[0].blockNumber,
         name: playerDocument.name,
         photo: playerDocument.photo,
         account: myEvent[0].toLowerCase(),
@@ -394,12 +375,12 @@ export default function Rps() {
       })
     } else {
       updateDoc(doc(db, "anonUsers", account), {
-        "rps.lastGameBlock": myEvent[0].blockNumber
+        "rps.lastGameBlock": myEvents2[0].blockNumber
       })
       addDoc(collection(db, "allGames"), {
         createdAt: unixTime,
         uid: playerDocument.uid,
-        block: myEvent[0].blockNumber,
+        block: myEvents2[0].blockNumber,
         name: playerDocument.name,
         photo: playerDocument.photo,
         account: myEvent[0].toLowerCase(),
@@ -410,10 +391,100 @@ export default function Rps() {
         game: 'RPS',
       })
     }
+    mixpanel.track(
+      "rps",
+      {
+        "account": myEvent[0].toLowerCase(),
+        "result": myEvent[3],
+        "streak": parseInt(myEvent[2])
+      }
+    );
+    setUserGameResult(myEvent[3])
+    setUserGameStreak(myEvent[2])
+    setShowGameResult(true)
+    setDoubleOrNothingStatus(false)
   }
 
   const saveBlockchainEvents = async (usdAmount, dayBlock, playerDocument, myEvent, gameBlock) => {
     setSave(true)
+
+    if (discordId !== '') {
+      let profit = 0
+      const level = playerDocument.level
+      const totalGames = playerDocument.rps.totalGames + 1
+      useStats({ level, totalGames, discordId })
+      updateDoc(doc(db, "clubUsers", discordId), {
+        "rps.totalGames": playerDocument.rps.totalGames + 1,
+        "rps.totalAmount": playerDocument.rps.totalAmount + usdAmount,
+        "rps.lastGameBlock": gameBlock
+      })
+      if (myEvent[3] === true) {
+        updateDoc(doc(db, "clubUsers", discordId), {
+          "rps.gameWon": playerDocument.rps.gameWon + 1,
+          "rps.amountWon": playerDocument.rps.amountWon + usdAmount
+        })
+        profit = (playerDocument.rps.amountWon - playerDocument.rps.amountLoss) + usdAmount
+      }
+      if (myEvent[3] === false) {
+        updateDoc(doc(db, "clubUsers", discordId), {
+          "rps.gameLoss": playerDocument.rps.gameLoss + 1,
+          "rps.amountLoss": playerDocument.rps.amountLoss + usdAmount
+        })
+        profit = (playerDocument.rps.amountWon - playerDocument.rps.amountLoss) - usdAmount
+      }
+      if (myEvent[2] > playerDocument.rps.dayWinStreak || dayBlock > playerDocument.rps.winStreakTime) {
+        updateDoc(doc(db, "clubUsers", discordId), {
+          "rps.dayWinStreak": parseInt(myEvent[2]),
+          "rps.winStreakTime": unixTime
+        })
+      }
+      if (usergame.hand === 'ROCK') {
+        updateDoc(doc(db, "clubUsers", discordId), {
+          "rps.rock": playerDocument.rps.rock + 1,
+        })
+      }
+      if (usergame.hand === 'PAPER') {
+        updateDoc(doc(db, "clubUsers", discordId), {
+          "rps.paper": playerDocument.rps.paper + 1,
+        })
+      }
+      if (usergame.hand === 'SCISSORS') {
+        updateDoc(doc(db, "clubUsers", discordId), {
+          "rps.scissors": playerDocument.rps.scissors + 1,
+        })
+      }
+      addDoc(collection(db, "allGames"), {
+        createdAt: unixTime,
+        uid: playerDocument.uid,
+        block: gameBlock,
+        name: playerDocument.name,
+        photo: playerDocument.photo,
+        account: myEvent[0].toLowerCase(),
+        amount: usdAmount,
+        maticAmount: parseInt(usergame.amount),
+        streak: parseInt(myEvent[2]),
+        result: myEvent[3],
+        game: 'RPS',
+        profit: profit
+      })
+    } else {
+      updateDoc(doc(db, "anonUsers", account), {
+        "rps.lastGameBlock": gameBlock
+      })
+      addDoc(collection(db, "allGames"), {
+        createdAt: unixTime,
+        uid: playerDocument.uid,
+        block: gameBlock,
+        name: playerDocument.name,
+        photo: playerDocument.photo,
+        account: myEvent[0].toLowerCase(),
+        amount: usdAmount,
+        maticAmount: parseInt(usergame.amount),
+        streak: parseInt(myEvent[2]),
+        result: myEvent[3],
+        game: 'RPS',
+      })
+    }
     mixpanel.track(
       "rps",
       {
@@ -427,83 +498,6 @@ export default function Rps() {
     setUserGameBlock(gameBlock)
     setShowGameResult(true)
     setDoubleOrNothingStatus(false)
-    if (discordId !== '') {
-      let profit = 0
-      const level = playerDocument.level
-      const totalGames = playerDocument.rps.totalGames + 1
-      useStats({ level, totalGames, discordId })
-      updateDoc(doc(db, "clubUsers", discordId), {
-        "rps.totalGames": playerDocument.rps.totalGames + 1,
-        "rps.totalAmount": playerDocument.rps.totalAmount + usdAmount,
-        "rps.lastGameBlock": gameBlock
-      })
-      if (myEvent[3] === true) {
-        updateDoc(doc(db, "clubUsers", discordId), {
-          "rps.gameWon": playerDocument.rps.gameWon + 1,
-          "rps.amountWon": playerDocument.rps.amountWon + usdAmount
-        })
-        profit = (playerDocument.rps.amountWon - playerDocument.rps.amountLoss) + usdAmount
-      }
-      if (myEvent[3] === false) {
-        updateDoc(doc(db, "clubUsers", discordId), {
-          "rps.gameLoss": playerDocument.rps.gameLoss + 1,
-          "rps.amountLoss": playerDocument.rps.amountLoss + usdAmount
-        })
-        profit = (playerDocument.rps.amountWon - playerDocument.rps.amountLoss) - usdAmount
-      }
-      if (myEvent[2] > playerDocument.rps.dayWinStreak || dayBlock > playerDocument.rps.winStreakTime) {
-        updateDoc(doc(db, "clubUsers", discordId), {
-          "rps.dayWinStreak": parseInt(myEvent[2]),
-          "rps.winStreakTime": unixTime
-        })
-      }
-      if (usergame.hand === 'ROCK') {
-        updateDoc(doc(db, "clubUsers", discordId), {
-          "rps.rock": playerDocument.rps.rock + 1,
-        })
-      }
-      if (usergame.hand === 'PAPER') {
-        updateDoc(doc(db, "clubUsers", discordId), {
-          "rps.paper": playerDocument.rps.paper + 1,
-        })
-      }
-      if (usergame.hand === 'SCISSORS') {
-        updateDoc(doc(db, "clubUsers", discordId), {
-          "rps.scissors": playerDocument.rps.scissors + 1,
-        })
-      }
-      addDoc(collection(db, "allGames"), {
-        createdAt: unixTime,
-        uid: playerDocument.uid,
-        block: gameBlock,
-        name: playerDocument.name,
-        photo: playerDocument.photo,
-        account: myEvent[0].toLowerCase(),
-        amount: usdAmount,
-        maticAmount: parseInt(usergame.amount),
-        streak: parseInt(myEvent[2]),
-        result: myEvent[3],
-        game: 'RPS',
-        profit: profit
-      })
-    } else {
-      updateDoc(doc(db, "anonUsers", account), {
-        "rps.lastGameBlock": gameBlock
-      })
-      addDoc(collection(db, "allGames"), {
-        createdAt: unixTime,
-        uid: playerDocument.uid,
-        block: gameBlock,
-        name: playerDocument.name,
-        photo: playerDocument.photo,
-        account: myEvent[0].toLowerCase(),
-        amount: usdAmount,
-        maticAmount: parseInt(usergame.amount),
-        streak: parseInt(myEvent[2]),
-        result: myEvent[3],
-        game: 'RPS',
-      })
-    }
   }
 
   const showResult = async () => {
@@ -644,13 +638,13 @@ export default function Rps() {
                   {animation &&
                     <>
                       <img src={RPSAnimation} width="240" height="240" alt="Rock-Paper-Scissors" />
-                      {
-                        !showGameResult ?
-                          <div className="row w-100">
-                            <div className='col-9 text-end p-0 processing-title'>{gameLog}</div>
-                            <div className='col-3 text-start p-0 processing-title'>{dotLog}</div>
-                          </div>
-                          : <span className='processing-title'>{gameLog}</span>
+
+                      {!showGameResult ?
+                        <div className="processing-title">
+                          {gameLog}<span className="loading-dot">{dotLog}</span>
+                        </div>
+                        :
+                        <span className='processing-title'>{gameLog}</span>
                       }
                       <h3>
                         <span className='text-warning'>{userhand}</span>
@@ -660,11 +654,12 @@ export default function Rps() {
                     </>
                   }
                   {busyNetwork &&
-                    <div className='row w-100'>
-                      <div className='col-9 text-end p-0 processing-title'>SEARCHING YOUR GAME</div>
-                      <div className='col-3 text-start p-0 processing-title'>{dotLog}</div>
+                    <>
+                      <div className="processing-title">
+                        SEARCHING YOUR GAME<span className="loading-dot">{dotLog}</span>
+                      </div>
                       <h4 className='text-yellow'>DON'T CLOSE THIS WINDOW!</h4>
-                    </div>
+                    </>
                   }
                   {showGameResult && <button className="btn-hover btn-green" onClick={showResult}>SHOW RESULT</button>}
                   {gameResult &&
@@ -718,10 +713,8 @@ export default function Rps() {
                               {
                                 save ?
                                   <>
-                                    <span className="processing-title">POLYGON IS PROCESSING</span>
-                                    <div className="row w-100 processing-title">
-                                      <span className='col-9 text-end p-0'>YOUR GAME</span>
-                                      <span className='col-3 text-start p-0'>{dotLog}</span>
+                                    <div className="processing-title">
+                                      POLYGON IS PROCESSING YOUR GAME<span className="loading-dot">{dotLog}</span>
                                     </div>
                                     <button className="btn-hover btn-loading" disabled={true}>
                                       PLEASE WAIT
@@ -740,10 +733,8 @@ export default function Rps() {
                             <div className="d-flex flex-column align-items-center">
                               {save ?
                                 <>
-                                  <span className="processing-title">POLYGON IS PROCESSING</span>
-                                  <div className="row w-100 processing-title">
-                                    <span className='col-9 text-end p-0'>YOUR GAME</span>
-                                    <span className='col-3 text-start p-0'>{dotLog}</span>
+                                  <div className="processing-title">
+                                    POLYGON IS PROCESSING YOUR GAME<span className="loading-dot">{dotLog}</span>
                                   </div>
                                   <button className="btn-hover btn-loading" disabled={true}>
                                     PLEASE WAIT
@@ -888,7 +879,7 @@ export default function Rps() {
                   <h5 className="mt-5">FOR</h5>
                   <div className="d-flex justify-content-center my-4">
                     <label className="amount">
-                      <input type="radio" name="amount" id="amount1" onChange={handleInputChange} value="0.01" />
+                      <input type="radio" name="amount" id="amount1" onChange={handleInputChange} value="1" />
                       <span>1 MATIC</span>
                     </label>
                     <label className="amount">

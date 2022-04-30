@@ -1,6 +1,5 @@
 /* DARK THEME */
-
-body {
+html, body {
     background: #232c31 !important;
 }
 
@@ -97,7 +96,7 @@ body {
 
 .btn-rank {
     background-color: rgba(28, 31, 35, 1) !important;
-    color: whitesmoke!important;
+    color: whitesmoke !important;
 }
 
 .btn-rank.active {
@@ -573,25 +572,31 @@ svg:hover>g.brand-icon {
         align-items: center;
         margin-top: 1rem;
     }
+
     .user-stats-profile {
         margin-left: 0;
         margin-bottom: 1rem;
     }
+
     .user-daily-stats {
         width: 100%;
     }
+
     .game-list-stats {
         font-size: 0.875rem;
         padding-right: 0.5rem;
         gap: 0;
         min-width: 60px;
     }
+
     .user-daily-stats-container {
         gap: 0;
     }
+
     .game-stats {
         width: 75%;
     }
+
     .user-stats-profit {
         gap: 0.25rem;
         text-align: center;

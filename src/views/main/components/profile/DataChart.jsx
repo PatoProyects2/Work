@@ -15,6 +15,11 @@ export default function DataChart({ data }) {
         lineWidth: 2,
       },
     },
+    theme: {
+      styleSheet: {
+        fontFamily: "Lucida Console"
+      }
+    },
     annotations: [
       {
         type: 'line',
@@ -30,8 +35,9 @@ export default function DataChart({ data }) {
         start: ['min', '0'],
         end: ['max', '-10000'],
         color: '#FF0000',
-      },
+      }
     ],
+    // interactions: [{ type: 'element-active' }, { type: 'brush' }]
   }
   return (
     <div>

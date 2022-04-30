@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
@@ -6,9 +6,28 @@ import { Context } from '../../context/Context'
 export default function AccountFirebase() {
   const { discordId } = useContext(Context);
   const [dropdown, setDropdown] = useState(false);
-  const { baseData } = useAuth()
-
+  const [user, setUser] = useState(false);
+  useAuth()
   let navigate = useNavigate()
+
+  useEffect(() => {
+    const timer = setInterval(() => { getLocalStorage() }, 1000);
+    return () => {
+      clearInterval(timer);
+      setUser(false);
+    }
+  }, [])
+
+  const getLocalStorage = () => {
+    const userData = window.localStorage.getItem('user')
+    const data = JSON.parse(userData)
+    const userLevel = window.localStorage.getItem('level')
+    const level = {
+      level: userLevel
+    }
+    const rpsUser = Object.assign(data, level)
+    setUser(rpsUser)
+  }
 
   const toggleMenu = () => {
     setDropdown(!dropdown);
@@ -36,26 +55,27 @@ export default function AccountFirebase() {
   }
 
   const removeToken = () => {
-    window.localStorage.removeItem('discord')
+    window.localStorage.removeItem('token')
+    window.localStorage.removeItem('user')
     window.location.reload()
   }
-  
+
   const handleClickProfile = () => {
     navigate('/profile')
   }
 
   return (
     <>
-      {discordId !== '' && baseData !== '' ?
+      {discordId !== '' && user ?
         <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="md" className="dd-profile">
           <DropdownToggle color='transparent' className='dd-toggle' caret>
             <div className="d-inline-flex">
-              <div className={xpClass(baseData.level)}>
+              <div className={xpClass(user.level)}>
                 <span className="circle">
-                  <span>{baseData.level}</span>
+                  <span>{user.level}</span>
                 </span>
               </div>
-              <span className="ms-2 fw-bold">{baseData.name}</span><span>#{baseData.id}</span>
+              <span className="ms-2 fw-bold">{user.name}</span><span>#{user.id}</span>
             </div>
           </DropdownToggle>
           <DropdownMenu >
