@@ -105,10 +105,14 @@ export default function Chart({ userData }) {
 
   return (
     <>
-      <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="md">
+      <Dropdown isOpen={dropdown} toggle={toggleMenu} direction="down" size="sm">
         {
           <DropdownToggle caret color='warning'>
-            History Games
+            {data50 && 'Last 50 games'}
+            {data100 && 'Last 100 games'}
+            {data200 && 'Last 200 games'}
+            {data400 && 'Last 400 games'}
+            {!data50 && !data100 && !data200 && !data400 && 'All games'}
           </DropdownToggle>
         }
         <DropdownMenu>

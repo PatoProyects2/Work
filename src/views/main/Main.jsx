@@ -7,12 +7,19 @@ import { db } from '../../firebase/firesbaseConfig'
 import MostPlays from './components/MostPlays'
 import MostAmount from './components/MostAmount'
 import ReadAllGames from '../../firebase/ReadAllGames'
-import RPSGameImg from '../../assets/imgs/rps_card.png'
-import ComingSoonImg from '../../assets/imgs/coming_soon_hover_card.png'
+// import RPSGameImg from '../../assets/imgs/rps_card.png'
+// import ComingSoonImg from '../../assets/imgs/coming_soon_hover_card.png'
+// import DiscordImg from '../../assets/imgs/discord_card.png'
+// import TwitterImg from '../../assets/imgs/twitter_card.png'
+// import FairPlayImg from '../../assets/imgs/fair_play_hover_card.png'
+// import NFTImg from '../../assets/imgs/nft_hover_card.png'
+import RPSGameImg from '../../assets/imgs/Home Page/imageRPSgame.png'
+import ComingSoonImg from '../../assets/imgs/Home Page/imageComingSoon.png'
+import FairPlayImg from '../../assets/imgs/Home Page/imageFairplay.png'
+import NFTImg from '../../assets/imgs/Home Page/imageNFT.png'
+import CoinflipImg from '../../assets/imgs/Home Page/imageCoinflip.png'
 import DiscordImg from '../../assets/imgs/discord_card.png'
 import TwitterImg from '../../assets/imgs/twitter_card.png'
-import FairPlayImg from '../../assets/imgs/fair_play_hover_card.png'
-import NFTImg from '../../assets/imgs/nft_hover_card.png'
 import { Context } from '../../context/Context'
 import { useMatchMedia } from '../../hooks/useMatchMedia'
 export default function Main() {
@@ -378,6 +385,12 @@ export default function Main() {
               <img src={NFTImg} width='400' />
             </NavLink>
           </div>
+          <div className='game-card col-md-4 mx-auto'>
+            <NavLink to='/nfts'>
+              <div className='card-bg nfts-bg'></div>
+              <img src={CoinflipImg} width='400' />
+            </NavLink>
+          </div>
           <div className='game-card last col-md-4 mx-auto'>
             <NavLink to='/fair-play'>
               <div className='card-bg fair-bg'></div>
@@ -385,7 +398,7 @@ export default function Main() {
             </NavLink>
           </div>
         </div>
-        <div className='row text-center mb-2'>
+        {/* <div className='row text-center mb-2'>
           <div className='social-card col-6 mx-auto'>
             <a href='https://twitter.com/RPSGamesClub' target="_blank" rel="noreferrer">
               <div className='card-bg twitter-bg'></div>
@@ -398,7 +411,7 @@ export default function Main() {
               <img src={DiscordImg} width='400' />
             </a>
           </div>
-        </div>
+        </div> */}
       </div>
 
       <br></br>

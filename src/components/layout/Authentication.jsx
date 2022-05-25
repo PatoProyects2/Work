@@ -3,6 +3,7 @@ import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { Context } from '../../context/Context'
+import DiscordButton from '../../assets/imgs/Home Page/discordButton.png'
 export default function AccountFirebase() {
   const { discordId } = useContext(Context);
   const [dropdown, setDropdown] = useState(false);
@@ -21,12 +22,16 @@ export default function AccountFirebase() {
   const getLocalStorage = () => {
     const userData = window.localStorage.getItem('user')
     const data = JSON.parse(userData)
-    const userLevel = window.localStorage.getItem('level')
-    const level = {
-      level: userLevel
+    if (data) {
+      const userLevel = window.localStorage.getItem('level')
+      if (userLevel) {
+        const level = {
+          level: userLevel
+        }
+        const rpsUser = Object.assign(data, level)
+        setUser(rpsUser)
+      }
     }
-    const rpsUser = Object.assign(data, level)
-    setUser(rpsUser)
   }
 
   const toggleMenu = () => {
@@ -50,7 +55,7 @@ export default function AccountFirebase() {
   }
 
   const getToken = () => {
-    const ouathLink = 'https://discord.com/api/oauth2/authorize?client_id=961656991149875232&redirect_uri=https%3A%2F%2Frpsgames.club%2F&response_type=code&scope=identify%20email'
+    const ouathLink = 'https://discord.com/api/oauth2/authorize?client_id=961656991149875232&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2F&response_type=code&scope=identify%20email'
     location.href = ouathLink
   }
 
@@ -84,7 +89,7 @@ export default function AccountFirebase() {
           </DropdownMenu>
         </Dropdown>
         :
-        <button onClick={getToken} className="btn-discord" title="Login with Discord">LOGIN with <i className='fa-brands fa-discord'></i></button>
+        <img role='button' onClick={getToken} src={DiscordButton} alt='discord-button' />
       }
     </>
   );

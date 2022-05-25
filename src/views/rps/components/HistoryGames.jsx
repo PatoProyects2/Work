@@ -17,30 +17,16 @@ export default function HistoryGames(props) {
     return (
         <>
             <Dropdown isOpen={dropdown0} toggle={toggleMenu0} direction="down" size="md">
-                {
-                    props.isMobileResolution ?
-                        <DropdownToggle color='danger'>
-                            PLAYS
-                        </DropdownToggle>
-                        :
-                        <DropdownToggle caret color='danger'>
-                            LIVEPLAYS
-                        </DropdownToggle>
-                }
+                <DropdownToggle color='danger'>
+                    {props.isMobileResolution ? 'PLAYS' : 'LIVEPLAYS'}
+                </DropdownToggle>
                 <ReadRPSGames isMobileResolution={props.isMobileResolution} />
             </Dropdown>
 
             <Dropdown isOpen={dropdown1} toggle={toggleMenu1} direction="down" size="md">
-                {
-                    props.isMobileResolution ?
-                        <DropdownToggle color='danger'>
-                            STREAKS
-                        </DropdownToggle>
-                        :
-                        <DropdownToggle caret color='danger'>
-                            <span>WINSTREAKS <i className="fa-solid fa-trophy fa-xs"></i></span>
-                        </DropdownToggle>
-                }
+                <DropdownToggle color='danger'>
+                    {props.isMobileResolution ? 'STREAKS' : <span>WINSTREAKS <i className="fa-solid fa-trophy fa-xs"></i></span>}
+                </DropdownToggle>
                 <ReadStreakGames isMobileResolution={props.isMobileResolution} />
             </Dropdown>
         </>

@@ -4,7 +4,8 @@ import { Navbar, Offcanvas, Nav, OffcanvasHeader, OffcanvasBody, Button } from '
 import Presence from '../../../firebase/ActiveUsers'
 import AccountFirebase from '../../layout/Authentication';
 import { useMatchMedia } from '../../../hooks/useMatchMedia';
-import GamesClub from '../../../assets/imgs/Games_Club.png';
+import RPSLogo from '../../../assets/imgs/Home Page/logo.png';
+import MenuIcon from '../../../assets/imgs/Home Page/menuIcon.png';
 import MaticBalance from '../../../views/rps/components/MaticBalance';
 
 export const NavbarDesktop = () => {
@@ -14,13 +15,8 @@ export const NavbarDesktop = () => {
         <>
             <Navbar className="main-navbar fixed-top">
                 <div className="d-flex">
-                    <Button
-                        onClick={() => setShowOffCanvas(true)}
-                        color='menu-bars'
-                        className='mx-2'>
-                        <i className="fas fa-bars"></i>
-                    </Button>
-                    <img className="rounded-circle" src={GamesClub} width="40" height="40" alt="" />
+                    <img role='button' onClick={() => setShowOffCanvas(true)} className='mx-2' src={MenuIcon} alt='' />
+                    <img src={RPSLogo} alt="" />
                     &nbsp;
                     <NavLink className='d-flex align-items-center rps-logo' to='/'>
                         <svg
@@ -37,14 +33,14 @@ export const NavbarDesktop = () => {
                     </NavLink>
                     <div className="active-users-navbar">{<Presence />}</div>
                 </div>
-                                
+
                 <MaticBalance isMobileResolution={isMobileResolution} />
 
                 {!isMobileResolution && (
                     <div className='d-flex align-items-center gap-2'>
                         <AccountFirebase />
                     </div>
-                )}                
+                )}
 
                 <Offcanvas
                     direction="start"

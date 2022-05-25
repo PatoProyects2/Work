@@ -33,7 +33,7 @@ export const useAuth = () => {
                     client_secret: clientSecret,
                     code: url,
                     grant_type: 'authorization_code',
-                    redirect_uri: 'https://rpsgames.club/',
+                    redirect_uri: 'http://localhost:3000/',
                     scope: 'identify email',
                 }),
                 headers: {
@@ -66,7 +66,7 @@ export const useAuth = () => {
                                 register: unixTimeStamp,
                                 name: userData.username,
                                 id: userData.discriminator,
-                                photo: userData.avatar ? `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}` : 'https://firebasestorage.googleapis.com/v0/b/games-club-dce4d.appspot.com/o/ClubLogo.png?alt=media&token=5dd64484-c99f-4ce9-a06b-0a3ee112b37b',
+                                photo: userData.avatar ? `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}` : 'https://firebasestorage.googleapis.com/v0/b/rpsgame-c4a38.appspot.com/o/profile%2FuserAvatarEmpty.png?alt=media&token=092401c4-84b7-41b4-a956-ba3b5cadbfe7',
                                 banner: {
                                     file: userData.banner,
                                     color: userData.banner_color

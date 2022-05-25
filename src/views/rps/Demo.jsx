@@ -81,62 +81,41 @@ export default function Demo() {
     var randomArray = Math.random() * arrayOptions.length | 0;
     var result = arrayOptions[randomArray]
 
+    const toastOptions = {
+      duration: 5000,
+      position: 'bottom-left',
+      style: {},
+      className: 'pop-up toast-modal',
+      icon: result === 'a' ? <img src={userGameResult ? win1 : lose1} width="25" height="25" alt=""></img> : <img src={userGameResult ? win2 : lose2} width="25" height="25" alt=""></img>,
+      iconTheme: {
+        primary: '#000',
+        secondary: '#fff',
+      },
+      ariaProps: {
+        role: 'status',
+        'aria-live': 'polite',
+      },
+    }
+
     if (userGameResult) {
       if (soundToggle) {
         music.play()
       }
-      const winOptions = {
-        duration: 5000,
-        position: 'bottom-left',
-        // Styling
-        style: {},
-        className: 'pop-up toast-modal',
-        // Custom Icon
-        icon: result === 'a' ? <img src={win1} width="25" height="25" alt=""></img> : <img src={win2} width="25" height="25" alt=""></img>,
-        // Change colors of success/error/loading icon
-        iconTheme: {
-          primary: '#000',
-          secondary: '#fff',
-        },
-        // Aria
-        ariaProps: {
-          role: 'status',
-          'aria-live': 'polite',
-        },
-      }
       if (result === 'a') {
-        toast('You doubled your money!!', winOptions);
+        toast('You doubled your money!!', toastOptions);
       }
       if (result === 'b') {
-        toast('You are doing some business here', winOptions);
+        toast('You are doing some business here', toastOptions);
       }
     } else {
-      const loseOptions = {
-        duration: 5000,
-        position: 'bottom-left',
-        // Styling
-        style: {},
-        className: 'pop-up toast-modal',
-        // Custom Icon
-        icon: result === 'a' ? <img src={lose1} width="25" height="25" alt=""></img> : <img src={lose2} width="25" height="25" alt=""></img>,
-        // Change colors of success/error/loading icon
-        iconTheme: {
-          primary: '#000',
-          secondary: '#fff',
-        },
-        // Aria
-        ariaProps: {
-          role: 'status',
-          'aria-live': 'polite',
-        },
-      }
       if (result === 'a') {
-        toast('Better luck next time.', loseOptions);
+        toast('Better luck next time.', toastOptions);
       }
       if (result === 'b') {
-        toast('Wrong hand :P', loseOptions);
+        toast('Wrong hand :P', toastOptions);
       }
     }
+
     setAnimation(false)
     setShowGameResult(false)
     setGameResult(true)
@@ -152,17 +131,21 @@ export default function Demo() {
     <>
       {active ?
         <div className="game-container">
-          {playing === true ?
-            <div className="mt-3">
-              {animation === true &&
+          {playing ?
+            <div className="game-playing-container">
+              {animation &&
                 <>
                   <img src={RPSAnimation} width="240" height="240" alt="Rock-Paper-Scissors" />
-                  <h3>PLAYING</h3>
-                  <h3>{userhand + " FOR " + useramount + " MATIC"}</h3>
+                  {showGameResult && <span className='processing-title'>{'PLAYING'}</span>}
+                  <h3>
+                    <span className='text-warning'>{userhand}</span>
+                    <span >{" FOR "}</span>
+                    <span className='text-decoration-underline text-warning'>{useramount + " MATIC"}</span>
+                  </h3>
                 </>
               }
-              {showGameResult === true && <button className="btn-hover btn-green" onClick={showResult}>SHOW RESULT</button>}
-              {gameResult === true &&
+              {showGameResult && <button className="btn-hover btn-green" onClick={showResult}>SHOW RESULT</button>}
+              {gameResult &&
                 <>
                   {userGameStreak > 1 &&
                     <div className="mb-5">
@@ -170,41 +153,41 @@ export default function Demo() {
                       <h3>{"You're on a " + userGameStreak + " win streak"}</h3>
                     </div>
                   }
-                  {userhand === 'ROCK' && userGameResult === true &&
+                  {userhand === 'ROCK' && userGameResult &&
                     <div className="anim-win-lose">
                       <img className="result-rps-image" src={RockWin} alt="Rock Wins" />
                     </div>
                   }
-                  {userhand === 'PAPER' && userGameResult === true &&
+                  {userhand === 'PAPER' && userGameResult &&
                     <div className="anim-win-lose">
                       <img className="result-rps-image" src={PaperWin} alt="Paper Wins" />
                     </div>
                   }
-                  {userhand === 'SCISSORS' && userGameResult === true &&
+                  {userhand === 'SCISSORS' && userGameResult &&
                     <div className="anim-win-lose">
                       <img className="result-rps-image" src={ScissorsWin} alt="Scissors Wins" />
                     </div>
                   }
-                  {userhand === 'ROCK' && userGameResult === false &&
+                  {userhand === 'ROCK' && !userGameResult &&
                     <div className="anim-win-lose">
                       <img className="result-rps-image" src={RockLose} alt="Rock Loses" />
                     </div>
                   }
-                  {userhand === 'PAPER' && userGameResult === false &&
+                  {userhand === 'PAPER' && !userGameResult &&
                     <div className="anim-win-lose">
                       <img className="result-rps-image" src={PaperLose} alt="Paper Loses" />
                     </div>
                   }
-                  {userhand === 'SCISSORS' && userGameResult === false &&
+                  {userhand === 'SCISSORS' && !userGameResult &&
                     <div className="anim-win-lose">
                       <img className="result-rps-image" src={ScissorsLose} alt="Scissors Loses" />
                     </div>
                   }
                   <div className="d-flex flex-column justify-content-between w-50 mx-auto mt-4">
                     <div className="d-flex flex-column justify-content-center">
-                      <span className="rps-result-title">{userGameResult === true && " YOU WON "}{userGameResult === false && " YOU LOST "}</span>
+                      <span className="rps-result-title">{userGameResult ? " YOU WON " : " YOU LOST "}</span>
                       <span className="rps-result-amount" style={{ color: userGameResult ? "mediumseagreen" : "crimson" }}>
-                        {userGameResult === true && useramount * 2}{userGameResult === false && useramount}{" MATIC"}
+                        {userGameResult ? useramount * 2 : useramount} MATIC
                       </span>
                     </div>
                     <div className="d-flex justify-content-center">

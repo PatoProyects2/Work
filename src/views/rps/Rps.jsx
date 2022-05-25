@@ -11,6 +11,9 @@ import { useMatchMedia } from '../../hooks/useMatchMedia'
 import Rock from '../../assets/imgs/rock.gif'
 import Paper from '../../assets/imgs/paper.gif'
 import Scissors from '../../assets/imgs/scissors.gif'
+// import Rock from '../../assets/imgs/Bet Screen/imageRock.png'
+// import Paper from '../../assets/imgs/Bet Screen/imagePaper.png'
+// import Scissors from '../../assets/imgs/Bet Screen/imageScissors.png'
 import RPSAnimation from '../../assets/imgs/animation.gif'
 import RockLose from '../../assets/imgs/animations/RockLose.gif'
 import RockWin from '../../assets/imgs/animations/RockWin.gif'
@@ -60,10 +63,11 @@ export default function Rps() {
   const [busyNetwork, setBusyNetwork] = useState(false);
 
   const music = new Audio(winSound);
-  const decimal = 1000000000000000000
+  const local = window.localStorage.getItem('token')
+
+  const sleep = (milliseconds) => { return new Promise(resolve => setTimeout(resolve, milliseconds)) }
 
   useEffect(() => {
-    const local = window.localStorage.getItem('token')
     if (local === null) {
       toast('Log in if you want to save you game stats and ahievements', {
         duration: 10000,
@@ -85,7 +89,7 @@ export default function Rps() {
         },
       });
     }
-  }, [])
+  }, [local])
 
   useEffect(() => {
     loadUserGame()
@@ -107,26 +111,6 @@ export default function Rps() {
             account: account
           }).then(loadUserGame())
         }
-        // if (rpsgame) {
-        //   rpsgame.events.Play({
-        //     filter: {
-        //       user: account
-        //     },
-        //     fromBlock: data.rps.lastGameBlock + 1
-        //   }, function (error, event) { console.log(event); })
-        //     .on("connected", function (subscriptionId) {
-
-        //     })
-        //     .on('data', async function (event) {
-
-        //     })
-        //     .on('changed', function (event) {
-
-        //     })
-        //     .on('error', function (error, receipt) {
-
-        //     });
-        // }
       }
     } else {
       if (account !== undefined) {
@@ -141,7 +125,8 @@ export default function Rps() {
               photo: 'https://firebasestorage.googleapis.com/v0/b/games-club-dce4d.appspot.com/o/ClubLogo.png?alt=media&token=5dd64484-c99f-4ce9-a06b-0a3ee112b37b',
               level: 1,
               rps: {
-                lastGameBlock: 0
+                lastGameBlock: 0,
+                winStreak: 0
               }
             }
             setDoc(doc(db, "anonUsers", account), arrayData).then(loadUserGame())
@@ -165,7 +150,7 @@ export default function Rps() {
     })
   }
 
-  const verifyGame = () => {
+  const verifyGame = async () => {
     if (account === '') {
       toast.error("We cannot detect your wallet, please reload the website")
       return false
@@ -182,10 +167,10 @@ export default function Rps() {
       toast.error("Select an amount")
       return false
     }
-    if (network !== 137) {
-      toast.error("Invalid network detected, please select Polygon network")
-      return false
-    }
+    // if (network !== 137) {
+    //   toast.error("Invalid network detected, please select Polygon network")
+    //   return false
+    // }
     if (balance === '') {
       toast.error("We cannot establish communication with network RPC, please try changing your network RPC")
       return false
@@ -193,264 +178,200 @@ export default function Rps() {
 
     const inputAmount = web3.utils.toWei(usergame.amount.toString(), "ether")
 
-    rpsgame.methods.calculateValue(inputAmount).call()
-      .then(calculateValue => {
-        doubleOrNothing(inputAmount, calculateValue)
-        setGameLog('WAITING FOR DEPOSIT')
-        setDoubleOrNothingStatus(true)
-        setPlaying(true)
-        setAnimation(true)
-      })
-      .catch(() => {
-        toast.error("We found some issue with the network, please try again")
-        return false
-      })
+    const feeValue = await rpsgame.methods
+      .calculateValue(inputAmount)
+      .call()
+    if (feeValue) {
+      doubleOrNothing(inputAmount, feeValue)
+      setGameLog('WAITING FOR DEPOSIT')
+      setDoubleOrNothingStatus(true)
+      setPlaying(true)
+      setAnimation(true)
+    }
   }
 
-  const doubleOrNothing = async (inputAmount, calculateValue) => {
-    let playerDocument = {}
-    let actuallBlock = 0
-    try {
-      actuallBlock = await web3.eth.getBlockNumber()
-    } catch (err) {
+  const doubleOrNothing = async (inputAmount, feeValue) => {
+    const actuallBlock = await web3.eth.getBlockNumber()
 
-    }
-    const usdAmount = parseInt(usergame.amount) * maticPrice
-    const dayBlock = actuallBlock - 43200
+    if (actuallBlock) {
+      const usdAmount = parseInt(usergame.amount) * maticPrice
+      const dayBlock = actuallBlock - 43200
 
-    if (discordId !== '') {
-      const q0 = doc(db, "clubUsers", discordId)
-      let doc1 = await getDoc(q0)
-      playerDocument = doc1.data()
-    } else {
-      const q1 = doc(db, "anonUsers", account)
-      let doc2 = await getDoc(q1)
-      playerDocument = doc2.data()
-    }
-
-    const lastGame = playerDocument.rps.lastGameBlock
-
-    if (actuallBlock > lastGame) {
-      let myEvents = undefined
-      let gas = 0
-      if (gasTrack.fastest > 150) {
-        gas = 150000000000
+      let playerDocument = {}
+      if (discordId !== '') {
+        const q0 = doc(db, "clubUsers", discordId)
+        let doc1 = await getDoc(q0)
+        playerDocument = doc1.data()
+      } else {
+        const q1 = doc(db, "anonUsers", account)
+        let doc2 = await getDoc(q1)
+        playerDocument = doc2.data()
       }
-      if (gasTrack.fastest < 50) {
-        gas = 50000000000
-      }
-      if (gasTrack.fastest > 50 && gasTrack.fastest < 150) {
-        gas = gasTrack.fastest * 1000000000
-      }
-      try {
-        myEvents = await rpsgame.methods
+
+      const lastGame = playerDocument.rps.lastGameBlock
+      if (actuallBlock > lastGame) {
+        let myEvents = undefined
+        let gas = 0
+        if (gasTrack.fastest > 150) {
+          gas = 150000000000
+        }
+        if (gasTrack.fastest < 50) {
+          gas = 50000000000
+        }
+        if (gasTrack.fastest > 50 && gasTrack.fastest < 150) {
+          gas = gasTrack.fastest * 1000000000
+        }
+
+        const playEvent = await rpsgame.methods
           .play(inputAmount)
           .send({
             from: account,
-            value: calculateValue,
+            value: feeValue,
             gasPrice: gas,
             gasLimit: 370800
           })
-      } catch (err) {
-        if (err.code === -32603) {
-          toast.error("This transaction needs more gas to be executed")
-          setDoubleOrNothingStatus(false)
-          setPlaying(false)
-          setAnimation(false)
-          return false
-        }
-        if (err.code === 4001) {
-          toast.error("You denied transaction signature")
-          setDoubleOrNothingStatus(false)
-          setPlaying(false)
-          setAnimation(false)
-          return false
-        }
-        if (err.code !== -32603 && err.code !== 4001) {
-          let myEvents2 = undefined
-          const sleep = (milliseconds) => { return new Promise(resolve => setTimeout(resolve, milliseconds)) }
-          setBusyNetwork(true)
-          var warningBlockchain = toast.loading("This transaction is taking too long because the network is busy, please check the status of your transaction in your wallet")
-          const options = {
-            filter: {
-              _to: account
-            },
-            fromBlock: actuallBlock,
-            toBlock: 'latest'
-          };
-          for (let i = 0; i < 1000; i++) {
-            try {
-              myEvents2 = await rpsgame.getPastEvents('Play', options)
-            } catch (err) {
-
-            }
-            await sleep(1000)
-            if (myEvents2[0]) break;
-          }
-          if (myEvents2[0]) {
+          .on('pending', async (hash) => {
             setGameLog('PLAYING')
-            setBusyNetwork(false)
-            toast.dismiss(warningBlockchain);
-            savePastEvents(usdAmount, dayBlock, playerDocument, myEvents2)
-          }
+          })
+          .on('success', async (hash) => {
+            setGameLog('PLAYING')
+          })
+          .on('error', async (err) => {
+            if (err.code === -32603) {
+              toast.error("This transaction needs more gas to be executed")
+              setDoubleOrNothingStatus(false)
+              setPlaying(false)
+              setAnimation(false)
+              return false
+            }
+            if (err.code === 4001) {
+              toast.error("You denied transaction signature")
+              setDoubleOrNothingStatus(false)
+              setPlaying(false)
+              setAnimation(false)
+              return false
+            }
+            if (err.code !== -32603 && err.code !== 4001) {
+              setBusyNetwork(true)
+              let playEvent = undefined
+              var warningBlockchain = toast.loading("This transaction is taking too long because the network is busy, please check the status of your transaction in your wallet")
+              const options = {
+                filter: {
+                  _to: account
+                },
+                fromBlock: actuallBlock,
+                toBlock: 'latest'
+              };
+              for (let i = 0; i < 1000; i++) {
+                try {
+                  playEvent = await rpsgame.getPastEvents('Play', options)
+                } catch (err) {
+
+                }
+                await sleep(1000)
+                if (playEvent[0]) break;
+              }
+              if (playEvent[0]) {
+                let myEvent = playEvent[0].returnValues
+                let gameBlock = playEvent[0].blockNumber
+                saveBlockchainEvents(usdAmount, playerDocument, myEvent, gameBlock)
+                setBusyNetwork(false)
+                toast.dismiss(warningBlockchain);
+              }
+            }
+          })
+        console.log(playEvent)
+        if (playEvent) {
+          let myEvent = playEvent.events.Play.returnValues
+          let gameBlock = playEvent.blockNumber
+          saveBlockchainEvents(usdAmount, playerDocument, myEvent, gameBlock)
+        }
+        else {
+          toast.error("We have an issue reading the blockchain or you are playing too fast, please try again in a few seconds")
+          setDoubleOrNothingStatus(false)
+          setPlaying(false)
+          setAnimation(false)
+          return false
         }
       }
-      if (myEvents) {
-        setGameLog('PLAYING')
-        let myEvent = myEvents.events.Play.returnValues
-        let gameBlock = myEvents.blockNumber
-        saveBlockchainEvents(usdAmount, dayBlock, playerDocument, myEvent, gameBlock)
-      }
-    } else {
-      toast.error("We have an issue reading the blockchain or you are playing too fast, please try again in a few seconds")
-      setDoubleOrNothingStatus(false)
-      setPlaying(false)
-      setAnimation(false)
-      return false
     }
   }
 
-  const savePastEvents = (usdAmount, dayBlock, playerDocument, myEvents2) => {
+  const saveBlockchainEvents = async (usdAmount, playerDocument, myEvent, gameBlock) => {
     setSave(true)
-    let myEvent = myEvents2[0].returnValues
-
+    const userStreak = myEvent[3] > 50 ? playerDocument.rps.winStreak + 1 : 0
+    const userResult = myEvent[3] > 50 ? true : false
     if (discordId !== '') {
-      let profit = 0
       const level = playerDocument.level
       const totalGames = playerDocument.rps.totalGames + 1
+      const totalAmount = playerDocument.rps.totalAmount + usdAmount
+      const userGame = userResult ? playerDocument.rps.gameWon + 1 : playerDocument.rps.gameLoss + 1
+      const userAmount = userResult ? playerDocument.rps.amountWon + usdAmount + 1 : playerDocument.rps.amountLoss + usdAmount
+      const userProfit = userResult ? profit = (playerDocument.rps.amountWon - playerDocument.rps.amountLoss) + usdAmount : profit = (playerDocument.rps.amountWon - playerDocument.rps.amountLoss) - usdAmount
+      const rockHand = usergame.hand === 'ROCK' && playerDocument.rps.rock + 1
+      const paperHand = usergame.hand === 'PAPER' && playerDocument.rps.paper + 1
+      const scissorsHand = usergame.hand === 'SCISSORS' && playerDocument.rps.scissors + 1
       useStats({ level, totalGames, discordId })
-      updateDoc(doc(db, "clubUsers", discordId), {
-        "rps.totalGames": playerDocument.rps.totalGames + 1,
-        "rps.totalAmount": playerDocument.rps.totalAmount + usdAmount,
-        "rps.lastGameBlock": myEvents2[0].blockNumber
-      })
-      if (myEvent[3] === true) {
+      if (userResult) {
         updateDoc(doc(db, "clubUsers", discordId), {
-          "rps.gameWon": playerDocument.rps.gameWon + 1,
-          "rps.amountWon": playerDocument.rps.amountWon + usdAmount
-        })
-        profit = (playerDocument.rps.amountWon - playerDocument.rps.amountLoss) + usdAmount
-      }
-      if (myEvent[3] === false) {
-        updateDoc(doc(db, "clubUsers", discordId), {
-          "rps.gameLoss": playerDocument.rps.gameLoss + 1,
-          "rps.amountLoss": playerDocument.rps.amountLoss + usdAmount
-        })
-        profit = (playerDocument.rps.amountWon - playerDocument.rps.amountLoss) - usdAmount
-      }
-      if (myEvent[2] > playerDocument.rps.dayWinStreak || dayBlock > playerDocument.rps.winStreakTime) {
-        updateDoc(doc(db, "clubUsers", discordId), {
-          "rps.dayWinStreak": parseInt(myEvent[2]),
+          "rps.totalGames": totalGames,
+          "rps.gameWon": totalGames,
+          "rps.amountWon": userGame,
+          "rps.totalAmount": totalAmount,
+          "rps.lastGameBlock": gameBlock,
+          "rps.winStreak": userStreak,
           "rps.winStreakTime": unixTime
+        })
+      } else {
+        updateDoc(doc(db, "clubUsers", discordId), {
+          "rps.totalGames": totalGames,
+          "rps.gameLoss": totalGames,
+          "rps.amountLoss": userGame,
+          "rps.totalAmount": totalAmount,
+          "rps.lastGameBlock": gameBlock,
+          "rps.winStreak": userStreak,
         })
       }
       if (usergame.hand === 'ROCK') {
         updateDoc(doc(db, "clubUsers", discordId), {
-          "rps.rock": playerDocument.rps.rock + 1,
+          "rps.rock": rockHand
         })
       }
       if (usergame.hand === 'PAPER') {
         updateDoc(doc(db, "clubUsers", discordId), {
-          "rps.paper": playerDocument.rps.paper + 1,
+          "rps.paper": paperHand
         })
       }
       if (usergame.hand === 'SCISSORS') {
         updateDoc(doc(db, "clubUsers", discordId), {
-          "rps.scissors": playerDocument.rps.scissors + 1,
+          "rps.scissors": scissorsHand
         })
       }
       addDoc(collection(db, "allGames"), {
         createdAt: unixTime,
         uid: playerDocument.uid,
-        block: myEvents2[0].blockNumber,
+        block: gameBlock,
         name: playerDocument.name,
         photo: playerDocument.photo,
-        account: myEvent[0].toLowerCase(),
-        amount: usdAmount,
+        account: myEvent[1].toLowerCase(),
+        amount: userAmount,
         maticAmount: parseInt(usergame.amount),
-        streak: parseInt(myEvent[2]),
-        result: myEvent[3],
+        streak: userStreak,
+        result: userResult,
         game: 'RPS',
-        profit: profit
+        profit: userProfit
       })
     } else {
-      updateDoc(doc(db, "anonUsers", account), {
-        "rps.lastGameBlock": myEvents2[0].blockNumber
-      })
-      addDoc(collection(db, "allGames"), {
-        createdAt: unixTime,
-        uid: playerDocument.uid,
-        block: myEvents2[0].blockNumber,
-        name: playerDocument.name,
-        photo: playerDocument.photo,
-        account: myEvent[0].toLowerCase(),
-        amount: usdAmount,
-        maticAmount: parseInt(usergame.amount),
-        streak: parseInt(myEvent[2]),
-        result: myEvent[3],
-        game: 'RPS',
-      })
-    }
-    mixpanel.track(
-      "rps",
-      {
-        "account": myEvent[0].toLowerCase(),
-        "result": myEvent[3],
-        "streak": parseInt(myEvent[2])
-      }
-    );
-    setUserGameResult(myEvent[3])
-    setUserGameStreak(myEvent[2])
-    setShowGameResult(true)
-    setDoubleOrNothingStatus(false)
-  }
-
-  const saveBlockchainEvents = async (usdAmount, dayBlock, playerDocument, myEvent, gameBlock) => {
-    setSave(true)
-
-    if (discordId !== '') {
-      let profit = 0
-      const level = playerDocument.level
-      const totalGames = playerDocument.rps.totalGames + 1
-      useStats({ level, totalGames, discordId })
-      updateDoc(doc(db, "clubUsers", discordId), {
-        "rps.totalGames": playerDocument.rps.totalGames + 1,
-        "rps.totalAmount": playerDocument.rps.totalAmount + usdAmount,
-        "rps.lastGameBlock": gameBlock
-      })
-      if (myEvent[3] === true) {
-        updateDoc(doc(db, "clubUsers", discordId), {
-          "rps.gameWon": playerDocument.rps.gameWon + 1,
-          "rps.amountWon": playerDocument.rps.amountWon + usdAmount
+      if (userResult) {
+        updateDoc(doc(db, "anonUsers", account), {
+          "rps.winStreak": playerDocument.rps.winStreak + 1,
+          "rps.winStreakTime": unixTime,
+          "rps.lastGameBlock": gameBlock
         })
-        profit = (playerDocument.rps.amountWon - playerDocument.rps.amountLoss) + usdAmount
-      }
-      if (myEvent[3] === false) {
-        updateDoc(doc(db, "clubUsers", discordId), {
-          "rps.gameLoss": playerDocument.rps.gameLoss + 1,
-          "rps.amountLoss": playerDocument.rps.amountLoss + usdAmount
-        })
-        profit = (playerDocument.rps.amountWon - playerDocument.rps.amountLoss) - usdAmount
-      }
-      if (myEvent[2] > playerDocument.rps.dayWinStreak || dayBlock > playerDocument.rps.winStreakTime) {
-        updateDoc(doc(db, "clubUsers", discordId), {
-          "rps.dayWinStreak": parseInt(myEvent[2]),
-          "rps.winStreakTime": unixTime
-        })
-      }
-      if (usergame.hand === 'ROCK') {
-        updateDoc(doc(db, "clubUsers", discordId), {
-          "rps.rock": playerDocument.rps.rock + 1,
-        })
-      }
-      if (usergame.hand === 'PAPER') {
-        updateDoc(doc(db, "clubUsers", discordId), {
-          "rps.paper": playerDocument.rps.paper + 1,
-        })
-      }
-      if (usergame.hand === 'SCISSORS') {
-        updateDoc(doc(db, "clubUsers", discordId), {
-          "rps.scissors": playerDocument.rps.scissors + 1,
+      } else {
+        updateDoc(doc(db, "anonUsers", account), {
+          "rps.winStreak": 0,
+          "rps.lastGameBlock": gameBlock
         })
       }
       addDoc(collection(db, "allGames"), {
@@ -462,47 +383,27 @@ export default function Rps() {
         account: myEvent[0].toLowerCase(),
         amount: usdAmount,
         maticAmount: parseInt(usergame.amount),
-        streak: parseInt(myEvent[2]),
-        result: myEvent[3],
-        game: 'RPS',
-        profit: profit
-      })
-    } else {
-      updateDoc(doc(db, "anonUsers", account), {
-        "rps.lastGameBlock": gameBlock
-      })
-      addDoc(collection(db, "allGames"), {
-        createdAt: unixTime,
-        uid: playerDocument.uid,
-        block: gameBlock,
-        name: playerDocument.name,
-        photo: playerDocument.photo,
-        account: myEvent[0].toLowerCase(),
-        amount: usdAmount,
-        maticAmount: parseInt(usergame.amount),
-        streak: parseInt(myEvent[2]),
-        result: myEvent[3],
+        streak: userStreak,
+        result: userResult,
         game: 'RPS',
       })
     }
     mixpanel.track(
       "rps",
       {
-        "account": myEvent[0].toLowerCase(),
-        "result": myEvent[3],
-        "streak": parseInt(myEvent[2])
+        "account": myEvent[1].toLowerCase(),
+        "streak": userStreak,
+        "result": userResult
       }
     );
-    setUserGameResult(myEvent[3])
-    setUserGameStreak(myEvent[2])
+    setUserGameStreak(userStreak)
+    setUserGameResult(userResult)
     setUserGameBlock(gameBlock)
     setShowGameResult(true)
     setDoubleOrNothingStatus(false)
   }
 
   const showResult = async () => {
-    const sleep = (milliseconds) => { return new Promise(resolve => setTimeout(resolve, milliseconds)) }
-
     setAnimation(false)
     setShowGameResult(false)
     setGameResult(true)
@@ -511,60 +412,38 @@ export default function Rps() {
     var randomArray = Math.random() * arrayOptions.length | 0;
     var result = arrayOptions[randomArray]
 
+    const toastOptions = {
+      duration: 5000,
+      position: 'bottom-left',
+      style: {},
+      className: 'pop-up toast-modal',
+      icon: result === 'a' ? <img src={userGameResult ? win1 : lose1} width="25" height="25" alt=""></img> : <img src={userGameResult ? win2 : lose2} width="25" height="25" alt=""></img>,
+      iconTheme: {
+        primary: '#000',
+        secondary: '#fff',
+      },
+      ariaProps: {
+        role: 'status',
+        'aria-live': 'polite',
+      },
+    }
+
     if (userGameResult) {
       if (soundToggle) {
         music.play()
       }
-      const winOptions = {
-        duration: 5000,
-        position: 'bottom-left',
-        // Styling
-        style: {},
-        className: 'pop-up toast-modal',
-        // Custom Icon
-        icon: result === 'a' ? <img src={win1} width="25" height="25" alt=""></img> : <img src={win2} width="25" height="25" alt=""></img>,
-        // Change colors of success/error/loading icon
-        iconTheme: {
-          primary: '#000',
-          secondary: '#fff',
-        },
-        // Aria
-        ariaProps: {
-          role: 'status',
-          'aria-live': 'polite',
-        },
-      }
       if (result === 'a') {
-        toast('You doubled your money!!', winOptions);
+        toast('You doubled your money!!', toastOptions);
       }
       if (result === 'b') {
-        toast('You are doing some business here', winOptions);
+        toast('You are doing some business here', toastOptions);
       }
     } else {
-      const loseOptions = {
-        duration: 5000,
-        position: 'bottom-left',
-        // Styling
-        style: {},
-        className: 'pop-up toast-modal',
-        // Custom Icon
-        icon: result === 'a' ? <img src={lose1} width="25" height="25" alt=""></img> : <img src={lose2} width="25" height="25" alt=""></img>,
-        // Change colors of success/error/loading icon
-        iconTheme: {
-          primary: '#000',
-          secondary: '#fff',
-        },
-        // Aria
-        ariaProps: {
-          role: 'status',
-          'aria-live': 'polite',
-        },
-      }
       if (result === 'a') {
-        toast('Better luck next time.', loseOptions);
+        toast('Better luck next time.', toastOptions);
       }
       if (result === 'b') {
-        toast('Wrong hand :P', loseOptions);
+        toast('Wrong hand :P', toastOptions);
       }
     }
 
@@ -576,7 +455,6 @@ export default function Rps() {
       }
       await sleep(1000)
     }
-
   }
 
   const backGame = () => {
@@ -588,328 +466,286 @@ export default function Rps() {
 
   return (
     <>
-      {isMobileResolution ?
-        <div className="g-btn-historygames">
-          {account !== undefined && account !== '0x000000000000000000000000000000000000dEaD' &&
-            <>
-              <HistoryGames
-                isMobileResolution={isMobileResolution}
-              />
-              <ConnectWallet
-                decimal={decimal}
-                web3={web3}
-                account={account}
-                balance={balance}
-                disconnectWallet={disconnectWallet}
-                userData={userData}
-                user={discordId}
-                toast={toast}
-              />
-            </>
-          }
-        </div>
-        :
-        <div className="g-btn-historygames">
-          {account !== undefined && account !== '0x000000000000000000000000000000000000dEaD' &&
-            <>
-              <HistoryGames
-                isMobileResolution={isMobileResolution}
-              />
-              <ConnectWallet
-                decimal={decimal}
-                web3={web3}
-                account={account}
-                balance={balance}
-                disconnectWallet={disconnectWallet}
-                userData={userData}
-                user={discordId}
-                toast={toast}
-              />
-            </>
-          }
-        </div>
-      }
+      <div className="g-btn-historygames">
+        {account !== undefined && account !== '0x000000000000000000000000000000000000dEaD' &&
+          <>
+            <HistoryGames
+              isMobileResolution={isMobileResolution}
+            />
+            <ConnectWallet
+              web3={web3}
+              account={account}
+              balance={balance}
+              disconnectWallet={disconnectWallet}
+              userData={userData}
+              user={discordId}
+              toast={toast}
+            />
+          </>
+        }
+      </div>
       <article>
         {account !== undefined && account !== '0x000000000000000000000000000000000000dEaD' ?
-          <>
-            <div className="game-container">
-              {playing ?
-                <div className="game-playing-container">
-                  {animation &&
-                    <>
-                      <img src={RPSAnimation} width="240" height="240" alt="Rock-Paper-Scissors" />
-
-                      {!showGameResult ?
-                        <div className="processing-title">
-                          {gameLog}<span className="loading-dot">{dotLog}</span>
-                        </div>
-                        :
-                        <span className='processing-title'>{gameLog}</span>
-                      }
-                      <h3>
-                        <span className='text-warning'>{userhand}</span>
-                        <span >{" FOR "}</span>
-                        <span className='text-decoration-underline text-warning'>{useramount + " MATIC"}</span>
-                      </h3>
-                    </>
-                  }
-                  {busyNetwork &&
-                    <>
+          <div className="game-container">
+            {playing ?
+              <div className="game-playing-container">
+                {animation &&
+                  <>
+                    <img src={RPSAnimation} width="240" height="240" alt="Rock-Paper-Scissors" />
+                    {showGameResult ?
+                      <span className='processing-title'>{gameLog}</span>
+                      :
                       <div className="processing-title">
-                        SEARCHING YOUR GAME<span className="loading-dot">{dotLog}</span>
+                        {gameLog}<span className="loading-dot">{dotLog}</span>
                       </div>
-                      <h4 className='text-yellow'>DON'T CLOSE THIS WINDOW!</h4>
-                    </>
-                  }
-                  {showGameResult && <button className="btn-hover btn-green" onClick={showResult}>SHOW RESULT</button>}
-                  {gameResult &&
-                    <>
-                      {userGameStreak > 1 &&
-                        <div className="my-3">
-                          <h3>Congrats!</h3>
-                          <h3>{"You're on a " + userGameStreak + " win streak"}</h3>
-                        </div>
-                      }
-                      {userhand === 'ROCK' && userGameResult &&
-                        <div className="anim-win-lose">
-                          <img className="result-rps-image" src={RockWin} alt="Rock Wins" />
-                        </div>
-                      }
-                      {userhand === 'PAPER' && userGameResult &&
-                        <div className="anim-win-lose">
-                          <img className="result-rps-image" src={PaperWin} alt="Paper Wins" />
-                        </div>
-                      }
-                      {userhand === 'SCISSORS' && userGameResult &&
-                        <div className="anim-win-lose">
-                          <img className="result-rps-image" src={ScissorsWin} alt="Scissors Wins" />
-                        </div>
-                      }
-                      {userhand === 'ROCK' && !userGameResult &&
-                        <div className="anim-win-lose">
-                          <img className="result-rps-image" src={RockLose} alt="Rock Loses" />
-                        </div>
-                      }
-                      {userhand === 'PAPER' && !userGameResult &&
-                        <div className="anim-win-lose">
-                          <img className="result-rps-image" src={PaperLose} alt="Paper Loses" />
-                        </div>
-                      }
-                      {userhand === 'SCISSORS' && !userGameResult &&
-                        <div className="anim-win-lose">
-                          <img className="result-rps-image" src={ScissorsLose} alt="Scissors Loses" />
-                        </div>
-                      }
-                      <div className="d-flex flex-column justify-content-between mx-auto mt-4">
-                        <div className="d-flex flex-column justify-content-center">
-                          <span className="rps-result-title">{userGameResult === true ? " YOU WON " : ""}{userGameResult === false ? " YOU LOST " : ""}</span>
-                          <span className="rps-result-amount" style={{ color: userGameResult ? "mediumseagreen" : "crimson" }}>
-                            {userGameResult && useramount * 2}{!userGameResult && useramount}{" MATIC"}
-                          </span>
-                        </div>
-                        <div className="d-flex justify-content-center">
-                          {userGameResult ?
-                            <div className="d-flex flex-column align-items-center">
-                              {
-                                save ?
-                                  <>
-                                    <div className="processing-title">
-                                      POLYGON IS PROCESSING YOUR GAME<span className="loading-dot">{dotLog}</span>
-                                    </div>
-                                    <button className="btn-hover btn-loading" disabled={true}>
-                                      PLEASE WAIT
-                                      <Progress
-                                        value={100}
-                                        animated={true}
-                                        color='dark'>
-                                      </Progress>
-                                    </button>
-                                  </>
+                    }
+                    <h3>
+                      <span className='text-warning'>{userhand}</span>
+                      <span >{" FOR "}</span>
+                      <span className='text-decoration-underline text-warning'>{useramount + " MATIC"}</span>
+                    </h3>
+                  </>
+                }
+                {busyNetwork &&
+                  <>
+                    <div className="processing-title">
+                      SEARCHING YOUR GAME<span className="loading-dot">{dotLog}</span>
+                    </div>
+                    <h4 className='text-yellow'>DON'T CLOSE THIS WINDOW!</h4>
+                  </>
+                }
+                {showGameResult && <button className="btn-hover btn-green" onClick={showResult}>SHOW RESULT</button>}
+                {gameResult &&
+                  <>
+                    {userGameStreak > 1 &&
+                      <div className="my-3">
+                        <h3>Congrats!</h3>
+                        <h3>{"You're on a " + userGameStreak + " win streak"}</h3>
+                      </div>
+                    }
+                    {userhand === 'ROCK' && userGameResult &&
+                      <div className="anim-win-lose">
+                        <img className="result-rps-image" src={RockWin} alt="Rock Wins" />
+                      </div>
+                    }
+                    {userhand === 'PAPER' && userGameResult &&
+                      <div className="anim-win-lose">
+                        <img className="result-rps-image" src={PaperWin} alt="Paper Wins" />
+                      </div>
+                    }
+                    {userhand === 'SCISSORS' && userGameResult &&
+                      <div className="anim-win-lose">
+                        <img className="result-rps-image" src={ScissorsWin} alt="Scissors Wins" />
+                      </div>
+                    }
+                    {userhand === 'ROCK' && !userGameResult &&
+                      <div className="anim-win-lose">
+                        <img className="result-rps-image" src={RockLose} alt="Rock Loses" />
+                      </div>
+                    }
+                    {userhand === 'PAPER' && !userGameResult &&
+                      <div className="anim-win-lose">
+                        <img className="result-rps-image" src={PaperLose} alt="Paper Loses" />
+                      </div>
+                    }
+                    {userhand === 'SCISSORS' && !userGameResult &&
+                      <div className="anim-win-lose">
+                        <img className="result-rps-image" src={ScissorsLose} alt="Scissors Loses" />
+                      </div>
+                    }
+                    <div className="d-flex flex-column justify-content-between mx-auto mt-4">
+                      <div className="d-flex flex-column justify-content-center">
+                        <span className="rps-result-title">{userGameResult ? " YOU WON " : " YOU LOST "}</span>
+                        <span className="rps-result-amount" style={{ color: userGameResult ? "mediumseagreen" : "crimson" }}>
+                          {userGameResult ? useramount * 2 : useramount} MATIC
+                        </span>
+                      </div>
+                      <div className="d-flex justify-content-center">
+                        <div className="d-flex flex-column align-items-center">
+                          {
+                            save ?
+                              <>
+                                <div className="processing-title">
+                                  POLYGON IS PROCESSING YOUR GAME<span className="loading-dot">{dotLog}</span>
+                                </div>
+                                <button className="btn-hover btn-loading" disabled={true}>
+                                  PLEASE WAIT
+                                  <Progress
+                                    value={100}
+                                    animated={true}
+                                    color='dark'>
+                                  </Progress>
+                                </button>
+                              </>
+                              :
+                              <>
+                                {userGameResult ?
+                                  <button className="btn-hover btn-green" onClick={backGame}>CLAIM REWARD</button>
                                   :
-                                  <button className="btn-hover btn-green" onClick={backGame} disabled={save}>CLAIM REWARD</button>
-                              }
-                            </div>
-                            :
-                            <div className="d-flex flex-column align-items-center">
-                              {save ?
-                                <>
-                                  <div className="processing-title">
-                                    POLYGON IS PROCESSING YOUR GAME<span className="loading-dot">{dotLog}</span>
-                                  </div>
-                                  <button className="btn-hover btn-loading" disabled={true}>
-                                    PLEASE WAIT
-                                    <Progress
-                                      value={100}
-                                      animated={true}
-                                      color='dark'>
-                                    </Progress>
-                                  </button>
-                                </>
-                                :
-                                <>
-                                  <span className="processing-title">TRY AGAIN?</span>
-                                  <button className="btn-hover btn-start" onClick={backGame} disabled={save}>DOUBLE OR NOTHING</button>
-                                </>
-                              }
-                            </div>
+                                  <>
+                                    <span className="processing-title">TRY AGAIN?</span>
+                                    <button className="btn-hover btn-start" onClick={backGame}>DOUBLE OR NOTHING</button>
+                                  </>
+                                }
+                              </>
                           }
                         </div>
                       </div>
+                    </div>
+                  </>
+                }
+              </div>
+              :
+              <>
+                <div className="game-selection-hand">
+                  {randomItem === 'a' &&
+                    <>
+                      <label>
+                        <input type="radio" name="hand" id="rock" onChange={handleInputChange} value="ROCK"></input>
+                        <div className="rps-img rock-img"></div>
+                        <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
+                      </label>
+                      <label>
+                        <input type="radio" name="hand" id="paper" onChange={handleInputChange} value="PAPER"></input>
+                        <div className="rps-img paper-img"></div>
+                        <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
+                      </label>
+                      <label>
+                        <input type="radio" name="hand" id="scissors" onChange={handleInputChange} value="SCISSORS"></input>
+                        <div className="rps-img scissors-img"></div>
+                        <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
+                      </label>
+                    </>
+                  }
+                  {randomItem === 'b' &&
+                    <>
+                      <label>
+                        <input type="radio" name="hand" id="scissors" onChange={handleInputChange} value="ROCK"></input>
+                        <div className="rps-img rock-img"></div>
+                        <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
+                      </label>
+                      <label>
+                        <input type="radio" name="hand" id="paper" onChange={handleInputChange} value="SCISSORS"></input>
+                        <div className="rps-img scissors-img"></div>
+                        <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
+                      </label>
+                      <label>
+                        <input type="radio" name="hand" id="rock" onChange={handleInputChange} value="PAPER"></input>
+                        <div className="rps-img paper-img"></div>
+                        <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
+                      </label>
+                    </>
+                  }
+                  {randomItem === 'c' &&
+                    <>
+                      <label>
+                        <input type="radio" name="hand" id="rock" onChange={handleInputChange} value="PAPER"></input>
+                        <div className="rps-img paper-img"></div>
+                        <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
+                      </label>
+                      <label>
+                        <input type="radio" name="hand" id="paper" onChange={handleInputChange} value="SCISSORS"></input>
+                        <div className="rps-img scissors-img"></div>
+                        <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
+                      </label>
+                      <label>
+                        <input type="radio" name="hand" id="scissors" onChange={handleInputChange} value="ROCK"></input>
+                        <div className="rps-img rock-img"></div>
+                        <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
+                      </label>
+                    </>
+                  }
+                  {randomItem === 'd' &&
+                    <>
+                      <label>
+                        <input type="radio" name="hand" id="rock" onChange={handleInputChange} value="PAPER"></input>
+                        <div className="rps-img paper-img"></div>
+                        <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
+                      </label>
+                      <label>
+                        <input type="radio" name="hand" id="scissors" onChange={handleInputChange} value="ROCK"></input>
+                        <div className="rps-img rock-img"></div>
+                        <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
+                      </label>
+                      <label>
+                        <input type="radio" name="hand" id="paper" onChange={handleInputChange} value="SCISSORS"></input>
+                        <div className="rps-img scissors-img"></div>
+                        <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
+                      </label>
+                    </>
+                  }
+                  {randomItem === 'e' &&
+                    <>
+                      <label>
+                        <input type="radio" name="hand" id="rock" onChange={handleInputChange} value="SCISSORS"></input>
+                        <div className="rps-img scissors-img"></div>
+                        <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
+                      </label>
+                      <label>
+                        <input type="radio" name="hand" id="paper" onChange={handleInputChange} value="ROCK"></input>
+                        <div className="rps-img rock-img"></div>
+                        <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
+                      </label>
+                      <label>
+                        <input type="radio" name="hand" id="scissors" onChange={handleInputChange} value="PAPER"></input>
+                        <div className="rps-img paper-img"></div>
+                        <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
+                      </label>
+                    </>
+                  }
+                  {randomItem === 'f' &&
+                    <>
+                      <label>
+                        <input type="radio" name="hand" id="paper" onChange={handleInputChange} value="SCISSORS"></input>
+                        <div className="rps-img scissors-img"></div>
+                        <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
+                      </label>
+                      <label>
+                        <input type="radio" name="hand" id="rock" onChange={handleInputChange} value="PAPER"></input>
+                        <div className="rps-img paper-img"></div>
+                        <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
+                      </label>
+                      <label>
+                        <input type="radio" name="hand" id="scissors" onChange={handleInputChange} value="ROCK"></input>
+                        <div className="rps-img rock-img"></div>
+                        <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
+                      </label>
                     </>
                   }
                 </div>
-                :
-                <>
-                  <div className="game-selection-hand">
-                    {randomItem === 'a' &&
-                      <>
-                        <label>
-                          <input type="radio" name="hand" id="rock" onChange={handleInputChange} value="ROCK"></input>
-                          <div className="rps-img rock-img"></div>
-                          <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
-                        </label>
-                        <label>
-                          <input type="radio" name="hand" id="paper" onChange={handleInputChange} value="PAPER"></input>
-                          <div className="rps-img paper-img"></div>
-                          <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
-                        </label>
-                        <label>
-                          <input type="radio" name="hand" id="scissors" onChange={handleInputChange} value="SCISSORS"></input>
-                          <div className="rps-img scissors-img"></div>
-                          <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
-                        </label>
-                      </>
-                    }
-                    {randomItem === 'b' &&
-                      <>
-                        <label>
-                          <input type="radio" name="hand" id="scissors" onChange={handleInputChange} value="ROCK"></input>
-                          <div className="rps-img rock-img"></div>
-                          <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
-                        </label>
-                        <label>
-                          <input type="radio" name="hand" id="paper" onChange={handleInputChange} value="SCISSORS"></input>
-                          <div className="rps-img scissors-img"></div>
-                          <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
-                        </label>
-                        <label>
-                          <input type="radio" name="hand" id="rock" onChange={handleInputChange} value="PAPER"></input>
-                          <div className="rps-img paper-img"></div>
-                          <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
-                        </label>
-                      </>
-                    }
-                    {randomItem === 'c' &&
-                      <>
-                        <label>
-                          <input type="radio" name="hand" id="rock" onChange={handleInputChange} value="PAPER"></input>
-                          <div className="rps-img paper-img"></div>
-                          <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
-                        </label>
-                        <label>
-                          <input type="radio" name="hand" id="paper" onChange={handleInputChange} value="SCISSORS"></input>
-                          <div className="rps-img scissors-img"></div>
-                          <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
-                        </label>
-                        <label>
-                          <input type="radio" name="hand" id="scissors" onChange={handleInputChange} value="ROCK"></input>
-                          <div className="rps-img rock-img"></div>
-                          <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
-                        </label>
-                      </>
-                    }
-                    {randomItem === 'd' &&
-                      <>
-                        <label>
-                          <input type="radio" name="hand" id="rock" onChange={handleInputChange} value="PAPER"></input>
-                          <div className="rps-img paper-img"></div>
-                          <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
-                        </label>
-                        <label>
-                          <input type="radio" name="hand" id="scissors" onChange={handleInputChange} value="ROCK"></input>
-                          <div className="rps-img rock-img"></div>
-                          <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
-                        </label>
-                        <label>
-                          <input type="radio" name="hand" id="paper" onChange={handleInputChange} value="SCISSORS"></input>
-                          <div className="rps-img scissors-img"></div>
-                          <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
-                        </label>
-                      </>
-                    }
-                    {randomItem === 'e' &&
-                      <>
-                        <label>
-                          <input type="radio" name="hand" id="rock" onChange={handleInputChange} value="SCISSORS"></input>
-                          <div className="rps-img scissors-img"></div>
-                          <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
-                        </label>
-                        <label>
-                          <input type="radio" name="hand" id="paper" onChange={handleInputChange} value="ROCK"></input>
-                          <div className="rps-img rock-img"></div>
-                          <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
-                        </label>
-                        <label>
-                          <input type="radio" name="hand" id="scissors" onChange={handleInputChange} value="PAPER"></input>
-                          <div className="rps-img paper-img"></div>
-                          <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
-                        </label>
-                      </>
-                    }
-                    {randomItem === 'f' &&
-                      <>
-                        <label>
-                          <input type="radio" name="hand" id="paper" onChange={handleInputChange} value="SCISSORS"></input>
-                          <div className="rps-img scissors-img"></div>
-                          <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
-                        </label>
-                        <label>
-                          <input type="radio" name="hand" id="rock" onChange={handleInputChange} value="PAPER"></input>
-                          <div className="rps-img paper-img"></div>
-                          <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
-                        </label>
-                        <label>
-                          <input type="radio" name="hand" id="scissors" onChange={handleInputChange} value="ROCK"></input>
-                          <div className="rps-img rock-img"></div>
-                          <i className="fa-regular fa-circle-check fa-2xl selected-option"></i>
-                        </label>
-                      </>
-                    }
-                  </div>
-                  <h5 className="mt-5">FOR</h5>
-                  <div className="d-flex justify-content-center my-4">
-                    <label className="amount">
-                      <input type="radio" name="amount" id="amount1" onChange={handleInputChange} value="1" />
-                      <span>1 MATIC</span>
-                    </label>
-                    <label className="amount">
-                      <input type="radio" name="amount" id="amount2" onChange={handleInputChange} value="2" />
-                      <span>2 MATIC</span>
-                    </label>
-                    <label className="amount">
-                      <input type="radio" name="amount" id="amount3" onChange={handleInputChange} value="5" />
-                      <span>5 MATIC</span>
-                    </label>
-                  </div>
-                  <div className="d-flex justify-content-center mb-4">
-                    <label className="amount">
-                      <input type="radio" name="amount" id="amount4" onChange={handleInputChange} value="10" />
-                      <span>10 MATIC</span>
-                    </label>
-                    <label className="amount">
-                      <input type="radio" name="amount" id="amount5" onChange={handleInputChange} value="25" />
-                      <span>25 MATIC</span>
-                    </label>
-                    <label className="amount">
-                      <input type="radio" name="amount" id="amount6" onChange={handleInputChange} value="50" />
-                      <span>50 MATIC</span>
-                    </label>
-                  </div>
-                  <button onClick={verifyGame} className="btn-hover btn-green" disabled={doubleOrNothingStatus}>DOUBLE OR NOTHING</button>
-                </>
-              }
-            </div>
-          </>
+                <h5 className="mt-5">FOR</h5>
+                <div className="d-flex justify-content-center my-4">
+                  <label className="amount">
+                    <input type="radio" name="amount" id="amount1" onChange={handleInputChange} value="1" />
+                    <span>1 MATIC</span>
+                  </label>
+                  <label className="amount">
+                    <input type="radio" name="amount" id="amount2" onChange={handleInputChange} value="2" />
+                    <span>2 MATIC</span>
+                  </label>
+                  <label className="amount">
+                    <input type="radio" name="amount" id="amount3" onChange={handleInputChange} value="5" />
+                    <span>5 MATIC</span>
+                  </label>
+                </div>
+                <div className="d-flex justify-content-center mb-4">
+                  <label className="amount">
+                    <input type="radio" name="amount" id="amount4" onChange={handleInputChange} value="10" />
+                    <span>10 MATIC</span>
+                  </label>
+                  <label className="amount">
+                    <input type="radio" name="amount" id="amount5" onChange={handleInputChange} value="25" />
+                    <span>25 MATIC</span>
+                  </label>
+                  <label className="amount">
+                    <input type="radio" name="amount" id="amount6" onChange={handleInputChange} value="50" />
+                    <span>50 MATIC</span>
+                  </label>
+                </div>
+                <button onClick={verifyGame} className="btn-hover btn-green" disabled={doubleOrNothingStatus}>DOUBLE OR NOTHING</button>
+              </>
+            }
+          </div>
           :
           <>
             <div className="game-gifs-wrapper">
@@ -923,7 +759,7 @@ export default function Rps() {
                 <img className="my-3 img-fluid" src={Scissors} alt="Scissors" />
               </div>
             </div>
-            <ConnectWallet toast={toast} readBlockchainData={readBlockchainData} decimal={decimal} web3={web3} account={account} />
+            <ConnectWallet toast={toast} readBlockchainData={readBlockchainData} web3={web3} account={account} />
             <ReadAllGames isMobileResolution={isMobileResolution} />
           </>
         }

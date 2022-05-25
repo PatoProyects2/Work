@@ -72,7 +72,7 @@ export default function ConnectWallet(props) {
             {
               from: props.account,
               to: friend.account1,
-              value: props.web3.utils.numberToHex((friend.amount1 * props.decimal).toString()),
+              value: props.web3.utils.numberToHex((friend.amount1 * 1000000000000000000).toString()),
             },
           ],
         }),

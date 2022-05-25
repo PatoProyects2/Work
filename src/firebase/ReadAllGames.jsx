@@ -57,52 +57,34 @@ export default function ReadAllGames(props) {
             {historyPlays &&
                 <div className="play-list mt-4">
                     <ul className="list-group">
-                    {historyPlays.map((games, index) => {
+                        {historyPlays.map((games, index) => {
                             return (
                                 <li className='d-flex flex-column py-2' key={index}>
                                     <div className="title mb-auto ms-2">
                                         <img width="25" height="25" className="rounded-circle" alt="" src={`${games.photo}`} /> &nbsp;
-                                        {games.name !== '' ?
-                                            <>
-                                                {props.isMobileResolution ?
-                                                    <>
-                                                        {games.name.length > 5
-                                                            ? games.name.substring(0, 5) + "..."
-                                                            : games.name
-                                                        }
-                                                    </>
-                                                    :
-                                                    <>
-                                                        {games.name.length > 15
-                                                            ? games.name.substring(0, 15) + "..."
-                                                            : games.name
-                                                        }
-                                                    </>
-                                                }
-                                            </>
-                                            :
-                                            <>
-                                                {props.isMobileResolution
-                                                    ? games.account.substring(0, 5) + "..."
-                                                    : games.account.substring(0, 5) + "..." + games.account.substring(38, 42)
-                                                }
-                                            </>
+                                        {games.name !== ''
+                                            ? props.isMobileResolution
+                                                ? games.name.length > 5 ? games.name.substring(0, 5) + "..." : games.name
+                                                : games.name.length > 15 ? games.name.substring(0, 15) + "..." : games.name
+                                            : props.isMobileResolution
+                                                ? games.account.substring(0, 5) + "..."
+                                                : games.account.substring(0, 5) + "..." + games.account.substring(38, 42)
                                         }
                                         {" played " + games.maticAmount + " MATIC and"}
-                                        <span style={{ color: games.result && "mediumseagreen"}}>
-                                            {games.result === false ? " went bankrupt " : ""}{games.result === true ? " doubled " : ""}
+                                        <span style={{ color: games.result && "mediumseagreen" }}>
+                                            {games.result ? " doubled " : " went bankrupt "}
                                         </span>
-                                        {games.streak > 1 ? games.streak + " times " : ""}
+                                        {games.streak > 1 && games.streak + " times "}
                                     </div>
                                     <small className="ms-auto me-2 time-in-row">
-                                        {games.second < 0 || games.second === 0 ? "now" : ""}
-                                        {games.second > 0 && games.second < 60 ? games.second + " seconds ago" : ""}
-                                        {games.second > 59 && games.second < 120 ? games.minute + " minute ago" : ""}
-                                        {games.second > 119 && games.second < 3600 ? games.minute + " minutes ago" : ""}
-                                        {games.second > 3599 && games.second < 7200 ? games.hour + " hour ago" : ""}
-                                        {games.second > 7199 && games.second < 86400 ? games.hour + " hours ago" : ""}
-                                        {games.second > 86399 && games.second < 172800 ? games.day + " day ago" : ""}
-                                        {games.second > 172799 ? games.day + " days ago" : ""}
+                                        {games.second < 0 || games.second === 0 && "now"}
+                                        {games.second > 0 && games.second < 60 && games.second + " seconds ago"}
+                                        {games.second > 59 && games.second < 120 && games.minute + " minute ago"}
+                                        {games.second > 119 && games.second < 3600 && games.minute + " minutes ago"}
+                                        {games.second > 3599 && games.second < 7200 && games.hour + " hour ago"}
+                                        {games.second > 7199 && games.second < 86400 && games.hour + " hours ago"}
+                                        {games.second > 86399 && games.second < 172800 && games.day + " day ago"}
+                                        {games.second > 172799 && games.day + " days ago"}
                                     </small>
                                 </li>
                             )
