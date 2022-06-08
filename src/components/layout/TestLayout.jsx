@@ -1,6 +1,7 @@
 import React from 'react'
 import { Outlet } from 'react-router-dom'
-export function TestLayout() {
+
+const TestLayout = () => {
   return (
     <section>
       <div>
@@ -9,3 +10,5 @@ export function TestLayout() {
     </section>
   );
 }
+
+export default TestLayout;

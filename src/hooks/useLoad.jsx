@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+
 export const useLoad = () => {
     const [dotLog, setDotLog] = useState('');
     useEffect(() => {

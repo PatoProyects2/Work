@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import { useSearchParams } from 'react-router-dom'
 import CryptoJS from 'crypto-js'
 import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
-import { db } from "../firebase/firesbaseConfig"
+import { db } from "../config/firesbaseConfig"
 import { Context } from "../context/Context"
 
 export const useAuth = () => {
@@ -56,7 +56,7 @@ export const useAuth = () => {
                     .then(document => {
                         const data = document.data()
                         if (data) {
-                            window.localStorage.setItem('user', JSON.stringify({ id: data.id, name: data.name }))
+                            window.localStorage.setItem('user', JSON.stringify({ id: data.id, name: data.name, photo: data.photo }))
                             window.localStorage.setItem('level', data.level)
                         } else {
                             window.localStorage.setItem('user', JSON.stringify({ id: userData.discriminator, name: userData.username, level: 1 }))
@@ -135,7 +135,7 @@ export const useAuth = () => {
                             .then(document => {
                                 const data = document.data()
                                 if (data) {
-                                    window.localStorage.setItem('user', JSON.stringify({ id: data.id, name: data.name }))
+                                    window.localStorage.setItem('user', JSON.stringify({ id: data.id, name: data.name, photo: data.photo }))
                                     window.localStorage.setItem('level', data.level)
                                 }
                             })

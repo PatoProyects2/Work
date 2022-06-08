@@ -6,10 +6,10 @@ import Torus from "@toruslabs/torus-embed";
 import Portis from "@portis/web3";
 import ethProvider from "eth-provider";
 import WalletLink from "walletlink";
-import RpsGamePolygon from '../abis/rpsGamePolygon/rpsGame.json'
-import RpsGameMumbai from '../abis/rpsGameMumbai/Santaflip.json'
-import swapV2 from '../abis/swap/IUniswapV2Router02.json'
-import { rpsGameMumbaiContract, polygonSwapContract, maticContract, usdcContract, rpsGamePolygonContract } from '../components/blockchain/Contracts'
+import RpsGamePolygon from '../abis/RpsGamePolygon/Santaflip.json'
+import RpsGameMumbai from '../abis/RpsGameMumbai/Santaflip.json'
+import UniswapRouter from '../abis/RouterPolygon/IUniswapV2Router02.json'
+import { mRpsGameAddress, pRpsGameAddress, pMaticAddress, pUsdcAddress, pRouterAddress } from '../utils/Address'
 import { Context } from "../context/Context"
 
 export const useWeb3 = () => {
@@ -84,9 +84,9 @@ export const useWeb3 = () => {
         return Math.round(this * pow) / pow;
     }
     if (swapPolygon) {
-        swapPolygon.methods.getAmountsOut('1000000000000000000', [maticContract, usdcContract]).call()
+        swapPolygon.methods.getAmountsOut('1000000000000000000', [pMaticAddress, pUsdcAddress]).call()
             .then(price => {
-                const matic = (parseInt(price[1] / 10000) / 100).toFixedNumber(2)
+                const matic = parseFloat((parseInt(price[1]) / 1000000).toFixed(4))
                 setMaticPrice(matic)
             })
             .catch(err => console.log(err))
@@ -122,40 +122,40 @@ export const useWeb3 = () => {
             });
             const chainId = await web3.eth.getChainId();
             setNetwork(chainId)
-            // if (chainId === 137) {
-            //     const polygonSwap = new web3.eth.Contract(swapV2.abi, polygonSwapContract)
-            //     setSwapPolygon(polygonSwap)
-            //     const rpsgame = new web3.eth.Contract(RpsGamePolygon.abi, rpsGamePolygonContract)
-            //     setRpsgame(rpsgame)
-            // }
-            if (chainId === 80001) {
-                const rpsgame = new web3.eth.Contract(RpsGameMumbai.abi, rpsGameMumbaiContract)
+            if (chainId === 137) {
+                const polygonSwap = new web3.eth.Contract(UniswapRouter.abi, pRouterAddress)
+                setSwapPolygon(polygonSwap)
+                const rpsgame = new web3.eth.Contract(RpsGamePolygon.abi, pRpsGameAddress)
                 setRpsgame(rpsgame)
             }
+            // if (chainId === 80001) {
+            //     const rpsgame = new web3.eth.Contract(RpsGameMumbai.abi, mRpsGameAddress)
+            //     setRpsgame(rpsgame)
+            // }
             ethereum.on('chainChanged', () => {
                 window.location.reload()
             });
-            // if (chainId !== 137) {
-            //     try {
-            //         await ethereum.sendAsync({
-            //             method: 'wallet_addEthereumChain',
-            //             params: [{
-            //                 chainId: "0x89",
-            //                 chainName: "Polygon Mainnet",
-            //                 rpcUrls: ["https://polygon-rpc.com/"],
-            //                 iconUrls: [""],
-            //                 nativeCurrency: {
-            //                     name: "MATIC",
-            //                     symbol: "MATIC",
-            //                     decimals: 18,
-            //                 },
-            //                 blockExplorerUrls: ["https://explorer.matic.network/"],
-            //             }],
-            //         });
-            //     } catch (error) {
+            if (chainId !== 137) {
+                try {
+                    await ethereum.sendAsync({
+                        method: 'wallet_addEthereumChain',
+                        params: [{
+                            chainId: "0x89",
+                            chainName: "Polygon Mainnet",
+                            rpcUrls: ["https://polygon-rpc.com/"],
+                            iconUrls: [""],
+                            nativeCurrency: {
+                                name: "MATIC",
+                                symbol: "MATIC",
+                                decimals: 18,
+                            },
+                            blockExplorerUrls: ["https://explorer.matic.network/"],
+                        }],
+                    });
+                } catch (error) {
 
-            //     }
-            // }
+                }
+            }
         } catch (e) {
 
         }

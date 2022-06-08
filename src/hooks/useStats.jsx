@@ -1,6 +1,7 @@
 import { doc, updateDoc } from "firebase/firestore";
 import toast from 'react-hot-toast';
-import { db } from "../firebase/firesbaseConfig"
+import { db } from "../config/firesbaseConfig"
+
 export const useStats = ({ level, totalGames, discordId }) => {
     if (totalGames > 9 && totalGames < 20 && level < 2) {
         updateDoc(doc(db, "clubUsers", discordId), {

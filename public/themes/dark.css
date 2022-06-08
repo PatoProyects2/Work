@@ -32,7 +32,7 @@ html, body {
 .wrapper {
     /* background: url('./bg_dark.png') no-repeat;
     background-size: cover; */
-    background: #232c31;
+    background: #2c2640;
     color: whitesmoke;
 }
 
@@ -75,7 +75,7 @@ html, body {
 
 .dd-toggle,
 .btn-menu-bars {
-    background-color: #292b2c !important;
+    /* background-color: #292b2c !important; */
     color: whitesmoke !important;
 }
 
@@ -399,24 +399,12 @@ svg:hover>g.brand-icon {
 
 /* CHAT */
 
-.chat-section {
-    background-color: rgba(28, 31, 35, 1);
-}
-
-.chatting_chat_msgs .top-gradient {
-    background-image: linear-gradient(rgba(43, 62, 70) 0%, rgba(43, 62, 70, 0));
-}
-
-.messages li:nth-child(odd) {
-    background-color: #2b3840;
-}
-
 .chatting_chat_msgs {
-    background-color: #2f3e45;
+    background-color: #3d3657;
 }
 
 .chat_msgs {
-    background-color: #2f3e45;
+    background-color: #3d3657;
 }
 
 .messages .colorbar {
@@ -432,14 +420,13 @@ svg:hover>g.brand-icon {
 }
 
 .chat_input {
-    background-color: #243037;
+    background-color: #2a243d;
     color: #adbec6 !important;
 }
 
 .chat_input_contain .chat_send {
     color: #23d160;
 }
-
 
 /* User Stats */
 

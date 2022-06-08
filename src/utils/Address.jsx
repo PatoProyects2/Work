@@ -1,0 +1,5 @@
+export const pRouterAddress = "0xa5E0829CaCEd8fFDD4De3c43696c57F7D7A678ff"
+export const mRpsGameAddress = "0x46252701f35ce9AEb993F273C519B7892911Ea26"
+export const pRpsGameAddress = "0xb2e09fdee5E5263003cE74209E56Cc45cBEF28EC"
+export const pMaticAddress = "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270"
+export const pUsdcAddress = "0x2791bca1f2de4661ed88a30c99a7a9449aa84174"

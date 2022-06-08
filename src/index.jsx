@@ -3,19 +3,19 @@ import ReactDOM from 'react-dom'
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.css'
 import { MixpanelProvider } from 'react-mixpanel-browser';
-import { GlobalLayout } from './components/layout/GlobalLayout'
-import { TestLayout } from './components/layout/TestLayout'
-import Main from './views/main/Main'
-import MainAbout from './views/main/components/about/About'
-import MainProfile from './views/main/components/profile/Profile'
-import Rps from './views/rps/Rps'
-import Demo from './views/rps/Demo'
-import Nfts from './views/main/components/nfts/Nfts';
-import Fairplay from './views/main/components/fairplay/Fairplay';
-import RefundPolicy from './views/main/refundPolicy/RefundPolicy';
-import Terms from './views/main/terms/Terms';
-import Maintenance from './views/status/Maintenance';
-import ScrollToTop from './components/ui/ScrollToTop';
+import MainLayout from './components/Layout/MainLayout'
+import TestLayout from './components/Layout/TestLayout'
+import Main from './views/Main/Main'
+import RPS from './views/RPS/RPS'
+import RPSDemo from './views/RPSDemo/RPSDemo'
+import Nfts from './views/Nfts/Nfts';
+import FairPlay from './views/FairPlay/FairPlay';
+import About from './views/About/About'
+import Stats from './views/Stats/Stats'
+import RefundPolicy from './views/RefundPolicy/RefundPolicy';
+import Terms from './views/Terms/Terms';
+import Maintenance from './views/Maintenance/Maintenance';
+import ScrollToTop from './hooks//ScrollToTop';
 import * as serviceWorker from './serviceWorker'
 import './index.scss'
 
@@ -24,16 +24,16 @@ ReactDOM.render(
     <BrowserRouter>
       <ScrollToTop>
         <Routes>
-          <Route path="/" element={<GlobalLayout />}>
+          <Route path="/" element={<MainLayout />}>
             <Route index element={<Main />} />
-            <Route path="rps" element={<Rps />} />
+            <Route path="rps" element={<RPS />} />
+            <Route path="demo" element={<RPSDemo />} />
             <Route path="nfts" element={<Nfts />} />
-            <Route path="fair-play" element={<Fairplay />} />
-            <Route path="about" element={<MainAbout />} />
-            <Route path="profile" element={<MainProfile />} />
+            <Route path="fair-play" element={<FairPlay />} />
+            <Route path="about" element={<About />} />
+            <Route path="stats" element={<Stats />} />
             <Route path="refund-policy" element={<RefundPolicy />} />
             <Route path="terms" element={<Terms />} />
-            <Route path="demo" element={<Demo />} />
           </Route>
 
           {/* <Route path="/" element={<TestLayout />}>

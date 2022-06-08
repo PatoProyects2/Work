@@ -1,9 +1,29 @@
 import React, { useState, useEffect } from 'react'
 import { collection, query, getDocs, where } from "firebase/firestore";
-import { db } from "./firesbaseConfig";
+import { db } from "../config/firesbaseConfig";
 import UsersIcon from '../assets/imgs/Home Page/usersIcon.png'
+import styled from 'styled-components'
 
-export default function Presence() {
+const StyledActive = styled.div`
+        .Logo {
+            width: 25px;
+        }
+
+        .ActiveText {
+            color: #ffdb5b;
+        }
+
+        .LogoBackground {
+            background-color: #21202e;
+            padding-bottom: 2px;
+            padding-top: 2px;
+            padding-left: 5px;
+            padding-right: 5px;
+            border-radius: 5px;
+        }
+    `
+
+const ActiveUsers = () => {
     const [active, setActive] = useState(0);
 
     useEffect(() => {
@@ -21,12 +41,14 @@ export default function Presence() {
     }, [])
 
     return (
-        <>
-            <span className="d-flex align-items-center ms-3">
-                <img src={UsersIcon} alt='' />
+        <StyledActive>
+            <span className="LogoBackground d-flex align-items-center ms-3">
+                <img className="Logo" src={UsersIcon} alt='' />
                 &nbsp;
-                {active}
+                <div className="ActiveText">{active}</div>
             </span>
-        </>
+        </StyledActive>
     );
 }
+
+export default ActiveUsers;
