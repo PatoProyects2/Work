@@ -4,7 +4,6 @@ import { Progress } from 'reactstrap';
 const ProgressExp = ({ maxGames, minGames, cGames, xpClass }) => {
 
   if (!maxGames && !minGames) {
-    // MAX LEVEL
     return (
       <div className='d-flex flex-column align-items-center'>
         <Progress value={750} striped={true} className="w-100" color={xpClass}></Progress><small>MAX LEVEL</small>
@@ -25,7 +24,7 @@ const ProgressExp = ({ maxGames, minGames, cGames, xpClass }) => {
   );
 }
 
-const Level = ({ userData, showLvl = true }) => {
+const Level = ({ clubData, showLvl = true }) => {
   const totalGamesPerLevel = [10, 20, 30, 40, 50, 65, 80, 95, 110, 125, 150, 200, 250, 300, 350, 390, 430, 470, 510, 550, 600, 650, 700, 750];
 
   const getMinMaxGames = (level) => {
@@ -56,13 +55,9 @@ const Level = ({ userData, showLvl = true }) => {
 
   return (
     <>
-      {userData[0] &&
-        <>
-          <div className='my-2'>
-            <ProgressExp {...getMinMaxGames(userData[0].level)} cGames={userData[0].rps.totalGames} xpClass={xpClass(userData[0].level)[1]} />
-          </div>
-        </>
-      }
+      <div className='my-2'>
+        <ProgressExp {...getMinMaxGames(clubData.level)} cGames={clubData.rps.totalGames} xpClass={xpClass(clubData.level)[1]} />
+      </div>
     </>
   )
 }

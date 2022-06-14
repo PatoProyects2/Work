@@ -4,7 +4,7 @@ import RpsGamePolygon from '../../abis/RpsGamePolygon/Santaflip.json'
 import { pRpsGameAddress } from '../../utils/Address'
 import FairGame from './FairGame'
 
-const FairPlay=()=> {
+const FairPlay = () => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -12,7 +12,7 @@ const FairPlay=()=> {
       const web3 = new Web3(new Web3.providers.HttpProvider(process.env.REACT_APP_INFURA_POLYGON))
       const rpsgame = new web3.eth.Contract(RpsGamePolygon.abi, pRpsGameAddress)
       const winGames = await rpsgame.methods.totalWins().call()
-      const loseGames = await rpsgame.methods.totalLoses().call()
+      const loseGames = await rpsgame.methods.totalLosses().call()
       const games = [
         {
           type: 'Win Games',

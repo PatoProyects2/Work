@@ -1,89 +1,128 @@
-import React, { useState, useEffect, useContext } from 'react'
-import styled from 'styled-components'
-import { query, where, collection, limit, onSnapshot } from "firebase/firestore";
-import RPSStats from './components/Info/RPSStats'
-import RPSStatsNew from './components/Info/RPSStatsNew'
-import Chart from './components/Chart/Chart'
-import Level from './components/Info/Level'
-import { Context } from '../../context/Context';
-import { db } from '../../config/firesbaseConfig'
+import { useContext, useEffect, useState } from "react";
+import styled from "styled-components";
+import { Context } from "../../context/Context";
+import { useMatchMedia } from "../../hooks/useMatchMedia";
+import Chart from "./components/Chart/Chart";
+import HistoryGames from "./components/Info/HistoryGames";
+import Level from "./components/Info/Level";
+import RPSStats from "./components/Info/RPSStats";
+import RPSStatsNew from "./components/Info/RPSStatsNew";
+import { useGames } from "../../hooks/firebase/useGames";
+import { useProfile } from "../../hooks/firebase/useProfile";
 
 const StyledProfile = styled.div`
+  width: 100%;
+
+  .TitleUsuario {
+    height: 50px;
+    display: flex;
+    align-items: center;
+    color: white;
+    border-top-right-radius: 20px;
+    border-top-left-radius: 20px;
+    font-size: 20px;
+    justify-content: center;
+    background-color: #554c77;
+  }
+
+  .profile-container {
     width: 100%;
+  }
 
-    .TitleUsuario {      
-        height: 50px;
-        display: flex;
-        align-items: center;
-        color: white;
-        border-top-right-radius: 20px;
-        border-top-left-radius: 20px;
-        font-size: 20px;
-        justify-content: center;
-        background-color: #554c77;
-    }
-
-    .profile-container {
-      width: 100%;
-    }
-
-    .profile-info {
-      display: flex;
-    }
-  `
+  .profile-info {
+    display: flex;
+  }
+  .rps-stats-mobile {
+    display: flex;
+    justify-content: center;
+  }
+  .statsNew-mobile {
+    display: flex;
+    justify-content: center;
+  }
+`;
 
 const Stats = () => {
+  const myGames = useGames();
+  const myProfile = useProfile();
   const { discordId } = useContext(Context);
-  const [userData, setUserData] = useState({});
-  const [register, setRegister] = useState('');
+  const [gamesData, setGamesData] = useState(false);
+  const isMobileResolution = useMatchMedia("(max-width:700px)", false);
 
   useEffect(() => {
-    const q = query(collection(db, "clubUsers"), where("uid", "==", discordId), limit(1))
-    const unsub = onSnapshot(q, (doc) => {
-      const clubData = doc.docs.map(userData => userData.data())
-      setUserData(clubData)
-    });
-    return () => unsub()
-  }, [discordId])
-
-  useEffect(() => {
-    if (userData[0]) {
-      var date = new Date(userData[0].register * 1000);
-      setRegister(date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear());
+    if (myGames) {
+      const games = myGames.map((game) => {
+        const games = {
+          id: game.gameId,
+          result: game.result,
+          amount: game.maticAmount,
+          txHash: game.txHash
+        }
+        return games;
+      })
+      const orderGames = games.sort((a, b) => b.id - a.id)
+      setGamesData(orderGames);
     }
-  }, [userData])
+  }, [myGames]);
 
   return (
     <StyledProfile>
-      {discordId !== '' ?
+      {discordId !== "" && myProfile ? (
         <div className="profile-container">
-          <h3 className="TitleUsuario my-3 text-center">{userData[0] && userData[0].name + "#" + userData[0].id} Stats</h3>
+          <h3 className="TitleUsuario my-3 text-center">
+            {myProfile[0].name + "#" + myProfile[0].id} Stats
+          </h3>
           <div className="profile-info">
             <div className="profile-info-container">
               <img
-                alt={userData[0] && userData[0].name}
+                alt={myProfile[0].name}
                 className="rounded-circle profile-img"
-                src={(userData[0] && userData[0].photo) && userData[0].photo}
+                src={myProfile[0].photo}
               />
-              <p style={{ textAlign: "center", color: "#ffda5c" }}>{userData[0] && userData[0].name + "#" + userData[0].id}</p>
-              <Level userData={userData} />
+              <p style={{ textAlign: "center", color: "#ffda5c" }}>
+                {myProfile[0].name + "#" + myProfile[0].id}
+              </p>
+              <Level clubData={myProfile[0]} />
             </div>
-            <div className="profile-stats-container">
-              <RPSStats userData={userData} />
+            {!isMobileResolution && (
+              <div className="profile-stats-container">
+                <RPSStats clubData={myProfile[0]} />
+              </div>
+            )}
+          </div>
+          {isMobileResolution && (
+            <div className="rps-stats-mobile mt-2">
+              <RPSStats clubData={myProfile[0]} />
             </div>
-          </div>
+          )}
+
+          {!isMobileResolution && (
+            <div className="mt-2">
+              <RPSStatsNew clubData={myProfile[0]} />
+            </div>
+          )}
+
+          {isMobileResolution && (
+            <div className="statsNew-mobile mt-2">
+              <RPSStatsNew clubData={myProfile[0]} />
+            </div>
+          )}
+          {
+            gamesData
+            &&
+            <div className="mt-2">
+              <HistoryGames gamesData={gamesData} />
+            </div>
+          }
           <div className="mt-2">
-            <RPSStatsNew userData={userData} />
-          </div>
-          <div className="mt-2">
-            <Chart userData={userData[0]} discordId={discordId} />
+            <Chart clubData={myProfile[0]} discordId={discordId} />
           </div>
         </div>
-        :
-        <h2 className='text-center mt-3'>Connect with Discord</h2>
-      }
+      ) : (
+        <h2 className="text-center mt-3">Log in with Discord</h2>
+      )}
     </StyledProfile>
   );
-}
+};
 
 export default Stats;

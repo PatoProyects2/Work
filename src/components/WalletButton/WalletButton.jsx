@@ -1,161 +1,115 @@
-import React, { useState } from 'react'
-import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Button, Modal, ModalBody, ModalFooter, FormGroup, Input, Label } from 'reactstrap'
+import { useEffect, useState } from "react";
+import {
+  Button,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle
+} from "reactstrap";
 
 const WalletButton = (props) => {
-
-  const [userInfo, setUserInfo] = useState({
-    displayName: '',
-    photoURL: 'https://ipfs.io/ipfs/QmP7jTCiimXHJixUNAVBkb7z7mCZQK3vwfFiULf5CgzUDh'
-  });
-  const [friend, setFriend] = useState({
-    account1: '',
-    amount1: 0,
-  });
-  const [send, setSend] = useState(false);
   const [dropdown, setDropdown] = useState(false);
-
-  const handleInputChange = (event) => {
-    setUserInfo({
-      ...userInfo,
-      [event.target.name]: event.target.value
-    });
-    setFriend({
-      ...friend,
-      [event.target.name]: event.target.value
-    });
-  }
+  const [copy, setCopy] = useState(false);
 
   const toggleMenu = () => {
     setDropdown(!dropdown);
-  }
+  };
 
   const connectWallet = () => {
-    if (document.getElementById('age').checked === false) {
-      props.toast.error('Confirm that you are at least 18 years old')
-      return false
+    if (document.getElementById("age").checked === false) {
+      props.toast.error("Confirm that you are at least 18 years old");
+      return false;
     }
-    props.readBlockchainData()
-  }
-
-  const sendMatic = () => {
-    if (send === false) {
-      setSend(true);
-    } else {
-      setSend(false);
-    }
-  }
-
-  const sendToFriend = () => {
-    if (friend.account1.length === 42) {
-
-    } else {
-      props.toast.error("Invalid address")
-      return false
-    }
-    if (friend.amount1 > 0) {
-
-    } else {
-      props.toast.error("Invalid Amount")
-      return false
-    }
-
-    setFriend({
-      ...friend,
-      account1: '',
-      amount: 0,
-    })
-
-    props.toast.promise(
-      ethereum
-        .request({
-          method: 'eth_sendTransaction',
-          params: [
-            {
-              from: props.account,
-              to: friend.account1,
-              value: props.web3.utils.numberToHex((friend.amount1 * 1000000000000000000).toString()),
-            },
-          ],
-        }),
-      {
-        loading: 'Sending...',
-        success: <b>Transaction confirmed</b>,
-        error: <b>Transaction failed</b>,
-      }
-    ).then(() => setSend(false))
-  }
+    props.readBlockchainData();
+  };
 
   const manageWallets = () => {
     ethereum.request({
-      method: 'wallet_requestPermissions',
-      params: [{
-        eth_accounts: {},
-      }]
+      method: "wallet_requestPermissions",
+      params: [
+        {
+          eth_accounts: {},
+        },
+      ],
     });
+  };
+
+  useEffect(() => {
+    const readClipboard = async () => {
+      if (copy) {
+        const sleep = (milliseconds) => {
+          return new Promise((resolve) => setTimeout(resolve, milliseconds));
+        };
+        for (let i = 0; i < 3; i++) {
+          if (i === 2) {
+            setCopy(false);
+          }
+          await sleep(1000);
+        }
+      }
+    };
+    readClipboard();
+  }, [copy]);
+
+  const copyAddress = () => {
+    navigator.clipboard.writeText(props.account);
+    setCopy(true);
   }
 
   return (
     <>
-      {
-        props.account !== undefined && props.account !== '0x000000000000000000000000000000000000dEaD' ?
-          <>
-            <Dropdown className="dd-profile" isOpen={dropdown} toggle={toggleMenu} direction="down" size="md">
-              <DropdownToggle color='transparent' className='p-0'>
-                {props.userData.photo && <img className="rounded-circle me-2" src={props.userData.photo} width="35" height="35" alt="" />}
-              </DropdownToggle>
-              <DropdownMenu>
-                <DropdownItem header>{props.userData.name}</DropdownItem>
-                <DropdownItem header>{"LVL " + props.userData.level}</DropdownItem>
-                <DropdownItem header>
-                  {props.account.substring(0, 5) + "..." + props.account.substring(38, 42)}
-                  <button className="btn-sm ms-2 btn-secondary"
-                    onClick={() => navigator.clipboard.writeText(props.account)}>
-                    <i className="fa-regular fa-clone white"></i>
-                  </button>
-                </DropdownItem>
-                <DropdownItem divider />
-                <DropdownItem onClick={sendMatic}>Tip coins</DropdownItem>
-                <DropdownItem onClick={manageWallets}>Accounts</DropdownItem>
-                <DropdownItem onClick={props.disconnectWallet}>Disconnect</DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-            <Modal isOpen={send} className="d-modal" size="sm">
-              <ModalBody>
-                <div className='d-flex justify-content-end'>
-                  <button type="button" className="btn-close" aria-label="Close" onClick={sendMatic}></button>
-                </div>
-                <h4 className="text-center">Tip</h4>
-                <FormGroup>
-                  <Label>Address</Label>
-                  <Input name="account1" className="d-modal-input" placeholder="0x00..." onChange={handleInputChange} type="text" />
-                </FormGroup>
-                <FormGroup>
-                  <Label>Amount</Label>
-                  <Input name="amount1" className="d-modal-input" placeholder="1" onChange={handleInputChange} type="number" />
-                </FormGroup>
-              </ModalBody>
-              <ModalFooter>
-                <Button color="warning" type="submit" onClick={sendToFriend}>Send</Button>
-              </ModalFooter>
-            </Modal>
-          </>
-          :
-          <Dropdown className='text-center' isOpen={dropdown} toggle={toggleMenu} direction="down" size="lg">
-            <p className="text-center mt-3">
-              <label className="switch">
-                <input id="age" type="checkbox"></input>&nbsp;
-                <span className="slider round"></span>
-              </label>
-              &nbsp;
-              I confirm that I am at least 18 years old
-            </p>
-            <DropdownToggle className="ConnectWallet" onClick={connectWallet}>
-              CONNECT WALLET
+      {props.account !== undefined &&
+        props.account !== "0x000000000000000000000000000000000000dEaD" ? (
+        <>
+          <Dropdown
+            className="dd-profile"
+            isOpen={dropdown}
+            toggle={toggleMenu}
+            direction="down"
+            size="md"
+          >
+            <DropdownToggle color="transparent" className="modal-wallet">
+              <span className="wallet-span">
+                {props.account.substring(0, 5) + "..." + props.account.substring(38, 42)}
+                &nbsp;&nbsp;
+                <Button
+                  color="dark"
+                  className="btn-sm mb-1"
+                  onClick={copyAddress}
+                  disabled={copy}
+                >
+                  {copy ? <i className="fa fa-check" style={{ color: "#198754" }} aria-hidden="true"></i> : <i className="fa fa-clone" aria-hidden="true"></i>}
+                </Button>
+              </span>
             </DropdownToggle>
+            <DropdownMenu>
+              <DropdownItem onClick={manageWallets}>Accounts</DropdownItem>
+              <DropdownItem onClick={props.disconnectWallet}>Disconnect</DropdownItem>
+            </DropdownMenu>
           </Dropdown>
-      }
+        </>
+      ) : (
+        <>
+          <p className="text-center mt-3">
+            <label className="switch">
+              <input id="age" type="checkbox"></input>&nbsp;
+              <span className="slider round"></span>
+            </label>
+            &nbsp; I confirm that I am at least 18 years old
+
+          </p>
+          <div className="center">
+            <button
+              className="ConnectWallet btn-lg"
+              onClick={connectWallet}
+            >
+              CONNECT WALLET
+            </button>
+          </div>
+        </>
+      )}
     </>
-  )
-}
+  );
+};
 
 export default WalletButton;

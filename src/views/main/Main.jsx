@@ -1,25 +1,37 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { collection, doc, getDocs, query, setDoc } from "firebase/firestore";
+import AwesomeSlider from "react-awesome-slider";
+import withAutoplay from "react-awesome-slider/dist/autoplay";
+import AwesomeSliderStyles from "../../config/react-awesome-slider/src/styles";
 import { NavLink } from "react-router-dom";
 import styled from "styled-components";
-import { collection, doc, getDocs, query, setDoc, where } from "firebase/firestore";
-import lodash from "lodash";
-import { ButtonGroup, Button } from "reactstrap";
+import CoinFlipMobile from "../../assets/imgs/Home Page/coin flip banner mobile.png";
 import DiscordLogo from "../../assets/imgs/Home Page/discordIcon.png";
 import EnergyLogo from "../../assets/imgs/Home Page/energyIcon.png";
+import FairPlayMobile from "../../assets/imgs/Home Page/fair play banner mobile.png";
 import CoinflipImg from "../../assets/imgs/Home Page/imageCoinflip.png";
 import ComingSoonImg from "../../assets/imgs/Home Page/imageComingSoon.png";
 import FairPlayImg from "../../assets/imgs/Home Page/imageFairplay.png";
 import NFTImg from "../../assets/imgs/Home Page/imageNFT.png";
 import RPSGameImg from "../../assets/imgs/Home Page/imageRPSgame.png";
+import NFTMobile from "../../assets/imgs/Home Page/nft banner mobile.png";
+import RPSGameMobile from "../../assets/imgs/Home Page/RPS_banner_mobile.png";
 import TwitterLogo from "../../assets/imgs/Home Page/twitterIcon.png";
-import { Context } from "../../context/Context";
+import ComingSoonMobile from "../../assets/imgs/Home Page/wip banner mobile.png";
 import { db } from "../../config/firesbaseConfig";
-import Games from "../../firebase/Games";
+import { Context } from "../../context/Context";
+import Games from "../../components/Games/Games";
 import { useMatchMedia } from "../../hooks/useMatchMedia";
 import MostAmount from "./components/LeaderBoards/MostAmount";
 import MostPlays from "./components/LeaderBoards/MostPlays";
 
+const AutoplaySlider = withAutoplay(AwesomeSlider);
+
 const StyledMain = styled.div`
+      .slider-wrapper {
+        width: 100%;
+        height: 100px;
+      }
     
       .ParteImg {
         position: relative;
@@ -28,38 +40,11 @@ const StyledMain = styled.div`
         justify-content: center;
       }
 
-      .ParteImg p {
-        position: absolute;
-        z-index: 10;
-        bottom: 0%;
-        left: -45%;
-        font-size: 25px;
-        color: white;
-        font-weight: bold;
-        text-shadow:
-                1px 4px black;
-                0px 2px black,
-                15px 10px black;
-            text-shadow: 3px 0 0 black, 
-                        2px 4px 0 black, 
-                        0 2px 0 black, 
-                        0 -2px 0 black, 
-                        1px 1px black, 
-                        -1px -1px 0 black, 
-                        1px -1px 0 black, 
-                        -1px 1px 0 black;    
-            letter-spacing: -2px;
-              @media (max-width: 1320px) {
-                left: 5%;
-              }
-
-      }
-
       .ParteImg img {
         width: 202%;
         display: flex;
           @media (max-width: 1320px) {
-              width: 100%;
+              width: 202%;
           }
       }
 
@@ -68,29 +53,6 @@ const StyledMain = styled.div`
         margin-bottom: 10px;
         display: flex;
         justify-content: center;
-      }
-
-      .ParteImgAbajo p {
-        position: absolute;
-        z-index: 10;
-        bottom: 0%;
-        left: 5%;
-        font-size: 25px;
-        color: white;
-        font-weight: bold;
-        text-shadow:
-                1px 4px black;
-                0px 2px black,
-                15px 10px black;
-            text-shadow: 3px 0 0 black, 
-                        2px 4px 0 black, 
-                        0 2px 0 black, 
-                        0 -2px 0 black, 
-                        1px 1px black, 
-                        -1px -1px 0 black, 
-                        1px -1px 0 black, 
-                        -1px 1px 0 black;    
-            letter-spacing: -2px;
       }
 
       .ParteImgAbajo img {
@@ -117,23 +79,16 @@ const StyledMain = styled.div`
                       1px -1px 0 black, 
                       -1px 1px 0 black;    
           letter-spacing: -2px;
-
-          @media (max-width: 1320px) {
-            justify-content: center;
-          }
       }
 
       .Tabla {
         width: 100%;
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        
-        margin-top: 50px;
+        margin-top: 10px;
         gap: 1rem;
         padding-bottom: 40px;
       }
 
-      .TitleMostPlays {
+      .table-title {
         height: 50px;
         display: flex;
         align-items: center;
@@ -145,11 +100,11 @@ const StyledMain = styled.div`
         background-color: #554c77;
       }
 
-      .TitleMostPlays p{
+      .table-title p{
         margin-top: 1rem;
       }
  
-      .table_section {
+      .table-section {
         border: 1px solid #554c77;
         border-bottom-left-radius: 20px;
         border-bottom-right-radius: 20px;
@@ -190,44 +145,6 @@ const StyledMain = styled.div`
           background-color: #eece5d;
       }
 
-      .TitleMostAmount {
-          height: 50px;
-          display: flex;
-          align-items: center;
-          color: white;
-          border-top-right-radius: 20px;
-          border-top-left-radius: 20px;
-          font-size: 20px;
-          justify-content: center;
-          background-color: #554c77;
-      }
-
-      .TitleMostAmount p{
-          margin-top: 1rem;
-      }
-
-      .tableLiveBets {          
-          @media (max-width: 1520px) {
-            width: 100%;
-          }
-      }
-
-      .TitleLiveBets {
-          height: 50px;
-          display: flex;
-          align-items: center;
-          color: white;
-          border-top-right-radius: 20px;
-          border-top-left-radius: 20px;
-          font-size: 20px;
-          justify-content: center;
-          background-color: #554c77;
-      }
-
-      .TitleLiveBets p{
-          margin-top: 1rem;
-      }
-
       .FlexTh {
         display: flex;
       }
@@ -235,130 +152,107 @@ const StyledMain = styled.div`
       .FlexTh button{
         border: 1px solid #554c77;
         padding: 10px;
+        margin-top: -1px;
+        margin-left: -2px;
+        margin-right: -2px;
       }
-
   `;
 
 const StyledMenu = styled.div`
+  display: flex;
+  margin-top: 25px;
+  justify-content: center;
+  margin-bottom: 20px;
+
+  .item2 {
+    margin-left: 20px;
+    min-width: 200px;
     display: flex;
-    margin-top: 25px;
+    align-items: center;
+    background-color: #2f4471;
     justify-content: center;
-    margin-bottom: 20px;
+    height: 50px;
+    border-radius: 10px;
+  }
 
-    .item2 {
-      margin-left: 20px;
-      min-width: 200px;
-      display: flex;
-      align-items: center;
-      background-color: #2f4471;
-      justify-content: center;
-      height: 50px;
-      border-radius: 10px;
-    }
+  .item2 img {
+    width: 25px;
+    height: 25px;
+  }
 
-    .item2 img {
-      width: 25px;
-      height: 25px;
-    }
+  .item2 p {
+    color: #81d2ff;
+    margin-left: 10px;
+    margin-top: 1rem;
+  }
 
-    .item2 p {
-      color: #81d2ff;
-      margin-left: 10px;
-      margin-top: 1rem;
-    }
+  .item3 {
+    margin-left: 20px;
+    min-width: 200px;
+    display: flex;
+    align-items: center;
+    background-color: #373878;
+    justify-content: center;
+    height: 50px;
+    border-radius: 10px;
+  }
 
-    .item3 {
-      margin-left: 20px;
-      min-width: 200px;
-      display: flex;
-      align-items: center;
-      background-color: #373878;
-      justify-content: center;
-      height: 50px;
-      border-radius: 10px;
-    }
+  .item3 img {
+    width: 25px;
+    height: 25px;
+  }
 
-    .item3 img {
-      width: 25px;
-      height: 25px;
-    }
+  .item3 p {
+    color: #7d80e7;
+    margin-left: 10px;
+    margin-top: 1rem;
+  }
 
-    .item3 p {
-      color: #7d80e7;
-      margin-left: 10px;
-      margin-top: 1rem;
-    }
+  .item4 {
+    margin-left: 20px;
+    min-width: 200px;
+    display: flex;
+    align-items: center;
+    background-color: #374842;
+    justify-content: center;
+    height: 50px;
+    border-radius: 10px;
+  }
 
-    .item4 {
-      margin-left: 20px;
-      min-width: 200px;
-      display: flex;
-      align-items: center;
-      background-color: #374842;
-      justify-content: center;
-      height: 50px;
-      border-radius: 10px;
-    }
+  .item4 img {
+    width: 25px;
+    height: 25px;
+  }
 
-    .item4 img {
-      width: 25px;
-      height: 25px;
-    }
-
-    .item4 p {
-      color: #7ce66a;
-      margin-left: 10px;
-      margin-top: 1rem;
-    }
-  `;
+  .item4 p {
+    color: #7ce66a;
+    margin-left: 10px;
+    margin-top: 1rem;
+  }
+`;
 
 const Main = () => {
   const { discordId } = useContext(Context);
-  const [topLeaderboards, setTopLeaderboards] = useState({});
-  const [liveBets, setLiveBets] = useState(false);
+  const [topLeaderboards, setTopLeaderboards] = useState(false);
+  const [liveBets, setLiveBets] = useState(true);
   const [mostPlays, setMostPlays] = useState(false);
   const [mostAmount, setMostAmount] = useState(false);
-  const [dailyGame, setDailyGame] = useState(false);
-  const [weeklyGame, setWeeklyGame] = useState(false);
-  const [monthlyGame, setMonthlyGame] = useState(false);
-  const [globalGame, setGlobalGame] = useState(false);
-  const [dailyAmount, setDailyAmount] = useState(false);
-  const [weeklyAmount, setWeeklyAmount] = useState(false);
-  const [monthlyAmount, setMonthlyAmount] = useState(false);
-  const [globalAmount, setGlobalAmount] = useState(false);
-  const isMobileResolution = useMatchMedia("(max-width:650px)", false);
+  const [daily, setDaily] = useState(true);
+  const [weekly, setWeekly] = useState(false);
+  const [monthly, setMonthly] = useState(false);
+  const [global, setGlobal] = useState(false);
+  const isMobileResolution = useMatchMedia("(max-width:700px)", false);
+  const isTabletResolution = useMatchMedia("(max-width:1000px)", false);
 
   useEffect(() => {
-    if (isMobileResolution) {
-      setLiveBets(true)
-      setMostPlays(false)
-      setMostAmount(false)
-
-      setDailyGame(true)
-      setWeeklyGame(false)
-      setMonthlyGame(false)
-      setGlobalGame(false)
-
-      setDailyAmount(true)
-      setWeeklyAmount(false)
-      setMonthlyAmount(false)
-      setGlobalAmount(false)
-    } else {
-      setLiveBets(true)
-      setMostPlays(true)
-      setMostAmount(true)
-
-      setDailyGame(true)
-      setWeeklyGame(false)
-      setMonthlyGame(false)
-      setGlobalGame(false)
-
-      setDailyAmount(true)
-      setWeeklyAmount(false)
-      setMonthlyAmount(false)
-      setGlobalAmount(false)
+    const unixTime = Math.round(new Date().getTime() / 1000);
+    if (discordId !== "" && unixTime > 0) {
+      setDoc(doc(db, "status", discordId), {
+        state: "online",
+        time: unixTime,
+      });
     }
-  }, [isMobileResolution])
+  }, [discordId])
 
   useEffect(() => {
     const readLeaderboard = async () => {
@@ -367,75 +261,67 @@ const Main = () => {
       const lastWeek = unixTime - 604800;
       const lastMonth = unixTime - 2592000;
 
-      if (discordId !== "" && unixTime > 0) {
-        setDoc(doc(db, "status", discordId), {
-          state: "online",
-          time: unixTime,
-        });
-      }
-
       let dayGames = [];
       let weekGames = [];
       let monthGames = [];
       let globalGames = [];
 
-      const clubCollection = collection(db, "allGames");
-      const queryGames = query(clubCollection, where("name", "!=", ""));
-      const documentGames = await getDocs(queryGames);
-      documentGames.forEach((doc) => {
+      const q = query(collection(db, "allGames"));
+      const document = await getDocs(q);
+
+      // Filtrado por preiodo de tiempo
+
+      document.forEach((doc) => {
         let data = doc.data();
-        let created = doc.data().createdAt;
+        let created = data.createdAt;
+
         if (created > lastDay) {
-          let array0 = {
-            account: data.account,
+          const array = {
             photo: data.photo,
             name: data.name,
             amount: data.amount,
             uid: data.uid,
           };
-          dayGames = dayGames.concat(array0);
+          dayGames = dayGames.concat(array);
         }
+
         if (created > lastWeek) {
-          let array1 = {
-            account: data.account,
+          const array = {
             photo: data.photo,
             name: data.name,
             amount: data.amount,
             uid: data.uid,
           };
-          weekGames = weekGames.concat(array1);
+          weekGames = weekGames.concat(array);
         }
+
         if (created > lastMonth) {
-          let array2 = {
-            account: data.account,
+          const array = {
             photo: data.photo,
             name: data.name,
             amount: data.amount,
             uid: data.uid,
           };
-          monthGames = monthGames.concat(array2);
+          monthGames = monthGames.concat(array);
         }
-        let array3 = {
-          account: data.account,
+
+        const array = {
           photo: data.photo,
           name: data.name,
           amount: data.amount,
           uid: data.uid,
         };
-        globalGames = globalGames.concat(array3);
+        globalGames = globalGames.concat(array);
       });
+
+      // Agrupacion por usuario
 
       let dayObject = [];
       dayGames.forEach((x) => {
         if (!dayObject.hasOwnProperty(x.uid)) {
           dayObject[x.uid] = [];
         }
-        dayObject[x.uid].push({
-          account: x.account,
-          photo: x.photo,
-          name: x.name,
-          amount: x.amount,
-        });
+        dayObject[x.uid].push({ ...x });
       });
 
       let weekObject = [];
@@ -443,12 +329,7 @@ const Main = () => {
         if (!weekObject.hasOwnProperty(x.uid)) {
           weekObject[x.uid] = [];
         }
-        weekObject[x.uid].push({
-          account: x.account,
-          photo: x.photo,
-          name: x.name,
-          amount: x.amount,
-        });
+        weekObject[x.uid].push({ ...x });
       });
 
       let monthObject = [];
@@ -456,12 +337,7 @@ const Main = () => {
         if (!monthObject.hasOwnProperty(x.uid)) {
           monthObject[x.uid] = [];
         }
-        monthObject[x.uid].push({
-          account: x.account,
-          photo: x.photo,
-          name: x.name,
-          amount: x.amount,
-        });
+        monthObject[x.uid].push({ ...x });
       });
 
       let globalObject = [];
@@ -469,79 +345,82 @@ const Main = () => {
         if (!globalObject.hasOwnProperty(x.uid)) {
           globalObject[x.uid] = [];
         }
-        globalObject[x.uid].push({
-          account: x.account,
-          photo: x.photo,
-          name: x.name,
-          amount: x.amount,
-        });
+        globalObject[x.uid].push({ ...x });
       });
 
-      let dayArray = [];
-      Object.values(dayObject).forEach((val) => {
-        dayArray = dayArray.concat([val]);
-      });
+      // Suma total de partidas y cantidad de dinero jugado por usuario
 
-      let weekArray = [];
-      Object.values(weekObject).forEach((val) => {
-        weekArray = weekArray.concat([val]);
-      });
-
-      let monthArray = [];
-      Object.values(monthObject).forEach((val) => {
-        monthArray = monthArray.concat([val]);
-      });
-
-      let globalArray = [];
-      Object.values(globalObject).forEach((val) => {
-        globalArray = globalArray.concat([val]);
-      });
-
-      let day = dayArray.map((users) => {
-        let amounts = users.map((amount) => amount.amount);
-        let amount = lodash.sum(amounts);
-        let user = users[users.length - 1];
-        let top = [user.account, user.photo, user.name, users.length, amount];
+      const day = Object.values(dayObject).map((users) => {
+        const amounts = users.map((amount) => amount.amount);
+        const amount = amounts.reduce(function (accumulator, currentValue) {
+          return accumulator + currentValue;
+        }, 0);
+        const user = users[users.length - 1];
+        const top = {
+          photo: user.photo,
+          name: user.name,
+          game: users.length,
+          amount: amount
+        };
         return top;
       });
 
-      let week = weekArray.map((users) => {
-        let amounts = users.map((amount) => amount.amount);
-        let amount = lodash.sum(amounts);
-        let user = users[users.length - 1];
-        let top = [user.account, user.photo, user.name, users.length, amount];
+      const week = Object.values(weekObject).map((users) => {
+        const amounts = users.map((amount) => amount.amount);
+        const amount = amounts.reduce(function (accumulator, currentValue) {
+          return accumulator + currentValue;
+        }, 0);
+        const user = users[users.length - 1];
+        const top = {
+          photo: user.photo,
+          name: user.name,
+          game: users.length,
+          amount: amount
+        };
         return top;
       });
 
-      let month = monthArray.map((users) => {
-        let amounts = users.map((amount) => amount.amount);
-        let amount = lodash.sum(amounts);
-        let user = users[users.length - 1];
-        let top = [user.account, user.photo, user.name, users.length, amount];
+      const month = Object.values(monthObject).map((users) => {
+        const amounts = users.map((amount) => amount.amount);
+        const amount = amounts.reduce(function (accumulator, currentValue) {
+          return accumulator + currentValue;
+        }, 0);
+        const user = users[users.length - 1];
+        const top = {
+          photo: user.photo,
+          name: user.name,
+          game: users.length,
+          amount: amount
+        };
         return top;
       });
 
-      let global = globalArray.map((users) => {
-        let amounts = users.map((amount) => amount.amount);
-        let amount = lodash.sum(amounts);
-        let user = users[users.length - 1];
-        let top = [user.account, user.photo, user.name, users.length, amount];
+      const global = Object.values(globalObject).map((users) => {
+        const amounts = users.map((amount) => amount.amount);
+        const amount = amounts.reduce(function (accumulator, currentValue) {
+          return accumulator + currentValue;
+        }, 0);
+        const user = users[users.length - 1];
+        const top = {
+          photo: user.photo,
+          name: user.name,
+          game: users.length,
+          amount: amount
+        };
         return top;
       });
 
       var games = {};
-
-      games.day = [...day].sort((a, b) => b[3] - a[3]);
-      games.week = [...week].sort((a, b) => b[3] - a[3]);
-      games.month = [...month].sort((a, b) => b[3] - a[3]);
-      games.global = [...global].sort((a, b) => b[3] - a[3]);
+      games.day = [...day].sort((a, b) => b.game - a.game);
+      games.week = [...week].sort((a, b) => b.game - a.game);
+      games.month = [...month].sort((a, b) => b.game - a.game);
+      games.global = [...global].sort((a, b) => b.game - a.game);
 
       var amount = {};
-
-      amount.day = [...day].sort((a, b) => b[4] - a[4]);
-      amount.week = [...week].sort((a, b) => b[4] - a[4]);
-      amount.month = [...month].sort((a, b) => b[4] - a[4]);
-      amount.global = [...global].sort((a, b) => b[4] - a[4]);
+      amount.day = [...day].sort((a, b) => b.amount - a.amount);
+      amount.week = [...week].sort((a, b) => b.amount - a.amount);
+      amount.month = [...month].sort((a, b) => b.amount - a.amount);
+      amount.global = [...global].sort((a, b) => b.amount - a.amount);
 
       var leaderboard = {};
       leaderboard.games = games;
@@ -551,96 +430,50 @@ const Main = () => {
     };
     readLeaderboard();
     return () => {
-      setTopLeaderboards({});
+      setTopLeaderboards(false);
     };
   }, [discordId]);
 
   const day = () => {
-    if (mostPlays) {
-      setDailyGame(true);
-      setWeeklyGame(false);
-      setMonthlyGame(false);
-      setGlobalGame(false);
-    }
-    if (mostAmount) {
-      setDailyAmount(true);
-      setWeeklyAmount(false);
-      setMonthlyAmount(false);
-      setGlobalAmount(false);
-    }
+    setDaily(true);
+    setWeekly(false);
+    setMonthly(false);
+    setGlobal(false);
   };
 
   const week = () => {
-    if (mostPlays) {
-      setDailyGame(false);
-      setWeeklyGame(true);
-      setMonthlyGame(false);
-      setGlobalGame(false);
-    }
-    if (mostAmount) {
-      setDailyAmount(false);
-      setWeeklyAmount(true);
-      setMonthlyAmount(false);
-      setGlobalAmount(false);
-    }
+    setDaily(false);
+    setWeekly(true);
+    setMonthly(false);
+    setGlobal(false);
   };
 
   const month = () => {
-    if (mostPlays) {
-      setDailyGame(false);
-      setWeeklyGame(false);
-      setMonthlyGame(true);
-      setGlobalGame(false);
-    }
-    if (mostAmount) {
-      setDailyAmount(false);
-      setWeeklyAmount(false);
-      setMonthlyAmount(true);
-      setGlobalAmount(false);
-    }
+    setDaily(false);
+    setWeekly(false);
+    setMonthly(true);
+    setGlobal(false);
   };
 
   const all = () => {
-    if (mostPlays) {
-      setDailyGame(false);
-      setWeeklyGame(false);
-      setMonthlyGame(false);
-      setGlobalGame(true);
-    }
-    if (mostAmount) {
-      setDailyAmount(false);
-      setWeeklyAmount(false);
-      setMonthlyAmount(false);
-      setGlobalAmount(true);
-    }
+    setDaily(false);
+    setWeekly(false);
+    setMonthly(false);
+    setGlobal(true);
   };
 
-  return (
-    <StyledMain>
-      <StyledMenu>
-        <div className="item2">
-          <img src={TwitterLogo} alt="" />
-          <p>Join Us on Twitter</p>
-        </div>
-
-        <div className="item3">
-          <img src={DiscordLogo} alt="" />
-          <p>Join Us on Discord</p>
-        </div>
-
-        <div className="item4">
-          <img src={EnergyLogo} alt="" />
-          <p>Provable Fairness</p>
-        </div>
-      </StyledMenu>
-
+  const Cards = () => {
+    return (
       <div className="cards-container">
         <h1 className="Games">GAMES</h1>
         <div className="game-card mx-auto">
           <NavLink to="/rps">
             <div className="ParteImg">
-              <img src={RPSGameImg} width="400" />
-              <p>RPS &nbsp; GAMES</p>
+              {isTabletResolution ? (
+                <img src={RPSGameMobile} />
+              ) : (
+                <img src={RPSGameImg} />
+              )}
             </div>
           </NavLink>
         </div>
@@ -648,16 +481,22 @@ const Main = () => {
           <div className="game-card mx-auto">
             <NavLink to="/comingsoon">
               <div className="ParteImgAbajo">
-                <img src={ComingSoonImg} width="400" />
-                <p>Coming &nbsp; Soon</p>
+                {isTabletResolution ? (
+                  <img src={ComingSoonMobile} />
+                ) : (
+                  <img src={ComingSoonImg} />
+                )}
               </div>
             </NavLink>
           </div>
           <div className="game-card mx-auto">
             <NavLink to="/nfts">
               <div className="ParteImgAbajo">
-                <img src={NFTImg} width="400" />
-                <p>NFT'S</p>
+                {isTabletResolution ? (
+                  <img src={NFTMobile} />
+                ) : (
+                  <img src={NFTImg} />
+                )}
               </div>
             </NavLink>
           </div>
@@ -666,166 +505,201 @@ const Main = () => {
           <div className="game-card mx-auto">
             <NavLink to="/coinflip">
               <div className="ParteImgAbajo">
-                <img src={CoinflipImg} width="400" />
-                <p>Coinflip</p>
+                {isTabletResolution ? (
+                  <img src={CoinFlipMobile} />
+                ) : (
+                  <img src={CoinflipImg} />
+                )}
               </div>
             </NavLink>
           </div>
           <div className="game-card mx-auto">
             <NavLink to="/fair-play">
               <div className="ParteImgAbajo">
-                <img src={FairPlayImg} width="400" />
-                <p>Fairplay</p>
+                {isTabletResolution ? (
+                  <img src={FairPlayMobile} />
+                ) : (
+                  <img src={FairPlayImg} />
+                )}
               </div>
             </NavLink>
           </div>
         </div>
       </div>
+    );
+  };
 
-      <br></br>
-
-      {
-        isMobileResolution
-        &&
-        <ButtonGroup>
-          <Button onClick={() => !liveBets && (setLiveBets(true), setMostPlays(false), setMostAmount(false))} className={liveBets ? 'active btn-rank' : 'btn-rank'}>
+  const TableButtons = () => {
+    return (
+      <div className="botones-tabla">
+        <div className="botones-tipos">
+          <button
+            onClick={() => (
+              setLiveBets(true),
+              setMostPlays(false),
+              setMostAmount(false)
+            )}
+            disabled={liveBets}
+            className={liveBets ? "active btn-rango-left" : "btn-rango-left"}
+          >
             Live Bets
-          </Button>
-          <Button onClick={() => !mostPlays && (setLiveBets(false), setMostPlays(true), setMostAmount(false))} className={mostPlays ? 'active btn-rank' : 'btn-rank'}>
+          </button>
+          <button
+            onClick={() => (
+              setLiveBets(false),
+              setMostPlays(true),
+              setMostAmount(false),
+              day()
+            )}
+            disabled={mostPlays}
+            className={mostPlays ? "active btn-rango-center" : "btn-rango-center"}
+          >
             Most Plays
-          </Button>
-          <Button onClick={() => !mostAmount && (setLiveBets(false), setMostPlays(false), setMostAmount(true))} className={mostAmount ? 'active btn-rank' : 'btn-rank'}>
+          </button>
+          <button
+            onClick={() => (
+              setLiveBets(false),
+              setMostPlays(false),
+              setMostAmount(true),
+              day()
+            )}
+            disabled={mostAmount}
+            className={mostAmount ? "active btn-rango-right" : "btn-rango-right"}
+          >
             Most Amount
-          </Button>
-        </ButtonGroup>
-      }
-
-      <div className={isMobileResolution ? "" : "Tabla"}>
-        {mostPlays && topLeaderboards.games &&
-          <div className="tableMostPlays">
-            <div className="TitleMostPlays">
-              <p>Most Plays</p>
-            </div>
-            <div className="table_section">
-              <table>
-                <thead>
-                  <tr>
-                    <th className="FlexTh">
-                      <button onClick={() => (setDailyGame(true), setWeeklyGame(false), setMonthlyGame(false), setGlobalGame(false))} className="button-recurrence">
-                        Daily
-                      </button>
-                      <button onClick={() => (setDailyGame(false), setWeeklyGame(true), setMonthlyGame(false), setGlobalGame(false))} className="button-recurrence">
-                        Weekly
-                      </button>
-                      <button onClick={() => (setDailyGame(false), setWeeklyGame(false), setMonthlyGame(true), setGlobalGame(false))} className="button-recurrence">
-                        Monthly
-                      </button>
-                      <button onClick={() => (setDailyGame(false), setWeeklyGame(false), setMonthlyGame(false), setGlobalGame(true))} className="button-recurrence">
-                        Global
-                      </button>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {dailyGame &&
-                    <MostPlays
-                      leaderboard={topLeaderboards.games.day}
-                      isMobileResolution={isMobileResolution}
-                    />
-                  }
-                  {weeklyGame &&
-                    <MostPlays
-                      leaderboard={topLeaderboards.games.week}
-                      isMobileResolution={isMobileResolution}
-                    />
-                  }
-                  {monthlyGame &&
-                    <MostPlays
-                      leaderboard={topLeaderboards.games.month}
-                      isMobileResolution={isMobileResolution}
-                    />
-                  }
-                  {globalGame &&
-                    <MostPlays
-                      leaderboard={topLeaderboards.games.global}
-                      isMobileResolution={isMobileResolution}
-                    />
-                  }
-                </tbody>
-              </table>
-            </div>
+          </button>
+        </div>
+        {!liveBets && (
+          <div className="botones-times">
+            <button
+              onClick={day}
+              disabled={daily}
+              className={daily ? "active btn-time" : "btn-time"}
+            >
+              Daily
+            </button>
+            <button
+              onClick={week}
+              disabled={weekly}
+              className={weekly ? "active btn-time" : "btn-time"}
+            >
+              Weekly
+            </button>
+            <button
+              onClick={month}
+              disabled={monthly}
+              className={monthly ? "active btn-time" : "btn-time"}
+            >
+              Monthly
+            </button>
+            <button
+              onClick={all}
+              disabled={global}
+              className={global ? "active btn-time" : "btn-time"}
+            >
+              Global
+            </button>
           </div>
-        }
-        {liveBets &&
-          <div className="tableLiveBets">
-            <div className="TitleLiveBets">
-              <p>Live Bets</p>
-            </div>
-            <table>
-              <tbody>
-                <Games isMobileResolution={isMobileResolution} />
-              </tbody>
-            </table>
-          </div>
-        }
-        {mostAmount && topLeaderboards.amount &&
-          <div className="tableMostAmount">
-            <div className="TitleMostAmount">
-              <p>Most Amount</p>
-            </div>
-            <div className="table_section">
-              <table>
-                <thead>
-                  <tr>
-                    <th className="FlexTh">
-                      <button onClick={() => (setDailyAmount(true), setWeeklyAmount(false), setMonthlyAmount(false), setGlobalAmount(false))} className="button-recurrence">
-                        Daily
-                      </button>
-                      <button onClick={() => (setDailyAmount(false), setWeeklyAmount(true), setMonthlyAmount(false), setGlobalAmount(false))} className="button-recurrence">
-                        Weekly
-                      </button>
-                      <button onClick={() => (setDailyAmount(false), setWeeklyAmount(false), setMonthlyAmount(true), setGlobalAmount(false))} className="button-recurrence">
-                        Monthly
-                      </button>
-                      <button onClick={() => (setDailyAmount(false), setWeeklyAmount(false), setMonthlyAmount(false), setGlobalAmount(true))} className="button-recurrence">
-                        Global
-                      </button>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {dailyAmount &&
-                    <MostAmount
-                      leaderboard={topLeaderboards.amount.day}
-                      isMobileResolution={isMobileResolution}
-                    />
-                  }
-                  {weeklyAmount &&
-                    <MostAmount
-                      leaderboard={topLeaderboards.amount.week}
-                      isMobileResolution={isMobileResolution}
-                    />
-                  }
-                  {monthlyAmount &&
-                    <MostAmount
-                      leaderboard={topLeaderboards.amount.month}
-                      isMobileResolution={isMobileResolution}
-                    />
-                  }
-                  {globalAmount &&
-                    <MostAmount
-                      leaderboard={topLeaderboards.amount.global}
-                      isMobileResolution={isMobileResolution}
-                    />
-                  }
-                </tbody>
-              </table>
-            </div>
-          </div>
-        }
+        )}
       </div>
-    </StyledMain >
+    );
+  };
+
+  return (
+    <StyledMain>
+      <StyledMenu>
+        {
+          isMobileResolution
+            ? (
+              <AutoplaySlider
+                cssModule={AwesomeSliderStyles}
+                play={true}
+                cancelOnInteraction={false} // should stop playing on user interaction
+                interval={3000}
+                className="slider-wrapper"
+              >
+                <div className="item2">
+                  <img src={TwitterLogo} alt="" />
+                  <p>Join Us on Twitter</p>
+                </div>
+
+                <div className="item3">
+                  <img src={DiscordLogo} alt="" />
+                  <p>Join Us on Discord</p>
+                </div>
+
+                <div className="item4">
+                  <img src={EnergyLogo} alt="" />
+                  <p>Provable Fairness</p>
+                </div>
+              </AutoplaySlider>
+            ) : (
+              <>
+                <div className="item2">
+                  <img src={TwitterLogo} alt="" />
+                  <p>Join Us on Twitter</p>
+                </div>
+
+                <div className="item3">
+                  <img src={DiscordLogo} alt="" />
+                  <p>Join Us on Discord</p>
+                </div>
+
+                <div className="item4">
+                  <img src={EnergyLogo} alt="" />
+                  <p>Provable Fairness</p>
+                </div>
+              </>
+            )
+        }
+      </StyledMenu>
+
+      <Cards />
+
+      <TableButtons />
+
+      <div className="Tabla">
+        <div className="table-title">
+          {liveBets && <p>Live Bets</p>}
+          {mostPlays && <p>Most Plays</p>}
+          {mostAmount && <p>Most Amount</p>}
+        </div>
+        <div className="table-section">
+          {
+            liveBets
+            &&
+            <Games isMobileResolution={isMobileResolution} />
+          }
+          {
+            mostPlays && topLeaderboards
+            &&
+            <MostPlays
+              leaderboard={
+                daily && topLeaderboards.games.day ||
+                weekly && topLeaderboards.games.week ||
+                monthly && topLeaderboards.games.month ||
+                global && topLeaderboards.games.global
+              }
+              isMobileResolution={isMobileResolution}
+            />
+          }
+          {
+            mostAmount && topLeaderboards
+            &&
+            <MostAmount
+              leaderboard={
+                daily && topLeaderboards.amount.day ||
+                weekly && topLeaderboards.amount.week ||
+                monthly && topLeaderboards.amount.month ||
+                global && topLeaderboards.amount.global
+              }
+              isMobileResolution={isMobileResolution}
+            />
+          }
+        </div>
+      </div>
+    </StyledMain>
   );
-}
+};
 
 export default Main;

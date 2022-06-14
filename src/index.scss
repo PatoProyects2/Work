@@ -6,14 +6,9 @@ body::-webkit-scrollbar {
     width: 12px;
 }
 
-body::-webkit-scrollbar-track {
-    background: #1F252B;
-}
-
 body::-webkit-scrollbar-thumb {
     background-color: #6c757d;
     border-radius: 20px;
-    border: 3px solid #1F252B;
 }
 
 body {
@@ -91,9 +86,14 @@ ul {
     padding: 0.275rem 0.65rem;
 }
 
+.puntoVerde {
+    width: 15px;
+    margin-right: 10px;
+    height: 15px;
+}
+
 .play-list {
     width: 100%;
-    max-width: 600px;
     margin: auto;
 }
 
@@ -305,15 +305,39 @@ a.btn-hover {
     position: fixed;
 }
 
+.valor-matic {
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    font-size: 40px;
+    color: #f1cf61;
+    text-shadow:
+        1px 4px black,
+        0px 2px black,
+        2px 3px black,
+        1px 4px black;
+    text-shadow: 3px 0 0 black,
+        2px 4px 0 black,
+        0 2px 0 black,
+        0 -2px 0 black,
+        1px 1px black,
+        -1px -1px 0 black,
+        1px -1px 0 black,
+        -1px 1px 0 black;
+}
 
 /* Game styles */
 
 .game-gifs-wrapper {
     //row g-0 my-5 justify-content-center mt-4
-    gap: 20px;
+    gap: 10px;
     margin-top: 5rem;
     justify-content: center;
     display: flex;
+}
+
+.game-gifs-wrapper img {
+    width: 100%;
 }
 
 .DoubleOrNothing {
@@ -329,6 +353,11 @@ a.btn-hover {
     box-shadow: -3px 0px 29px -8px #40f26a;
 }
 
+
+div.center {
+    text-align: center;
+}
+
 .ConnectWallet {
     margin-top: 15px;
     margin-bottom: 50px;
@@ -338,7 +367,6 @@ a.btn-hover {
     border: none;
     border-radius: 20px;
     box-shadow: -3px 0px 29px -8px #40f26a;
-    ;
 }
 
 .ConnectWallet:hover {
@@ -349,7 +377,66 @@ a.btn-hover {
     color: white;
     border: none;
     box-shadow: -3px 0px 29px -8px #40f26a;
-    ;
+}
+
+.processing-game {
+    display: flex;
+    position: relative;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.wallet-span {
+    margin-right: 10px;
+    background-color: #232c31;
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.modal-wallet {
+    margin-top: 10px;
+}
+
+.vs {
+    top: 45%;
+    right: 40%;
+    position: absolute;
+    width: 100px;
+}
+
+.card-selected {
+    width: 300px;
+}
+
+.rotatingCard {
+    width: 300px;
+}
+
+.modal-body {
+    background-color: #3d3657;
+    border-radius: 30px;
+}
+
+@media (max-width: 700px) {
+    .processing-game {
+        gap: 10px;
+    }
+
+    .vs {
+        top: 45%;
+        right: 35%;
+        position: absolute;
+        width: 20%;
+    }
+
+    .card-selected {
+        width: 50%;
+    }
+
+    .rotatingCard {
+        width: 50%;
+    }
 }
 
 .gameAntes {
@@ -358,7 +445,7 @@ a.btn-hover {
     display: flex;
 }
 
-.gameAntes p{
+.gameAntes p {
     position: absolute;
     top: 20px;
     font-size: 20px;
@@ -371,16 +458,11 @@ a.btn-hover {
     display: flex;
 }
 
-.labelImage p{
+.labelImage p {
     position: absolute;
     top: 20px;
     font-size: 25px;
     font-weight: 600;
-}
-
-.game-gifs-wrapper p{
-    //row g-0 my-5 justify-content-center mt-4
-    position: absolute;
 }
 
 .game-container {
@@ -398,26 +480,29 @@ a.btn-hover {
         padding: 20px;
     }
 
-    .rps-img {
-        width: 90px;
-        height: 90px;
-        margin: 5px;
-        cursor: pointer;
-    }
-
-    label.amount {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin: 7px;
-    }
-
     .imgMatic {
         width: 100px;
         height: 100px;
         border-top-left-radius: 1rem;
         border-bottom-left-radius: 1rem;
         margin-right: 20px;
+    }
+
+    .rps-img {
+        width: 240px;
+        height: 240px;
+        margin: 5px;
+        cursor: pointer;
+    }
+
+    label.amount {
+        margin: 10px;
+    }
+
+    label.amount p {
+        color: white;
+        font-size: 20px;
+        font-weight: 800;
     }
 
     .MaticGeneral {
@@ -433,12 +518,7 @@ a.btn-hover {
         color: #2e2842;
         cursor: pointer;
         text-align: center;
-        border-radius: 100%;
         margin-bottom: 0px;
-        
-        &:hover {
-            
-        }
     }
 
     input[type=radio][name=hand]:checked+.imageOptions {
@@ -459,6 +539,7 @@ a.btn-hover {
     input[type=radio][name=amount]:checked+p {
         // border: 3px solid white;
         background-color: #42f16b;
+        color: #2c2640;
     }
 
     .imageOptions {
@@ -477,7 +558,7 @@ a.btn-hover {
         display: flex;
         justify-content: center;
         margin-top: 3rem;
-        gap: 50px;
+        gap: 5px;
     }
 
     .game-playing-container {
@@ -507,6 +588,7 @@ a.btn-hover {
             font-weight: 800;
             background-color: #544b77;
             position: relative;
+            border-radius: 100%;
         }
 
         label.amount p::before {
@@ -539,7 +621,7 @@ a.btn-hover {
         // }
     }
 
-    @media (min-width: 1200px) {       
+    @media (min-width: 1200px) {
 
         // .game-playing-container {           
         //     width: 30vw;
@@ -613,7 +695,7 @@ a.btn-hover {
 .responsive-card {
     @media (max-width: 1320px) {
         display: flex;
-        flex-direction: column;
+        gap: 10px;
     }
 }
 
@@ -640,7 +722,7 @@ a.btn-hover {
     -o-transition: all 0.3s ease-in-out 0s;
     -webkit-transition: all 0.3s ease-in-out 0s;
     transition: all 0.3s ease-in-out 0s;
-    border-radius: 5px;
+    border-radius: 20px;
 }
 
 .social-card {
@@ -749,7 +831,6 @@ a.btn-hover {
 
 .tbl-ranking {
     border-radius: 5px;
-    max-width: 800px;
     padding-top: 7px;
     padding-bottom: 7px;
     margin-left: auto;
@@ -767,10 +848,8 @@ a.btn-hover {
     margin-bottom: 50px;
 }
 
-@media (min-width: 1400px) {
-    .cards-container {
-        width: 70%;
-    }
+.cards-container {
+    width: 100%;
 }
 
 @media (max-width: 1399px) {
@@ -822,7 +901,7 @@ a.btn-hover {
 
 @media (max-width: 767px) {
     .cards-container {
-        width: 90%;
+        width: 100%;
     }
 
     .game-card {
@@ -930,6 +1009,15 @@ a.btn-hover {
 
 /* PROFILE */
 
+.btn-all-games {
+    border: none;
+    background-color: #3d3657;
+    color: white;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    padding: 10px;
+}
+
 .profile-img {
     width: 150px;
     height: 150px;
@@ -954,7 +1042,7 @@ a.btn-hover {
 }
 
 .profile-wrapper {
-    
+
     gap: 2rem;
 }
 
@@ -966,7 +1054,7 @@ a.btn-hover {
     padding-right: 2rem;
     padding-bottom: 1rem;
     border-bottom-left-radius: 1rem;
-    width: 50%; 
+    width: 50%;
     border: 1px solid #554b77;
 }
 
@@ -992,7 +1080,6 @@ a.btn-hover {
 .profile-chart-container {
     display: flex;
     padding: 2rem;
-    background-color: #232c31;
     border-radius: 1rem;
 }
 
@@ -1028,10 +1115,6 @@ a.btn-hover {
         flex-direction: column;
         width: 100%;
         margin-left: 0;
-        padding-left: 3rem;
-        padding-right: 3rem;
-        background-color: #232c31;
-        border-radius: 1rem;
     }
 
     .profile-data-container {
@@ -1106,9 +1189,9 @@ a.btn-hover {
     position: fixed;
     font-size: 13px;
     text-align: center;
-    top: 60px;
+    top: 70px;
     left: 0;
-    z-index: 2;
+    z-index: 3;
     margin-top: 8px;
     margin-left: 10px;
     width: 25px;
@@ -1174,6 +1257,11 @@ a.btn-hover {
 
 .content-section.expanded {
     margin-left: 375px;
+
+    @media (max-width: 1800px) {
+        margin-left: 0px;
+
+    }
 }
 
 .chat-users {
@@ -1215,14 +1303,9 @@ a.btn-hover {
     width: 12px;
 }
 
-.chat_msgs::-webkit-scrollbar-track {
-    background: #232c31;
-}
-
 .chat_msgs::-webkit-scrollbar-thumb {
     background-color: #6c757d;
     border-radius: 20px;
-    border: 3px solid #232c31;
 }
 
 .chat_msgs {
@@ -1368,11 +1451,11 @@ ul.messages {
     font-size: 14px;
 }
 
-.xp-user-badge img{
+.xp-user-badge img {
     width: 15px;
 }
 
-.badge-orange{
+.badge-orange {
     background-color: #f0985b;
     color: black;
 }
@@ -1397,7 +1480,7 @@ ul.messages {
     color: black;
 }
 
-.text-orange{
+.text-orange {
     color: #f0985b;
     font-weight: 700;
 }
@@ -1681,8 +1764,23 @@ ul.messages {
 }
 
 .rps-result-amount {
-    font-size: 1.75rem;
-    font-weight: 600;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    text-shadow:
+        1px 4px black,
+        0px 2px black,
+        2px 3px black,
+        1px 4px black;
+    text-shadow: 3px 0 0 black,
+        2px 4px 0 black,
+        0 2px 0 black,
+        0 -2px 0 black,
+        1px 1px black,
+        -1px -1px 0 black,
+        1px -1px 0 black,
+        -1px 1px 0 black;
+    font-size: 50px;
 }
 
 @media (min-width: 992px) {
@@ -1889,4 +1987,82 @@ input[type="file"]::-webkit-file-upload-button {
     width: 24px;
     display: inline-block;
     text-align: left;
+}
+
+.botones-tabla {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+
+    @media (max-width: 900px) {
+        display: grid;
+        gap: 10px;
+    }
+}
+
+.botones-tipos {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    background-color: #2c2640;
+}
+
+.btn-rango-left {
+    border-top-left-radius: 10px;
+    background-color: #2c2640;
+    border-left: 2px solid #554c77;
+    border-top: 2px solid #554c77;
+    border-bottom: 2px solid #554c77;
+    border-right: none;
+}
+
+.btn-rango-right {
+    border-top-right-radius: 10px;
+    background-color: #2c2640;
+    border: 2px solid #554c77;
+}
+
+.btn-rango-center {
+    background-color: #2c2640;
+    border-top: 2px solid #554c77;
+    border-bottom: 2px solid #554c77;
+    border-left: 2px solid #554c77;
+    border-right: none;
+}
+
+.btn-rango-left.active {
+    color: #000000;
+    background-color: #fee768 !important;
+}
+
+.btn-rango-right.active {
+    color: #000000;
+    background-color: #fee768 !important;
+}
+
+.btn-rango-center.active {
+    color: #000000;
+    background-color: #fee768 !important;
+}
+
+.botones-tabla button {
+    background-color: #2c2640;
+    color: white;
+    padding: 10px;
+}
+
+.botones-times {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-time {
+    border-top: none;
+    border-right: none;
+    border-left: none;
+    border-bottom: 2px solid #554c77;
+}
+
+.btn-time.active {
+    color: #fee768 !important;
+    border-color: #fee768 !important;
 }

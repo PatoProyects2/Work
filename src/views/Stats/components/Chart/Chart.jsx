@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { query, where, collection, getDocs } from "firebase/firestore";
-import { Dropdown, DropdownToggle, DropdownItem, DropdownMenu } from 'reactstrap'
-import { db } from '../../../../config/firesbaseConfig'
 import DataChart from './DataChart'
+import { useUserGames } from '../../../../hooks/firebase/useUserGames';
 
-const Chart = ({ userData }) => {
-  const [data, setData] = useState([]);
+const Chart = ({ clubData }) => {
+  const userGames = useUserGames(clubData.uid);
+  const [data, setData] = useState(false);
   const [data50, setData50] = useState(false);
   const [data100, setData100] = useState(false);
   const [data200, setData200] = useState(false);
@@ -17,44 +16,25 @@ const Chart = ({ userData }) => {
   }
 
   useEffect(() => {
-    Number.prototype.toFixedNumber = function (digits, base) {
-      var pow = Math.pow(base || 10, digits);
-      return Math.round(this * pow) / pow;
+    if (userGames) {
+      let games = userGames.map(user => {
+        const created = parseInt(user.createdAt)
+        const date = new Date(created * 1000);
+        const time = date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds()
+        const profit = parseFloat(user.profit.toFixed(2))
+        const top = {
+          profit: profit,
+          time: time,
+          result: user.result ? 'Win' : 'Lose'
+        }
+        return top;
+      })
+      let gameData = games.filter(function (data) {
+        return data != undefined
+      });
+      setData(gameData)
     }
-    if (userData) {
-      const q = query(collection(db, "allGames"), where("createdAt", ">", 0), where("uid", "==", userData.uid))
-      getDocs(q)
-        .then(document => {
-          const documents = document._snapshot.docChanges
-          let array = documents.map(document => {
-            const data = document.doc.data.value.mapValue.fields
-            const created = parseInt(data.createdAt.integerValue)
-            var date = new Date(created * 1000);
-            let top = undefined
-            if (data.uid.stringValue !== 'anonymous') {
-              let profit = 0
-              if (data.profit.doubleValue) {
-                profit = data.profit.doubleValue.toFixedNumber(2)
-              }
-              var createdTime = date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds()
-              top = {
-                profit: profit,
-                time: createdTime,
-                result: data.result.booleanValue ? 'Win' : 'Lose'
-              }
-            }
-            return top
-          })
-          let newArray = array.filter(function (data) {
-            return data != undefined
-          });
-          setData(newArray)
-        })
-    }
-    return () => {
-      setData([])
-    }
-  }, [userData])
+  }, [userGames])
 
 
   const last50Games = () => {
@@ -106,20 +86,18 @@ const Chart = ({ userData }) => {
 
   return (
     <>
-
-      {userData &&
-        <>
-          {userData.rps.totalGames > 0 ?
-            <>
-              {data50 && <DataChart data={data50} />}
-              {data100 && <DataChart data={data100} />}
-              {data200 && <DataChart data={data200} />}
-              {data400 && <DataChart data={data400} />}
-              {!data50 && !data100 && !data200 && !data400 && <DataChart data={data} />}
-            </>
-            :
-            <span>No games found</span>}
-        </>
+      {
+        clubData && data
+          &&
+          clubData.rps.totalGames > 0
+          ? <>
+            {data50 && <DataChart data={data50} />}
+            {data100 && <DataChart data={data100} />}
+            {data200 && <DataChart data={data200} />}
+            {data400 && <DataChart data={data400} />}
+            {!data50 && !data100 && !data200 && !data400 && <DataChart data={data} />}
+          </>
+          : <span>No games found</span>
       }
     </>
   )
