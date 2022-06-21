@@ -46,7 +46,7 @@ const ChatMessage = ({ text, uid }) => {
 
   return (
     <>
-      {userProfile && (
+      {userProfile[0] && (
         <>
           <div role="button" onClick={() => setStats(true)}>
             <li className="message d-flex align-items-center mt-2">
@@ -129,7 +129,7 @@ const ChatMessage = ({ text, uid }) => {
                   </div>
                 </div>
               </div>
-              {userProfile[0].rps.totalGames > 0 ? (
+              {userProfile[0].rps.gameWon + userProfile[0].rps.gameLoss > 0 ? (
                 <>
                   <div className="user-stats-profit">
                     <div className="d-flex flex-column align-items-center profit-border">
@@ -143,30 +143,19 @@ const ChatMessage = ({ text, uid }) => {
                     <div className="d-flex flex-column align-items-center profit-border">
                       <span className="header-row">Total Games</span>
                       <span className="content-row">
-                        {userProfile[0].rps.totalGames}
+                        {userProfile[0].rps.gameWon + userProfile[0].rps.gameLoss}
                       </span>
                     </div>
                     <div className="d-flex flex-column align-items-center profit-border">
                       <span className="header-row">Total Amount</span>
                       <span className="content-row">
-                        {"$" + userProfile[0].rps.totalAmount.toFixed(2)}
+                        {"$" + (userProfile[0].rps.amountWon + userProfile[0].rps.amountLoss).toFixed(2)}
                       </span>
                     </div>
                     <div className="d-flex flex-column align-items-center">
                       <span className="header-row">Profit</span>
-                      <span
-                        className={`content-row ${userProfile[0].rps.amountWon -
-                          userProfile[0].rps.amountLoss >
-                          0
-                          ? "profit-plus"
-                          : "profit-minus"
-                          }`}
-                      >
-                        {"$" +
-                          (
-                            userProfile[0].rps.amountWon -
-                            userProfile[0].rps.amountLoss
-                          ).toFixed(2)}
+                      <span className={`content-row ${userProfile[0].rps.amountWon - userProfile[0].rps.amountLoss > 0 ? "profit-plus" : "profit-minus"}`} >
+                        {"$" + (userProfile[0].rps.amountWon - userProfile[0].rps.amountLoss).toFixed(2)}
                       </span>
                     </div>
                   </div>
@@ -175,9 +164,7 @@ const ChatMessage = ({ text, uid }) => {
                   </div>
                 </>
               ) : (
-                <div className="user-stats-profit">
-                  <span>No games found</span>
-                </div>
+                <h4 className="text-center mt-2">No games found</h4>
               )}
             </ModalBody>
           </Modal>

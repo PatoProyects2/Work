@@ -1,8 +1,7 @@
-import { useContext, useEffect, useState } from "react";
 import { collection, doc, getDocs, query, setDoc } from "firebase/firestore";
+import { useContext, useEffect, useState } from "react";
 import AwesomeSlider from "react-awesome-slider";
 import withAutoplay from "react-awesome-slider/dist/autoplay";
-import AwesomeSliderStyles from "../../config/react-awesome-slider/src/styles";
 import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 import CoinFlipMobile from "../../assets/imgs/Home Page/coin flip banner mobile.png";
@@ -18,9 +17,10 @@ import NFTMobile from "../../assets/imgs/Home Page/nft banner mobile.png";
 import RPSGameMobile from "../../assets/imgs/Home Page/RPS_banner_mobile.png";
 import TwitterLogo from "../../assets/imgs/Home Page/twitterIcon.png";
 import ComingSoonMobile from "../../assets/imgs/Home Page/wip banner mobile.png";
-import { db } from "../../config/firesbaseConfig";
-import { Context } from "../../context/Context";
 import Games from "../../components/Games/Games";
+import { db } from "../../config/firesbaseConfig";
+import AwesomeSliderStyles from "../../config/react-awesome-slider/src/styles";
+import { Context } from "../../context/Context";
 import { useMatchMedia } from "../../hooks/useMatchMedia";
 import MostAmount from "./components/LeaderBoards/MostAmount";
 import MostPlays from "./components/LeaderBoards/MostPlays";
@@ -252,7 +252,7 @@ const Main = () => {
         time: unixTime,
       });
     }
-  }, [discordId])
+  }, [discordId]);
 
   useEffect(() => {
     const readLeaderboard = async () => {
@@ -360,7 +360,7 @@ const Main = () => {
           photo: user.photo,
           name: user.name,
           game: users.length,
-          amount: amount
+          amount: amount,
         };
         return top;
       });
@@ -375,7 +375,7 @@ const Main = () => {
           photo: user.photo,
           name: user.name,
           game: users.length,
-          amount: amount
+          amount: amount,
         };
         return top;
       });
@@ -390,7 +390,7 @@ const Main = () => {
           photo: user.photo,
           name: user.name,
           game: users.length,
-          amount: amount
+          amount: amount,
         };
         return top;
       });
@@ -405,7 +405,7 @@ const Main = () => {
           photo: user.photo,
           name: user.name,
           game: users.length,
-          amount: amount
+          amount: amount,
         };
         return top;
       });
@@ -462,8 +462,131 @@ const Main = () => {
     setGlobal(true);
   };
 
-  const Cards = () => {
+  const TableButtons = () => {
     return (
+      <div className="botones-tabla">
+        <div className="botones-tipos">
+          <button
+            onClick={() => (
+              setLiveBets(true), setMostPlays(false), setMostAmount(false)
+            )}
+            disabled={liveBets}
+            className={liveBets ? "active btn-rango-left" : "btn-rango-left"}
+          >
+            Live Bets
+          </button>
+          <button
+            onClick={() => (
+              setLiveBets(false),
+              setMostPlays(true),
+              setMostAmount(false),
+              day()
+            )}
+            disabled={mostPlays}
+            className={
+              mostPlays ? "active btn-rango-center" : "btn-rango-center"
+            }
+          >
+            Most Plays
+          </button>
+          <button
+            onClick={() => (
+              setLiveBets(false),
+              setMostPlays(false),
+              setMostAmount(true),
+              day()
+            )}
+            disabled={mostAmount}
+            className={
+              mostAmount ? "active btn-rango-right" : "btn-rango-right"
+            }
+          >
+            Most Amount
+          </button>
+        </div>
+        
+        {!liveBets && (
+          <div className="botones-times">
+            <button
+              onClick={day}
+              disabled={daily}
+              className={daily ? "active btn-time" : "btn-time"}
+            >
+              Daily
+            </button>
+            <button
+              onClick={week}
+              disabled={weekly}
+              className={weekly ? "active btn-time" : "btn-time"}
+            >
+              Weekly
+            </button>
+            <button
+              onClick={month}
+              disabled={monthly}
+              className={monthly ? "active btn-time" : "btn-time"}
+            >
+              Monthly
+            </button>
+            <button
+              onClick={all}
+              disabled={global}
+              className={global ? "active btn-time" : "btn-time"}
+            >
+              Global
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  return (
+    <StyledMain>
+      <StyledMenu>
+        {isMobileResolution ? (
+          <AutoplaySlider
+            cssModule={AwesomeSliderStyles}
+            play={true}
+            cancelOnInteraction={false} // should stop playing on user interaction
+            interval={3000}
+            className="slider-wrapper"
+          >
+            <div className="item2">
+              <img src={TwitterLogo} alt="" />
+              <p>Join Us on Twitter</p>
+            </div>
+
+            <div className="item3">
+              <img src={DiscordLogo} alt="" />
+              <p>Join Us on Discord</p>
+            </div>
+
+            <div className="item4">
+              <img src={EnergyLogo} alt="" />
+              <p>Provable Fairness</p>
+            </div>
+          </AutoplaySlider>
+        ) : (
+          <>
+            <div className="item2">
+              <img src={TwitterLogo} alt="" />
+              <p>Join Us on Twitter</p>
+            </div>
+
+            <div className="item3">
+              <img src={DiscordLogo} alt="" />
+              <p>Join Us on Discord</p>
+            </div>
+
+            <div className="item4">
+              <img src={EnergyLogo} alt="" />
+              <p>Provable Fairness</p>
+            </div>
+          </>
+        )}
+      </StyledMenu>
+
       <div className="cards-container">
         <h1 className="Games">GAMES</h1>
         <div className="game-card mx-auto">
@@ -526,135 +649,6 @@ const Main = () => {
           </div>
         </div>
       </div>
-    );
-  };
-
-  const TableButtons = () => {
-    return (
-      <div className="botones-tabla">
-        <div className="botones-tipos">
-          <button
-            onClick={() => (
-              setLiveBets(true),
-              setMostPlays(false),
-              setMostAmount(false)
-            )}
-            disabled={liveBets}
-            className={liveBets ? "active btn-rango-left" : "btn-rango-left"}
-          >
-            Live Bets
-          </button>
-          <button
-            onClick={() => (
-              setLiveBets(false),
-              setMostPlays(true),
-              setMostAmount(false),
-              day()
-            )}
-            disabled={mostPlays}
-            className={mostPlays ? "active btn-rango-center" : "btn-rango-center"}
-          >
-            Most Plays
-          </button>
-          <button
-            onClick={() => (
-              setLiveBets(false),
-              setMostPlays(false),
-              setMostAmount(true),
-              day()
-            )}
-            disabled={mostAmount}
-            className={mostAmount ? "active btn-rango-right" : "btn-rango-right"}
-          >
-            Most Amount
-          </button>
-        </div>
-        {!liveBets && (
-          <div className="botones-times">
-            <button
-              onClick={day}
-              disabled={daily}
-              className={daily ? "active btn-time" : "btn-time"}
-            >
-              Daily
-            </button>
-            <button
-              onClick={week}
-              disabled={weekly}
-              className={weekly ? "active btn-time" : "btn-time"}
-            >
-              Weekly
-            </button>
-            <button
-              onClick={month}
-              disabled={monthly}
-              className={monthly ? "active btn-time" : "btn-time"}
-            >
-              Monthly
-            </button>
-            <button
-              onClick={all}
-              disabled={global}
-              className={global ? "active btn-time" : "btn-time"}
-            >
-              Global
-            </button>
-          </div>
-        )}
-      </div>
-    );
-  };
-
-  return (
-    <StyledMain>
-      <StyledMenu>
-        {
-          isMobileResolution
-            ? (
-              <AutoplaySlider
-                cssModule={AwesomeSliderStyles}
-                play={true}
-                cancelOnInteraction={false} // should stop playing on user interaction
-                interval={3000}
-                className="slider-wrapper"
-              >
-                <div className="item2">
-                  <img src={TwitterLogo} alt="" />
-                  <p>Join Us on Twitter</p>
-                </div>
-
-                <div className="item3">
-                  <img src={DiscordLogo} alt="" />
-                  <p>Join Us on Discord</p>
-                </div>
-
-                <div className="item4">
-                  <img src={EnergyLogo} alt="" />
-                  <p>Provable Fairness</p>
-                </div>
-              </AutoplaySlider>
-            ) : (
-              <>
-                <div className="item2">
-                  <img src={TwitterLogo} alt="" />
-                  <p>Join Us on Twitter</p>
-                </div>
-
-                <div className="item3">
-                  <img src={DiscordLogo} alt="" />
-                  <p>Join Us on Discord</p>
-                </div>
-
-                <div className="item4">
-                  <img src={EnergyLogo} alt="" />
-                  <p>Provable Fairness</p>
-                </div>
-              </>
-            )
-        }
-      </StyledMenu>
-
-      <Cards />
 
       <TableButtons />
 
@@ -665,37 +659,29 @@ const Main = () => {
           {mostAmount && <p>Most Amount</p>}
         </div>
         <div className="table-section">
-          {
-            liveBets
-            &&
-            <Games isMobileResolution={isMobileResolution} />
-          }
-          {
-            mostPlays && topLeaderboards
-            &&
+          {liveBets && <Games isMobileResolution={isMobileResolution} />}
+          {mostPlays && topLeaderboards && (
             <MostPlays
               leaderboard={
-                daily && topLeaderboards.games.day ||
-                weekly && topLeaderboards.games.week ||
-                monthly && topLeaderboards.games.month ||
-                global && topLeaderboards.games.global
+                (daily && topLeaderboards.games.day) ||
+                (weekly && topLeaderboards.games.week) ||
+                (monthly && topLeaderboards.games.month) ||
+                (global && topLeaderboards.games.global)
               }
               isMobileResolution={isMobileResolution}
             />
-          }
-          {
-            mostAmount && topLeaderboards
-            &&
+          )}
+          {mostAmount && topLeaderboards && (
             <MostAmount
               leaderboard={
-                daily && topLeaderboards.amount.day ||
-                weekly && topLeaderboards.amount.week ||
-                monthly && topLeaderboards.amount.month ||
-                global && topLeaderboards.amount.global
+                (daily && topLeaderboards.amount.day) ||
+                (weekly && topLeaderboards.amount.week) ||
+                (monthly && topLeaderboards.amount.month) ||
+                (global && topLeaderboards.amount.global)
               }
               isMobileResolution={isMobileResolution}
             />
-          }
+          )}
         </div>
       </div>
     </StyledMain>

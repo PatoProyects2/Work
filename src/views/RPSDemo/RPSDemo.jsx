@@ -9,9 +9,9 @@ import { Context } from "../../context/Context";
 import {
   Amounts,
   Hands,
+  Play,
   Result,
   RpsImage,
-  Play
 } from "../RPS/components/Modals/Modals";
 
 const RPSDemo = () => {
@@ -75,13 +75,13 @@ const RPSDemo = () => {
       toast.error("Select your betting amount");
       return false;
     }
-    const userStreak = gameResult.userStreak + 1
-    const userBlock = 0
-    const userResult = true
+    const userStreak = gameResult.userStreak + 1;
+    const userBlock = 0;
+    const userResult = true;
     setPlaying(true);
     setAnimation(true);
     setGameResult({ userResult, userStreak, userBlock });
-    setSave(true)
+    setSave(true);
   };
 
   const showResult = async () => {
@@ -152,67 +152,60 @@ const RPSDemo = () => {
 
   return (
     <article>
-      {
-        active
-          ?
-          <div className="game-container">
-            {playing ? (
-              <div className="game-playing-container">
-                <Play
-                  save={save}
-                  animation={animation}
-                  userhand={userhand}
-                  useramount={useramount}
-                  showResult={showResult}
-                />
-                <Result
-                  save={save}
-                  result={result}
-                  userhand={userhand}
-                  useramount={useramount}
-                  gameResult={gameResult}
-                  backGame={backGame}
-                />
-              </div>
-            ) : (
-              <>
-                <Hands
-                  handleInputChange={handleInputChange}
-                  randomItem={randomItem}
-                />
-                <Amounts handleInputChange={handleInputChange} />
-                <button
-                  onClick={doubleOrNothing}
-                  className="DoubleOrNothing"
-                  disabled={playing}
-                >
-                  DOUBLE OR NOTHING
-                </button>
-              </>
-            )}
-          </div>
-          :
-          <>
-            <RpsImage />
-            <p className="text-center mt-3">
-              <label className="switch">
-                <input id="age" type="checkbox"></input>&nbsp;
-                <span className="slider round"></span>
-              </label>
-              &nbsp; I confirm that I am at least 18 years old
-
-            </p>
-            <div className="center">
+      {active ? (
+        <div className="game-container">
+          {playing ? (
+            <div className="game-playing-container">
+              <Play
+                save={save}
+                animation={animation}
+                userhand={userhand}
+                useramount={useramount}
+                showResult={showResult}
+              />
+              <Result
+                save={save}
+                result={result}
+                userhand={userhand}
+                useramount={useramount}
+                gameResult={gameResult}
+                backGame={backGame}
+              />
+            </div>
+          ) : (
+            <>
+              <Hands
+                handleInputChange={handleInputChange}
+                randomItem={randomItem}
+              />
+              <Amounts handleInputChange={handleInputChange} />
               <button
-                className="ConnectWallet btn-lg"
-                onClick={openGame}
+                onClick={doubleOrNothing}
+                className="DoubleOrNothing"
+                disabled={playing}
               >
                 DOUBLE OR NOTHING
               </button>
-            </div>
-          </>
-      }
-
+            </>
+          )}
+        </div>
+      ) : (
+        <>
+          <RpsImage />
+          <p className="text-center mt-3">
+            <label className="switch">
+              <input id="age" type="checkbox"></input>&nbsp;
+              <span className="slider round"></span>
+            </label>
+            &nbsp; I confirm that I am at least 18 years old
+          </p>
+          <div className="center">
+            <button className="DoubleOrNothing" onClick={openGame}>
+              DOUBLE OR NOTHING
+            </button>
+          </div>
+        </>
+      )}
     </article>
   );
 };

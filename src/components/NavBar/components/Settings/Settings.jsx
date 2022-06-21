@@ -44,10 +44,10 @@ const Settings = () => {
               onClick={toggleModal}
             ></button>
           </div>
-          <h4 className="text-center">Settings</h4>
-          <h6>Global</h6>
+          <h4 className="text-center effect-text-hiper">Settings</h4>
+          <h6 className="effect-text">Global</h6>
           <FormGroup className="pt-3 text-center">
-            <span className="d-block mb-3">Sounds</span>
+            <span className="d-block mb-3 effect-text-normal">Sounds</span>
             <label className="switch">
               <input
                 readOnly
@@ -64,7 +64,9 @@ const Settings = () => {
             </label>
           </FormGroup>
           <FormGroup className="pt-3 text-center">
-            <span className="d-block mb-3">Transaction speed (GWEI)</span>
+            <span className="d-block mb-3 effect-text-normal ">
+              Transaction speed (GWEI)
+            </span>
             {gasTrack && (
               <ButtonGroup>
                 <Button
@@ -113,9 +115,11 @@ const Settings = () => {
               </ButtonGroup>
             )}
           </FormGroup>
-          <h6>Chat</h6>
+          <h6 className="effect-text">Chat</h6>
           <FormGroup className="pt-3 text-center">
-            <span className="d-block mb-3">Chat Message History</span>
+            <span className="effect-text-normal d-block mb-3">
+              Chat Message History
+            </span>
             <ButtonGroup>
               <Button
                 type="button"

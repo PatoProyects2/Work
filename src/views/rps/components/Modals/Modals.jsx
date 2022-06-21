@@ -1,4 +1,5 @@
-import { Progress } from "reactstrap";
+import { Spinner } from "react-bootstrap";
+import { Progress, Table } from "reactstrap";
 import PaperLose from "../../../../assets/imgs/animations/PaperLose.gif";
 import PaperWin from "../../../../assets/imgs/animations/PaperWin.gif";
 import RockLose from "../../../../assets/imgs/animations/RockLose.gif";
@@ -11,6 +12,9 @@ import imageScissors from "../../../../assets/imgs/Bet Screen/imageScissors.png"
 import matic from "../../../../assets/imgs/Bet Screen/matic.png";
 import rotatingCard from "../../../../assets/imgs/Bet Screen/RotatingCard.gif";
 import imageVS from "../../../../assets/imgs/Bet Screen/VStext.png";
+import bannerLose from "../../../../assets/imgs/Win Lose Screens/bannerLose.png";
+import bannerWin from "../../../../assets/imgs/Win Lose Screens/bannerWin.png";
+import Star from "../../../../assets/imgs/Win Lose Screens/star.png";
 
 export const RpsImage = () => {
   return (
@@ -362,26 +366,49 @@ export const Play = (props) => {
           <img className="vs" src={imageVS} />
           <img className="rotatingCard" src={rotatingCard} />
         </div>
-        {props.save ? (
-          <>
-            <span className="processing-title">{props.gameLog}</span>
-          </>
-        ) : (
-          <div className="processing-title">
-            {props.gameLog}
-            <span className="loading-dot">{props.dotLog}</span>
-          </div>
-        )}
         <h3>
           <span>Playing {props.userhand} for</span>
           <br />
           <span className="valor-matic">{props.useramount + " MATIC"}</span>
         </h3>
-        {props.save && (
-          <button className="DoubleOrNothing" onClick={props.showResult}>
-            SHOW RESULT
-          </button>
-        )}
+        <div>
+          {props.save ? (
+            <button className="DoubleOrNothing" onClick={props.showResult}>
+              SHOW RESULT
+            </button>
+          ) : (
+            <div className="playing">
+              <button disabled>
+                {props.gameLog}
+                &nbsp;&nbsp;
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                />
+                {/* <span className="loading-dot">{props.dotLog}</span> */}
+              </button>
+              <div>
+                <Table responsive borderless size="lg">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Hand</th>
+                      <th>Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <td>{props.gameId ? props.gameId : "-"}</td>
+                    <td>{props.userhand}</td>
+                    <td>{props.useramount}</td>
+                  </tbody>
+                </Table>
+              </div>
+            </div>
+          )}
+        </div>
         {props.busyNetwork && (
           <>
             <div className="processing-title">
@@ -400,72 +427,93 @@ export const Result = (props) => {
   return (
     props.result && (
       <>
-        {props.gameResult.userStreak > 1 && (
-          <div className="my-3">
-            <h3>Congrats!</h3>
-            <h3>
-              {"You're on a " + props.gameResult.userStreak + " win streak"}
-            </h3>
-          </div>
-        )}
-        {props.userhand === "ROCK" && props.gameResult.userResult && (
-          <div className="anim-win-lose">
-            <img className="result-rps-image" src={RockWin} alt="Rock Wins" />
-          </div>
-        )}
-        {props.userhand === "PAPER" && props.gameResult.userResulte && (
-          <div className="anim-win-lose">
-            <img className="result-rps-image" src={PaperWin} alt="Paper Wins" />
-          </div>
-        )}
-        {props.userhand === "SCISSORS" && props.gameResult.userResult && (
-          <div className="anim-win-lose">
-            <img
-              className="result-rps-image"
-              src={ScissorsWin}
-              alt="Scissors Wins"
-            />
-          </div>
-        )}
-        {props.userhand === "ROCK" && !props.gameResult.userResult && (
-          <div className="anim-win-lose">
-            <img className="result-rps-image" src={RockLose} alt="Rock Loses" />
-          </div>
-        )}
-        {props.userhand === "PAPER" && !props.gameResult.userResult && (
-          <div className="anim-win-lose">
-            <img
-              className="result-rps-image"
-              src={PaperLose}
-              alt="Paper Loses"
-            />
-          </div>
-        )}
-        {props.userhand === "SCISSORS" && !props.gameResult.userResult && (
-          <div className="anim-win-lose">
-            <img
-              className="result-rps-image"
-              src={ScissorsLose}
-              alt="Scissors Loses"
-            />
-          </div>
-        )}
+        <div className="relative-result-img">
+          {props.userhand === "ROCK" && props.gameResult.userResult && (
+            <div className="anim-win-lose">
+              <img className="result-rps-image" src={RockWin} alt="Rock Wins" />
+            </div>
+          )}
+          {props.userhand === "PAPER" && props.gameResult.userResult && (
+            <div className="anim-win-lose">
+              <img
+                className="result-rps-image"
+                src={PaperWin}
+                alt="Paper Wins"
+              />
+            </div>
+          )}
+          {props.userhand === "SCISSORS" && props.gameResult.userResult && (
+            <div className="anim-win-lose">
+              <img
+                className="result-rps-image"
+                src={ScissorsWin}
+                alt="Scissors Wins"
+              />
+            </div>
+          )}
+          {props.userhand === "ROCK" && !props.gameResult.userResult && (
+            <div className="anim-win-lose">
+              <img
+                className="result-rps-image"
+                src={RockLose}
+                alt="Rock Loses"
+              />
+            </div>
+          )}
+          {props.userhand === "PAPER" && !props.gameResult.userResult && (
+            <div className="anim-win-lose">
+              <img
+                className="result-rps-image"
+                src={PaperLose}
+                alt="Paper Loses"
+              />
+            </div>
+          )}
+          {props.userhand === "SCISSORS" && !props.gameResult.userResult && (
+            <div className="anim-win-lose">
+              <img
+                className="result-rps-image"
+                src={ScissorsLose}
+                alt="Scissors Loses"
+              />
+            </div>
+          )}
+          <img
+            className="absolute-image"
+            src={props.gameResult.userResult ? bannerWin : bannerLose}
+          />
+        </div>
         <div className="d-flex flex-column justify-content-between mx-auto mt-4">
           <div className="d-flex flex-column justify-content-center">
             <span className="rps-result-title">
-              {props.gameResult.userResult ? " You Won " : " You Lost "}
+              {props.gameResult.userResult ? (
+                <p className="won-game">You Won</p>
+              ) : (
+                <p className="lost-game">You Lost</p>
+              )}
             </span>
-            <span
-              className="rps-result-amount"
-              style={{
-                color: props.gameResult.userResult ? "#f1cf61" : "crimson",
-              }}
-            >
-              {props.gameResult.userResult
-                ? props.useramount * 2
-                : props.useramount}{" "}
-              MATIC
-            </span>
+            <div className="resultado-flex">
+              {!props.gameResult.userResult
+                &&
+                <img src={Star} />
+              }
+              <span
+                className="rps-result-amount"
+                style={{
+                  color: props.gameResult.userResult ? "#f1cf61" : "crimson",
+                }}
+              >
+                {props.gameResult.userResult
+                  ? props.useramount * 2
+                  : props.useramount
+                }
+                {" MATIC"}
+              </span>
+              {!props.gameResult.userResult
+                &&
+                <img src={Star} />
+              }
+            </div>
           </div>
           <div className="d-flex justify-content-center">
             <div className="d-flex flex-column align-items-center">
@@ -475,13 +523,9 @@ export const Result = (props) => {
                     POLYGON IS PROCESSING YOUR GAME
                     <span className="loading-dot">{props.dotLog}</span>
                   </div>
-                  <button className="btn-hover btn-loading" disabled={true}>
+                  <button className="btn-hover btn-loading" disabled>
                     PLEASE WAIT
-                    <Progress
-                      value={100}
-                      animated={true}
-                      color="dark"
-                    ></Progress>
+                    <Progress value={100} color="dark" animated></Progress>
                   </button>
                 </>
               ) : (

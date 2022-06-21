@@ -1,19 +1,14 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import {
-  Nav,
-  Navbar,
-  Offcanvas,
-  OffcanvasBody,
-  OffcanvasHeader,
-} from "reactstrap";
+import { Nav, Navbar, Offcanvas, OffcanvasBody } from "reactstrap";
 import styled from "styled-components";
 import RPSLogo from "../../assets/imgs/Home Page/logo.png";
 import MenuIcon from "../../assets/imgs/Home Page/menuIcon.png";
-import OnlineUsers from "./components/OnlineUsers/OnlineUsers";
+import CloseButton from "../../assets/imgs/Users Stats Screen/exitIcon.png";
 import { useMatchMedia } from "../../hooks/useMatchMedia";
 import Profile from "../Profile/Profile";
 import Balance from "./components/Balance/Balance";
+import OnlineUsers from "./components/OnlineUsers/OnlineUsers";
 import Settings from "./components/Settings/Settings";
 
 const StyledNavbar = styled.div`
@@ -23,6 +18,7 @@ const StyledNavbar = styled.div`
     background-color: #3d3657;
     padding-top: 10px;
     padding-bottom: 10px;
+    z-index: 9999;
   }
 
   .Menu {
@@ -44,12 +40,13 @@ const StyledNavbar = styled.div`
     font-size: 20px;
     margin-top: 0;
     margin-bottom: 0;
+    margin-right: 1rem;
   }
 `;
 
 const NavBar = () => {
   const [showOffcanvas, setShowOffCanvas] = useState(false);
-  const isMobileResolution = useMatchMedia("(max-width:768px)", false);
+  const isMobileResolution = useMatchMedia("(max-width:1000px)", false);
 
   return (
     <StyledNavbar>
@@ -57,9 +54,9 @@ const NavBar = () => {
         <div className="Menu d-flex">
           <img
             role="button"
-            onClick={() => setShowOffCanvas(true)}
+            onClick={() => showOffcanvas ? setShowOffCanvas(false) : setShowOffCanvas(true)}
             className="BotonMenu"
-            src={MenuIcon}
+            src={showOffcanvas ? CloseButton : MenuIcon}
             alt=""
           />
           <img className="RPSLogo" src={RPSLogo} alt="" />
@@ -67,17 +64,20 @@ const NavBar = () => {
           <NavLink className="" to="/">
             <h1 className="GamesText">Games Club</h1>
           </NavLink>
-          <div className="active-users-navbar">{<OnlineUsers />}</div>
+          {!isMobileResolution
+            &&
+            <OnlineUsers />
+          }
+
         </div>
-
-        <Balance isMobileResolution={isMobileResolution} />
-
-        {!isMobileResolution && (
-          <div className="d-flex align-items-center gap-2">
-            <Settings />
-            <Profile />
-          </div>
-        )}
+        {!isMobileResolution
+          &&
+          <Balance isMobileResolution={isMobileResolution} />
+        }
+        <div className="d-flex align-items-center gap-2">
+          <Settings />
+          <Profile />
+        </div>
 
         <Offcanvas
           direction="start"
@@ -85,18 +85,13 @@ const NavBar = () => {
           className="oc-menu"
           toggle={() => setShowOffCanvas(false)}
         >
-          <OffcanvasHeader
-            className="oc-header"
-            toggle={() => setShowOffCanvas(false)}
-          ></OffcanvasHeader>
-
           <OffcanvasBody className="d-flex flex-column">
             <Nav className="d-flex flex-column flex-grow-1">
               <NavLink
                 onClick={() => setShowOffCanvas(false)}
                 className={({ isActive }) =>
-                  "nav-item nav-link nav-link-primary" +
-                  (isActive ? " active" : "")
+                  "nav-item nav-link nav-link-primary d-flex align-items-center" +
+                  (isActive && " active")
                 }
                 to="/"
               >
@@ -116,8 +111,8 @@ const NavBar = () => {
                 end
                 onClick={() => setShowOffCanvas(false)}
                 className={({ isActive }) =>
-                  "nav-item nav-link nav-link-primary" +
-                  (isActive ? " active" : "")
+                  "nav-item nav-link nav-link-primary d-flex align-items-center" +
+                  (isActive && " active")
                 }
                 to="/rps"
               >
@@ -141,8 +136,8 @@ const NavBar = () => {
               <NavLink
                 onClick={() => setShowOffCanvas(false)}
                 className={({ isActive }) =>
-                  "nav-item nav-link nav-link-primary" +
-                  (isActive ? " active" : "")
+                  "nav-item nav-link nav-link-primary d-flex align-items-center" +
+                  (isActive && " active")
                 }
                 to="/nfts"
               >
@@ -161,8 +156,8 @@ const NavBar = () => {
               <NavLink
                 onClick={() => setShowOffCanvas(false)}
                 className={({ isActive }) =>
-                  "nav-item nav-link nav-link-primary" +
-                  (isActive ? " active" : "")
+                  "nav-item nav-link nav-link-primary d-flex align-items-center" +
+                  (isActive && " active")
                 }
                 to="/fair-play"
               >
@@ -204,7 +199,7 @@ const NavBar = () => {
                 onClick={() => setShowOffCanvas(false)}
                 className={({ isActive }) =>
                   "nav-item nav-link nav-link-primary d-flex align-items-center" +
-                  (isActive ? " active" : "")
+                  (isActive && " active")
                 }
                 to="/demo"
               >
@@ -280,51 +275,18 @@ const NavBar = () => {
                 &nbsp; Roadmap
               </a>
             </Nav>
-            <div className="active-users-offcanvas">{<OnlineUsers />}</div>
-            {isMobileResolution && (
-              <div className="d-flex justify-content-center mt-3">
-                <Profile showNavbar={setShowOffCanvas} />
-              </div>
-            )}
 
-            <div className="d-flex flex-row gap-2 justify-content-center mt-3">
-              <a
-                href="https://twitter.com/RPSGamesClub"
-                className="twitter-icon"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <i className="fab fa-2x fa-twitter"></i>
-              </a>
-              <a
-                href="https://discord.gg/Ygk58VR4"
-                className="discord-icon"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <i className="fab fa-2x fa-discord"></i>
-              </a>
-            </div>
-            <div className="nav-items-secondary">
-              <NavLink
-                onClick={() => setShowOffCanvas(false)}
-                className={({ isActive }) =>
-                  "nav-item-secondary" + (isActive ? " active" : "")
-                }
-                to="/refund-policy"
-              >
-                Refund Policy
-              </NavLink>
-              <NavLink
-                onClick={() => setShowOffCanvas(false)}
-                className={({ isActive }) =>
-                  "nav-item-secondary" + (isActive ? " active" : "")
-                }
-                to="/terms"
-              >
-                Terms & Conditions
-              </NavLink>
-            </div>
+            {isMobileResolution
+              &&
+              <>
+                <div className="d-flex justify-content-center mt-3">
+                  <OnlineUsers />
+                </div>
+                <div className="d-flex justify-content-center mt-3">
+                  <Balance isMobileResolution={isMobileResolution} />
+                </div>
+              </>
+            }
           </OffcanvasBody>
         </Offcanvas>
       </Navbar>

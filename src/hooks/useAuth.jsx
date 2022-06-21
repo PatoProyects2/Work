@@ -8,7 +8,6 @@ import { Context } from "../context/Context"
 export const useAuth = () => {
     const { setDiscordId } = useContext(Context)
     const [searchParams, setSearchParams] = useSearchParams();
-    const [user, setUser] = useState(false);
 
     const clientId = process.env.REACT_APP_DISCORD_CLIENTID
     const clientSecret = process.env.REACT_APP_DISCORD_CLIENTSECRET
@@ -33,7 +32,7 @@ export const useAuth = () => {
                     client_secret: clientSecret,
                     code: url,
                     grant_type: 'authorization_code',
-                    redirect_uri: 'http://localhost:3000/',
+                    redirect_uri: 'https://games-club-build.vercel.app/',
                     scope: 'identify email',
                 }),
                 headers: {
@@ -87,13 +86,10 @@ export const useAuth = () => {
                                     gameLoss: 0,
                                     amountWon: 0,
                                     amountLoss: 0,
-                                    totalGames: 0,
-                                    totalAmount: 0,
                                     lastGameBlock: 0
                                 }
                             }
                             setDoc(doc(db, "clubUsers", userData.id), arrayData)
-
                         }
                     })
                     .catch(console.log)
@@ -109,41 +105,37 @@ export const useAuth = () => {
         if (localToken !== null && localUser !== null) {
             var decrypted = CryptoJS.AES.decrypt(localToken, process.env.REACT_APP_SECRET_KEY);
             var token = decrypted.toString(CryptoJS.enc.Utf8);
-            let userData = false
-            try {
-                const userResult = await fetch('https://discord.com/api/users/@me', {
-                    headers: {
-                        authorization: `Bearer ${token}`,
-                    },
-                });
-                userData = await userResult.json()
-            }
-            catch (err) {
-                window.localStorage.removeItem('token')
-                window.localStorage.removeItem('user')
-                window.localStorage.removeItem('level')
-                window.location.reload()
-            }
-            if (userData !== false) {
+            const userResult = await fetch('https://discord.com/api/users/@me', {
+                headers: {
+                    authorization: `Bearer ${token}`,
+                },
+            });
+            const userData = await userResult.json()
+            if (userData) {
                 setDiscordId(userData.id)
-                const arrayUpdate = {
-                    name: userData.username,
-                    photo: userData.avatar ? `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}` : 'https://firebasestorage.googleapis.com/v0/b/games-club-dce4d.appspot.com/o/ClubLogo.png?alt=media&token=5dd64484-c99f-4ce9-a06b-0a3ee112b37b',
+                const document = await getDoc(doc(db, "clubUsers", userData.id))
+                const docData = document.data()
+                if (docData) {
+                    const avatar = userData.avatar ? `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}` : 'https://firebasestorage.googleapis.com/v0/b/games-club-dce4d.appspot.com/o/ClubLogo.png?alt=media&token=5dd64484-c99f-4ce9-a06b-0a3ee112b37b'
+                    const arrayUpdate = {
+                        name: userData.username,
+                        photo: avatar,
+                    }
+                    updateDoc(doc(db, "clubUsers", userData.id), arrayUpdate)
+                    window.localStorage.setItem('user', JSON.stringify({ id: userData.id, name: userData.username, photo: avatar }))
+                    window.localStorage.setItem('level', docData.level)
+                } else {
+                    window.localStorage.removeItem('token')
+                    window.localStorage.removeItem('user')
+                    window.localStorage.removeItem('level')
+                    window.location.reload()
                 }
-                updateDoc(doc(db, "clubUsers", userData.id), arrayUpdate)
-                    .then(() => {
-                        getDoc(doc(db, "clubUsers", userData.id))
-                            .then(document => {
-                                const data = document.data()
-                                if (data) {
-                                    window.localStorage.setItem('user', JSON.stringify({ id: data.id, name: data.name, photo: data.photo }))
-                                    window.localStorage.setItem('level', data.level)
-                                }
-                            })
-                    })
             }
         }
     }
 
-    return { user }
+    return (
+        <>
+        </>
+    )
 };

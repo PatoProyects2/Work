@@ -85,20 +85,14 @@ const Chart = ({ clubData }) => {
   }
 
   return (
+    clubData && data
+    &&
     <>
-      {
-        clubData && data
-          &&
-          clubData.rps.totalGames > 0
-          ? <>
-            {data50 && <DataChart data={data50} />}
-            {data100 && <DataChart data={data100} />}
-            {data200 && <DataChart data={data200} />}
-            {data400 && <DataChart data={data400} />}
-            {!data50 && !data100 && !data200 && !data400 && <DataChart data={data} />}
-          </>
-          : <span>No games found</span>
-      }
+      {data50 && <DataChart data={data50} />}
+      {data100 && <DataChart data={data100} />}
+      {data200 && <DataChart data={data200} />}
+      {data400 && <DataChart data={data400} />}
+      {!data50 && !data100 && !data200 && !data400 && <DataChart data={data} />}
     </>
   )
 }

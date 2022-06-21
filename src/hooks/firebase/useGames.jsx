@@ -13,7 +13,9 @@ export const useGames = () => {
             const q = query(collection(db, "allGames"), where("uid", "==", discordId))
             const unsub = onSnapshot(q, async (doc) => {
                 const games = doc.docs.map(document => document.data())
-                setMyGames(games)
+                if (games.length > 0) {
+                    setMyGames(games)
+                }
             });
             return () => unsub()
         }

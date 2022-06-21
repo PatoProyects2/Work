@@ -1,7 +1,7 @@
 /* DARK THEME */
 html,
 body {
-  background: #232c31 !important;
+  background: #2c2640 !important;
 }
 
 .toast-modal {
@@ -10,7 +10,7 @@ body {
 }
 
 .toast-close {
-  color: #ffb74d !important;
+  color: #ffdb5b !important;
 }
 
 .toast-close:hover {
@@ -18,11 +18,11 @@ body {
 }
 
 .content-link {
-  color: #ffb74d !important;
+  color: #ffdb5b !important;
 }
 
 .content-link:hover {
-  color: #ffb74d !important;
+  color: #ffdb5b !important;
   opacity: 0.8;
 }
 
@@ -101,7 +101,7 @@ body {
 }
 
 .btn-recurrence.active {
-  color: #ffb74d !important;
+  color: #ffdb5b !important;
 }
 
 .list-group {
@@ -139,18 +139,11 @@ input[type="radio"][name="pic1"]:checked + img {
 .d-modal .btn-close,
 .chat-userstats-modal .btn-close,
 .oc-header .btn-close {
-  background: #ffb74d !important;
+  background: #ffdb5b !important;
   -webkit-mask-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/%3e%3c/svg%3e") !important;
   mask-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/%3e%3c/svg%3e") !important;
   width: 0.65em;
   height: 0.65em;
-}
-
-.oc-header .btn-close {
-  margin: 0 !important;
-  padding: 0 !important;
-  width: 1em;
-  height: 1em;
 }
 
 .menu .btn.btn-transparent {
@@ -160,11 +153,16 @@ input[type="radio"][name="pic1"]:checked + img {
 /* Offcanvas */
 
 .oc-header .offcanvas-title {
-  color: #ffb74d !important;
+  color: #ffdb5b !important;
 }
 
 .oc-menu {
-  background-color: rgba(28, 31, 35, 1) !important;
+  background-color: #3d3657 !important;
+  padding-top: 70px;
+}
+
+.offcanvas-backdrop.show {
+  z-index: 7;
 }
 
 .nav-link-primary {
@@ -178,8 +176,8 @@ input[type="radio"][name="pic1"]:checked + img {
 
 .nav-link-primary:hover,
 .nav-link-secondary:hover {
-  color: #ffb74d !important;
-  border-left: 2px solid #ffb74d;
+  color: #ffdb5b !important;
+  border-left: 2px solid #ffdb5b;
 }
 
 .navbar-icon {
@@ -188,11 +186,11 @@ input[type="radio"][name="pic1"]:checked + img {
 
 .nav-link-primary:hover .navbar-icon,
 .nav-link-secondary:hover .navbar-icon {
-  fill: #ffb74d;
+  fill: #ffdb5b;
 }
 
 svg:hover > g.brand-icon {
-  fill: #ffb74d;
+  fill: #ffdb5b;
 }
 
 .brand-icon {
@@ -211,7 +209,7 @@ svg:hover > g.brand-icon {
 
 .d-modal .btn.btn-transparent,
 .chat-userstats-modal .btn.btn-transparent {
-  color: #ffb74d !important;
+  color: #ffdb5b !important;
 }
 
 .d-modal,
@@ -226,7 +224,6 @@ svg:hover > g.brand-icon {
 
 .dd-profile .dropdown-menu {
   background-color: #3d3657;
-  border-radius: 10px;
 }
 
 .dd-profile .dropdown-item {
@@ -242,11 +239,11 @@ svg:hover > g.brand-icon {
 }
 
 .nav-item.nav-link.active {
-  border-left: 2px solid #ffb74d;
+  border-left: 2px solid #ffdb5b;
 }
 
 .nav-item.nav-link.active .navbar-icon {
-  fill: #ffb74d;
+  fill: #ffdb5b;
 }
 
 .nav-items-secondary {
@@ -263,7 +260,7 @@ svg:hover > g.brand-icon {
 
 .nav-item-secondary:hover,
 .nav-item-secondary.active {
-  color: #ffb74d;
+  color: #ffdb5b;
   text-decoration: underline;
 }
 
@@ -321,6 +318,7 @@ svg:hover > g.brand-icon {
 .modal-content {
   color: whitesmoke;
   background-color: #3d3657;
+  margin-top: 100px;
 }
 
 /* ROADMAP */
@@ -499,8 +497,8 @@ svg:hover > g.brand-icon {
 
 .btn-game-stats:hover,
 .btn-game-stats.active {
-  color: #ffb74d;
-  border-bottom: 1px solid #ffb74d;
+  color: #ffdb5b;
+  border-bottom: 1px solid #ffdb5b;
 }
 
 .header-row {

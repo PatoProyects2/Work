@@ -19,7 +19,7 @@ const HistoryGames = ({ gamesData }) => {
               onClick={() => setIsOpen(false)}
             ></button>
           </div>
-          <h4 className="text-center">All Games</h4>
+          <h4 className="text-center effect-text">All Games</h4>
           <Table borderless responsive>
             <thead>
               <tr>

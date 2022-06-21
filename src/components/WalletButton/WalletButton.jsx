@@ -4,7 +4,7 @@ import {
   Dropdown,
   DropdownItem,
   DropdownMenu,
-  DropdownToggle
+  DropdownToggle,
 } from "reactstrap";
 
 const WalletButton = (props) => {
@@ -54,12 +54,12 @@ const WalletButton = (props) => {
   const copyAddress = () => {
     navigator.clipboard.writeText(props.account);
     setCopy(true);
-  }
+  };
 
   return (
     <>
       {props.account !== undefined &&
-        props.account !== "0x000000000000000000000000000000000000dEaD" ? (
+      props.account !== "0x000000000000000000000000000000000000dEaD" ? (
         <>
           <Dropdown
             className="dd-profile"
@@ -70,7 +70,9 @@ const WalletButton = (props) => {
           >
             <DropdownToggle color="transparent" className="modal-wallet">
               <span className="wallet-span">
-                {props.account.substring(0, 5) + "..." + props.account.substring(38, 42)}
+                {props.account.substring(0, 5) +
+                  "..." +
+                  props.account.substring(38, 42)}
                 &nbsp;&nbsp;
                 <Button
                   color="dark"
@@ -78,13 +80,23 @@ const WalletButton = (props) => {
                   onClick={copyAddress}
                   disabled={copy}
                 >
-                  {copy ? <i className="fa fa-check" style={{ color: "#198754" }} aria-hidden="true"></i> : <i className="fa fa-clone" aria-hidden="true"></i>}
+                  {copy ? (
+                    <i
+                      className="fa fa-check"
+                      style={{ color: "#198754" }}
+                      aria-hidden="true"
+                    ></i>
+                  ) : (
+                    <i className="fa fa-clone" aria-hidden="true"></i>
+                  )}
                 </Button>
               </span>
             </DropdownToggle>
             <DropdownMenu>
               <DropdownItem onClick={manageWallets}>Accounts</DropdownItem>
-              <DropdownItem onClick={props.disconnectWallet}>Disconnect</DropdownItem>
+              <DropdownItem onClick={props.disconnectWallet}>
+                Disconnect
+              </DropdownItem>
             </DropdownMenu>
           </Dropdown>
         </>
@@ -96,13 +108,9 @@ const WalletButton = (props) => {
               <span className="slider round"></span>
             </label>
             &nbsp; I confirm that I am at least 18 years old
-
           </p>
           <div className="center">
-            <button
-              className="ConnectWallet btn-lg"
-              onClick={connectWallet}
-            >
+            <button className="DoubleOrNothing" onClick={connectWallet}>
               CONNECT WALLET
             </button>
           </div>

@@ -56,7 +56,7 @@ const Level = ({ clubData, showLvl = true }) => {
   return (
     <>
       <div className='my-2'>
-        <ProgressExp {...getMinMaxGames(clubData.level)} cGames={clubData.rps.totalGames} xpClass={xpClass(clubData.level)[1]} />
+        <ProgressExp {...getMinMaxGames(clubData.level)} cGames={clubData.rps.gameWon + clubData.rps.gameLoss} xpClass={xpClass(clubData.level)[1]} />
       </div>
     </>
   )

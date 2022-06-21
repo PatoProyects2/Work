@@ -17,9 +17,7 @@ import win2 from "../../assets/imgs/result/win2.png";
 import ConnectWallet from "../../components/WalletButton/WalletButton";
 import { db } from "../../config/firesbaseConfig";
 import { Context } from "../../context/Context";
-import Games from "../../components/Games/Games";
 import { useLoad } from "../../hooks/useLoad";
-import { useMatchMedia } from "../../hooks/useMatchMedia";
 import { useStats } from "../../hooks/useStats";
 import { useTime } from "../../hooks/useTime";
 import { useWeb3 } from "../../hooks/useWeb3";
@@ -45,7 +43,6 @@ const RPS = () => {
   const mixpanel = useMixpanel();
   const unixTime = useTime();
   const dotLog = useLoad();
-  const isMobileResolution = useMatchMedia("(max-width:650px)", false);
 
   const [userData, setUserData] = useState({});
   const [usergame, setUsergame] = useState({ hand: "", amount: 0 });
@@ -60,6 +57,7 @@ const RPS = () => {
   const [useramount, setUseramount] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [animation, setAnimation] = useState(false);
+  const [gameId, setGameId] = useState(false);
   const [save, setSave] = useState(false);
   const [busyNetwork, setBusyNetwork] = useState(false);
   const [result, setResult] = useState(false);
@@ -100,47 +98,40 @@ const RPS = () => {
     return () => {
       setUserData({});
     };
-  }, [account, discordId, rpsgame]);
+  }, [account, discordId]);
 
   const loadUserGame = async () => {
     mixpanel.init(process.env.REACT_APP_MIXPANEL_KEY, { debug: false });
     mixpanel.track("Sign up");
-    if (discordId !== "") {
-      const document = await getDoc(doc(db, "clubUsers", discordId));
-      const data = document.data();
-      if (data) {
-        setUserData(data);
-        if (
-          data.account === "" &&
-          account !== "0x000000000000000000000000000000000000dEaD"
-        ) {
-          updateDoc(doc(db, "clubUsers", discordId), {
-            account: account,
-          }).then(loadUserGame());
+    const deadWallet = "0x000000000000000000000000000000000000dEaD";
+    if (account !== undefined && account !== deadWallet) {
+      if (discordId !== "") {
+        const document = await getDoc(doc(db, "clubUsers", discordId));
+        const data = document.data();
+        if (data) {
+          setUserData(data);
+          if (data.account === "") {
+            updateDoc(doc(db, "clubUsers", discordId), {
+              account: account,
+            }).then(loadUserGame());
+          }
         }
-      }
-    } else {
-      if (account !== undefined) {
+      } else {
         const anonDoc = await getDoc(doc(db, "anonUsers", account));
         const anonData = anonDoc.data();
         if (!anonData) {
-          if (account !== "0x000000000000000000000000000000000000dEaD") {
-            const arrayData = {
-              uid: "anonymous",
-              account: account,
-              name: "",
-              photo:
-                "https://firebasestorage.googleapis.com/v0/b/games-club-dce4d.appspot.com/o/ClubLogo.png?alt=media&token=5dd64484-c99f-4ce9-a06b-0a3ee112b37b",
-              level: 1,
-              rps: {
-                lastGameBlock: 0,
-                winStreak: 0,
-              },
-            };
-            setDoc(doc(db, "anonUsers", account), arrayData).then(
-              loadUserGame()
-            );
-          }
+          const arrayData = {
+            uid: "anonymous",
+            account: account,
+            name: "",
+            photo:
+              "https://firebasestorage.googleapis.com/v0/b/games-club-dce4d.appspot.com/o/ClubLogo.png?alt=media&token=5dd64484-c99f-4ce9-a06b-0a3ee112b37b",
+            level: 1,
+            rps: {
+              lastGameBlock: 0,
+            },
+          };
+          setDoc(doc(db, "anonUsers", account), arrayData).then(loadUserGame());
         }
       }
     }
@@ -151,7 +142,7 @@ const RPS = () => {
     var randomArray = (Math.random() * arrayOptions.length) | 0;
     var result = arrayOptions[randomArray];
     setRandomItem(result);
-  }, [account]);
+  }, []);
 
   const handleInputChange = (event) => {
     setUsergame({
@@ -227,9 +218,7 @@ const RPS = () => {
       const lastGame = playerDocument.rps.lastGameBlock;
 
       if (actuallBlock > lastGame) {
-        let myEvents = undefined;
-
-        const playEvent = await rpsgame.methods
+        rpsgame.methods
           .play(inputAmount)
           .send({
             from: account,
@@ -237,13 +226,34 @@ const RPS = () => {
             gasPrice: web3.utils.toWei(gas.value.toString(), "gwei"),
             gasLimit: 500000,
           })
-          .on("pending", async (hash) => {
+          .on("transactionHash", function (hash) {
             setGameLog("PLAYING");
           })
-          .on("success", async (hash) => {
-            setGameLog("PLAYING");
+          .on("confirmation", function (confirmationNumber, receipt) {})
+          .on("receipt", async function (playEvent) {
+            setGameLog("SAVING YOUR GAME");
+            const gameId = parseInt(
+              playEvent.events.BetPlaced.returnValues.betId
+            );
+            setGameId(gameId);
+            const gameBlock = playEvent.blockNumber;
+            const txHash = playEvent.transactionHash;
+            for (let i = 0; i < 1000; i++) {
+              try {
+                const betGame = await rpsgame.methods.bets(gameId).call();
+                if (
+                  parseInt(betGame[0]) !== 0 &&
+                  parseInt(betGame[1]) === gameBlock
+                ) {
+                  setGameLog("GAME SAVED");
+                  saveBlockchainEvents(betGame, playerDocument, txHash, gameId);
+                  break;
+                }
+              } catch (err) {}
+              await sleep(1000);
+            }
           })
-          .on("error", async (err) => {
+          .on("error", async function (err, receipt) {
             if (err.code === -32603) {
               toast.error("This transaction needs more gas to be executed");
               setPlaying(false);
@@ -262,48 +272,35 @@ const RPS = () => {
               var warningBlockchain = toast.loading(
                 "This transaction is taking too long because the network is busy, please check the status of your transaction in your wallet"
               );
-              const options = {
-                filter: {
-                  _to: account,
-                },
-                fromBlock: actuallBlock,
-                toBlock: "latest",
-              };
+              setGameLog("BE PATIENT NETWORK IS BUSY");
+              const gameId = parseInt(
+                playEvent.events.BetPlaced.returnValues.betId
+              );
+              const gameBlock = playEvent.blockNumber;
+              const txHash = playEvent.transactionHash;
+
               for (let i = 0; i < 1000; i++) {
                 try {
-                  playEvent = await rpsgame.getPastEvents("Play", options);
-                } catch (err) { }
+                  const betGame = await rpsgame.methods.bets(gameId).call();
+                  if (
+                    parseInt(betGame[0]) !== 0 &&
+                    parseInt(betGame[1]) === gameBlock
+                  ) {
+                    saveBlockchainEvents(
+                      betGame,
+                      playerDocument,
+                      txHash,
+                      gameId
+                    );
+                    setBusyNetwork(false);
+                    break;
+                  }
+                } catch (err) {}
                 await sleep(1000);
-                if (playEvent[0]) break;
               }
-              if (playEvent[0]) {
-                let myEvent = playEvent[0].returnValues;
-                let gameBlock = playEvent[0].blockNumber;
-
-                setBusyNetwork(false);
-                toast.dismiss(warningBlockchain);
-              }
+              toast.dismiss(warningBlockchain);
             }
           });
-        if (playEvent) {
-          const gameId = playEvent.events.BetPlaced.returnValues.betId;
-          const gameBlock = playEvent.blockNumber;
-          const txHash = playEvent.transactionHash;
-
-          for (let i = 0; i < 1000; i++) {
-            try {
-              const betGame = await rpsgame.methods.bets(gameId).call();
-              if (
-                parseInt(betGame[0]) !== 0 &&
-                parseInt(betGame[1]) === gameBlock
-              ) {
-                saveBlockchainEvents(betGame, playerDocument, txHash, gameId);
-                break;
-              }
-            } catch (err) { }
-            await sleep(1000);
-          }
-        }
       } else {
         toast.error(
           "We have an issue reading the blockchain or you are playing too fast, please try again in a few seconds"
@@ -332,8 +329,8 @@ const RPS = () => {
 
     if (discordId !== "") {
       const level = playerDocument.level;
-      const totalGames = playerDocument.rps.totalGames + 1;
-      const totalAmount = playerDocument.rps.totalAmount + usdAmount;
+      const totalGames =
+        playerDocument.rps.gameWon + playerDocument.rps.gameLoss + 1;
       const userGame = userResult
         ? playerDocument.rps.gameWon + 1
         : playerDocument.rps.gameLoss + 1;
@@ -353,9 +350,7 @@ const RPS = () => {
 
       if (userResult) {
         updateDoc(doc(db, "clubUsers", discordId), {
-          "rps.totalGames": totalGames,
           "rps.gameWon": userGame,
-          "rps.totalAmount": totalAmount,
           "rps.amountWon": userAmount,
           "rps.lastGameBlock": userBlock,
           "rps.winStreak": userStreak,
@@ -363,9 +358,7 @@ const RPS = () => {
         });
       } else {
         updateDoc(doc(db, "clubUsers", discordId), {
-          "rps.totalGames": totalGames,
           "rps.gameLoss": userGame,
-          "rps.totalAmount": totalAmount,
           "rps.amountLoss": userAmount,
           "rps.lastGameBlock": userBlock,
           "rps.winStreak": userStreak,
@@ -391,6 +384,7 @@ const RPS = () => {
           "rps.scissors": scissorsHand,
         });
       }
+
       addDoc(collection(db, "allGames"), {
         createdAt: unixTime,
         uid: playerDocument.uid,
@@ -405,21 +399,13 @@ const RPS = () => {
         game: "RPS",
         profit: userProfit,
         txHash: txHash,
-        gameId: parseInt(gameId),
+        gameId: gameId,
       });
     } else {
-      if (userResult) {
-        updateDoc(doc(db, "anonUsers", account), {
-          "rps.winStreak": playerDocument.rps.winStreak + 1,
-          "rps.winStreakTime": unixTime,
-          "rps.lastGameBlock": userBlock,
-        });
-      } else {
-        updateDoc(doc(db, "anonUsers", account), {
-          "rps.winStreak": 0,
-          "rps.lastGameBlock": userBlock,
-        });
-      }
+      updateDoc(doc(db, "anonUsers", account), {
+        "rps.lastGameBlock": userBlock,
+      });
+
       addDoc(collection(db, "allGames"), {
         createdAt: unixTime,
         uid: playerDocument.uid,
@@ -432,8 +418,11 @@ const RPS = () => {
         streak: userStreak,
         result: userResult,
         game: "RPS",
+        txHash: txHash,
+        gameId: gameId,
       });
     }
+
     mixpanel.track("rps", {
       account: account,
       streak: userStreak,
@@ -515,6 +504,7 @@ const RPS = () => {
   const backGame = () => {
     setPlaying(false);
     setAnimation(false);
+    setGameId(false);
     setResult(false);
     setGameResult({});
   };
@@ -522,7 +512,7 @@ const RPS = () => {
   return (
     <article>
       {account !== undefined &&
-        account !== "0x000000000000000000000000000000000000dEaD" ? (
+      account !== "0x000000000000000000000000000000000000dEaD" ? (
         <div className="game-container">
           <div className="g-btn-historygames">
             <ConnectWallet
@@ -541,6 +531,7 @@ const RPS = () => {
                 animation={animation}
                 save={save}
                 gameLog={gameLog}
+                gameId={gameId}
                 userhand={userhand}
                 useramount={useramount}
                 busyNetwork={busyNetwork}
@@ -583,7 +574,6 @@ const RPS = () => {
             web3={web3}
             account={account}
           />
-          <Games isMobileResolution={isMobileResolution} />
         </>
       )}
     </article>

@@ -139,7 +139,6 @@ ul {
 }
 
 .btn-hover {
-    width: 180px;
     font-size: 22px;
     font-weight: 600;
     color: #fff;
@@ -353,6 +352,28 @@ a.btn-hover {
     box-shadow: -3px 0px 29px -8px #40f26a;
 }
 
+.playing button {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    font-weight: 700;
+    padding: 20px;
+    background-color: #aaaaaa;
+    color: #27273d;
+    border: none;
+    font-size: 20px;
+    border-radius: 20px;
+    box-shadow: -3px 0px 29px -8px #aaaaaa;
+}
+
+.playing div {
+    visibility: hidden;
+}
+
+.playing:hover div {
+    border-radius: 10px;
+    background-color: #232c31;
+    visibility: visible;
+}
 
 div.center {
     text-align: center;
@@ -568,7 +589,20 @@ div.center {
         // width: 80vw;
     }
 
+    @media (max-width: 768px) {
+        input[type=radio][name=amount]:checked+p {
+            background-color: #42f16b;
+            padding: 10px;
+            border-radius: 10px;
+            width: 50px;
+            height: 50px;
+            color: #2c2640;
+        }
+    }
+
     @media (min-width: 768px) {
+
+
         .rps-img {
             width: 240px;
             height: 240px;
@@ -973,6 +1007,18 @@ div.center {
     -o-transition: .8s;
     -webkit-transition: .8s;
     transition: .8s;
+}
+
+.resultado-flex {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.resultado-flex img {
+    width: 40px;
+    height: 40px;
 }
 
 .indexedStep i {
@@ -1668,14 +1714,21 @@ ul.messages {
     transform: rotateY(180deg);
 }
 
-.matic-balance-wrapper,
-.matic-balance-wrapper-mobile {
+.matic-balance-wrapper {
     background: #232c31;
     padding: 0.2rem 0.5rem;
     border-radius: 5px;
     display: flex;
     align-items: center;
     position: absolute;
+}
+
+.matic-balance-wrapper-mobile {
+    background: #232c31;
+    padding: 0.2rem 0.5rem;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
 }
 
 .matic-balance-wrapper {
@@ -1725,23 +1778,6 @@ ul.messages {
     }
 }
 
-@media (max-width: 990px) {
-    .content-section.expanded {
-        margin-left: 0 !important;
-    }
-
-    .active-users-navbar {
-        display: none;
-    }
-
-    .active-users-offcanvas {
-        display: flex;
-        color: white;
-        align-items: center;
-        margin: auto;
-    }
-}
-
 .result-rps-image {
     margin-bottom: 1rem;
 }
@@ -1763,6 +1799,73 @@ ul.messages {
     }
 }
 
+.toast-settings {
+    display: flex;
+    margin-top: 70px;
+}
+
+.effect-text-hiper {
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    color: #ffdb5b;
+    text-shadow:
+        1px 4px black,
+        0px 2px black,
+        2px 3px black,
+        1px 4px black;
+    text-shadow: 3px 0 0 black,
+        2px 4px 0 black,
+        0 2px 0 black,
+        0 -2px 0 black,
+        1px 1px black,
+        -1px -1px 0 black,
+        1px -1px 0 black,
+        -1px 1px 0 black;
+    font-size: 50px;
+}
+
+.effect-text {
+    font-weight: bold;
+    display: flex;
+    color: #9845eb;
+    justify-content: center;
+    text-shadow:
+        1px 4px black,
+        0px 2px black,
+        2px 3px black,
+        1px 4px black;
+    text-shadow: 3px 0 0 black,
+        2px 4px 0 black,
+        0 2px 0 black,
+        0 -2px 0 black,
+        1px 1px black,
+        -1px -1px 0 black,
+        1px -1px 0 black,
+        -1px 1px 0 black;
+    font-size: 30px;
+}
+
+.effect-text-normal {
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    text-shadow:
+        1px 4px black,
+        0px 2px black,
+        2px 3px black,
+        1px 4px black;
+    text-shadow: 3px 0 0 black,
+        2px 4px 0 black,
+        0 2px 0 black,
+        0 -2px 0 black,
+        1px 1px black,
+        -1px -1px 0 black,
+        1px -1px 0 black,
+        -1px 1px 0 black;
+    font-size: 20px;
+}
+
 .rps-result-amount {
     font-weight: bold;
     display: flex;
@@ -1781,6 +1884,67 @@ ul.messages {
         1px -1px 0 black,
         -1px 1px 0 black;
     font-size: 50px;
+}
+
+.lost-game {
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    text-shadow:
+        1px 4px black,
+        0px 2px black,
+        2px 3px black,
+        1px 4px black;
+    text-shadow: 3px 0 0 black,
+        2px 4px 0 black,
+        0 2px 0 black,
+        0 -2px 0 black,
+        1px 1px black,
+        -1px -1px 0 black,
+        1px -1px 0 black,
+        -1px 1px 0 black;
+    font-size: 30px;
+}
+
+.relative-result-img {
+    position: relative;
+    margin-top: 100px;
+}
+
+.absolute-image {
+    position: absolute;
+    top: -50px;
+    width: 50%;
+    left: 25%;
+}
+
+@media (max-width: 991px) {
+    .absolute-image {
+        position: absolute;
+        top: -20px;
+        width: 75%;
+        left: 12.5%;
+    }
+}
+
+.won-game {
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    text-shadow:
+        1px 4px black,
+        0px 2px black,
+        2px 3px black,
+        1px 4px black;
+    text-shadow: 3px 0 0 black,
+        2px 4px 0 black,
+        0 2px 0 black,
+        0 -2px 0 black,
+        1px 1px black,
+        -1px -1px 0 black,
+        1px -1px 0 black,
+        -1px 1px 0 black;
+    font-size: 30px;
 }
 
 @media (min-width: 992px) {
@@ -2065,4 +2229,8 @@ input[type="file"]::-webkit-file-upload-button {
 .btn-time.active {
     color: #fee768 !important;
     border-color: #fee768 !important;
+}
+
+.discordButton {
+    width: 100px;
 }
