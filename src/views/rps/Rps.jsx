@@ -1,3 +1,4 @@
+import { useContext, useEffect, useState } from "react";
 import {
   addDoc,
   collection,
@@ -6,7 +7,6 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore";
-import { useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useMixpanel } from "react-mixpanel-browser";
 import winSound from "../../assets/audio/win_sound.mpeg";
@@ -74,17 +74,14 @@ const RPS = () => {
       toast("Log in if you want to save you game stats and ahievements", {
         duration: 10000,
         position: "top-right",
-        // Styling
         style: {},
         className: "pop-up toast-modal",
-        // Custom Icon
         icon: <i className="fa-solid fa-circle-info text-primary"></i>,
         // Change colors of success/error/loading icon
         iconTheme: {
           primary: "#000",
           secondary: "#fff",
         },
-        // Aria
         ariaProps: {
           role: "status",
           "aria-live": "polite",
@@ -204,16 +201,9 @@ const RPS = () => {
     const actuallBlock = await web3.eth.getBlockNumber();
 
     if (actuallBlock) {
-      let playerDocument = {};
-      if (discordId !== "") {
-        const q0 = doc(db, "clubUsers", discordId);
-        let doc1 = await getDoc(q0);
-        playerDocument = doc1.data();
-      } else {
-        const q1 = doc(db, "anonUsers", account);
-        let doc2 = await getDoc(q1);
-        playerDocument = doc2.data();
-      }
+      const q = discordId !== "" ? doc(db, "clubUsers", discordId) : doc(db, "anonUsers", account);
+      const doc = await getDoc(q);
+      const playerDocument = doc.data();
 
       const lastGame = playerDocument.rps.lastGameBlock;
 
@@ -229,7 +219,7 @@ const RPS = () => {
           .on("transactionHash", function (hash) {
             setGameLog("PLAYING");
           })
-          .on("confirmation", function (confirmationNumber, receipt) {})
+          .on("confirmation", function (confirmationNumber, receipt) { })
           .on("receipt", async function (playEvent) {
             setGameLog("SAVING YOUR GAME");
             const gameId = parseInt(
@@ -249,7 +239,7 @@ const RPS = () => {
                   saveBlockchainEvents(betGame, playerDocument, txHash, gameId);
                   break;
                 }
-              } catch (err) {}
+              } catch (err) { }
               await sleep(1000);
             }
           })
@@ -295,7 +285,7 @@ const RPS = () => {
                     setBusyNetwork(false);
                     break;
                   }
-                } catch (err) {}
+                } catch (err) { }
                 await sleep(1000);
               }
               toast.dismiss(warningBlockchain);
@@ -312,39 +302,28 @@ const RPS = () => {
     }
   };
 
-  const saveBlockchainEvents = async (
-    betGame,
-    playerDocument,
-    txHash,
-    gameId
-  ) => {
+  const saveBlockchainEvents = async (betGame, playerDocument, txHash, gameId) => {
     const userResult = parseInt(betGame[0]) > 50 ? true : false;
     const userStreak = userResult ? playerDocument.rps.winStreak + 1 : 0;
     const userBlock = parseInt(betGame[1]);
-    const maticAmount = parseInt(
-      web3.utils.fromWei(betGame[2].toString(), "ether")
-    );
+    const maticAmount = parseInt(web3.utils.fromWei(betGame[2].toString(), "ether"));
     const usdAmount = maticAmount * maticPrice;
     const account = betGame[4].toLowerCase();
 
     if (discordId !== "") {
       const level = playerDocument.level;
-      const totalGames =
-        playerDocument.rps.gameWon + playerDocument.rps.gameLoss + 1;
+      const totalGames = playerDocument.rps.gameWon + playerDocument.rps.gameLoss + 1;
       const userGame = userResult
         ? playerDocument.rps.gameWon + 1
         : playerDocument.rps.gameLoss + 1;
       const userAmount = userResult
         ? playerDocument.rps.amountWon + usdAmount
         : playerDocument.rps.amountLoss + usdAmount;
-      const profit =
-        playerDocument.rps.amountWon - playerDocument.rps.amountLoss;
+      const profit = playerDocument.rps.amountWon - playerDocument.rps.amountLoss;
       const userProfit = userResult ? profit + usdAmount : profit - usdAmount;
       const rockHand = usergame.hand === "ROCK" && playerDocument.rps.rock + 1;
-      const paperHand =
-        usergame.hand === "PAPER" && playerDocument.rps.paper + 1;
-      const scissorsHand =
-        usergame.hand === "SCISSORS" && playerDocument.rps.scissors + 1;
+      const paperHand = usergame.hand === "PAPER" && playerDocument.rps.paper + 1;
+      const scissorsHand = usergame.hand === "SCISSORS" && playerDocument.rps.scissors + 1;
 
       useStats({ level, totalGames, discordId });
 
@@ -401,6 +380,7 @@ const RPS = () => {
         txHash: txHash,
         gameId: gameId,
       });
+
     } else {
       updateDoc(doc(db, "anonUsers", account), {
         "rps.lastGameBlock": userBlock,
@@ -415,9 +395,10 @@ const RPS = () => {
         account: account,
         amount: usdAmount,
         maticAmount: maticAmount,
-        streak: userStreak,
+        streak: 0,
         result: userResult,
         game: "RPS",
+        profit: 0,
         txHash: txHash,
         gameId: gameId,
       });
@@ -512,7 +493,7 @@ const RPS = () => {
   return (
     <article>
       {account !== undefined &&
-      account !== "0x000000000000000000000000000000000000dEaD" ? (
+        account !== "0x000000000000000000000000000000000000dEaD" ? (
         <div className="game-container">
           <div className="g-btn-historygames">
             <ConnectWallet

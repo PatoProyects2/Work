@@ -9,11 +9,13 @@ import {
 import DiscordButton from "../../assets/imgs/Home Page/discordButton.png";
 import { Context } from "../../context/Context";
 import { useAuth } from "../../hooks/useAuth";
+import { useMatchMedia } from "../../hooks/useMatchMedia";
 
 const Profile = () => {
   const { discordId } = useContext(Context);
   const [dropdown, setDropdown] = useState(false);
   const [user, setUser] = useState(false);
+  const isMobileResolution = useMatchMedia("(max-width:500px)", false);
   const userData = window.localStorage.getItem("user");
 
   useAuth();
@@ -86,7 +88,7 @@ const Profile = () => {
     ) : (
       <img
         role="button"
-        className="discordButton"
+        style={isMobileResolution ? { width: "80px" } : { width: "100px" }}
         onClick={getToken}
         src={DiscordButton}
         alt="discord-button"

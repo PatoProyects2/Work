@@ -22,7 +22,18 @@ const TableGames = ({ uid, result, streak, maticAmount, createdAt, game, profit,
         <tr>
             <td>{game}</td>
             <td>
-                <img width="25" height="25" className="rounded-circle" alt="" src={`${userProfile[0].photo}`} /> &nbsp;
+                <img
+                    width="25"
+                    height="25"
+                    className="rounded-circle"
+                    alt=""
+                    src={userProfile[0].photo}
+                    onError={({ currentTarget }) => {
+                        currentTarget.onerror = null; // prevents looping
+                        currentTarget.src = "https://firebasestorage.googleapis.com/v0/b/rpsgame-c4a38.appspot.com/o/profile%2FClubLogo.png?alt=media&token=7d14512f-c4a8-400f-a7ca-413239add111";
+                    }}
+                />
+                &nbsp;
                 {userProfile[0].name !== ''
                     ? isMobileResolution
                         ? userProfile[0].name.length > 9 ? userProfile[0].name.substring(0, 9) + "..." : userProfile[0].name

@@ -24,6 +24,10 @@ const MostPlays = (props) => {
                     className="rounded-circle me-2"
                     alt=""
                     src={user.photo}
+                    onError={({ currentTarget }) => {
+                      currentTarget.onerror = null; // prevents looping
+                      currentTarget.src = "https://firebasestorage.googleapis.com/v0/b/rpsgame-c4a38.appspot.com/o/profile%2FClubLogo.png?alt=media&token=7d14512f-c4a8-400f-a7ca-413239add111";
+                    }}
                   />
                   {props.isMobileResolution
                     ? user.name.length > 9
