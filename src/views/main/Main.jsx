@@ -43,49 +43,53 @@ const Main = () => {
       const q = query(collection(db, "allGames"));
       const document = await getDocs(q);
 
-      // Filtrar por preiodo de tiempo
+      // Filtrar por preiodo de tiempo y usuarios registrados
 
       document.forEach((doc) => {
         let data = doc.data();
-        let created = data.createdAt;
 
-        if (created > lastDay) {
+        if (data.uid !== 'anonymous') {
+          let created = data.createdAt;
+          
+          if (created > lastDay) {
+            const array = {
+              photo: data.photo,
+              name: data.name,
+              amount: data.amount,
+              uid: data.uid,
+            };
+            dayGames = dayGames.concat(array);
+          }
+
+          if (created > lastWeek) {
+            const array = {
+              photo: data.photo,
+              name: data.name,
+              amount: data.amount,
+              uid: data.uid,
+            };
+            weekGames = weekGames.concat(array);
+          }
+
+          if (created > lastMonth) {
+            const array = {
+              photo: data.photo,
+              name: data.name,
+              amount: data.amount,
+              uid: data.uid,
+            };
+            monthGames = monthGames.concat(array);
+          }
+
           const array = {
             photo: data.photo,
             name: data.name,
             amount: data.amount,
             uid: data.uid,
           };
-          dayGames = dayGames.concat(array);
+          globalGames = globalGames.concat(array);
         }
 
-        if (created > lastWeek) {
-          const array = {
-            photo: data.photo,
-            name: data.name,
-            amount: data.amount,
-            uid: data.uid,
-          };
-          weekGames = weekGames.concat(array);
-        }
-
-        if (created > lastMonth) {
-          const array = {
-            photo: data.photo,
-            name: data.name,
-            amount: data.amount,
-            uid: data.uid,
-          };
-          monthGames = monthGames.concat(array);
-        }
-
-        const array = {
-          photo: data.photo,
-          name: data.name,
-          amount: data.amount,
-          uid: data.uid,
-        };
-        globalGames = globalGames.concat(array);
       });
 
       // Agrupar por usuario

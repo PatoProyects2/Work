@@ -201,9 +201,9 @@ const RPS = () => {
     const actuallBlock = await web3.eth.getBlockNumber();
 
     if (actuallBlock) {
-      const q = discordId !== "" ? doc(db, "clubUsers", discordId) : doc(db, "anonUsers", account);
-      const doc = await getDoc(q);
-      const playerDocument = doc.data();
+      const query = discordId !== "" ? doc(db, "clubUsers", discordId) : doc(db, "anonUsers", account)
+      const document = await getDoc(query)
+      const playerDocument = document.data()
 
       const lastGame = playerDocument.rps.lastGameBlock;
 

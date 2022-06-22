@@ -5,7 +5,6 @@ import TableGames from './TableGames';
 
 const Games = ({ isMobileResolution }) => {
     const allGames = useAllGames()
-
     return (
         <Table className="tbl-ranking" borderless responsive>
             <thead>
