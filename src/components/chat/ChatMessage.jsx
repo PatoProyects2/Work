@@ -1,31 +1,55 @@
 import { useState } from "react";
-import { Modal, ModalBody } from "reactstrap";
-import Crown from "../../assets/imgs/Chat Panel/Crown.png";
-import Chart from "../../views/Stats/components/Chart/Chart";
-import Level from "../../views/Stats/components/Info/Level";
+import { useNavigate } from "react-router-dom";
+// import { Modal, ModalBody } from "reactstrap";
+import styled from "styled-components";
 import { useUserProfile } from "../../hooks/firebase/useUserProfile";
+// import { useMatchMedia } from "../../hooks/useMatchMedia";
+// import Chart from "../../views/Stats/components/Chart/Chart";
+// import RPSStats from "../../views/Stats/components/Info/RPSStats";
+// import RPSStatsNew from "../../views/Stats/components/Info/RPSStatsNew";
+import CrownLevel from "../../views/Stats/components/Info/CrownLevel";
+import Stats from "../../views/Stats/Stats";
+
+const StyledProfile = styled.div`
+  width: 100%;
+  .TitleUsuario {
+    height: 50px;
+    display: flex;
+    align-items: center;
+    color: white;
+    border-top-right-radius: 20px;
+    border-top-left-radius: 20px;
+    font-size: 20px;
+    justify-content: center;
+    background-color: #554c77;
+  }
+  .profile-container {
+    width: 100%;
+  }
+  .profile-info {
+    display: flex;
+    @media (max-width: 992px) {
+      width: 200%;
+    }
+    @media (max-width: 900px) {
+      width: 100%;
+    }
+  }
+  .rps-stats-mobile {
+    display: flex;
+    justify-content: center;
+  }
+  .statsNew-mobile {
+    display: flex;
+    justify-content: center;
+  }
+`;
 
 const ChatMessage = ({ text, uid }) => {
+  let navigate = useNavigate();
+  // const isMobileResolution = useMatchMedia("(max-width:991px)", false);
   const userProfile = useUserProfile(uid);
   const [stats, setStats] = useState(false);
-  const [rpsStats, setRpsStats] = useState(true);
-
-  const xpClass = () => {
-    const level = userProfile[0].level;
-    if (level <= 4) {
-      return "xp-user-badge badge-yellow";
-    } else if (level > 4 && level < 10) {
-      return "xp-user-badge badge-orange";
-    } else if (level > 9 && level < 15) {
-      return "xp-user-badge badge-pink";
-    } else if (level > 14 && level < 20) {
-      return "xp-user-badge badge-blue";
-    } else if (level > 19 && level < 24) {
-      return "xp-user-badge badge-green";
-    } else {
-      return "xp-user-badge badge-black";
-    }
-  };
 
   const xpClassText = () => {
     const level = userProfile[0].level;
@@ -48,7 +72,12 @@ const ChatMessage = ({ text, uid }) => {
     <>
       {userProfile[0] && (
         <>
-          <div role="button" onClick={() => setStats(true)}>
+          <div
+            role="button"
+            onClick={() => {
+              navigate(`/stats/${uid}`), navigate(0);
+            }}
+          >
             <li className="message d-flex align-items-center mt-2">
               <div className="chat-users">
                 <div className="d-flex">
@@ -57,17 +86,17 @@ const ChatMessage = ({ text, uid }) => {
                     src={userProfile[0].photo}
                     alt={userProfile[0].name}
                   />
-                  <div className={xpClass()}>
-                    <img src={Crown} alt="Level" />
-                    <span>{userProfile[0].level}</span>
-                  </div>
+                  <CrownLevel userLevel={userProfile[0].level} />
                   <span className={xpClassText()}>{userProfile[0].name}:</span>
                 </div>
               </div>
               <div className="chat_cont">{text}</div>
             </li>
           </div>
-          <Modal isOpen={stats} className="chat-userstats-modal" size="lg">
+
+          {stats && <Stats userProfile={userProfile} />}
+
+          {/* <Modal isOpen={stats} className="chat-userstats-modal" size="xl">
             <ModalBody>
               <div className="d-flex justify-content-end">
                 <button
@@ -77,97 +106,49 @@ const ChatMessage = ({ text, uid }) => {
                   onClick={() => setStats(false)}
                 ></button>
               </div>
-              <div className="user-stats-info">
-                <div className="user-stats-profile">
-                  <img
-                    className="rounded-circle user-stats-image"
-                    width="100"
-                    height="100"
-                    src={userProfile[0].photo}
-                    alt={name}
-                  />
-                  <div className="user-stats-lvl">
-                    <div className={xpClass()}>
-                      <div className="circle">
-                        <span>{userProfile[0].level}</span>
+              <StyledProfile>
+                <div className="profile-container">
+                  <h3 className="TitleUsuario text-center">
+                    {userProfile[0].name + "#" + userProfile[0].id} Stats
+                  </h3>
+                  <div className="profile-info">
+                    <div className="profile-info-container">
+                      <img
+                        alt={userProfile[0].name}
+                        className="rounded-circle profile-img"
+                        src={userProfile[0].photo}
+                      />
+                      <div className="d-flex m-auto">
+                        <CrownLevel userLevel={userProfile[0].level} />
+                        <span className={xpClassText()}>
+                          {userProfile[0].name + "#" + userProfile[0].id}
+                        </span>
                       </div>
                     </div>
-                    <span className="chat_user_name">{`${userProfile[0].name}#${userProfile[0].id}`}</span>
+                    {!isMobileResolution && (
+                      <div className="profile-stats-container">
+                        <RPSStats clubData={userProfile[0]} />
+                      </div>
+                    )}
                   </div>
-                  <div className="w-100 text-center">
-                    <Level clubData={userProfile[0]} showLvl={false} />
-                  </div>
+                  {isMobileResolution && (
+                    <div className="rps-stats-mobile mt-2">
+                      <RPSStats clubData={userProfile[0]} />
+                    </div>
+                  )}
+                  {userProfile[0].rps.gameWon + userProfile[0].rps.gameLoss >
+                  0 ? (
+                    <div className="mt-2">
+                      <RPSStatsNew clubData={userProfile[0]} />
+                      <Chart clubData={userProfile[0]} />
+                    </div>
+                  ) : (
+                    <h4 className="text-center mt-2">No games found</h4>
+                  )}
                 </div>
-                <div className="user-daily-stats">
-                  <h5>USER DAILY RESULTS</h5>
-                  <div className="user-daily-stats-container">
-                    <div className="game-list-stats">
-                      <button
-                        onClick={() => setRpsStats(true)}
-                        className={`btn-game-stats mt-1 ${rpsStats ? "active" : ""
-                          }`}
-                      >
-                        RPS
-                      </button>
-                    </div>
-                    <div className="game-stats">
-                      <div className="row header-row text-center mb-2">
-                        <div className="col-4">Win Streak</div>
-                        <div className="col-2">Rock</div>
-                        <div className="col-3">Paper</div>
-                        <div className="col-3">Scissors</div>
-                      </div>
-                      <div className="row content-row text-center">
-                        <div className="col-4">
-                          {userProfile[0].rps.topWinStreak}
-                        </div>
-                        <div className="col-2">{userProfile[0].rps.rock}</div>
-                        <div className="col-3">{userProfile[0].rps.paper}</div>
-                        <div className="col-3">{userProfile[0].rps.scissors}</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {userProfile[0].rps.gameWon + userProfile[0].rps.gameLoss > 0 ? (
-                <>
-                  <div className="user-stats-profit">
-                    <div className="d-flex flex-column align-items-center profit-border">
-                      <span className="header-row">Wallet</span>
-                      <span className="content-row">
-                        {userProfile[0].account.substring(0, 5) +
-                          "..." +
-                          userProfile[0].account.substring(38, 42)}
-                      </span>
-                    </div>
-                    <div className="d-flex flex-column align-items-center profit-border">
-                      <span className="header-row">Total Games</span>
-                      <span className="content-row">
-                        {userProfile[0].rps.gameWon + userProfile[0].rps.gameLoss}
-                      </span>
-                    </div>
-                    <div className="d-flex flex-column align-items-center profit-border">
-                      <span className="header-row">Total Amount</span>
-                      <span className="content-row">
-                        {"$" + (userProfile[0].rps.amountWon + userProfile[0].rps.amountLoss).toFixed(2)}
-                      </span>
-                    </div>
-                    <div className="d-flex flex-column align-items-center">
-                      <span className="header-row">Profit</span>
-                      <span className={`content-row ${userProfile[0].rps.amountWon - userProfile[0].rps.amountLoss > 0 ? "profit-plus" : "profit-minus"}`} >
-                        {"$" + (userProfile[0].rps.amountWon - userProfile[0].rps.amountLoss).toFixed(2)}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="chart-user">
-                    <Chart clubData={userProfile[0]} />
-                  </div>
-                </>
-              ) : (
-                <h4 className="text-center mt-2">No games found</h4>
-              )}
+              </StyledProfile>
             </ModalBody>
-          </Modal>
+          </Modal> */}
         </>
       )}
     </>

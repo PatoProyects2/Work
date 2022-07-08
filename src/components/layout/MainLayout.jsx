@@ -2,14 +2,13 @@ import { useState } from "react";
 import { toast, ToastBar, Toaster } from "react-hot-toast";
 import { Outlet } from "react-router-dom";
 import { Context } from "../../context/Context";
-import { useGas } from "../../hooks/useGas";
 import { useMatchMedia } from "../../hooks/useMatchMedia";
 import ChatRoom from "../Chat/ChatRoom";
 import Footer from "../Footer/Footer";
 import NavBar from "../NavBar/NavBar";
+import SocialButtons from "../../components/SocialButtons/SocialButtons";
 
 const MainLayout = () => {
-  const gasTrack = useGas();
   const [balance, setBalance] = useState("");
   const [discordId, setDiscordId] = useState("");
   const [chatHistory, setChatHistory] = useState(50);
@@ -90,7 +89,7 @@ const MainLayout = () => {
       <main className="wrapper-main">
         <section>
           <div className={`chat-section ${showChat ? "expanded" : ""}`}>
-            <ChatRoom />
+            <ChatRoom showChat={showChat} />
           </div>
           <div className="chat_expand">
             <span
@@ -98,7 +97,7 @@ const MainLayout = () => {
               onClick={() => setShowChat(!showChat)}
             ></span>
           </div>
-
+          <SocialButtons />
           <div className={`content-section ${showChat ? "expanded" : ""}`}>
             <Outlet />
           </div>

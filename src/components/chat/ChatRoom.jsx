@@ -1,15 +1,16 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
 import Picker, { SKIN_TONE_MEDIUM_DARK } from "emoji-picker-react";
 import { addDoc, collection } from "firebase/firestore";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Dropdown, DropdownMenu, DropdownToggle } from "reactstrap";
 import SendLogo from "../../assets/imgs/sendNew.png";
 import { db } from "../../config/firesbaseConfig";
 import { Context } from "../../context/Context";
-import ChatMessage from "./ChatMessage";
 import { useAllMessages } from "../../hooks/firebase/useAllMessages";
 import { useTime } from "../../hooks/useTime";
+import ChatMessage from "./ChatMessage";
 
-const ChatRoom = () => {
+const ChatRoom = ({ showChat }) => {
+  const messagesEndRef = useRef(null);
   const allMessages = useAllMessages();
   const unixTime = useTime();
   const { discordId } = useContext(Context);
@@ -26,7 +27,7 @@ const ChatRoom = () => {
   };
 
   const sendMessage = async (e) => {
-    if (discordId !== '') {
+    if (discordId !== "") {
       e.preventDefault();
       if (formValue.trim() === "") {
         setFormValue("");
@@ -40,29 +41,25 @@ const ChatRoom = () => {
       setFormValue("");
     }
     return () => {
-      setFormValue("")
-    }
+      setFormValue("");
+    };
   };
-
-  const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
   };
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [allMessages]);
+  useEffect(scrollToBottom, [showChat, formValue]);
 
   return (
     <div className="chatting_chat_msgs">
-      {/* <div className="top-gradient"></div> */}
       <div className="chat_input_hold">
         <div className="chat_msgs">
           <ul className="messages">
-            {
-              allMessages
-              &&
+            <div className="background-messages">
+              <h1>Chat Room</h1>
+            </div>
+            {allMessages &&
               allMessages.map((msg) => (
                 <ChatMessage key={msg.id} {...msg} />
               ))

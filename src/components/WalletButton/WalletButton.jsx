@@ -1,67 +1,63 @@
-import { useEffect, useState } from "react";
-import {
-  Button,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
-} from "reactstrap";
+// import { useEffect, useState } from "react";
+// import {
+//   Button,
+//   Dropdown,
+//   DropdownItem,
+//   DropdownMenu,
+//   DropdownToggle,
+// } from "reactstrap";
 
 const WalletButton = (props) => {
-  const [dropdown, setDropdown] = useState(false);
-  const [copy, setCopy] = useState(false);
+  // const [dropdown, setDropdown] = useState(false);
+  // const [copy, setCopy] = useState(false);
 
-  const toggleMenu = () => {
-    setDropdown(!dropdown);
-  };
+  // const toggleMenu = () => {
+  //   setDropdown(!dropdown);
+  // };
 
   const connectWallet = () => {
-    if (document.getElementById("age").checked === false) {
-      props.toast.error("Confirm that you are at least 18 years old");
-      return false;
-    }
     props.readBlockchainData();
   };
 
-  const manageWallets = () => {
-    ethereum.request({
-      method: "wallet_requestPermissions",
-      params: [
-        {
-          eth_accounts: {},
-        },
-      ],
-    });
-  };
+  // const manageWallets = () => {
+  //   ethereum.request({
+  //     method: "wallet_requestPermissions",
+  //     params: [
+  //       {
+  //         eth_accounts: {},
+  //       },
+  //     ],
+  //   });
+  // };
 
-  useEffect(() => {
-    const readClipboard = async () => {
-      if (copy) {
-        const sleep = (milliseconds) => {
-          return new Promise((resolve) => setTimeout(resolve, milliseconds));
-        };
-        for (let i = 0; i < 3; i++) {
-          if (i === 2) {
-            setCopy(false);
-          }
-          await sleep(1000);
-        }
-      }
-    };
-    readClipboard();
-  }, [copy]);
+  // useEffect(() => {
+  //   const readClipboard = async () => {
+  //     if (copy) {
+  //       const sleep = (milliseconds) => {
+  //         return new Promise((resolve) => setTimeout(resolve, milliseconds));
+  //       };
+  //       for (let i = 0; i < 3; i++) {
+  //         if (i === 2) {
+  //           setCopy(false);
+  //         }
+  //         await sleep(1000);
+  //       }
+  //     }
+  //   };
+  //   readClipboard();
+  // }, [copy]);
 
-  const copyAddress = () => {
-    navigator.clipboard.writeText(props.account);
-    setCopy(true);
-  };
+  // const copyAddress = () => {
+  //   navigator.clipboard.writeText(props.account);
+  //   setCopy(true);
+  // };
 
   return (
     <>
       {props.account !== undefined &&
-      props.account !== "0x000000000000000000000000000000000000dEaD" ? (
+        props.account !== "0x000000000000000000000000000000000000dEaD" ? (
         <>
-          <Dropdown
+          {/* <Dropdown
             className="dd-profile"
             isOpen={dropdown}
             toggle={toggleMenu}
@@ -98,23 +94,14 @@ const WalletButton = (props) => {
                 Disconnect
               </DropdownItem>
             </DropdownMenu>
-          </Dropdown>
+          </Dropdown> */}
         </>
       ) : (
-        <>
-          <p className="text-center mt-3">
-            <label className="switch">
-              <input id="age" type="checkbox"></input>&nbsp;
-              <span className="slider round"></span>
-            </label>
-            &nbsp; I confirm that I am at least 18 years old
-          </p>
-          <div className="center">
-            <button className="DoubleOrNothing" onClick={connectWallet}>
-              CONNECT WALLET
-            </button>
-          </div>
-        </>
+        <div className="center">
+          <button className="DoubleOrNothing" onClick={connectWallet}>
+            CONNECT WALLET
+          </button>
+        </div>
       )}
     </>
   );

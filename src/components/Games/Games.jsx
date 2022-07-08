@@ -15,7 +15,7 @@ const Games = ({ isMobileResolution }) => {
                         <>
                             <th>Amount</th>
                             <th>Result</th>
-                            <th>Streak</th>
+                            <th>Win Streak</th>
                         </>
                     }
                     <th>Profit</th>

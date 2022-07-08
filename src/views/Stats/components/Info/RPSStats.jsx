@@ -1,54 +1,41 @@
 import styled from "styled-components";
+import rps from "../../../../assets/imgs/Home Page/RPS.png";
 
 const StyledStats = styled.div`
-.profile-game-stats {
-  border-bottom: 1px solid transparent;   
-}
+  width: 75%;
+  .profile-game-stats {
+    border-bottom: 1px solid transparent;
+  }
 
-thead tr th {
-  color: #ffda5c;
-  border-left: 1px solid #554b77; 
-  vertical-align: middle;
-  padding: 10px;
-  font-weight: 400;
-}
+  .item1 {
+    width: 25%;
+  }
 
-.Logo {      
-  vertical-align: middle;
-  padding-right: 20px;
-  margin-top: 50%;
-      display: flex;
-      justify-content: flex-start;
-      color: #f1cf61;
-      text-shadow:
-          1px 4px black;
-          0px 2px black,
-          2px 3px black, 
-          1px 4px black;
-      text-shadow: 3px 0 0 black, 
-                  2px 4px 0 black, 
-                  0 2px 0 black, 
-                  0 -2px 0 black, 
-                  1px 1px black, 
-                  -1px -1px 0 black, 
-                  1px -1px 0 black, 
-                  -1px 1px 0 black;    
-      letter-spacing: -2px;
+  thead tr th {
+    color: #ffda5c;
+    border-left: 1px solid #554b77;
+    font-weight: 400;
+    height: 0px;
+    align-items: center;
+  }
 
-      @media (max-width: 840px) {
-        margin-left: 10px;
-        margin-top: 50%;
-      }
-}
+  .Logo {
+    border-left: none;
+  }
 
-tbody tr td {
-  border-left: 1px solid #554b77; 
-}
+  .LogoImg {
+    width: 75px;
+    margin-top: 20px;
+    margin-right: 15px;
+  }
 
-.Vacio {
-  border: none;
-}
+  tbody tr td {
+    border-left: 1px solid #554b77;
+  }
 
+  .Vacio {
+    border: none;
+  }
 `;
 
 const RPSStats = ({ clubData }) => {
@@ -56,12 +43,14 @@ const RPSStats = ({ clubData }) => {
     <StyledStats>
       <table className="profile-game-stats">
         <thead>
-          <tr>
-            <th className="Logo h1">RPS</th>
-            <th>Top Win Streak</th>
-            <th>Rock</th>
-            <th>Paper</th>
-            <th>Scissors</th>
+          <tr className="tr-profile-text">
+            <th className="Logo h1">
+              <img src={rps} className="LogoImg" alt="Logo" />
+            </th>
+            <th className="item1">Top Win Streak</th>
+            <th className="item1">Rock</th>
+            <th className="item1">Paper</th>
+            <th className="item1">Scissors</th>
           </tr>
         </thead>
         <tbody>

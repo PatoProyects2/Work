@@ -5,7 +5,6 @@ import { useUserProfile } from '../../hooks/firebase/useUserProfile';
 const TableGames = ({ uid, result, streak, maticAmount, createdAt, game, profit, account, isMobileResolution }) => {
     const unixTime = useTime()
     const userProfile = uid !== 'anonymous' ? useUserProfile(uid) : true
-
     const [gameTime, setGameTime] = useState(false);
 
     useEffect(() => {
@@ -27,14 +26,14 @@ const TableGames = ({ uid, result, streak, maticAmount, createdAt, game, profit,
                     height="25"
                     className="rounded-circle"
                     alt=""
-                    src={uid !== 'anonymous' ? userProfile[0].photo : 'https://firebasestorage.googleapis.com/v0/b/games-club-dce4d.appspot.com/o/ClubLogo.png?alt=media&token=5dd64484-c99f-4ce9-a06b-0a3ee112b37b'}
+                    src={uid !== 'anonymous' && userProfile[0] ? userProfile[0].photo : 'https://firebasestorage.googleapis.com/v0/b/games-club-dce4d.appspot.com/o/ClubLogo.png?alt=media&token=5dd64484-c99f-4ce9-a06b-0a3ee112b37b'}
                     onError={({ currentTarget }) => {
                         currentTarget.onerror = null; // prevents looping
                         currentTarget.src = "https://firebasestorage.googleapis.com/v0/b/rpsgame-c4a38.appspot.com/o/profile%2FClubLogo.png?alt=media&token=7d14512f-c4a8-400f-a7ca-413239add111";
                     }}
                 />
                 &nbsp;
-                {uid !== 'anonymous'
+                {uid !== 'anonymous' && userProfile[0]
                     ? isMobileResolution
                         ? userProfile[0].name.length > 9 ? userProfile[0].name.substring(0, 9) + "..." : userProfile[0].name
                         : userProfile[0].name.length > 13 ? userProfile[0].name.substring(0, 13) + "..." : userProfile[0].name

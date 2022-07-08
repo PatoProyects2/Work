@@ -23,10 +23,10 @@ const HistoryGames = ({ gamesData }) => {
           <Table borderless responsive>
             <thead>
               <tr>
-                <th>Id</th>
-                <th>Result</th>
-                <th>Amount</th>
-                <th>Transaction</th>
+                <th className="modal-history-games">Id</th>
+                <th className="modal-history-games">Result</th>
+                <th className="modal-history-games">Amount</th>
+                <th className="modal-history-games">Transaction</th>
               </tr>
             </thead>
             <tbody>

@@ -13,8 +13,8 @@ import Settings from "./components/Settings/Settings";
 
 const StyledNavbar = styled.div`
   margin-bottom: 10px;
-
   .Main-Menu {
+    border-bottom: 1px solid #2c2640;
     background-color: #3d3657;
     padding-top: 10px;
     padding-bottom: 10px;
@@ -54,7 +54,9 @@ const NavBar = () => {
         <div className="Menu d-flex">
           <img
             role="button"
-            onClick={() => showOffcanvas ? setShowOffCanvas(false) : setShowOffCanvas(true)}
+            onClick={() =>
+              showOffcanvas ? setShowOffCanvas(false) : setShowOffCanvas(true)
+            }
             className="BotonMenu"
             src={showOffcanvas ? CloseButton : MenuIcon}
             alt=""
@@ -64,16 +66,11 @@ const NavBar = () => {
           <NavLink className="" to="/">
             <h1 className="GamesText">Games Club</h1>
           </NavLink>
-          {!isMobileResolution
-            &&
-            <OnlineUsers />
-          }
-
+          {!isMobileResolution && <OnlineUsers />}
         </div>
-        {!isMobileResolution
-          &&
+        {!isMobileResolution && (
           <Balance isMobileResolution={isMobileResolution} />
-        }
+        )}
         <div className="d-flex align-items-center gap-2">
           <Settings />
           <Profile />
@@ -276,8 +273,7 @@ const NavBar = () => {
               </a>
             </Nav>
 
-            {isMobileResolution
-              &&
+            {isMobileResolution && (
               <>
                 <div className="d-flex justify-content-center mt-3">
                   <OnlineUsers />
@@ -286,7 +282,7 @@ const NavBar = () => {
                   <Balance isMobileResolution={isMobileResolution} />
                 </div>
               </>
-            }
+            )}
           </OffcanvasBody>
         </Offcanvas>
       </Navbar>

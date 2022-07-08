@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import {
   addDoc,
   collection,
@@ -10,6 +10,7 @@ import {
 import toast from "react-hot-toast";
 import { useMixpanel } from "react-mixpanel-browser";
 import winSound from "../../assets/audio/win_sound.mpeg";
+import RPSGames from "../../assets/imgs/Home Page/RPS Games.png";
 import lose1 from "../../assets/imgs/result/lose1.gif";
 import lose2 from "../../assets/imgs/result/lose2.png";
 import win1 from "../../assets/imgs/result/win1.gif";
@@ -30,6 +31,7 @@ import {
 } from "./components/Modals/Modals";
 
 const RPS = () => {
+  const screen = useRef(null);
   const { discordId, balance, soundToggle, gas } = useContext(Context);
   const {
     web3,
@@ -53,14 +55,13 @@ const RPS = () => {
   });
   const [gameLog, setGameLog] = useState("");
   const [randomItem, setRandomItem] = useState("");
-  const [userhand, setUserhand] = useState(0);
-  const [useramount, setUseramount] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [animation, setAnimation] = useState(false);
   const [gameId, setGameId] = useState(false);
   const [save, setSave] = useState(false);
   const [busyNetwork, setBusyNetwork] = useState(false);
   const [result, setResult] = useState(false);
+  const [load, setLoad] = useState(false);
 
   const music = new Audio(winSound);
   const local = window.localStorage.getItem("token");
@@ -69,7 +70,14 @@ const RPS = () => {
     return new Promise((resolve) => setTimeout(resolve, milliseconds));
   };
 
+  const scrollToBottom = () => {
+    screen.current.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(scrollToBottom, [load, account, playing]);
+
   useEffect(() => {
+    setLoad(true);
     if (local === null) {
       toast("Log in if you want to save you game stats and ahievements", {
         duration: 10000,
@@ -153,27 +161,16 @@ const RPS = () => {
       toast.error("We cannot detect your wallet, please reload the website");
       return false;
     }
-    if (
-      document.getElementById("rock").checked ||
-      document.getElementById("paper").checked ||
-      document.getElementById("scissors").checked
-    ) {
-      setUserhand(usergame.hand);
-    } else {
+    if (usergame.hand === "") {
       toast.error("Select a hand");
       return false;
     }
-    if (
-      document.getElementById("amount1").checked ||
-      document.getElementById("amount2").checked ||
-      document.getElementById("amount3").checked ||
-      document.getElementById("amount4").checked ||
-      document.getElementById("amount5").checked ||
-      document.getElementById("amount6").checked
-    ) {
-      setUseramount(usergame.amount);
-    } else {
+    if (usergame.amount === 0) {
       toast.error("Select an amount");
+      return false;
+    }
+    if (document.getElementById("age").checked === false) {
+      toast.error("Confirm that you are at least 18 years old");
       return false;
     }
     if (network !== 137) {
@@ -182,7 +179,7 @@ const RPS = () => {
     }
     if (balance === "") {
       toast.error(
-        "We cannot connect to the polygon network, please try changing your network RPC in your wallet"
+        "We cannot connect to Polygon network, please try changing your network RPC in your wallet"
       );
       return false;
     }
@@ -201,9 +198,12 @@ const RPS = () => {
     const actuallBlock = await web3.eth.getBlockNumber();
 
     if (actuallBlock) {
-      const query = discordId !== "" ? doc(db, "clubUsers", discordId) : doc(db, "anonUsers", account)
-      const document = await getDoc(query)
-      const playerDocument = document.data()
+      const query =
+        discordId !== ""
+          ? doc(db, "clubUsers", discordId)
+          : doc(db, "anonUsers", account);
+      const document = await getDoc(query);
+      const playerDocument = document.data();
 
       const lastGame = playerDocument.rps.lastGameBlock;
 
@@ -219,77 +219,73 @@ const RPS = () => {
           .on("transactionHash", function (hash) {
             setGameLog("PLAYING");
           })
-          .on("confirmation", function (confirmationNumber, receipt) { })
+          // .on("confirmation", function (confirmationNumber, receipt) {})
           .on("receipt", async function (playEvent) {
-            setGameLog("SAVING YOUR GAME");
             const gameId = parseInt(
               playEvent.events.BetPlaced.returnValues.betId
             );
+            setGameLog("SAVING YOUR GAME");
             setGameId(gameId);
-            const gameBlock = playEvent.blockNumber;
+            // const gameBlock = playEvent.blockNumber;
             const txHash = playEvent.transactionHash;
-            for (let i = 0; i < 1000; i++) {
+            var betGame = [false, false, false, false, false, false];
+            while (!betGame[5]) {
               try {
-                const betGame = await rpsgame.methods.bets(gameId).call();
-                if (
-                  parseInt(betGame[0]) !== 0 &&
-                  parseInt(betGame[1]) === gameBlock
-                ) {
-                  setGameLog("GAME SAVED");
-                  saveBlockchainEvents(betGame, playerDocument, txHash, gameId);
-                  break;
-                }
-              } catch (err) { }
+                betGame = await rpsgame.methods.bets(gameId).call();
+              } catch (err) {}
               await sleep(1000);
+            }
+            if (betGame[5]) {
+              setGameLog("GAME SAVED");
+              saveBlockchainEvents(betGame, playerDocument, txHash, gameId);
             }
           })
           .on("error", async function (err, receipt) {
             if (err.code === -32603) {
               toast.error("This transaction needs more gas to be executed");
-              setPlaying(false);
-              setAnimation(false);
+              backGame();
               return false;
             }
             if (err.code === 4001) {
               toast.error("You denied transaction signature");
-              setPlaying(false);
-              setAnimation(false);
+              backGame();
               return false;
             }
-            if (err.code !== -32603 && err.code !== 4001) {
-              setBusyNetwork(true);
-              let playEvent = undefined;
-              var warningBlockchain = toast.loading(
-                "This transaction is taking too long because the network is busy, please check the status of your transaction in your wallet"
-              );
-              setGameLog("BE PATIENT NETWORK IS BUSY");
-              const gameId = parseInt(
-                playEvent.events.BetPlaced.returnValues.betId
-              );
-              const gameBlock = playEvent.blockNumber;
-              const txHash = playEvent.transactionHash;
+            console.log({ err, receipt });
+            // if (err.code !== -32603 && err.code !== 4001) {
+            //   setBusyNetwork(true);
+            //   let playEvent = undefined;
+            //   var warningBlockchain = toast.loading(
+            //     "This transaction is taking too long because the network is busy, please check the status of your transaction in your wallet"
+            //   );
+            //   setGameLog("BE PATIENT NETWORK IS BUSY");
+            //   const gameId = parseInt(
+            //     playEvent.events.BetPlaced.returnValues.betId
+            //   );
+            //   const gameBlock = playEvent.blockNumber;
+            //   const txHash = playEvent.transactionHash;
 
-              for (let i = 0; i < 1000; i++) {
-                try {
-                  const betGame = await rpsgame.methods.bets(gameId).call();
-                  if (
-                    parseInt(betGame[0]) !== 0 &&
-                    parseInt(betGame[1]) === gameBlock
-                  ) {
-                    saveBlockchainEvents(
-                      betGame,
-                      playerDocument,
-                      txHash,
-                      gameId
-                    );
-                    setBusyNetwork(false);
-                    break;
-                  }
-                } catch (err) { }
-                await sleep(1000);
-              }
-              toast.dismiss(warningBlockchain);
-            }
+            //   for (let i = 0; i < 1000; i++) {
+            //     try {
+            //       const betGame = await rpsgame.methods.bets(gameId).call();
+            //       if (
+            //         parseInt(betGame[0]) !== 0 &&
+            //         parseInt(betGame[1]) === gameBlock
+            //       ) {
+            //         saveBlockchainEvents(
+            //           betGame,
+            //           playerDocument,
+            //           txHash,
+            //           gameId
+            //         );
+            //         setBusyNetwork(false);
+            //         break;
+            //       }
+            //     } catch (err) {}
+            //     await sleep(1000);
+            //   }
+            //   toast.dismiss(warningBlockchain);
+            // }
           });
       } else {
         toast.error(
@@ -302,28 +298,39 @@ const RPS = () => {
     }
   };
 
-  const saveBlockchainEvents = async (betGame, playerDocument, txHash, gameId) => {
-    const userResult = parseInt(betGame[0]) > 50 ? true : false;
+  const saveBlockchainEvents = async (
+    betGame,
+    playerDocument,
+    txHash,
+    gameId
+  ) => {
+    const userResult = parseInt(betGame[3]) > 0 ? true : false;
     const userStreak = userResult ? playerDocument.rps.winStreak + 1 : 0;
     const userBlock = parseInt(betGame[1]);
-    const maticAmount = parseInt(web3.utils.fromWei(betGame[2].toString(), "ether"));
+    const maticAmount = parseInt(
+      web3.utils.fromWei(betGame[2].toString(), "ether")
+    );
     const usdAmount = maticAmount * maticPrice;
     const account = betGame[4].toLowerCase();
 
     if (discordId !== "") {
       const level = playerDocument.level;
-      const totalGames = playerDocument.rps.gameWon + playerDocument.rps.gameLoss + 1;
+      const totalGames =
+        playerDocument.rps.gameWon + playerDocument.rps.gameLoss + 1;
       const userGame = userResult
         ? playerDocument.rps.gameWon + 1
         : playerDocument.rps.gameLoss + 1;
       const userAmount = userResult
         ? playerDocument.rps.amountWon + usdAmount
         : playerDocument.rps.amountLoss + usdAmount;
-      const profit = playerDocument.rps.amountWon - playerDocument.rps.amountLoss;
+      const profit =
+        playerDocument.rps.amountWon - playerDocument.rps.amountLoss;
       const userProfit = userResult ? profit + usdAmount : profit - usdAmount;
       const rockHand = usergame.hand === "ROCK" && playerDocument.rps.rock + 1;
-      const paperHand = usergame.hand === "PAPER" && playerDocument.rps.paper + 1;
-      const scissorsHand = usergame.hand === "SCISSORS" && playerDocument.rps.scissors + 1;
+      const paperHand =
+        usergame.hand === "PAPER" && playerDocument.rps.paper + 1;
+      const scissorsHand =
+        usergame.hand === "SCISSORS" && playerDocument.rps.scissors + 1;
 
       useStats({ level, totalGames, discordId });
 
@@ -380,7 +387,6 @@ const RPS = () => {
         txHash: txHash,
         gameId: gameId,
       });
-
     } else {
       updateDoc(doc(db, "anonUsers", account), {
         "rps.lastGameBlock": userBlock,
@@ -488,76 +494,95 @@ const RPS = () => {
     setGameId(false);
     setResult(false);
     setGameResult({});
+    setUsergame({ hand: "", amount: 0 });
   };
 
   return (
-    <article>
-      {account !== undefined &&
+    <>
+      {/* <SocialButtons /> */}
+      <div className="left-content-rps">
+        <img src={RPSGames} alt="" />
+      </div>
+      <article>
+        {account !== undefined &&
         account !== "0x000000000000000000000000000000000000dEaD" ? (
-        <div className="game-container">
-          <div className="g-btn-historygames">
-            <ConnectWallet
-              web3={web3}
-              account={account}
-              balance={balance}
-              disconnectWallet={disconnectWallet}
-              userData={userData}
-              user={discordId}
-              toast={toast}
-            />
-          </div>
-          {playing ? (
-            <div className="game-playing-container">
-              <Play
-                animation={animation}
-                save={save}
-                gameLog={gameLog}
-                gameId={gameId}
-                userhand={userhand}
-                useramount={useramount}
-                busyNetwork={busyNetwork}
-                dotLog={dotLog}
-                showResult={showResult}
-              />
-              <Result
-                result={result}
-                userhand={userhand}
-                useramount={useramount}
-                gameResult={gameResult}
-                save={save}
-                dotLog={dotLog}
-                backGame={backGame}
+          <div className="game-container">
+            <div className="g-btn-historygames">
+              <ConnectWallet
+                web3={web3}
+                account={account}
+                balance={balance}
+                disconnectWallet={disconnectWallet}
+                userData={userData}
+                user={discordId}
+                toast={toast}
               />
             </div>
-          ) : (
-            <>
-              <Hands
-                handleInputChange={handleInputChange}
-                randomItem={randomItem}
-              />
-              <Amounts handleInputChange={handleInputChange} />
-              <button
-                onClick={verifyGame}
-                className="DoubleOrNothing"
-                disabled={playing}
-              >
-                DOUBLE OR NOTHING
-              </button>
-            </>
-          )}
-        </div>
-      ) : (
-        <>
-          <RpsImage />
-          <ConnectWallet
-            toast={toast}
-            readBlockchainData={readBlockchainData}
-            web3={web3}
-            account={account}
-          />
-        </>
-      )}
-    </article>
+            {playing ? (
+              <div className="game-playing-container">
+                <Play
+                  animation={animation}
+                  save={save}
+                  gameLog={gameLog}
+                  gameId={gameId}
+                  userhand={usergame.hand}
+                  useramount={usergame.amount}
+                  busyNetwork={busyNetwork}
+                  dotLog={dotLog}
+                  showResult={showResult}
+                />
+                <Result
+                  result={result}
+                  userhand={usergame.hand}
+                  useramount={usergame.amount}
+                  gameResult={gameResult}
+                  save={save}
+                  dotLog={dotLog}
+                  backGame={backGame}
+                />
+              </div>
+            ) : (
+              <>
+                <div className="text-container">
+                  <p>Select your bet:</p>
+                </div>
+                <Hands
+                  handleInputChange={handleInputChange}
+                  randomItem={randomItem}
+                />
+
+                <Amounts handleInputChange={handleInputChange} />
+                <button
+                  onClick={verifyGame}
+                  className="DoubleOrNothing"
+                  disabled={playing}
+                >
+                  DOUBLE OR NOTHING
+                </button>
+                <p className="text-center mb-3 mt-3">
+                  <label className="switch">
+                    <input id="age" type="checkbox"></input>&nbsp;
+                    <span className="slider round"></span>
+                  </label>
+                  &nbsp; I confirm that I am at least 18 years old
+                </p>
+              </>
+            )}
+          </div>
+        ) : (
+          <>
+            <RpsImage />
+            <ConnectWallet
+              toast={toast}
+              readBlockchainData={readBlockchainData}
+              web3={web3}
+              account={account}
+            />
+          </>
+        )}
+        <div ref={screen}></div>
+      </article>
+    </>
   );
 };
 

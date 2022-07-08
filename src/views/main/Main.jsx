@@ -1,9 +1,14 @@
-import { useContext, useEffect, useState } from "react";
 import { collection, doc, getDocs, query, setDoc } from "firebase/firestore";
+import { useContext, useEffect, useState } from "react";
 import { db } from "../../config/firesbaseConfig";
 import { Context } from "../../context/Context";
 import { useMatchMedia } from "../../hooks/useMatchMedia";
-import { StyledMain, StyledMenu, SocialButtons, BannerCards, TableButtons, Tables } from "./components/Modals/Modals";
+import {
+  BannerCards,
+  StyledMain,
+  TableButtons,
+  Tables,
+} from "./components/Modals/Modals";
 
 const Main = () => {
   const { discordId } = useContext(Context);
@@ -15,7 +20,7 @@ const Main = () => {
   const [weekly, setWeekly] = useState(false);
   const [monthly, setMonthly] = useState(false);
   const [global, setGlobal] = useState(false);
-  const isMobileResolution = useMatchMedia("(max-width:700px)", false);
+  const isMobileResolution = useMatchMedia("(max-width:750px)", false);
   const isTabletResolution = useMatchMedia("(max-width:1000px)", false);
 
   useEffect(() => {
@@ -48,9 +53,9 @@ const Main = () => {
       document.forEach((doc) => {
         let data = doc.data();
 
-        if (data.uid !== 'anonymous') {
+        if (data.uid !== "anonymous") {
           let created = data.createdAt;
-          
+
           if (created > lastDay) {
             const array = {
               photo: data.photo,
@@ -89,7 +94,6 @@ const Main = () => {
           };
           globalGames = globalGames.concat(array);
         }
-
       });
 
       // Agrupar por usuario
@@ -244,49 +248,37 @@ const Main = () => {
     setLiveBets(true);
     setMostPlays(false);
     setMostAmount(false);
-  }
+  };
 
   const activeTopGames = () => {
     setLiveBets(false);
     setMostPlays(true);
     setMostAmount(false);
-    day()
-  }
+    day();
+  };
 
   const activeTopAmount = () => {
     setLiveBets(false);
     setMostPlays(false);
     setMostAmount(true);
-    day()
-  }
+    day();
+  };
 
   return (
     <StyledMain>
-
-      <StyledMenu>
-        <SocialButtons
-          isMobileResolution={isMobileResolution}
-        />
-      </StyledMenu>
-
-      <BannerCards
-        isTabletResolution={isTabletResolution}
-      />
+      <BannerCards isTabletResolution={isTabletResolution} />
 
       <TableButtons
         activeLiveBets={activeLiveBets}
         activeTopGames={activeTopGames}
         activeTopAmount={activeTopAmount}
-
         liveBets={liveBets}
         mostPlays={mostPlays}
         mostAmount={mostAmount}
-
         day={day}
         week={week}
         month={month}
         all={all}
-
         daily={daily}
         weekly={weekly}
         monthly={monthly}
@@ -295,19 +287,15 @@ const Main = () => {
 
       <Tables
         topLeaderboards={topLeaderboards}
-
         isMobileResolution={isMobileResolution}
-
         liveBets={liveBets}
         mostPlays={mostPlays}
         mostAmount={mostAmount}
-
         daily={daily}
         weekly={weekly}
         monthly={monthly}
         global={global}
       />
-
     </StyledMain>
   );
 };

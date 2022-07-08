@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import {useEffect, useContext } from "react";
 import { useSearchParams } from 'react-router-dom'
 import CryptoJS from 'crypto-js'
 import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
@@ -7,7 +7,7 @@ import { Context } from "../context/Context"
 
 export const useAuth = () => {
     const { setDiscordId } = useContext(Context)
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams] = useSearchParams();
 
     const clientId = process.env.REACT_APP_DISCORD_CLIENTID
     const clientSecret = process.env.REACT_APP_DISCORD_CLIENTSECRET
@@ -32,7 +32,7 @@ export const useAuth = () => {
                     client_secret: clientSecret,
                     code: url,
                     grant_type: 'authorization_code',
-                    redirect_uri: 'https://games-club-build.vercel.app/',
+                    redirect_uri: 'http://localhost:3000/',
                     scope: 'identify email',
                 }),
                 headers: {

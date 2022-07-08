@@ -1,12 +1,13 @@
-import { useContext, useEffect, useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import styled from "styled-components";
-import { Context } from "../../context/Context";
-import { useGames } from "../../hooks/firebase/useGames";
-import { useProfile } from "../../hooks/firebase/useProfile";
+import { useUserGames } from "../../hooks/firebase/useUserGames";
+import { useUserProfile } from "../../hooks/firebase/useUserProfile";
 import { useMatchMedia } from "../../hooks/useMatchMedia";
 import Chart from "./components/Chart/Chart";
 import HistoryGames from "./components/Info/HistoryGames";
 import Level from "./components/Info/Level";
+import CrownLevel from "./components/Info/CrownLevel";
 import RPSStats from "./components/Info/RPSStats";
 import RPSStatsNew from "./components/Info/RPSStatsNew";
 
@@ -23,6 +24,7 @@ const StyledProfile = styled.div`
     justify-content: center;
     background-color: #554c77;
   }
+
   .profile-container {
     width: 100%;
   }
@@ -40,134 +42,105 @@ const StyledProfile = styled.div`
 `;
 
 const Stats = () => {
-  const myGames = useGames();
-  const myProfile = useProfile();
-  const { discordId } = useContext(Context);
   const [gamesData, setGamesData] = useState(false);
   const isMobileResolution = useMatchMedia("(max-width:700px)", false);
 
+  const userStorage = window.localStorage.getItem("user");
+  const { uid } = useParams();
+
+  var discordId = "";
+  if (userStorage) {
+    discordId = JSON.parse(userStorage).id;
+  }
+
+  var games = useUserGames(uid ? uid : discordId);
+  var userProfile = useUserProfile(uid ? uid : discordId);
+
   useEffect(() => {
-    if (myGames) {
-      const games = myGames.map((game) => {
-        const games = {
+    if (games[0]) {
+      const gameData = games.map((game) => {
+        const data = {
           id: game.gameId,
           result: game.result,
           amount: game.maticAmount,
           txHash: game.txHash,
         };
-        return games;
+        return data;
       });
-      const orderGames = games.sort((a, b) => b.id - a.id);
+      const orderGames = gameData.sort((a, b) => b.id - a.id);
       setGamesData(orderGames);
     }
-  }, [myGames]);
+  }, [games, uid]);
+
+  const xpClassText = () => {
+    const level = userProfile[0].level;
+    if (level <= 4) {
+      return "text-yellow";
+    } else if (level > 4 && level < 10) {
+      return "text-orange";
+    } else if (level > 9 && level < 15) {
+      return "text-pink";
+    } else if (level > 14 && level < 20) {
+      return "text-blue";
+    } else if (level > 19 && level < 24) {
+      return "text-green";
+    } else {
+      return "text-white";
+    }
+  };
 
   return (
-    // <StyledProfile>
-    //   {discordId !== "" && myProfile ? (
-    //     <div className="profile-container">
-    //       <h3 className="TitleUsuario my-3 text-center">
-    //         {myProfile[0].name + "#" + myProfile[0].id} Stats
-    //       </h3>
-    //       <div className="profile-info">
-    //         <div className="profile-info-container">
-    //           <img
-    //             alt={myProfile[0].name}
-    //             className="rounded-circle profile-img"
-    //             src={myProfile[0].photo}
-    //           />
-    //           <p style={{ textAlign: "center", color: "#ffda5c" }}>
-    //             {myProfile[0].name + "#" + myProfile[0].id}
-    //           </p>
-    //           <Level clubData={myProfile[0]} />
-    //         </div>
-    //         {!isMobileResolution && (
-    //           <div className="profile-stats-container">
-    //             <RPSStats clubData={myProfile[0]} />
-    //           </div>
-    //         )}
-    //       </div>
-    //       {isMobileResolution && (
-    //         <div className="rps-stats-mobile mt-2">
-    //           <RPSStats clubData={myProfile[0]} />
-    //         </div>
-    //       )}
-
-    //       {!isMobileResolution && (
-    //         <div className="mt-2">
-    //           <RPSStatsNew clubData={myProfile[0]} />
-    //         </div>
-    //       )}
-
-    //       {isMobileResolution && (
-    //         <div className="statsNew-mobile mt-2">
-    //           <RPSStatsNew clubData={myProfile[0]} />
-    //         </div>
-    //       )}
-    //       {gamesData && (
-    //         <div className="mt-2">
-    //           <HistoryGames gamesData={gamesData} />
-    //         </div>
-    //       )}
-    //       <div className="mt-2">
-    //         <Chart clubData={myProfile[0]} discordId={discordId} />
-    //       </div>
-    //     </div>
-    //   ) : (
-    //     <h2 className="text-center mt-3">Log in with Discord</h2>
-    //   )}
-    // </StyledProfile>
     <StyledProfile>
-      {
-        discordId !== "" && myProfile
-          ?
-          <div className="profile-container">
-            <h3 className="TitleUsuario my-3 text-center">
-              {myProfile[0].name + "#" + myProfile[0].id} Stats
-            </h3>
-            <div className="profile-info">
-              <div className="profile-info-container">
-                <img
-                  alt={myProfile[0].name}
-                  className="rounded-circle profile-img"
-                  src={myProfile[0].photo}
-                />
-                <p style={{ textAlign: "center", color: "#ffda5c" }}>
-                  {myProfile[0].name + "#" + myProfile[0].id}
-                </p>
-                <Level clubData={myProfile[0]} />
+      {userProfile && gamesData && (
+        <div className="profile-container">
+          <h3 className="TitleUsuario my-3 text-center">
+            {userProfile[0].name + "#" + userProfile[0].id} Stats
+          </h3>
+          <div className="profile-info">
+            <div className="profile-info-container">
+              <img
+                alt={userProfile[0].name}
+                className="rounded-circle profile-img"
+                src={userProfile[0].photo}
+              />
+              <div className="d-flex m-auto">
+                <CrownLevel userLevel={userProfile[0].level} />
+                <span className={xpClassText()}>
+                  {userProfile[0].name + "#" + userProfile[0].id}
+                </span>
               </div>
-              {!isMobileResolution &&
-                <div className="profile-stats-container">
-                  <RPSStats clubData={myProfile[0]} />
-                </div>
-              }
+              <Level clubData={userProfile[0]} />
             </div>
-            {isMobileResolution &&
-              <div className="rps-stats-mobile mt-2">
-                <RPSStats clubData={myProfile[0]} />
+            {!isMobileResolution && (
+              <div className="profile-stats-container">
+                <RPSStats clubData={userProfile[0]} />
               </div>
-            }
-            {
-              gamesData
-                ?
-                <div className="mt-2">
-                  <RPSStatsNew
-                    clubData={myProfile[0]}
-                    isMobileResolution={isMobileResolution} />
-                  <HistoryGames gamesData={gamesData} />
-                  <Chart
-                    clubData={myProfile[0]}
-                    discordId={discordId} />
-                </div>
-                :
-                <h4 className="text-center mt-2">No games found</h4>
-            }
+            )}
           </div>
-          :
-          <h2 className="text-center mt-3">Log in with Discord</h2>
-      }
-    </StyledProfile >
+          {isMobileResolution && (
+            <div className="rps-stats-mobile mt-2">
+              <RPSStats clubData={userProfile[0]} />
+            </div>
+          )}
+          {gamesData ? (
+            <div className="mt-2">
+              <RPSStatsNew
+                clubData={userProfile[0]}
+                isMobileResolution={isMobileResolution}
+              />
+              <HistoryGames gamesData={gamesData} />
+              <Chart clubData={userProfile[0]} />
+            </div>
+          ) : (
+            <h4 className="text-center mt-2">No games found</h4>
+          )}
+        </div>
+      )}
+      {discordId === "" && !uid && (
+        <h2 className="text-center mt-3">Login with discord</h2>
+      )}
+      {uid && !userProfile && <h2 className="text-center mt-3">Loading...</h2>}
+    </StyledProfile>
   );
 };
 

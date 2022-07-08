@@ -1,23 +1,23 @@
-import React from 'react';
-import ReactDOM from 'react-dom'
+import React from "react";
+import ReactDOM from "react-dom";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
-import 'bootstrap/dist/css/bootstrap.css'
-import { MixpanelProvider } from 'react-mixpanel-browser';
-import MainLayout from './components/Layout/MainLayout'
-import TestLayout from './components/Layout/TestLayout'
-import Main from './views/Main/Main'
-import RPS from './views/RPS/RPS'
-import RPSDemo from './views/RPSDemo/RPSDemo'
-import Nfts from './views/Nfts/Nfts';
-import FairPlay from './views/FairPlay/FairPlay';
-import About from './views/About/About'
-import Stats from './views/Stats/Stats'
-import RefundPolicy from './views/RefundPolicy/RefundPolicy';
-import Terms from './views/Terms/Terms';
-import Maintenance from './views/Maintenance/Maintenance';
-import ScrollToTop from './hooks//ScrollToTop';
-import * as serviceWorker from './serviceWorker'
-import './index.scss'
+import "bootstrap/dist/css/bootstrap.css";
+import { MixpanelProvider } from "react-mixpanel-browser";
+import MainLayout from "./components/Layout/MainLayout";
+import TestLayout from "./components/Layout/TestLayout";
+import Main from "./views/Main/Main";
+import RPS from "./views/RPS/RPS";
+import RPSDemo from "./views/RPSDemo/RPSDemo";
+import Nfts from "./views/Nfts/Nfts";
+import FairPlay from "./views/FairPlay/FairPlay";
+import About from "./views/About/About";
+import Stats from "./views/Stats/Stats";
+import RefundPolicy from "./views/RefundPolicy/RefundPolicy";
+import Terms from "./views/Terms/Terms";
+import Maintenance from "./views/Maintenance/Maintenance";
+import ScrollToTop from "./hooks//ScrollToTop";
+import * as serviceWorker from "./serviceWorker";
+import "./index.scss";
 
 ReactDOM.render(
   <MixpanelProvider>
@@ -31,7 +31,10 @@ ReactDOM.render(
             <Route path="nfts" element={<Nfts />} />
             <Route path="fair-play" element={<FairPlay />} />
             <Route path="about" element={<About />} />
-            <Route path="stats" element={<Stats />} />
+            <Route path="stats">
+              <Route index element={<Stats />} />
+              <Route path=":uid" element={<Stats />} />
+            </Route>
             <Route path="refund-policy" element={<RefundPolicy />} />
             <Route path="terms" element={<Terms />} />
           </Route>
@@ -41,12 +44,11 @@ ReactDOM.render(
           </Route> */}
 
           <Route path="*" element={<Navigate replace to="/" />} />
-
         </Routes>
       </ScrollToTop>
-    </BrowserRouter >
+    </BrowserRouter>
   </MixpanelProvider>,
-  document.getElementById('root')
+  document.getElementById("root")
 );
 
 serviceWorker.unregister();

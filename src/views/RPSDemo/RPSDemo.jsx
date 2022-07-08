@@ -177,6 +177,7 @@ const RPSDemo = () => {
               <Hands
                 handleInputChange={handleInputChange}
                 randomItem={randomItem}
+                userhand={usergame.hand}
               />
               <Amounts handleInputChange={handleInputChange} />
               <button
