@@ -1,10 +1,8 @@
-import { useContext, useEffect, useState } from "react";
-import { Button, ButtonGroup, FormGroup, Modal, ModalBody } from "reactstrap";
+import { useContext, useEffect } from "react";
 import { Context } from "../../../../context/Context";
 import { useGas } from "../../../../hooks/useGas";
 
 const Settings = () => {
-  const [isOpen, setIsOpen] = useState(false);
   const {
     soundToggle,
     setSoundToggle,
@@ -21,138 +19,166 @@ const Settings = () => {
     }
   }, [gas, gasTrack]);
 
-  const toggleModal = () => {
-    setIsOpen(isOpen ? false : true);
-  };
+  useEffect(() => {
+    let open = document.querySelectorAll(".open-modal")[0];
+    let close = document.querySelectorAll(".close")[0];
+    let container = document.querySelectorAll(".container-modal")[0];
+    let modal = document.querySelectorAll(".modal")[0];
+    let body = document.querySelectorAll("body")[0];
+
+    open.onclick = function (event) {
+      event.preventDefault();
+
+      container.style.opacity = "1";
+      container.style.visibility = "visible";
+      container.style.animation = "fadeIn 0.3s";
+
+      modal.classList.toggle("modal-close");
+
+      body.style.position = "static";
+      body.style.height = "100%";
+      body.style.overflow = "hidden";
+    };
+
+    close.onclick = function () {
+      modal.classList.toggle("modal-close");
+      container.style.animation = "fadeOut 0.3s";
+
+      setTimeout(() => {
+        container.style.opacity = "0";
+        container.style.visibility = "hidden";
+
+        body.style.position = "inherit";
+        body.style.height = "auto";
+        body.style.overflow = "visible";
+      }, 200);
+    };
+
+    window.onclick = function (event) {
+      if (event.target === container) {
+        modal.classList.toggle("modal-close");
+        container.style.animation = "fadeOut 0.3s";
+
+        setTimeout(() => {
+          container.style.opacity = "0";
+          container.style.visibility = "hidden";
+
+          body.style.position = "inherit";
+          body.style.height = "auto";
+          body.style.overflow = "visible";
+        }, 200);
+      }
+    };
+  }, []);
 
   return (
-    <div>
+    <>
       <i
         role="button"
-        onClick={toggleModal}
-        className="fa fa-cog"
+        className="open-modal fa fa-cog"
         style={{ color: "#ffdb5b" }}
         aria-hidden="true"
       ></i>
-      <Modal isOpen={isOpen} className="d-modal" size="md">
-        <ModalBody className="modal-body">
-          <div className="d-flex justify-content-end">
-            <button
-              type="button"
-              className="btn-close"
-              aria-label="Close"
-              onClick={toggleModal}
-            ></button>
-          </div>
-          <h4 className="text-center effect-text-hiper">Settings</h4>
-          <h6 className="effect-text">Global</h6>
-          <FormGroup className="pt-3 text-center">
-            <span className="d-block mb-3 effect-text-normal">Sounds</span>
-            <label className="switch">
-              <input
-                readOnly
-                id="age"
-                type="checkbox"
-                checked={soundToggle}
-                className="btn btn-info"
-                onClick={() =>
-                  soundToggle ? setSoundToggle(false) : setSoundToggle(true)
-                }
-              ></input>
-              &nbsp;
-              <span className="slider round"></span>
-            </label>
-          </FormGroup>
-          <FormGroup className="pt-3 text-center">
-            <span className="d-block mb-3 effect-text-normal ">
-              Transaction speed (GWEI)
+
+      <div className="container-modal">
+        <div className="modal modal-close">
+          <div className="modal-flex">
+            <h4 className="text-settings">Settings</h4>
+            <span className="close" aria-label="Close">
+              <i className="fa fa-times" aria-hidden="true"></i>
             </span>
+          </div>
+          <span className="text-white">Sound</span>
+          <div className="settings-div">
+            <button
+              className={soundToggle ? "green" : "setting-button"}
+              onClick={() => !soundToggle && setSoundToggle(true)}
+            >
+              <i className="fas fa-volume-up"></i>
+            </button>
+            <button
+              className={!soundToggle ? "red" : "setting-button"}
+              onClick={() => soundToggle && setSoundToggle(false)}
+            >
+              <i className="fas fa-volume-mute"></i>
+            </button>
+          </div>
+          <span className="d-block text-white">Transaction speed (GWEI)</span>
+          <div className="settings-div text-center">
             {gasTrack && (
-              <ButtonGroup>
-                <Button
+              <div>
+                <button
                   className={
-                    gas.state === "standard"
-                      ? "btn btn-info"
-                      : "btn btn-secondary"
+                    gas.state === "standard" ? "green" : "setting-button"
                   }
                   onClick={() =>
+                    gas.state !== "standard" &&
                     setGas({
                       state: "standard",
                       value: parseInt(gasTrack.safeLow.maxFee),
                     })
                   }
                 >
-                  Standard ({gasTrack.safeLow.maxFee.toFixed(2)})
-                </Button>
-                <Button
-                  className={
-                    gas.state === "fast" ? "btn btn-info" : "btn btn-secondary"
-                  }
+                  Standard
+                  {/* ({gasTrack.safeLow.maxFee.toFixed(2)}) */}
+                </button>
+                <button
+                  className={gas.state === "fast" ? "green" : "setting-button"}
                   onClick={() =>
+                    gas.state !== "fast" &&
                     setGas({
                       state: "fast",
                       value: parseInt(gasTrack.standard.maxFee),
                     })
                   }
                 >
-                  Fast ({gasTrack.standard.maxFee.toFixed(2)})
-                </Button>
-                <Button
+                  Fast
+                  {/* ({gasTrack.standard.maxFee.toFixed(2)}) */}
+                </button>
+                <button
                   className={
-                    gas.state === "instant"
-                      ? "btn btn-info"
-                      : "btn btn-secondary"
+                    gas.state === "instant" ? "green" : "setting-button"
                   }
                   onClick={() =>
+                    gas.state !== "instant" &&
                     setGas({
                       state: "instant",
                       value: parseInt(gasTrack.fast.maxFee),
                     })
                   }
                 >
-                  Instant ({gasTrack.fast.maxFee.toFixed(2)})
-                </Button>
-              </ButtonGroup>
+                  Instant
+                  {/* ({gasTrack.fast.maxFee.toFixed(2)}) */}
+                </button>
+              </div>
             )}
-          </FormGroup>
-          <h6 className="effect-text">Chat</h6>
-          <FormGroup className="pt-3 text-center">
-            <span className="effect-text-normal d-block mb-3">
-              Chat Message History
-            </span>
-            <ButtonGroup>
-              <Button
-                type="button"
-                className={
-                  chatHistory === 50 ? "btn btn-info" : "btn btn-secondary"
-                }
-                onClick={() => setChatHistory(50)}
+          </div>
+          <span className="d-block text-white">Message History</span>
+          <div className="text-center settings-div">
+            <div>
+              <button
+                className={chatHistory === 50 ? "green" : "setting-button"}
+                onClick={() => chatHistory !== 50 && setChatHistory(50)}
               >
                 50
-              </Button>
-              <Button
-                type="button"
-                className={
-                  chatHistory === 100 ? "btn btn-info" : "btn btn-secondary"
-                }
-                onClick={() => setChatHistory(100)}
+              </button>
+              <button
+                className={chatHistory === 100 ? "green" : "setting-button"}
+                onClick={() => chatHistory !== 100 && setChatHistory(100)}
               >
                 100
-              </Button>
-              <Button
-                type="button"
-                className={
-                  chatHistory === 300 ? "btn btn-info" : "btn btn-secondary"
-                }
-                onClick={() => setChatHistory(300)}
+              </button>
+              <button
+                className={chatHistory === 300 ? "green" : "setting-button"}
+                onClick={() => chatHistory !== 300 && setChatHistory(300)}
               >
                 300
-              </Button>
-            </ButtonGroup>
-          </FormGroup>
-        </ModalBody>
-      </Modal>
-    </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
   );
 };
 

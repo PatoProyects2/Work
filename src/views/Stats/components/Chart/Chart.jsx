@@ -33,7 +33,7 @@ const Chart = ({ clubData }) => {
 
         times.push(time);
 
-        let value = [time, profit];
+        let value = profit;
 
         return value;
       });

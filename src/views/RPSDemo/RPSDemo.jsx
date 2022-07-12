@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useRef, useEffect } from "react";
 import toast from "react-hot-toast";
 import winSound from "../../assets/audio/win_sound.mpeg";
 import lose1 from "../../assets/imgs/result/lose1.gif";
@@ -6,15 +6,10 @@ import lose2 from "../../assets/imgs/result/lose2.png";
 import win1 from "../../assets/imgs/result/win1.gif";
 import win2 from "../../assets/imgs/result/win2.png";
 import { Context } from "../../context/Context";
-import {
-  Amounts,
-  Hands,
-  Play,
-  Result,
-  RpsImage,
-} from "../RPS/components/Modals/Modals";
+import { GameLogo, RpsImage, GamePanel } from "../RPS/components/Modals/Modals";
 
 const RPSDemo = () => {
+  const screen = useRef(null);
   const { soundToggle } = useContext(Context);
   const [usergame, setUsergame] = useState({});
   const [randomItem, setRandomItem] = useState("");
@@ -23,14 +18,17 @@ const RPSDemo = () => {
     userStreak: 0,
     gameBlock: 0,
   });
-  const [userhand, setUserhand] = useState(0);
-  const [useramount, setUseramount] = useState(0);
   const [active, setActive] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [animation, setAnimation] = useState(false);
   const [result, setResult] = useState(false);
   const [save, setSave] = useState(false);
+  const [load, setLoad] = useState(false);
   const music = new Audio(winSound);
+
+  useEffect(() => {
+    setLoad(true);
+  }, []);
 
   const handleInputChange = (event) => {
     setUsergame({
@@ -39,11 +37,13 @@ const RPSDemo = () => {
     });
   };
 
+  const scrollToBottom = () => {
+    screen.current.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(scrollToBottom, [load, active, playing]);
+
   const openGame = () => {
-    if (document.getElementById("age").checked === false) {
-      toast.error("Confirm that your are at least 18 years old");
-      return false;
-    }
     let arrayOptions = ["a", "b", "c", "d", "e", "f"];
     var randomArray = (Math.random() * arrayOptions.length) | 0;
     var result = arrayOptions[randomArray];
@@ -51,30 +51,20 @@ const RPSDemo = () => {
     setActive(true);
   };
 
-  const doubleOrNothing = async () => {
-    if (
-      document.getElementById("rock").checked ||
-      document.getElementById("paper").checked ||
-      document.getElementById("scissors").checked
-    ) {
-      setUserhand(usergame.hand);
-    } else {
-      toast.error("Select your betting hand");
+  const doubleOrNothing = () => {
+    if (usergame.hand === "") {
+      toast.error("Select a hand");
       return false;
     }
-    if (
-      document.getElementById("amount1").checked ||
-      document.getElementById("amount2").checked ||
-      document.getElementById("amount3").checked ||
-      document.getElementById("amount4").checked ||
-      document.getElementById("amount5").checked ||
-      document.getElementById("amount6").checked
-    ) {
-      setUseramount(usergame.amount);
-    } else {
-      toast.error("Select your betting amount");
+    if (usergame.amount === 0) {
+      toast.error("Select an amount");
       return false;
     }
+    if (document.getElementById("age").checked === false) {
+      toast.error("Confirm that you are at least 18 years old");
+      return false;
+    }
+
     const userStreak = gameResult.userStreak + 1;
     const userBlock = 0;
     const userResult = true;
@@ -84,7 +74,7 @@ const RPSDemo = () => {
     setSave(true);
   };
 
-  const showResult = async () => {
+  const showResult = () => {
     setAnimation(false);
     setResult(true);
     let arrayOptions = ["a", "b"];
@@ -96,22 +86,22 @@ const RPSDemo = () => {
       position: "bottom-left",
       style: {},
       className: "pop-up toast-modal",
-      icon:
-        result === "a" ? (
-          <img
-            src={gameResult ? win1 : lose1}
-            width="25"
-            height="25"
-            alt=""
-          ></img>
-        ) : (
-          <img
-            src={gameResult ? win2 : lose2}
-            width="25"
-            height="25"
-            alt=""
-          ></img>
-        ),
+      icon: (
+        <img
+          src={
+            result === "a"
+              ? gameResult.userResult
+                ? win1
+                : lose1
+              : gameResult.userResult
+              ? win2
+              : lose2
+          }
+          width="25"
+          height="25"
+          alt=""
+        />
+      ),
       iconTheme: {
         primary: "#000",
         secondary: "#fff",
@@ -122,24 +112,23 @@ const RPSDemo = () => {
       },
     };
 
-    if (gameResult) {
+    if (gameResult.userResult) {
       if (soundToggle) {
         music.play();
       }
-      if (result === "a") {
-        toast("You doubled your money!!", toastOptions);
-      }
-      if (result === "b") {
-        toast("You are doing some business here", toastOptions);
-      }
+      toast(
+        result === "a"
+          ? "You doubled your money!!"
+          : "You are doing some business here",
+        toastOptions
+      );
     } else {
-      if (result === "a") {
-        toast("Better luck next time.", toastOptions);
-      }
-      if (result === "b") {
-        toast("Wrong hand :P", toastOptions);
-      }
+      toast(
+        result === "a" ? "Better luck next time" : "Wrong hand :P",
+        toastOptions
+      );
     }
+
     setSave(false);
     setAnimation(false);
   };
@@ -151,63 +140,40 @@ const RPSDemo = () => {
   };
 
   return (
-    <article>
-      {active ? (
-        <div className="game-container">
-          {playing ? (
-            <div className="game-playing-container">
-              <Play
-                save={save}
-                animation={animation}
-                userhand={userhand}
-                useramount={useramount}
-                showResult={showResult}
-              />
-              <Result
-                save={save}
-                result={result}
-                userhand={userhand}
-                useramount={useramount}
-                gameResult={gameResult}
-                backGame={backGame}
-              />
+    <>
+      <GameLogo />
+      <article>
+        {active ? (
+          <GamePanel
+            playing={playing}
+            animation={animation}
+            result={result}
+            randomItem={randomItem}
+            save={save}
+            usergame={usergame}
+            gameResult={gameResult}
+            verifyGame={doubleOrNothing}
+            showResult={showResult}
+            backGame={backGame}
+            handleInputChange={handleInputChange}
+          />
+        ) : (
+          <>
+            <div className="game-gifs-wrapper">
+              <RpsImage image="Rock" />
+              <RpsImage image="Paper" />
+              <RpsImage image="Scissors" />
             </div>
-          ) : (
-            <>
-              <Hands
-                handleInputChange={handleInputChange}
-                randomItem={randomItem}
-                userhand={usergame.hand}
-              />
-              <Amounts handleInputChange={handleInputChange} />
-              <button
-                onClick={doubleOrNothing}
-                className="DoubleOrNothing"
-                disabled={playing}
-              >
+            <div className="center">
+              <button className="DoubleOrNothing" onClick={openGame}>
                 DOUBLE OR NOTHING
               </button>
-            </>
-          )}
-        </div>
-      ) : (
-        <>
-          <RpsImage />
-          <p className="text-center mt-3">
-            <label className="switch">
-              <input id="age" type="checkbox"></input>&nbsp;
-              <span className="slider round"></span>
-            </label>
-            &nbsp; I confirm that I am at least 18 years old
-          </p>
-          <div className="center">
-            <button className="DoubleOrNothing" onClick={openGame}>
-              DOUBLE OR NOTHING
-            </button>
-          </div>
-        </>
-      )}
-    </article>
+            </div>
+          </>
+        )}
+        <div ref={screen}></div>
+      </article>
+    </>
   );
 };
 

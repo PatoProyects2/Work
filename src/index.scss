@@ -508,13 +508,6 @@ div.center {
   display: flex;
 }
 
-.gameAntes p {
-  position: absolute;
-  top: 20px;
-  font-size: 20px;
-  font-weight: 600;
-}
-
 .labelImage {
   position: relative;
   justify-content: center;
@@ -569,6 +562,24 @@ div.center {
     height: 100px;
   }
 
+  @media (max-width: 500px) {
+    .imgMatic {
+      width: 50px;
+      height: 50px;
+      border-top-left-radius: 1rem;
+      border-bottom-left-radius: 1rem;
+      margin-right: 20px;
+    }
+
+    .MaticGeneral {
+      margin-top: 50px;
+      margin-bottom: 20px;
+      border-radius: 1rem;
+      border: 1px solid #3d3657;
+      height: 50px;
+    }
+  }
+
   .amount p {
     font-weight: 600;
     color: #2e2842;
@@ -578,8 +589,8 @@ div.center {
   }
 
   .rps-img {
-    width: 90px;
-    height: 90px;
+    width: 100px;
+    height: 150px;
     margin: 5px;
     cursor: pointer;
   }
@@ -590,7 +601,7 @@ div.center {
     background-size: contain;
     background-position: center;
     &:hover {
-      background-image: url("./assets/imgs/Bet_Screen/Rock_GIF.gif");
+      background-image: url("./assets/imgs/Bet_Screen/Rock_GIF_normal.gif");
     }
   }
 
@@ -600,7 +611,7 @@ div.center {
     background-size: contain;
     background-position: center;
     &:hover {
-      background-image: url("./assets/imgs/Bet_Screen/Paper_GIF.gif");
+      background-image: url("./assets/imgs/Bet_Screen/Paper_GIF_normal.gif");
     }
   }
 
@@ -610,35 +621,25 @@ div.center {
     background-size: contain;
     background-position: center;
     &:hover {
-      background-image: url("./assets/imgs/Bet_Screen/Scissors_GIF.gif");
+      background-image: url("./assets/imgs/Bet_Screen/Scissors_GIF_normal.gif");
     }
   }
 
   input[type="radio"][name="hand"]:checked + .rock-img {
     background-image: url("./assets/imgs/Bet_Screen/Rock_GIF.gif");
-    background-color: #42f16b;
-    background-size: cover;
-    border: 5px solid #42f16b;
-    border-radius: 30px;
-    box-shadow: -3px 0px 29px -8px #40f26a;
+    // background-color: #42f16b;
+    // background-size: cover;
+    // border: 5px solid #42f16b;
+    // border-radius: 30px;
+    // box-shadow: -3px 0px 29px -8px #40f26a;
   }
 
   input[type="radio"][name="hand"]:checked + .paper-img {
     background-image: url("./assets/imgs/Bet_Screen/Paper_GIF.gif");
-    background-color: #42f16b;
-    background-size: cover;
-    border: 5px solid #42f16b;
-    border-radius: 30px;
-    box-shadow: -3px 0px 29px -8px #40f26a;
   }
 
   input[type="radio"][name="hand"]:checked + .scissors-img {
     background-image: url("./assets/imgs/Bet_Screen/Scissors_GIF.gif");
-    background-color: #42f16b;
-    background-size: cover;
-    border: 5px solid #42f16b;
-    border-radius: 30px;
-    box-shadow: -3px 0px 29px -8px #40f26a;
   }
 
   input[type="radio"][name="amount"]:checked + p {
@@ -683,14 +684,52 @@ div.center {
     }
   }
 
-  @media (min-width: 768px) {
+  @media (min-width: 310px) {
+    .rps-img {
+      width: 100px;
+      height: 140px;
+      margin: 5px;
+      cursor: pointer;
+    }
+  }
+
+  @media (min-width: 510px) {
+    .rps-img {
+      width: 150px;
+      height: 240px;
+      margin: 5px;
+      cursor: pointer;
+    }
+  }
+
+  @media (min-width: 600px) {
+    .rps-img {
+      width: 180px;
+      height: 240px;
+      margin: 5px;
+      cursor: pointer;
+    }
+  }
+
+  @media (min-width: 777px) {
+    .rps-img {
+      width: 240px;
+      height: 340px;
+      margin: 5px;
+      cursor: pointer;
+    }
+  }
+
+  @media (min-width: 1105px) {
     .rps-img {
       width: 340px;
       height: 440px;
       margin: 5px;
       cursor: pointer;
     }
+  }
 
+  @media (min-width: 768px) {
     label.amount {
       margin: 10px;
     }
@@ -2453,4 +2492,140 @@ article {
   border-radius: 10px;
   background-color: #0d6efd;
   border: 3px solid #3d3657;
+}
+
+// Modal
+
+.container-modal {
+  display: flex;
+  position: fixed;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  width: 100%;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  animation: none;
+  background: rgba(0, 0, 0, 0.7);
+  opacity: 0;
+  visibility: hidden;
+}
+
+.modal {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  justify-content: space-evenly;
+  width: 350px;
+  height: 530px;
+  background: #3d3657;
+  border: 1px solid #211746;
+  text-align: center;
+  transition: transform 0.3s;
+  transition: translateY(0px);
+  border-radius: 30px;
+}
+
+.modal-close {
+  transform: translateY(-900px);
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.settings-div {
+  background: #2c2640;
+  border: 2px solid #211746;
+  border-radius: 10px;
+  margin: auto;
+  padding: 2px;
+}
+
+.modal-flex {
+  padding: 15px;
+  border-bottom: 1px solid #211746;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.text-settings {
+  font-size: 30px;
+  color: white;
+}
+
+.close {
+  color: white;
+  float: right;
+  font-size: 25px;
+  border: 1px solid #211746;
+  padding-left: 10px;
+  padding-right: 10px;
+  border-radius: 13px;
+  -moz-transition: all 0.2s ease-in;
+  -o-transition: all 0.2s ease-in;
+  -webkit-transition: all 0.2s ease-in;
+  transition: all 0.2s ease-in;
+}
+
+.close:hover,
+.close:focus {
+  background-color: #4d4763;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.setting-button {
+  border: 2px solid #211746;
+  -moz-transition: all 0.2s ease-in;
+  -o-transition: all 0.2s ease-in;
+  -webkit-transition: all 0.2s ease-in;
+  transition: all 0.2s ease-in;
+  background-color: #3d3657;
+  color: white;
+  width: 90px;
+  height: 45px;
+  margin: 5px;
+  border-radius: 10px;
+}
+
+.setting-button:hover {
+  background-color: #4d4763;
+}
+
+.green {
+  background-color: #3d3657;
+  color: black;
+  width: 90px;
+  height: 45px;
+  margin: 5px;
+  border-radius: 10px;
+  background-color: #42f16b;
+}
+
+.red {
+  background-color: #3d3657;
+  color: black;
+  width: 90px;
+  height: 45px;
+  margin: 5px;
+  border-radius: 10px;
+  background-color: #ff7f50;
 }

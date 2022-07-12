@@ -1,10 +1,16 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+import {
+  Route,
+  Routes,
+  Navigate,
+  HashRouter,
+  BrowserRouter,
+} from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.css";
 import { MixpanelProvider } from "react-mixpanel-browser";
 import MainLayout from "./components/Layout/MainLayout";
-import TestLayout from "./components/Layout/TestLayout";
+// import TestLayout from "./components/Layout/TestLayout";
 import Main from "./views/Main/Main";
 import RPS from "./views/RPS/RPS";
 import RPSDemo from "./views/RPSDemo/RPSDemo";
@@ -14,14 +20,14 @@ import About from "./views/About/About";
 import Stats from "./views/Stats/Stats";
 import RefundPolicy from "./views/RefundPolicy/RefundPolicy";
 import Terms from "./views/Terms/Terms";
-import Maintenance from "./views/Maintenance/Maintenance";
+// import Maintenance from "./views/Maintenance/Maintenance";
 import ScrollToTop from "./hooks//ScrollToTop";
 import * as serviceWorker from "./serviceWorker";
 import "./index.scss";
 
 ReactDOM.render(
   <MixpanelProvider>
-    <BrowserRouter>
+    <HashRouter>
       <ScrollToTop>
         <Routes>
           <Route path="/" element={<MainLayout />}>
@@ -46,7 +52,7 @@ ReactDOM.render(
           <Route path="*" element={<Navigate replace to="/" />} />
         </Routes>
       </ScrollToTop>
-    </BrowserRouter>
+    </HashRouter>
   </MixpanelProvider>,
   document.getElementById("root")
 );

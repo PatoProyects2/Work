@@ -211,9 +211,7 @@ const Main = () => {
       setTopLeaderboards(leaderboard);
     };
     readLeaderboard();
-    return () => {
-      setTopLeaderboards(false);
-    };
+    return () => setTopLeaderboards(false);
   }, [discordId]);
 
   const day = () => {

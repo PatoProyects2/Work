@@ -43,6 +43,7 @@ const StyledProfile = styled.div`
 
 const Stats = () => {
   const [gamesData, setGamesData] = useState(false);
+  const [changeModal, setChangeModal] = useState(false);
   const isMobileResolution = useMatchMedia("(max-width:700px)", false);
 
   const userStorage = window.localStorage.getItem("user");
@@ -53,12 +54,16 @@ const Stats = () => {
     discordId = JSON.parse(userStorage).id;
   }
 
-  var games = useUserGames(uid ? uid : discordId);
+  var userGames = useUserGames(uid ? uid : discordId);
   var userProfile = useUserProfile(uid ? uid : discordId);
 
+  const handleChangeModal = () => {
+    setChangeModal(!changeModal);
+  };
+
   useEffect(() => {
-    if (games[0]) {
-      const gameData = games.map((game) => {
+    if (userGames[0]) {
+      const gameData = userGames.map((game) => {
         const data = {
           id: game.gameId,
           result: game.result,
@@ -70,7 +75,7 @@ const Stats = () => {
       const orderGames = gameData.sort((a, b) => b.id - a.id);
       setGamesData(orderGames);
     }
-  }, [games, uid]);
+  }, [userGames, uid]);
 
   const xpClassText = () => {
     const level = userProfile[0].level;
@@ -91,7 +96,7 @@ const Stats = () => {
 
   return (
     <StyledProfile>
-      {userProfile && gamesData && (
+      {userProfile && (
         <div className="profile-container">
           <h3 className="TitleUsuario my-3 text-center">
             {userProfile[0].name + "#" + userProfile[0].id} Stats
@@ -128,16 +133,41 @@ const Stats = () => {
                 clubData={userProfile[0]}
                 isMobileResolution={isMobileResolution}
               />
-              <HistoryGames gamesData={gamesData} />
-              <Chart clubData={userProfile[0]} />
+              <div className="botones-tabla mt-4 mb-4">
+                <div className="botones-tipos">
+                  <button
+                    onClick={handleChangeModal}
+                    disabled={!changeModal}
+                    className={
+                      changeModal ? "btn-rango-left" : "active btn-rango-left"
+                    }
+                  >
+                    Chart
+                  </button>
+                  <button
+                    onClick={handleChangeModal}
+                    disabled={changeModal}
+                    className={
+                      changeModal ? "active btn-rango-right" : "btn-rango-right"
+                    }
+                  >
+                    Games
+                  </button>
+                </div>
+              </div>
+              {changeModal ? (
+                <HistoryGames gamesData={gamesData} />
+              ) : (
+                <Chart clubData={userProfile[0]} />
+              )}
             </div>
           ) : (
-            <h4 className="text-center mt-2">No games found</h4>
+            <h2 className="text-center mt-2">No games found</h2>
           )}
         </div>
       )}
       {discordId === "" && !uid && (
-        <h2 className="text-center mt-3">Login with discord</h2>
+        <h2 className="text-center mt-3">Log in with discord</h2>
       )}
       {uid && !userProfile && <h2 className="text-center mt-3">Loading...</h2>}
     </StyledProfile>

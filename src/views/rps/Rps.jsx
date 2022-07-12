@@ -7,46 +7,28 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore";
-import toast from "react-hot-toast";
 import { useMixpanel } from "react-mixpanel-browser";
+import toast from "react-hot-toast";
 import winSound from "../../assets/audio/win_sound.mpeg";
-import RPSGames from "../../assets/imgs/Home Page/RPS Games.png";
 import lose1 from "../../assets/imgs/result/lose1.gif";
 import lose2 from "../../assets/imgs/result/lose2.png";
 import win1 from "../../assets/imgs/result/win1.gif";
 import win2 from "../../assets/imgs/result/win2.png";
-import ConnectWallet from "../../components/WalletButton/WalletButton";
 import { db } from "../../config/firesbaseConfig";
 import { Context } from "../../context/Context";
-import { useLoad } from "../../hooks/useLoad";
 import { useStats } from "../../hooks/useStats";
 import { useTime } from "../../hooks/useTime";
 import { useWeb3 } from "../../hooks/useWeb3";
-import {
-  Amounts,
-  Hands,
-  Play,
-  Result,
-  RpsImage,
-} from "./components/Modals/Modals";
+import { GameLogo, GamePanel, ConnectPanel } from "./components/Modals/Modals";
 
 const RPS = () => {
   const screen = useRef(null);
   const { discordId, balance, soundToggle, gas } = useContext(Context);
-  const {
-    web3,
-    rpsgame,
-    network,
-    account,
-    maticPrice,
-    readBlockchainData,
-    disconnectWallet,
-  } = useWeb3();
+  const { web3, rpsgame, network, account, maticPrice, readBlockchainData } =
+    useWeb3();
   const mixpanel = useMixpanel();
   const unixTime = useTime();
-  const dotLog = useLoad();
 
-  const [userData, setUserData] = useState({});
   const [usergame, setUsergame] = useState({ hand: "", amount: 0 });
   const [gameResult, setGameResult] = useState({
     userResult: false,
@@ -77,9 +59,16 @@ const RPS = () => {
   useEffect(scrollToBottom, [load, account, playing]);
 
   useEffect(() => {
-    setLoad(true);
+    const arrayOptions = ["a", "b", "c", "d", "e", "f"];
+    const randomArray = (Math.random() * arrayOptions.length) | 0;
+    const result = arrayOptions[randomArray];
+    setRandomItem(result);
+
+    mixpanel.init(process.env.REACT_APP_MIXPANEL_KEY, { debug: false });
+    mixpanel.track("Sign up");
+
     if (local === null) {
-      toast("Log in if you want to save you game stats and ahievements", {
+      toast("Log in if you want to save your game stats and achievements", {
         duration: 10000,
         position: "top-right",
         style: {},
@@ -96,29 +85,25 @@ const RPS = () => {
         },
       });
     }
+
+    setLoad(true);
   }, [local]);
 
   useEffect(() => {
-    loadUserGame();
-    return () => {
-      setUserData({});
-    };
+    updateUserDatabase();
   }, [account, discordId]);
 
-  const loadUserGame = async () => {
-    mixpanel.init(process.env.REACT_APP_MIXPANEL_KEY, { debug: false });
-    mixpanel.track("Sign up");
+  const updateUserDatabase = async () => {
     const deadWallet = "0x000000000000000000000000000000000000dEaD";
     if (account !== undefined && account !== deadWallet) {
       if (discordId !== "") {
         const document = await getDoc(doc(db, "clubUsers", discordId));
         const data = document.data();
         if (data) {
-          setUserData(data);
           if (data.account === "") {
             updateDoc(doc(db, "clubUsers", discordId), {
               account: account,
-            }).then(loadUserGame());
+            });
           }
         }
       } else {
@@ -136,18 +121,11 @@ const RPS = () => {
               lastGameBlock: 0,
             },
           };
-          setDoc(doc(db, "anonUsers", account), arrayData).then(loadUserGame());
+          setDoc(doc(db, "anonUsers", account), arrayData);
         }
       }
     }
   };
-
-  useEffect(() => {
-    let arrayOptions = ["a", "b", "c", "d", "e", "f"];
-    var randomArray = (Math.random() * arrayOptions.length) | 0;
-    var result = arrayOptions[randomArray];
-    setRandomItem(result);
-  }, []);
 
   const handleInputChange = (event) => {
     setUsergame({
@@ -156,7 +134,7 @@ const RPS = () => {
     });
   };
 
-  const verifyGame = async () => {
+  const verifyGame = () => {
     if (account === "") {
       toast.error("We cannot detect your wallet, please reload the website");
       return false;
@@ -186,12 +164,15 @@ const RPS = () => {
 
     const inputAmount = web3.utils.toWei(usergame.amount.toString(), "ether");
 
-    const feeValue = await rpsgame.methods.calculateValue(inputAmount).call();
-
-    doubleOrNothing(inputAmount, feeValue);
-    setGameLog("WAITING FOR DEPOSIT");
-    setPlaying(true);
-    setAnimation(true);
+    rpsgame.methods
+      .calculateValue(inputAmount)
+      .call()
+      .then((feeValue) => {
+        doubleOrNothing(inputAmount, feeValue);
+        setGameLog("WAITING FOR DEPOSIT");
+        setPlaying(true);
+        setAnimation(true);
+      });
   };
 
   const doubleOrNothing = async (inputAmount, feeValue) => {
@@ -251,41 +232,11 @@ const RPS = () => {
               backGame();
               return false;
             }
-            console.log({ err, receipt });
-            // if (err.code !== -32603 && err.code !== 4001) {
-            //   setBusyNetwork(true);
-            //   let playEvent = undefined;
-            //   var warningBlockchain = toast.loading(
-            //     "This transaction is taking too long because the network is busy, please check the status of your transaction in your wallet"
-            //   );
-            //   setGameLog("BE PATIENT NETWORK IS BUSY");
-            //   const gameId = parseInt(
-            //     playEvent.events.BetPlaced.returnValues.betId
-            //   );
-            //   const gameBlock = playEvent.blockNumber;
-            //   const txHash = playEvent.transactionHash;
-
-            //   for (let i = 0; i < 1000; i++) {
-            //     try {
-            //       const betGame = await rpsgame.methods.bets(gameId).call();
-            //       if (
-            //         parseInt(betGame[0]) !== 0 &&
-            //         parseInt(betGame[1]) === gameBlock
-            //       ) {
-            //         saveBlockchainEvents(
-            //           betGame,
-            //           playerDocument,
-            //           txHash,
-            //           gameId
-            //         );
-            //         setBusyNetwork(false);
-            //         break;
-            //       }
-            //     } catch (err) {}
-            //     await sleep(1000);
-            //   }
-            //   toast.dismiss(warningBlockchain);
-            // }
+            if (!err.code) {
+              toast.error("Transaction reverted");
+              backGame();
+              return false;
+            }
           });
       } else {
         toast.error(
@@ -298,12 +249,7 @@ const RPS = () => {
     }
   };
 
-  const saveBlockchainEvents = async (
-    betGame,
-    playerDocument,
-    txHash,
-    gameId
-  ) => {
+  const saveBlockchainEvents = (betGame, playerDocument, txHash, gameId) => {
     const userResult = parseInt(betGame[3]) > 0 ? true : false;
     const userStreak = userResult ? playerDocument.rps.winStreak + 1 : 0;
     const userBlock = parseInt(betGame[1]);
@@ -404,7 +350,7 @@ const RPS = () => {
         streak: 0,
         result: userResult,
         game: "RPS",
-        profit: 0,
+        profit: userResult ? usdAmount : -usdAmount,
         txHash: txHash,
         gameId: gameId,
       });
@@ -433,22 +379,22 @@ const RPS = () => {
       position: "bottom-left",
       style: {},
       className: "pop-up toast-modal",
-      icon:
-        result === "a" ? (
-          <img
-            src={gameResult.userResult ? win1 : lose1}
-            width="25"
-            height="25"
-            alt=""
-          />
-        ) : (
-          <img
-            src={gameResult.userResult ? win2 : lose2}
-            width="25"
-            height="25"
-            alt=""
-          />
-        ),
+      icon: (
+        <img
+          src={
+            result === "a"
+              ? gameResult.userResult
+                ? win1
+                : lose1
+              : gameResult.userResult
+              ? win2
+              : lose2
+          }
+          width="25"
+          height="25"
+          alt=""
+        />
+      ),
       iconTheme: {
         primary: "#000",
         secondary: "#fff",
@@ -463,19 +409,17 @@ const RPS = () => {
       if (soundToggle) {
         music.play();
       }
-      if (result === "a") {
-        toast("You doubled your money!!", toastOptions);
-      }
-      if (result === "b") {
-        toast("You are doing some business here", toastOptions);
-      }
+      toast(
+        result === "a"
+          ? "You doubled your money!!"
+          : "You are doing some business here",
+        toastOptions
+      );
     } else {
-      if (result === "a") {
-        toast("Better luck next time.", toastOptions);
-      }
-      if (result === "b") {
-        toast("Wrong hand :P", toastOptions);
-      }
+      toast(
+        result === "a" ? "Better luck next time" : "Wrong hand :P",
+        toastOptions
+      );
     }
 
     for (let i = 0; i < 1000; i++) {
@@ -499,86 +443,33 @@ const RPS = () => {
 
   return (
     <>
-      {/* <SocialButtons /> */}
-      <div className="left-content-rps">
-        <img src={RPSGames} alt="" />
-      </div>
+      <GameLogo />
       <article>
         {account !== undefined &&
         account !== "0x000000000000000000000000000000000000dEaD" ? (
-          <div className="game-container">
-            <div className="g-btn-historygames">
-              <ConnectWallet
-                web3={web3}
-                account={account}
-                balance={balance}
-                disconnectWallet={disconnectWallet}
-                userData={userData}
-                user={discordId}
-                toast={toast}
-              />
-            </div>
-            {playing ? (
-              <div className="game-playing-container">
-                <Play
-                  animation={animation}
-                  save={save}
-                  gameLog={gameLog}
-                  gameId={gameId}
-                  userhand={usergame.hand}
-                  useramount={usergame.amount}
-                  busyNetwork={busyNetwork}
-                  dotLog={dotLog}
-                  showResult={showResult}
-                />
-                <Result
-                  result={result}
-                  userhand={usergame.hand}
-                  useramount={usergame.amount}
-                  gameResult={gameResult}
-                  save={save}
-                  dotLog={dotLog}
-                  backGame={backGame}
-                />
-              </div>
-            ) : (
-              <>
-                <div className="text-container">
-                  <p>Select your bet:</p>
-                </div>
-                <Hands
-                  handleInputChange={handleInputChange}
-                  randomItem={randomItem}
-                />
-
-                <Amounts handleInputChange={handleInputChange} />
-                <button
-                  onClick={verifyGame}
-                  className="DoubleOrNothing"
-                  disabled={playing}
-                >
-                  DOUBLE OR NOTHING
-                </button>
-                <p className="text-center mb-3 mt-3">
-                  <label className="switch">
-                    <input id="age" type="checkbox"></input>&nbsp;
-                    <span className="slider round"></span>
-                  </label>
-                  &nbsp; I confirm that I am at least 18 years old
-                </p>
-              </>
-            )}
-          </div>
+          <GamePanel
+            playing={playing}
+            verifyGame={verifyGame}
+            animation={animation}
+            result={result}
+            randomItem={randomItem}
+            save={save}
+            gameLog={gameLog}
+            gameId={gameId}
+            usergame={usergame}
+            busyNetwork={busyNetwork}
+            gameResult={gameResult}
+            showResult={showResult}
+            backGame={backGame}
+            handleInputChange={handleInputChange}
+          />
         ) : (
-          <>
-            <RpsImage />
-            <ConnectWallet
-              toast={toast}
-              readBlockchainData={readBlockchainData}
-              web3={web3}
-              account={account}
-            />
-          </>
+          <ConnectPanel
+            toast={toast}
+            readBlockchainData={readBlockchainData}
+            web3={web3}
+            account={account}
+          />
         )}
         <div ref={screen}></div>
       </article>

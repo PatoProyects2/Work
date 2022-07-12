@@ -1,7 +1,7 @@
-import React from 'react'
-import { Outlet } from 'react-router-dom'
+import React from "react";
+import { Outlet } from "react-router-dom";
 
-const TestLayout = () => {
+export default function TestLayout() {
   return (
     <section>
       <div>
@@ -10,5 +10,3 @@ const TestLayout = () => {
     </section>
   );
 }
-
-export default TestLayout;

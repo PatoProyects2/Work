@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast, ToastBar, Toaster } from "react-hot-toast";
 import { Outlet } from "react-router-dom";
 import { Context } from "../../context/Context";
@@ -8,7 +8,7 @@ import Footer from "../Footer/Footer";
 import NavBar from "../NavBar/NavBar";
 import SocialButtons from "../../components/SocialButtons/SocialButtons";
 
-const MainLayout = () => {
+export default function MainLayout() {
   const [balance, setBalance] = useState("");
   const [discordId, setDiscordId] = useState("");
   const [chatHistory, setChatHistory] = useState(50);
@@ -108,6 +108,4 @@ const MainLayout = () => {
       </footer>
     </Context.Provider>
   );
-};
-
-export default MainLayout;
+}
