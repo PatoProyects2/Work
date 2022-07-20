@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
-import DiscordLogo from "../../assets/imgs/Home Page/discordIcon.png";
-import EnergyLogo from "../../assets/imgs/Home Page/energyIcon.png";
-import TwitterLogo from "../../assets/imgs/Home Page/twitterIcon.png";
+import DiscordLogo from "../../assets/imgs/Home_Page/discordIcon.png";
+import EnergyLogo from "../../assets/imgs/Home_Page/energyIcon.png";
+import TwitterLogo from "../../assets/imgs/Home_Page/twitterIcon.png";
 
 const StyledMenu = styled.div`
   display: flex;
@@ -13,18 +13,6 @@ const StyledMenu = styled.div`
   .image-logo {
     width: 25px;
     height: 25px;
-  }
-
-  .item2 {
-    margin-left: 20px;
-    min-width: 200px;
-    display: flex;
-    align-items: center;
-    background-color: #2f4471;
-    justify-content: center;
-    height: 50px;
-    border-radius: 10px;
-    border: none;
   }
 
   .item2 p {
@@ -40,15 +28,21 @@ const StyledMenu = styled.div`
     align-items: center;
     background-color: #373878;
     justify-content: center;
-    height: 50px;
+    height: 40px;
     border: none;
     border-radius: 10px;
   }
 
-  .item3 p {
-    color: #7d80e7;
-    margin-left: 10px;
-    margin-top: 1rem;
+  .item2 {
+    margin-left: 20px;
+    min-width: 200px;
+    display: flex;
+    align-items: center;
+    background-color: #2f4471;
+    justify-content: center;
+    height: 40px;
+    border-radius: 10px;
+    border: none;
   }
 
   .item4 {
@@ -58,9 +52,15 @@ const StyledMenu = styled.div`
     align-items: center;
     background-color: #374842;
     justify-content: center;
-    height: 50px;
+    height: 40px;
     border-radius: 10px;
     border: none;
+  }
+
+  .item3 p {
+    color: #7d80e7;
+    margin-left: 10px;
+    margin-top: 1rem;
   }
 
   .item4 p {

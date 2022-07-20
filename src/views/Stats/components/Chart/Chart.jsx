@@ -14,21 +14,24 @@ const Chart = ({ clubData }) => {
 
       var times = [];
 
-      const profit = orderGames.map((user) => {
+      const profit = orderGames.map((user, index) => {
         let created = parseInt(user.createdAt);
         let date = new Date(created * 1000);
 
-        let year = date.getFullYear().toString();
-        let month = (date.getMonth() + 1).toString();
-        if (month.length === 1) {
-          month = `0${date.getMonth() + 1}`;
-        }
-        let day = date.getDate().toString();
-        if (day.length === 1) {
-          day = `0${date.getDate()}`;
-        }
+        // let year = date.getFullYear().toString();
+        // let month = (date.getMonth() + 1).toString();
+        // if (month.length === 1) {
+        //   month = `0${date.getMonth() + 1}`;
+        // }
+        // let day = date.getDate().toString();
+        // if (day.length === 1) {
+        //   day = `0${date.getDate()}`;
+        // }
 
-        let time = year + "-" + month + "-" + day;
+        // let time = year + "-" + month + "-" + day;
+
+        // let time = index + 1;
+        let time = user.gameId;
         let profit = parseFloat(user.profit.toFixed(2));
 
         times.push(time);

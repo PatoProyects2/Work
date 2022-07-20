@@ -46,8 +46,8 @@ const Stats = () => {
   const [changeModal, setChangeModal] = useState(false);
   const isMobileResolution = useMatchMedia("(max-width:700px)", false);
 
-  const userStorage = window.localStorage.getItem("user");
   const { uid } = useParams();
+  const userStorage = window.localStorage.getItem("user");
 
   var discordId = "";
   if (userStorage) {
@@ -90,7 +90,7 @@ const Stats = () => {
     } else if (level > 19 && level < 24) {
       return "text-green";
     } else {
-      return "text-white";
+      return "text-red";
     }
   };
 

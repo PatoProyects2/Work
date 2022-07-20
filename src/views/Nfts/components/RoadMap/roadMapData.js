@@ -1,8 +1,8 @@
-import NFTCard from '../../../../assets/imgs/nft_hover_card.png'
-import RPSGameCard from '../../../../assets/imgs/animation.gif'
-import LogoCard from '../../../../assets/imgs/Games_Club.png'
-import SecurityCard from '../../../../assets/imgs/security_card.png'
-import ComingSoonCard from '../../../../assets/imgs/soon_hover.png'
+import NFTCard from '../../../../assets/imgs/Views_Nfts/nft_hover_card.png'
+import RPSGameCard from '../../../../assets/imgs/Views_Nfts/animation.gif'
+import LogoCard from '../../../../assets/imgs/Views_Nfts/ClubLogo.png'
+import SecurityCard from '../../../../assets/imgs/Views_Nfts/security_card.png'
+import ComingSoonCard from '../../../../assets/imgs/Views_Nfts/soon_hover.png'
 
 export const roadMapData = [{
     title: "RPS GAMES CLUB",

@@ -169,6 +169,10 @@ input[type="radio"][name="pic1"]:checked + img {
   color: whitesmoke !important;
 }
 
+.nav-link-primary.active {
+  color: #ffe869 !important;
+}
+
 .nav-link-secondary {
   color: #adb5bd !important;
   font-size: 0.9rem;
@@ -176,8 +180,8 @@ input[type="radio"][name="pic1"]:checked + img {
 
 .nav-link-primary:hover,
 .nav-link-secondary:hover {
-  color: #ffdb5b !important;
-  border-left: 2px solid #ffdb5b;
+  color: #ffe869 !important;
+  border-left: 2px solid #ffe869;
 }
 
 .navbar-icon {
@@ -186,11 +190,11 @@ input[type="radio"][name="pic1"]:checked + img {
 
 .nav-link-primary:hover .navbar-icon,
 .nav-link-secondary:hover .navbar-icon {
-  fill: #ffdb5b;
+  fill: #ffe869;
 }
 
 svg:hover > g.brand-icon {
-  fill: #ffdb5b;
+  fill: #ffe869;
 }
 
 .brand-icon {
@@ -209,7 +213,7 @@ svg:hover > g.brand-icon {
 
 .d-modal .btn.btn-transparent,
 .chat-userstats-modal .btn.btn-transparent {
-  color: #ffdb5b !important;
+  color: #ffe869 !important;
 }
 
 .d-modal,
@@ -239,11 +243,12 @@ svg:hover > g.brand-icon {
 }
 
 .nav-item.nav-link.active {
-  border-left: 2px solid #ffdb5b;
+  border-left: 2px solid #ffe869;
+  color: #ffe869;
 }
 
 .nav-item.nav-link.active .navbar-icon {
-  fill: #ffdb5b;
+  fill: #ffe869;
 }
 
 .nav-items-secondary {
@@ -260,7 +265,7 @@ svg:hover > g.brand-icon {
 
 .nav-item-secondary:hover,
 .nav-item-secondary.active {
-  color: #ffdb5b;
+  color: #ffe869;
   text-decoration: underline;
 }
 
@@ -421,10 +426,6 @@ svg:hover > g.brand-icon {
   color: #adbec6 !important;
 }
 
-.chat_input_contain .chat_send {
-  color: #23d160;
-}
-
 /* User Stats */
 
 .user-stats-info {
@@ -539,7 +540,7 @@ svg:hover > g.brand-icon {
 }
 
 .profit-plus {
-  color: green;
+  color: #49d276;
 }
 
 .profit-minus {

@@ -1,10 +1,10 @@
 import styled from "styled-components";
-import UsersIcon from "../../../../assets/imgs/Home Page/usersIcon.png";
+import UsersIcon from "../../../../assets/imgs/Nav_Bar/usersIcon.png";
 import { useAllUsers } from "../../../../hooks/firebase/useAllUsers";
 
 const StyledActive = styled.div`
   .Logo {
-    width: 25px;
+    width: 20px;
   }
 
   .ActiveText {

@@ -28,7 +28,7 @@ const HistoryGames = ({ gamesData }) => {
                     color: games.result ? "mediumseagreen" : "#ca5c7f",
                   }}
                 >
-                  {games.result ? "doubled " : "went bankrupt "}
+                  {games.result ? "doubled " : "bankrupt "}
                 </span>
               </td>
               <td>{games.amount}</td>

@@ -8,7 +8,11 @@ export const useUserGames = (uid) => {
   useEffect(() => {
     if (uid !== "" && uid !== undefined) {
       console.log("Reading useUserGames...");
-      const q = query(collection(db, "allGames"), where("uid", "==", uid));
+      const q = query(
+        collection(db, "allGames"),
+        where("uid", "==", uid),
+        where("state", "==", "confirmed")
+      );
       const unsub = onSnapshot(q, async (doc) => {
         const games = doc.docs.map((document) => document.data());
         setUserGames(games);

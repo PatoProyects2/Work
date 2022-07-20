@@ -1,10 +1,10 @@
 import { useContext, useState, useRef, useEffect } from "react";
 import toast from "react-hot-toast";
 import winSound from "../../assets/audio/win_sound.mpeg";
-import lose1 from "../../assets/imgs/result/lose1.gif";
-import lose2 from "../../assets/imgs/result/lose2.png";
-import win1 from "../../assets/imgs/result/win1.gif";
-import win2 from "../../assets/imgs/result/win2.png";
+import lose1 from "../../assets/imgs/Win_Lose_Screens/lose1.gif";
+import lose2 from "../../assets/imgs/Win_Lose_Screens/lose2.png";
+import win1 from "../../assets/imgs/Win_Lose_Screens/win1.gif";
+import win2 from "../../assets/imgs/Win_Lose_Screens/win2.png";
 import { Context } from "../../context/Context";
 import { GameLogo, RpsImage, GamePanel } from "../RPS/components/Modals/Modals";
 

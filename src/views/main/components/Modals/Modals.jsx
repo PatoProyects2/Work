@@ -1,23 +1,23 @@
 import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 
-import CoinFlipMobile from "../../../../assets/imgs/Home Page/coin flip banner mobile.png";
-import FairPlayMobile from "../../../../assets/imgs/Home Page/fair play banner mobile.png";
-import NFTMobile from "../../../../assets/imgs/Home Page/nft banner mobile.png";
-import RPSGameMobile from "../../../../assets/imgs/Home Page/RPS_banner_mobile.png";
-import ComingSoonMobile from "../../../../assets/imgs/Home Page/wip banner mobile.png";
+import CoinFlipMobile from "../../../../assets/imgs/Home_Page/coin flip banner mobile.png";
+import FairPlayMobile from "../../../../assets/imgs/Home_Page/fair play banner mobile.png";
+import NFTMobile from "../../../../assets/imgs/Home_Page/nft banner mobile.png";
+import RPSGameMobile from "../../../../assets/imgs/Home_Page/RPS_banner_mobile.png";
+import ComingSoonMobile from "../../../../assets/imgs/Home_Page/wip banner mobile.png";
 
-import CoinflipImg from "../../../../assets/imgs/Home Page/imageCoinflip.png";
-import ComingSoonImg from "../../../../assets/imgs/Home Page/imageComingSoon.png";
-import FairPlayImg from "../../../../assets/imgs/Home Page/imageFairplay.png";
-import NFTImg from "../../../../assets/imgs/Home Page/imageNFT.png";
-import RPSGameImg from "../../../../assets/imgs/Home Page/imageRPSgame.png";
+import CoinflipImg from "../../../../assets/imgs/Home_Page/imageCoinflip.png";
+import ComingSoonImg from "../../../../assets/imgs/Home_Page/imageComingSoon.png";
+import FairPlayImg from "../../../../assets/imgs/Home_Page/imageFairplay.png";
+import NFTImg from "../../../../assets/imgs/Home_Page/imageNFT.png";
+import RPSGameImg from "../../../../assets/imgs/Home_Page/imageRPSgame.png";
 
 import Games from "../../../../components/Games/Games";
 import MostAmount from "../LeaderBoards/MostAmount";
 import MostPlays from "../LeaderBoards/MostPlays";
 
-import gamesLogo from "../../../../assets/imgs/Home Page/gamesLogo.png";
+import gamesLogo from "../../../../assets/imgs/Home_Page/gamesLogo.png";
 
 export const StyledMain = styled.div`
   .slider-wrapper {
@@ -79,6 +79,7 @@ export const StyledMain = styled.div`
     border: 1px solid #554c77;
     border-bottom-left-radius: 20px;
     border-bottom-right-radius: 20px;
+    background-color: transparent;
   }
 
   .img-games {

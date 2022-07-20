@@ -39,6 +39,9 @@ const StyledStatsNew = styled.div`
 `;
 
 const RPSStatsNew = ({ clubData }) => {
+  const games = clubData.rps.gameWon + clubData.rps.gameLoss;
+  const amount = clubData.rps.amountWon + clubData.rps.amountLoss;
+  const profit = clubData.rps.amountWon - clubData.rps.amountLoss;
   return (
     <StyledStatsNew>
       <div className={"table-responsive"}>
@@ -58,24 +61,12 @@ const RPSStatsNew = ({ clubData }) => {
                   "..." +
                   clubData.account.substring(38, 42)}
               </td>
-              <td>{clubData.rps.gameWon + clubData.rps.gameLoss}</td>
-              <td>
-                {"$" +
-                  (
-                    clubData.rps.amountWon + clubData.rps.amountLoss
-                  ).toFixed(2)}
-              </td>
-              <td
-                className={
-                  clubData.rps.amountWon - clubData.rps.amountLoss > 0
-                    ? "profit-plus"
-                    : "profit-minus"
-                }
-              >
-                {"$" +
-                  (
-                    clubData.rps.amountWon - clubData.rps.amountLoss
-                  ).toFixed(2)}
+              <td>{games}</td>
+              <td>{"$" + amount.toFixed(2)}</td>
+              <td className={profit > 0 ? "profit-plus" : "profit-minus"}>
+                {profit > 0
+                  ? "$" + profit.toFixed(2)
+                  : "-$" + (profit.toFixed(2) - profit.toFixed(2) * 2)}
               </td>
             </tr>
           </tbody>

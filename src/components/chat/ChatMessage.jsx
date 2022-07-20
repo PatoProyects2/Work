@@ -1,9 +1,8 @@
-import { useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useUserProfile } from "../../hooks/firebase/useUserProfile";
 import CrownLevel from "../../views/Stats/components/Info/CrownLevel";
 
-const ChatMessage = ({ text, uid }) => {
-  let navigate = useNavigate();
+const ChatMessage = ({ text, uid, index }) => {
   const userProfile = useUserProfile(uid);
 
   const xpClassText = () => {
@@ -26,14 +25,12 @@ const ChatMessage = ({ text, uid }) => {
   return (
     <>
       {userProfile[0] && (
-        <div
-          role="button"
-          onClick={() => {
-            navigate(`/stats/${uid}`);
-          }}
-        >
-          <li className="message d-flex align-items-center mt-2">
-            <div className="chat-users">
+        <li className={index % 2 === 0 ? "active message" : "message"}>
+          <NavLink to={`/stats/${uid}`}>
+            <div
+              className="chat-users"
+              role="button"
+            >
               <div className="d-flex">
                 <img
                   className="chat_user_img"
@@ -44,9 +41,9 @@ const ChatMessage = ({ text, uid }) => {
                 <span className={xpClassText()}>{userProfile[0].name}:</span>
               </div>
             </div>
-            <div className="chat_cont">{text}</div>
-          </li>
-        </div>
+          </NavLink>
+          <div className="chat_cont">{text}</div>
+        </li>
       )}
     </>
   );

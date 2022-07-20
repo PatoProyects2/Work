@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import rps from "../../../../assets/imgs/Home Page/RPS.png";
+import rps from "../../../../assets/imgs/Home_Page/RPS.png";
 
 const StyledStats = styled.div`
   width: 75%;

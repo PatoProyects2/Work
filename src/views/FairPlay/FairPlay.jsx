@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Web3 from 'web3'
-import RpsGamePolygon from '../../abis/RpsGamePolygon/Santaflip.json'
+import RpsGamePolygon from '../../abis/GamesClubPolygon/Santaflip.json'
 import { pRpsGameAddress } from '../../utils/Address'
 import FairGame from './FairGame'
 

@@ -76,7 +76,7 @@ const Settings = () => {
       <i
         role="button"
         className="open-modal fa fa-cog"
-        style={{ color: "#ffdb5b" }}
+        style={{ color: "#ffe869" }}
         aria-hidden="true"
       ></i>
 
@@ -88,16 +88,16 @@ const Settings = () => {
               <i className="fa fa-times" aria-hidden="true"></i>
             </span>
           </div>
-          <span className="text-white">Sound</span>
+          <span className="subtitle-modal">Sound</span>
           <div className="settings-div">
             <button
-              className={soundToggle ? "green" : "setting-button"}
+              className={soundToggle ? "green setting-button" : "setting-button"}
               onClick={() => !soundToggle && setSoundToggle(true)}
             >
               <i className="fas fa-volume-up"></i>
             </button>
             <button
-              className={!soundToggle ? "red" : "setting-button"}
+              className={!soundToggle ? "red setting-button" : "setting-button"}
               onClick={() => soundToggle && setSoundToggle(false)}
             >
               <i className="fas fa-volume-mute"></i>
@@ -109,7 +109,7 @@ const Settings = () => {
               <div>
                 <button
                   className={
-                    gas.state === "standard" ? "green" : "setting-button"
+                    gas.state === "standard" ? "green setting-button" : "setting-button"
                   }
                   onClick={() =>
                     gas.state !== "standard" &&
@@ -123,7 +123,7 @@ const Settings = () => {
                   {/* ({gasTrack.safeLow.maxFee.toFixed(2)}) */}
                 </button>
                 <button
-                  className={gas.state === "fast" ? "green" : "setting-button"}
+                  className={gas.state === "fast" ? "green setting-button" : "setting-button"}
                   onClick={() =>
                     gas.state !== "fast" &&
                     setGas({
@@ -137,7 +137,7 @@ const Settings = () => {
                 </button>
                 <button
                   className={
-                    gas.state === "instant" ? "green" : "setting-button"
+                    gas.state === "instant" ? "green setting-button" : "setting-button"
                   }
                   onClick={() =>
                     gas.state !== "instant" &&
@@ -157,19 +157,19 @@ const Settings = () => {
           <div className="text-center settings-div">
             <div>
               <button
-                className={chatHistory === 50 ? "green" : "setting-button"}
+                className={chatHistory === 50 ? "green setting-button" : "setting-button"}
                 onClick={() => chatHistory !== 50 && setChatHistory(50)}
               >
                 50
               </button>
               <button
-                className={chatHistory === 100 ? "green" : "setting-button"}
+                className={chatHistory === 100 ? "green setting-button" : "setting-button"}
                 onClick={() => chatHistory !== 100 && setChatHistory(100)}
               >
                 100
               </button>
               <button
-                className={chatHistory === 300 ? "green" : "setting-button"}
+                className={chatHistory === 300 ? "green setting-button" : "setting-button"}
                 onClick={() => chatHistory !== 300 && setChatHistory(300)}
               >
                 300

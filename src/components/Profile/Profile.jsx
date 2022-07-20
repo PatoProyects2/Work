@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import {
   Dropdown,
   DropdownItem,
@@ -9,7 +9,7 @@ import {
 import CryptoJS from "crypto-js";
 import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../config/firesbaseConfig";
-import DiscordButton from "../../assets/imgs/Home Page/discordButton.png";
+import DiscordButton from "../../assets/imgs/Nav_Bar/discordButton.png";
 import { Context } from "../../context/Context";
 import { useMatchMedia } from "../../hooks/useMatchMedia";
 
@@ -18,7 +18,6 @@ const Profile = () => {
   const [dropdown, setDropdown] = useState(false);
   const [user, setUser] = useState(false);
   const isMobileResolution = useMatchMedia("(max-width:500px)", false);
-  let navigate = useNavigate();
 
   const clientId = process.env.REACT_APP_DISCORD_CLIENTID;
   const clientSecret = process.env.REACT_APP_DISCORD_CLIENTSECRET;
@@ -28,18 +27,13 @@ const Profile = () => {
 
   const localToken = window.localStorage.getItem("token");
   const localUser = window.localStorage.getItem("user");
-  const localLevel = window.localStorage.getItem("level");
 
   useEffect(() => {
-    if (localUser !== null && localLevel !== null) {
+    if (localUser !== null) {
       const data = JSON.parse(localUser);
-      const level = {
-        level: localLevel,
-      };
-      const rpsUser = Object.assign(data, level);
-      setUser(rpsUser);
+      setUser(data);
     }
-  }, [localUser, localLevel]);
+  }, [localUser]);
 
   useEffect(() => {
     const getAccessToken = async () => {
@@ -51,7 +45,7 @@ const Profile = () => {
             client_secret: clientSecret,
             code: url,
             grant_type: "authorization_code",
-            redirect_uri: "https://rpsgames.club/",
+            redirect_uri: "https://rpsgames.club/", // https://rpsgames.club/, http://localhost:3000/,
             scope: "identify email",
           }),
           headers: {
@@ -96,7 +90,7 @@ const Profile = () => {
                     photo: avatar,
                   })
                 );
-                window.localStorage.setItem("level", data.level);
+                window.localStorage.setItem("age", false);
               } else {
                 const avatar = userData.avatar
                   ? `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}`
@@ -110,7 +104,7 @@ const Profile = () => {
                     photo: avatar,
                   })
                 );
-                window.localStorage.setItem("level", 1);
+                window.localStorage.setItem("age", false);
 
                 const unixTimeStamp = Math.round(new Date().getTime() / 1000);
                 const arrayData = {
@@ -125,6 +119,10 @@ const Profile = () => {
                   },
                   email: userData.email,
                   dsVerified: userData.verified,
+                  chat: {
+                    banned: false,
+                    unbanTime: 0,
+                  },
                   level: 1,
                   games: ["RPS"],
                   account: "",
@@ -134,7 +132,6 @@ const Profile = () => {
                     scissors: 0,
                     winStreak: 0,
                     topWinStreak: 0,
-                    winStreakTime: 0,
                     gameWon: 0,
                     gameLoss: 0,
                     amountWon: 0,
@@ -149,7 +146,7 @@ const Profile = () => {
         }
       }
 
-      if (localToken !== null && localUser !== null && localLevel !== null) {
+      if (localToken !== null && localUser !== null) {
         var decrypted = CryptoJS.AES.decrypt(
           localToken,
           process.env.REACT_APP_SECRET_KEY
@@ -182,11 +179,10 @@ const Profile = () => {
                 photo: avatar,
               })
             );
-            window.localStorage.setItem("level", docData.level);
           } else {
             window.localStorage.removeItem("token");
             window.localStorage.removeItem("user");
-            window.localStorage.removeItem("level");
+            window.localStorage.setItem("age", false);
             window.location.reload();
           }
         }
@@ -205,13 +201,14 @@ const Profile = () => {
   const getToken = async () => {
     const ouathLink =
       "https://discord.com/api/oauth2/authorize?client_id=961656991149875232&redirect_uri=https%3A%2F%2Frpsgames.club%2F&response_type=code&scope=identify%20email";
+    // https://discord.com/api/oauth2/authorize?client_id=961656991149875232&redirect_uri=https%3A%2F%2Frpsgames.club%2F&response_type=code&scope=identify%20email
+    // https://discord.com/api/oauth2/authorize?client_id=961656991149875232&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2F&response_type=code&scope=identify%20email"
     location.href = ouathLink;
   };
 
   const removeToken = () => {
     window.localStorage.removeItem("token");
     window.localStorage.removeItem("user");
-    window.localStorage.removeItem("level");
     window.location.reload();
   };
 
@@ -233,13 +230,11 @@ const Profile = () => {
         />
       </DropdownToggle>
       <DropdownMenu>
-        <DropdownItem
-          onClick={() => {
-            navigate("/stats");
-          }}
-        >
-          <i className="fa-solid fa-user me-3"></i>My Profile
-        </DropdownItem>
+        <NavLink to="/stats">
+          <DropdownItem>
+            <i className="fa-solid fa-user me-3"></i>My Profile
+          </DropdownItem>
+        </NavLink>
         <DropdownItem onClick={removeToken}>
           <i className="fa-solid fa-right-from-bracket me-3 text-danger"></i>
           Logout

@@ -5,7 +5,7 @@ const ProgressExp = ({ maxGames, minGames, cGames, xpClass }) => {
     return (
       <div className="d-flex flex-column align-items-center">
         <Progress
-          value={750}
+          value={690}
           striped={true}
           className="w-100"
           color={xpClass}
@@ -30,8 +30,8 @@ const ProgressExp = ({ maxGames, minGames, cGames, xpClass }) => {
 
 const Level = ({ clubData, showLvl = true }) => {
   const totalGamesPerLevel = [
-    10, 20, 30, 40, 50, 65, 80, 95, 110, 125, 150, 200, 250, 300, 350, 390, 430,
-    470, 510, 550, 600, 650, 700, 750,
+    10, 20, 30, 40, 55, 70, 85, 100, 115, 140, 165, 190, 215, 240, 280, 320,
+    360, 400, 440, 490, 540, 590, 640, 690,
   ];
 
   const getMinMaxGames = (level) => {
@@ -58,7 +58,7 @@ const Level = ({ clubData, showLvl = true }) => {
     } else if (level > 19 && level < 24) {
       return ["xp-user-badge badge-green", "green"];
     } else {
-      return ["xp-user-badge badge-black", "black"];
+      return ["xp-user-badge badge-red", "red"];
     }
   };
 

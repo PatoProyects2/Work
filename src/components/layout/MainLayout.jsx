@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { toast, ToastBar, Toaster } from "react-hot-toast";
 import { Outlet } from "react-router-dom";
 import { Context } from "../../context/Context";
@@ -11,6 +11,8 @@ import SocialButtons from "../../components/SocialButtons/SocialButtons";
 export default function MainLayout() {
   const [balance, setBalance] = useState("");
   const [discordId, setDiscordId] = useState("");
+ 
+  const [provider, setProvider] = useState(false);
   const [chatHistory, setChatHistory] = useState(50);
   const [soundToggle, setSoundToggle] = useState(true);
   const [gas, setGas] = useState(false);
@@ -21,6 +23,8 @@ export default function MainLayout() {
   return (
     <Context.Provider
       value={{
+        // provider,
+        // setProvider,
         balance,
         setBalance,
         discordId,

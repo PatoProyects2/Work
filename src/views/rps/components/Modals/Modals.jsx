@@ -2,7 +2,7 @@ import { Spinner } from "react-bootstrap";
 import { Progress, Table } from "reactstrap";
 
 // Game Logo
-import RPSGames from "../../../../assets/imgs/Home Page/RPS Games.png";
+import RPSGames from "../../../../assets/imgs/Home_Page/RPS Games.png";
 
 // Connect Panel
 import ConnectWallet from "../../../../components/WalletButton/WalletButton";
@@ -14,28 +14,28 @@ import imageScissors from "../../../../assets/imgs/Bet_Screen/imageScissors.png"
 import matic from "../../../../assets/imgs/Bet_Screen/matic.png";
 
 // Play panel
-import imageRockGIF from "../../../../assets/imgs/Bet_Screen/Rock_GIF_normal.gif";
-import imagePaperGIF from "../../../../assets/imgs/Bet_Screen/Paper_GIF_normal.gif";
-import imageScissorsGIF from "../../../../assets/imgs/Bet_Screen/Scissors_GIF_normal.gif";
+import imageRockGIF from "../../../../assets/imgs/Bet_Screen/RockUnselectedGIF.gif";
+import imagePaperGIF from "../../../../assets/imgs/Bet_Screen/PaperUnselectedGIF.gif";
+import imageScissorsGIF from "../../../../assets/imgs/Bet_Screen/ScissorsUnselectedGIF.gif";
 
 import imageVS from "../../../../assets/imgs/Bet_Screen/VStext.png";
 
 import rotatingCard from "../../../../assets/imgs/Bet_Screen/RotatingCard.gif";
 
 // Result panel
-import RockWin from "../../../../assets/imgs/animations/RockWin.gif";
-import RockLose from "../../../../assets/imgs/animations/RockLose.gif";
+import RockWin from "../../../../assets/imgs/Win_Lose_Screens/RockWin.gif";
+import RockLose from "../../../../assets/imgs/Win_Lose_Screens/RockLose.gif";
 
-import PaperWin from "../../../../assets/imgs/animations/PaperWin.gif";
-import PaperLose from "../../../../assets/imgs/animations/PaperLose.gif";
+import PaperWin from "../../../../assets/imgs/Win_Lose_Screens/PaperWin.gif";
+import PaperLose from "../../../../assets/imgs/Win_Lose_Screens/PaperLose.gif";
 
-import ScissorsWin from "../../../../assets/imgs/animations/ScissorsWin.gif";
-import ScissorsLose from "../../../../assets/imgs/animations/ScissorsLose.gif";
+import ScissorsWin from "../../../../assets/imgs/Win_Lose_Screens/ScissorsWin.gif";
+import ScissorsLose from "../../../../assets/imgs/Win_Lose_Screens/ScissorsLose.gif";
 
-import bannerLose from "../../../../assets/imgs/Win Lose Screens/bannerLose.png";
-import bannerWin from "../../../../assets/imgs/Win Lose Screens/bannerWin.png";
+import bannerLose from "../../../../assets/imgs/Win_Lose_Screens/bannerLose.png";
+import bannerWin from "../../../../assets/imgs/Win_Lose_Screens/bannerWin.png";
 
-import Star from "../../../../assets/imgs/Win Lose Screens/star.png";
+import Star from "../../../../assets/imgs/Win_Lose_Screens/star.png";
 
 export const RpsImage = (props) => {
   return (
@@ -180,7 +180,7 @@ const Play = (props) => {
 const Result = (props) => {
   var imageResult;
 
-  if (props.gameResult.userResult) {
+  if (props.gameResult) {
     if (props.userhand === "ROCK") {
       imageResult = RockWin;
     }
@@ -211,7 +211,7 @@ const Result = (props) => {
         <div>
           <img
             className="absolute-image"
-            src={props.gameResult.userResult ? bannerWin : bannerLose}
+            src={props.gameResult ? bannerWin : bannerLose}
           />
         </div>
       </div>
@@ -219,26 +219,26 @@ const Result = (props) => {
         <div className="d-flex flex-column justify-content-center">
           <span className="rps-result-title">
             <p
-              className={props.gameResult.userResult ? "won-game" : "lost-game"}
+              className={props.gameResult ? "won-game" : "lost-game"}
             >
-              {props.gameResult.userResult ? "You won" : "You lost"}
+              {props.gameResult ? "You won" : "You lost"}
             </p>
           </span>
 
           <div className="resultado-flex">
-            {props.gameResult.userResult && <img src={Star} />}
+            {props.gameResult && <img src={Star} />}
             <span
               className="rps-result-amount"
               style={{
-                color: props.gameResult.userResult ? "#f1cf61" : "#9845eb",
+                color: props.gameResult ? "#f1cf61" : "#9845eb",
               }}
             >
-              {props.gameResult.userResult
+              {props.gameResult
                 ? props.useramount * 2
                 : props.useramount}
               {" MATIC"}
             </span>
-            {props.gameResult.userResult && <img src={Star} />}
+            {props.gameResult && <img src={Star} />}
           </div>
         </div>
         <div className="d-flex justify-content-center">
@@ -262,11 +262,11 @@ const Result = (props) => {
               </>
             ) : (
               <>
-                {!props.gameResult.userResult && (
+                {!props.gameResult && (
                   <span className="processing-title">TRY AGAIN?</span>
                 )}
                 <button className="DoubleOrNothing" onClick={props.backGame}>
-                  {props.gameResult.userResult
+                  {props.gameResult
                     ? "CLAIM REWARD"
                     : "DOUBLE OR NOTHING"}
                 </button>
@@ -288,6 +288,7 @@ export const GameLogo = () => {
 };
 
 export const GamePanel = ({
+  age,
   playing,
   animation,
   result,
@@ -399,13 +400,18 @@ export const GamePanel = ({
           >
             DOUBLE OR NOTHING
           </button>
-          <p className="text-center mb-3 mt-3">
-            <label className="switch">
-              <input id="age" type="checkbox"></input>&nbsp;
-              <span className="slider round"></span>
-            </label>
-            &nbsp; I confirm that I am at least 18 years old
-          </p>
+          {age === "false" && (
+            <p className="text-center mb-3 mt-3">
+              <label className="switch">
+                <input id="age" type="checkbox"></input>
+                &nbsp;
+                <span className="slider round"></span>
+              </label>
+              &nbsp;&nbsp;&nbsp;
+              <span>I confirm that I am at least</span>
+              <span style={{ color: "#ffdb5b" }}> 18 years old</span>
+            </p>
+          )}
         </>
       )}
     </div>

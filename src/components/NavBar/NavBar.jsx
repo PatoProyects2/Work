@@ -2,22 +2,22 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { Nav, Navbar, Offcanvas, OffcanvasBody } from "reactstrap";
 import styled from "styled-components";
-import RPSLogo from "../../assets/imgs/Home Page/logo.png";
-import MenuIcon from "../../assets/imgs/Home Page/menuIcon.png";
-import CloseButton from "../../assets/imgs/Users Stats Screen/exitIcon.png";
+import RPSLogo from "../../assets/imgs/Nav_Bar/logo.png";
+import MenuIcon from "../../assets/imgs/Nav_Bar/menuIcon.png";
+import CloseButton from "../../assets/imgs/Nav_Bar/exitIcon.png";
 import { useMatchMedia } from "../../hooks/useMatchMedia";
+import { useWeb3 } from "../../hooks/useWeb3";
 import Profile from "../Profile/Profile";
 import Balance from "./components/Balance/Balance";
 import OnlineUsers from "./components/OnlineUsers/OnlineUsers";
 import Settings from "./components/Settings/Settings";
 
 const StyledNavbar = styled.div`
-  margin-bottom: 10px;
   .Main-Menu {
     border-bottom: 1px solid #2c2640;
     background-color: #3d3657;
     padding-top: 10px;
-    padding-bottom: 10px;
+    padding-bottom: 9px;
     z-index: 9999;
   }
 
@@ -26,8 +26,9 @@ const StyledNavbar = styled.div`
   }
 
   .BotonMenu {
-    width: 20px;
-    margin-right: 25px;
+    width: 24px;
+    margin-right: 20px;
+    margin-left: 5px;
   }
 
   .RPSLogo {
@@ -35,7 +36,7 @@ const StyledNavbar = styled.div`
   }
 
   .GamesText {
-    color: #ffdb5b;
+    color: #ffe869;
     font-weight: bold;
     font-size: 20px;
     margin-top: 0;
@@ -54,22 +55,22 @@ const NavBar = () => {
         <div className="Menu d-flex">
           <img
             role="button"
-            onClick={() =>
-              showOffcanvas ? setShowOffCanvas(false) : setShowOffCanvas(true)
-            }
+            onClick={() => setShowOffCanvas(!showOffcanvas)}
             className="BotonMenu"
             src={showOffcanvas ? CloseButton : MenuIcon}
             alt=""
           />
           <img className="RPSLogo" src={RPSLogo} alt="" />
           &nbsp;
-          <NavLink className="" to="/">
+          <NavLink to="/">
             <h1 className="GamesText">Games Club</h1>
           </NavLink>
           {!isMobileResolution && <OnlineUsers />}
         </div>
         {!isMobileResolution && (
-          <Balance isMobileResolution={isMobileResolution} />
+          <Balance
+            isMobileResolution={isMobileResolution}
+          />
         )}
         <div className="d-flex align-items-center gap-2">
           <Settings />

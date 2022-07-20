@@ -1,6 +1,6 @@
-import Crown from "../../../../assets/imgs/Chat Panel/Crown.png";
+import Crown from "../../../../assets/imgs/Chat_Panel/Crown.png";
 
-const CrownLevel = ({userLevel}) => {
+const CrownLevel = ({ userLevel }) => {
   const xpClass = () => {
     const level = userLevel;
     if (level <= 4) {
@@ -12,9 +12,9 @@ const CrownLevel = ({userLevel}) => {
     } else if (level > 14 && level < 20) {
       return "xp-user-badge badge-blue";
     } else if (level > 19 && level < 24) {
-      return "xp-user-badge badge-green";
+      return "xp-user-badge badge-green ";
     } else {
-      return "xp-user-badge badge-black";
+      return "xp-user-badge badge-red";
     }
   };
 

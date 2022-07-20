@@ -1,30 +1,61 @@
-import Picker, { SKIN_TONE_MEDIUM_DARK } from "emoji-picker-react";
-import { addDoc, collection } from "firebase/firestore";
-import { useContext, useEffect, useRef, useState } from "react";
-import { Dropdown, DropdownMenu, DropdownToggle } from "reactstrap";
-import SendLogo from "../../assets/imgs/sendNew.png";
+import { useEffect, useRef, useState } from "react";
+import Picker from "emoji-picker-react";
+// import "emoji-picker-react/dist/main.css";
+import { addDoc, collection, updateDoc, doc } from "firebase/firestore";
 import { db } from "../../config/firesbaseConfig";
-import { Context } from "../../context/Context";
 import { useAllMessages } from "../../hooks/firebase/useAllMessages";
 import { useTime } from "../../hooks/useTime";
 import ChatMessage from "./ChatMessage";
+import { useUserProfile } from "../../hooks/firebase/useUserProfile";
 
 const ChatRoom = ({ showChat }) => {
   const messagesEndRef = useRef(null);
   const allMessages = useAllMessages();
-  const unixTime = useTime();
-  const { discordId } = useContext(Context);
   const [formValue, setFormValue] = useState("");
-  const [dropdown, setDropdown] = useState(false);
+  const [emojis, setEmojis] = useState(false);
+  const [placeholder, setPlaceholder] = useState("");
+  const unixTime = useTime();
+  const userStorage = window.localStorage.getItem("user");
 
-  const toggleMenu = () => {
-    setDropdown(!dropdown);
-  };
+  var discordId = "";
+  if (userStorage) {
+    discordId = JSON.parse(userStorage).id;
+  }
+
+  const userProfile = useUserProfile(discordId !== "" && discordId);
 
   const onEmojiClick = (event, emojiObject) => {
     let emoticon = emojiObject.emoji;
-    setFormValue(formValue + emoticon);
+    if (formValue.length < 50) {
+      setFormValue(formValue + emoticon);
+    }
   };
+
+  const banned = userProfile[0] ? userProfile[0].chat.banned : false;
+  const unbanTime = userProfile[0] ? userProfile[0].chat.unbanTime : false;
+
+  useEffect(() => {
+    if (discordId !== "" && unbanTime >= 0 && unixTime > 0) {
+      const time = unbanTime - unixTime;
+
+      if (time > 0 && banned) {
+        setPlaceholder("You are banned for " + time + " seconds");
+      } else {
+        setPlaceholder("Type something...");
+      }
+
+      if (time < 0 && banned) {
+        updateDoc(doc(db, "clubUsers", discordId), {
+          chat: {
+            banned: false,
+            unbanTime: 0,
+          },
+        });
+      }
+    } else {
+      setPlaceholder("Login to chat...");
+    }
+  }, [discordId, banned, unbanTime, unixTime]);
 
   const sendMessage = async (e) => {
     if (discordId !== "") {
@@ -33,15 +64,34 @@ const ChatRoom = ({ showChat }) => {
         setFormValue("");
         return false;
       }
-      const docRef = await addDoc(collection(db, "messages"), {
+      const myMessages = allMessages.filter(
+        (messages) => messages.uid === discordId
+      );
+      const lastMessages = myMessages.filter(
+        (messages) => messages.createdAt > unixTime - 10
+      );
+      if (lastMessages.length > 4) {
+        updateDoc(doc(db, "clubUsers", discordId), {
+          chat: {
+            banned: true,
+            unbanTime: unixTime + 30,
+          },
+        });
+        setEmojis(false);
+        setFormValue("");
+        return false;
+      }
+      addDoc(collection(db, "messages"), {
         text: formValue.trim(),
         createdAt: unixTime,
         uid: discordId,
       });
       setFormValue("");
+      setEmojis(false);
     }
     return () => {
       setFormValue("");
+      setEmojis(false);
     };
   };
 
@@ -54,80 +104,69 @@ const ChatRoom = ({ showChat }) => {
   return (
     <div className="chatting_chat_msgs">
       <div className="chat_input_hold">
+        <div className="background-messages">
+          <h1>Chat Room</h1>
+        </div>
         <div className="chat_msgs">
           <ul className="messages">
-            <div className="background-messages">
-              <h1>Chat Room</h1>
-            </div>
             {allMessages &&
-              allMessages.map((msg) => (
-                <ChatMessage key={msg.id} {...msg} />
-              ))
-            }
+              allMessages.map((msg, index) => (
+                <ChatMessage key={msg.id} index={index} {...msg} />
+              ))}
             <div ref={messagesEndRef}></div>
           </ul>
         </div>
-        {discordId !== "" ? (
-          <form onSubmit={sendMessage}>
-            <div className="chat_input_contain">
-              <input
-                type="text"
-                className="chat_input"
-                placeholder="Type something..."
-                value={formValue}
-                onChange={(e) => setFormValue(e.target.value)}
-                maxLength="50"
-              />
-              <Dropdown
-                isOpen={dropdown}
-                toggle={toggleMenu}
-                direction="up"
-                size="xs"
-                className="chat_emoji"
-              >
-                <DropdownToggle className="chat_emoji_btn">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="22"
-                    height="22"
-                    fill="#4c4460"
-                    viewBox="0 0 15.498 15.498"
-                  >
-                    <path
-                      id="face-smile-emoji"
-                      d="M7.749,8A7.749,7.749,0,1,0,15.5,15.749,7.748,7.748,0,0,0,7.749,8Zm0,14A6.249,6.249,0,1,1,14,15.749,6.256,6.256,0,0,1,7.749,22Zm-2.5-6.749a1,1,0,1,0-1-1A1,1,0,0,0,5.249,15.249Zm5,0a1,1,0,1,0-1-1A1,1,0,0,0,10.249,15.249Zm.125,2.268a3.413,3.413,0,0,1-5.249,0,.75.75,0,0,0-1.153.959,4.919,4.919,0,0,0,7.555,0,.75.75,0,0,0-1.153-.959Z"
-                      transform="translate(0 -8)"
-                    />
-                  </svg>
-                </DropdownToggle>
-                <DropdownMenu>
-                  <>
-                    <Picker
-                      onEmojiClick={onEmojiClick}
-                      disableAutoFocus={true}
-                      skinTone={SKIN_TONE_MEDIUM_DARK}
-                      groupNames={{ smileys_people: "PEOPLE" }}
-                      native
-                    />
-                  </>
-                </DropdownMenu>
-              </Dropdown>
-              <button className="btn btn-transparent chat_send" type="submit">
-                <img widht="30" height="30" src={SendLogo} alt="" />
-              </button>
-            </div>
-          </form>
-        ) : (
-          <div className="chat_input_contain disabled">
-            <input
-              type="text"
-              className="chat_input"
-              maxLength="500"
-              placeholder="Log in with discord to start chatting"
-              disabled={true}
+        {emojis && (
+          <div className="emojis_modal">
+            <Picker
+              onEmojiClick={onEmojiClick}
+              groupNames={{ smileys_people: "PEOPLE" }}
+              pickerStyle={{
+                width: "100%",
+                boxShadow: "none",
+              }}
+              disableSearchBar={true}
+              disableSkinTonePicker={true}
+              preload={true}
             />
           </div>
         )}
+
+        <form onSubmit={sendMessage}>
+          <div
+            className={
+              discordId === "" || banned
+                ? "chat_input_contain disabled"
+                : "chat_input_contain"
+            }
+          >
+            <input
+              disabled={discordId === "" || banned}
+              type="text"
+              className="chat_input"
+              placeholder={placeholder}
+              value={formValue}
+              onChange={(e) => setFormValue(e.target.value)}
+              maxLength="50"
+            />
+            <div className="chat_buttons">
+              <button
+                disabled={discordId === "" || banned}
+                className={emojis ? "chat_btn_selected" : "chat_btn"}
+                onClick={() => setEmojis(!emojis)}
+              >
+                <i className="fas fa-smile"></i>
+              </button>
+              <button
+                disabled={discordId === "" || banned}
+                type="submit"
+                className="chat_btn"
+              >
+                <i className="fa fa-paper-plane" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+        </form>
       </div>
     </div>
   );

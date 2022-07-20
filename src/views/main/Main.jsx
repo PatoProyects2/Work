@@ -1,4 +1,11 @@
-import { collection, doc, getDocs, query, setDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  query,
+  setDoc,
+  where,
+} from "firebase/firestore";
 import { useContext, useEffect, useState } from "react";
 import { db } from "../../config/firesbaseConfig";
 import { Context } from "../../context/Context";
@@ -45,7 +52,10 @@ const Main = () => {
       let monthGames = [];
       let globalGames = [];
 
-      const q = query(collection(db, "allGames"));
+      const q = query(
+        collection(db, "allGames"),
+        where("state", "==", "confirmed")
+      );
       const document = await getDocs(q);
 
       // Filtrar por preiodo de tiempo y usuarios registrados
@@ -139,6 +149,7 @@ const Main = () => {
         }, 0);
         const user = users[users.length - 1];
         const top = {
+          uid: user.uid,
           photo: user.photo,
           name: user.name,
           game: users.length,
@@ -154,6 +165,7 @@ const Main = () => {
         }, 0);
         const user = users[users.length - 1];
         const top = {
+          uid: user.uid,
           photo: user.photo,
           name: user.name,
           game: users.length,
@@ -169,6 +181,7 @@ const Main = () => {
         }, 0);
         const user = users[users.length - 1];
         const top = {
+          uid: user.uid,
           photo: user.photo,
           name: user.name,
           game: users.length,
@@ -184,6 +197,7 @@ const Main = () => {
         }, 0);
         const user = users[users.length - 1];
         const top = {
+          uid: user.uid,
           photo: user.photo,
           name: user.name,
           game: users.length,
