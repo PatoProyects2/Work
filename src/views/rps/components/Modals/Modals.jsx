@@ -1,5 +1,5 @@
 import { Spinner } from "react-bootstrap";
-import { Progress, Table } from "reactstrap";
+import { Table } from "reactstrap";
 
 // Game Logo
 import RPSGames from "../../../../assets/imgs/Home_Page/RPS Games.png";
@@ -218,13 +218,10 @@ const Result = (props) => {
       <div className="d-flex flex-column justify-content-between mx-auto mt-4">
         <div className="d-flex flex-column justify-content-center">
           <span className="rps-result-title">
-            <p
-              className={props.gameResult ? "won-game" : "lost-game"}
-            >
+            <p className="text-result-game text-white">
               {props.gameResult ? "You won" : "You lost"}
             </p>
           </span>
-
           <div className="resultado-flex">
             {props.gameResult && <img src={Star} />}
             <span
@@ -233,9 +230,7 @@ const Result = (props) => {
                 color: props.gameResult ? "#f1cf61" : "#9845eb",
               }}
             >
-              {props.gameResult
-                ? props.useramount * 2
-                : props.useramount}
+              {props.gameResult ? props.useramount * 2 : props.useramount}
               {" MATIC"}
             </span>
             {props.gameResult && <img src={Star} />}
@@ -243,35 +238,12 @@ const Result = (props) => {
         </div>
         <div className="d-flex justify-content-center">
           <div className="d-flex flex-column align-items-center">
-            {props.save ? (
-              <>
-                <button disabled>
-                  POLYGON IS PROCESSING YOUR GAME &nbsp;&nbsp;
-                  <Spinner
-                    as="span"
-                    animation="border"
-                    size="sm"
-                    role="status"
-                    aria-hidden="true"
-                  />
-                </button>
-                <button className="btn-hover btn-loading" disabled>
-                  PLEASE WAIT
-                  <Progress value={100} color="dark" animated></Progress>
-                </button>
-              </>
-            ) : (
-              <>
-                {!props.gameResult && (
-                  <span className="processing-title">TRY AGAIN?</span>
-                )}
-                <button className="DoubleOrNothing" onClick={props.backGame}>
-                  {props.gameResult
-                    ? "CLAIM REWARD"
-                    : "DOUBLE OR NOTHING"}
-                </button>
-              </>
+            {!props.gameResult && (
+              <span className="processing-title text-white">TRY AGAIN?</span>
             )}
+            <button className="DoubleOrNothing" onClick={props.backGame}>
+              {props.gameResult ? "CLAIM REWARD" : "DOUBLE OR NOTHING"}
+            </button>
           </div>
         </div>
       </div>
@@ -324,7 +296,6 @@ export const GamePanel = ({
               userhand={usergame.hand}
               useramount={usergame.amount}
               gameResult={gameResult}
-              save={save}
               backGame={backGame}
             />
           )}
@@ -408,7 +379,7 @@ export const GamePanel = ({
                 <span className="slider round"></span>
               </label>
               &nbsp;&nbsp;&nbsp;
-              <span>I confirm that I am at least</span>
+              <span className="text-white">I confirm that I am at least</span>
               <span style={{ color: "#ffdb5b" }}> 18 years old</span>
             </p>
           )}

@@ -4,37 +4,27 @@ import { Outlet } from "react-router-dom";
 import { Context } from "../../context/Context";
 import { useMatchMedia } from "../../hooks/useMatchMedia";
 import ChatRoom from "../Chat/ChatRoom";
-import Footer from "../Footer/Footer";
+// import Footer from "../Footer/Footer";
 import NavBar from "../NavBar/NavBar";
 import SocialButtons from "../../components/SocialButtons/SocialButtons";
 
 export default function MainLayout() {
   const [balance, setBalance] = useState("");
   const [discordId, setDiscordId] = useState("");
- 
-  const [provider, setProvider] = useState(false);
-  const [chatHistory, setChatHistory] = useState(50);
-  const [soundToggle, setSoundToggle] = useState(true);
-  const [gas, setGas] = useState(false);
   const [showChat, setShowChat] = useState(false);
+  const [playerDocument, setPlayerDocument] = useState(false);
 
   const isMobileResolution = useMatchMedia("(max-width:650px)", false);
 
   return (
     <Context.Provider
       value={{
-        // provider,
-        // setProvider,
+        playerDocument,
+        setPlayerDocument,
         balance,
         setBalance,
         discordId,
         setDiscordId,
-        soundToggle,
-        setSoundToggle,
-        chatHistory,
-        setChatHistory,
-        gas,
-        setGas,
       }}
     >
       <div className="div-test">
@@ -93,7 +83,7 @@ export default function MainLayout() {
       <main className="wrapper-main">
         <section>
           <div className={`chat-section ${showChat ? "expanded" : ""}`}>
-            <ChatRoom showChat={showChat} />
+            <ChatRoom showChat={showChat} setShowChat={setShowChat} />
           </div>
           <div className="chat_expand">
             <span
@@ -108,7 +98,7 @@ export default function MainLayout() {
         </section>
       </main>
       <footer className={`${showChat ? "footer-expanded" : ""}`}>
-        <Footer />
+        {/* <Footer /> */}
       </footer>
     </Context.Provider>
   );

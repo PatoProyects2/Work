@@ -5,11 +5,15 @@ import {
   query,
   setDoc,
   where,
+  orderBy,
+  limit,
+  onSnapshot,
 } from "firebase/firestore";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useCallback } from "react";
 import { db } from "../../config/firesbaseConfig";
 import { Context } from "../../context/Context";
 import { useMatchMedia } from "../../hooks/useMatchMedia";
+// import { useAllGames } from "../../hooks/firebase/useAllGames";
 import {
   BannerCards,
   StyledMain,
@@ -20,6 +24,7 @@ import {
 const Main = () => {
   const { discordId } = useContext(Context);
   const [topLeaderboards, setTopLeaderboards] = useState(false);
+  const [liveGames, setLiveGames] = useState(false);
   const [liveBets, setLiveBets] = useState(true);
   const [mostPlays, setMostPlays] = useState(false);
   const [mostAmount, setMostAmount] = useState(false);
@@ -39,6 +44,24 @@ const Main = () => {
       });
     }
   }, [discordId]);
+
+  const getLiveGames = () => {
+    const q = query(
+      collection(db, "allGames"),
+      where("state", "==", "confirmed"),
+      orderBy("createdAt", "desc"),
+      limit(10)
+    );
+    const unsub = onSnapshot(q, async (doc) => {
+      const games = doc.docs.map((document) => document.data());
+      setLiveGames(games);
+    });
+    return () => unsub();
+  };
+
+  useEffect(() => {
+    getLiveGames();
+  }, []);
 
   useEffect(() => {
     const readLeaderboard = async () => {
@@ -226,7 +249,7 @@ const Main = () => {
     };
     readLeaderboard();
     return () => setTopLeaderboards(false);
-  }, [discordId]);
+  }, []);
 
   const day = () => {
     setDaily(true);
@@ -298,6 +321,7 @@ const Main = () => {
       />
 
       <Tables
+        liveGames={liveGames}
         topLeaderboards={topLeaderboards}
         isMobileResolution={isMobileResolution}
         liveBets={liveBets}

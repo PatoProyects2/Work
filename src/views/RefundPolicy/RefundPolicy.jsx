@@ -3,7 +3,7 @@ import React from 'react'
 const RefundPolicy = () => {
 
     return (
-        <div className='container'>
+        <div className='container text-white'>
             <div className='row pt-5'>
                 <div className='col-sm-10 col-12 mx-auto my-auto'>
                     <h1 className='d-inline heading-black text-capitalize'>Refund Policy</h1>

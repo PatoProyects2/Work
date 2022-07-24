@@ -147,16 +147,14 @@ export const BannerCards = (props) => {
         </NavLink>
       </div>
       <div className="d-flex responsive-card">
-        <div className="game-card mx-auto">
-          <NavLink to="/comingsoon">
-            <div className="ParteImgAbajo">
-              <img
-                src={
-                  props.isTabletResolution ? ComingSoonMobile : ComingSoonImg
-                }
-              />
-            </div>
-          </NavLink>
+        <div role="button" className="game-card mx-auto">
+          {/* <NavLink style={{ pointerEvents: "none" }} to="/comingsoon"> */}
+          <div className="ParteImgAbajo">
+            <img
+              src={props.isTabletResolution ? ComingSoonMobile : ComingSoonImg}
+            />
+          </div>
+          {/* </NavLink> */}
         </div>
         <div className="game-card mx-auto">
           <NavLink to="/nfts">
@@ -167,14 +165,14 @@ export const BannerCards = (props) => {
         </div>
       </div>
       <div className="d-flex responsive-card">
-        <div className="game-card mx-auto">
-          <NavLink to="/coinflip">
-            <div className="ParteImgAbajo">
-              <img
-                src={props.isTabletResolution ? CoinFlipMobile : CoinflipImg}
-              />
-            </div>
-          </NavLink>
+        <div role="button" className="game-card mx-auto">
+          {/* <NavLink style={{ pointerEvents: "none" }} to="/coinflip"> */}
+          <div className="ParteImgAbajo">
+            <img
+              src={props.isTabletResolution ? CoinFlipMobile : CoinflipImg}
+            />
+          </div>
+          {/* </NavLink> */}
         </div>
         <div className="game-card mx-auto">
           <NavLink to="/fair-play">
@@ -273,7 +271,10 @@ export const Tables = (props) => {
       </div>
       <div className="table-section">
         {props.liveBets && (
-          <Games isMobileResolution={props.isMobileResolution} />
+          <Games
+            isMobileResolution={props.isMobileResolution}
+            liveGames={props.liveGames}
+          />
         )}
         {props.mostPlays && props.topLeaderboards && (
           <MostPlays

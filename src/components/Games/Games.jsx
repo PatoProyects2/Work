@@ -1,10 +1,17 @@
-import { memo } from "react";
+import { useState, useEffect } from "react";
 import { Table } from "reactstrap";
-import { useAllGames } from "../../hooks/firebase/useAllGames";
 import TableGames from "./TableGames";
 
-const Games = ({ isMobileResolution }) => {
-  const allGames = useAllGames();
+const Games = ({ isMobileResolution, liveGames }) => {
+  const [unixTime, setUnixTime] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setUnixTime(Math.round(new Date().getTime() / 1000));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [unixTime]);
+
   return (
     <Table className="tbl-ranking" borderless responsive>
       <thead>
@@ -23,13 +30,14 @@ const Games = ({ isMobileResolution }) => {
         </tr>
       </thead>
       <tbody>
-        {allGames &&
-          allGames.map((games, index) => (
+        {liveGames &&
+          liveGames.map((games, index) => (
             <TableGames
               key={games.gameId}
               {...games}
               isMobileResolution={isMobileResolution}
               index={index}
+              unixTime={unixTime}
             />
           ))}
       </tbody>
@@ -37,4 +45,4 @@ const Games = ({ isMobileResolution }) => {
   );
 };
 
-export default memo(Games);
+export default Games;

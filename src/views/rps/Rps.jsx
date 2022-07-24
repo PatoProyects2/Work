@@ -1,12 +1,5 @@
 import { useContext, useEffect, useState, useRef } from "react";
-import {
-  addDoc,
-  collection,
-  doc,
-  onSnapshot,
-  setDoc,
-  updateDoc,
-} from "firebase/firestore";
+import { addDoc, collection } from "firebase/firestore";
 import { useMixpanel } from "react-mixpanel-browser";
 import toast from "react-hot-toast";
 import winSound from "../../assets/audio/win_sound.mpeg";
@@ -16,14 +9,14 @@ import win1 from "../../assets/imgs/Win_Lose_Screens/win1.gif";
 import win2 from "../../assets/imgs/Win_Lose_Screens/win2.png";
 import { db } from "../../config/firesbaseConfig";
 import { Context } from "../../context/Context";
-import { useTime } from "../../hooks/useTime";
 import { useWeb3 } from "../../hooks/useWeb3";
+import { useGas } from "../../hooks/useGas";
 import { GameLogo, GamePanel, ConnectPanel } from "./components/Modals/Modals";
 
 const RPS = () => {
   const screen = useRef(null);
-  
-  const { discordId, balance, soundToggle, gas } = useContext(Context);
+
+  const { balance, playerDocument } = useContext(Context);
   const {
     web3,
     account,
@@ -34,9 +27,9 @@ const RPS = () => {
     readBlockchainData,
     readBalance,
   } = useWeb3();
+  const gasTrack = useGas();
 
   const mixpanel = useMixpanel();
-  const unixTime = useTime();
 
   const [usergame, setUsergame] = useState({ hand: "", amount: 0 });
   const [gameResult, setGameResult] = useState(undefined);
@@ -49,11 +42,36 @@ const RPS = () => {
   const [busyNetwork, setBusyNetwork] = useState(false);
   const [result, setResult] = useState(false);
   const [load, setLoad] = useState(false);
-  const [playerDocument, setPlayerDocument] = useState(false);
+
+  const [mySound, setMySound] = useState("on");
+  const [myGas, setMyGas] = useState(false);
 
   const music = new Audio(winSound);
+
   const token = window.localStorage.getItem("token");
   const age = window.localStorage.getItem("age");
+  const sound = window.localStorage.getItem("sound");
+  const gas = window.localStorage.getItem("gas");
+
+  useEffect(() => {
+    if (sound !== null) {
+      setMySound(sound);
+    }
+  }, [sound]);
+
+  useEffect(() => {
+    if (gas !== null && gasTrack) {
+      if (gas === "standard") {
+        setMyGas(parseInt(gasTrack.safeLow.maxFee));
+      }
+      if (gas === "fast") {
+        setMyGas(parseInt(gasTrack.standard.maxFee));
+      }
+      if (gas === "instant") {
+        setMyGas(parseInt(gasTrack.fast.maxFee));
+      }
+    }
+  }, [gas, gasTrack]);
 
   const sleep = (milliseconds) => {
     return new Promise((resolve) => setTimeout(resolve, milliseconds));
@@ -96,41 +114,6 @@ const RPS = () => {
     const result = arrayOptions[randomArray];
     setRandomItem(result);
   }, [playing]);
-
-  useEffect(() => {
-    const deadWallet = "0x000000000000000000000000000000000000dEaD";
-    if (account !== undefined && account !== deadWallet) {
-      const query =
-        discordId !== ""
-          ? doc(db, "clubUsers", discordId)
-          : doc(db, "anonUsers", account);
-      const unsub = onSnapshot(query, async (document) => {
-        const profile = document.data();
-        if (profile) {
-          setPlayerDocument(profile);
-          if (profile.account === "") {
-            updateDoc(doc(db, "clubUsers", discordId), {
-              account: account,
-            });
-          }
-        } else {
-          const arrayData = {
-            uid: "anonymous",
-            account: account,
-            name: "",
-            photo:
-              "https://firebasestorage.googleapis.com/v0/b/games-club-dce4d.appspot.com/o/ClubLogo.png?alt=media&token=5dd64484-c99f-4ce9-a06b-0a3ee112b37b",
-            level: 1,
-            rps: {
-              lastGameBlock: 0,
-            },
-          };
-          setDoc(doc(db, "anonUsers", account), arrayData);
-        }
-      });
-      return () => unsub();
-    }
-  }, [account, discordId]);
 
   const handleInputChange = (event) => {
     setUsergame({
@@ -198,14 +181,14 @@ const RPS = () => {
           .send({
             from: account,
             value: feeValue,
-            gasPrice: web3.utils.toWei(gas.value.toString(), "gwei"),
+            gasPrice: web3.utils.toWei(myGas.toString(), "gwei"),
             gasLimit: 500000,
           })
           .on("transactionHash", function (hash) {
-            setGameLog("PLAYING");
+            setGameLog("SAVING YOUR GAME");
           })
           .on("receipt", async function (playEvent) {
-            setGameLog("SAVING YOUR GAME");
+            setGameLog("PLAYING");
 
             const gameId = parseInt(
               playEvent.events.BetPlaced.returnValues.betId
@@ -221,7 +204,7 @@ const RPS = () => {
               name: playerDocument.name,
               photo: playerDocument.photo,
               txHash: txHash,
-              createdAt: unixTime,
+              createdAt: Math.round(new Date().getTime() / 1000),
               block: gameBlock,
               gameId: gameId,
               amount: usdAmount,
@@ -315,7 +298,7 @@ const RPS = () => {
     };
 
     if (gameResult) {
-      if (soundToggle) {
+      if (mySound === "on") {
         music.play();
       }
       toast(

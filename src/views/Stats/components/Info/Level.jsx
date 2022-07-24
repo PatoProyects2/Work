@@ -23,7 +23,7 @@ const ProgressExp = ({ maxGames, minGames, cGames, xpClass }) => {
         className="w-100"
         color={xpClass}
       ></Progress>
-      <small>{`${cGames}/${maxGames} games`}</small>
+      <small className="text-white">{`${cGames}/${maxGames} games`}</small>
     </div>
   );
 };

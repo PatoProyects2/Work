@@ -10,6 +10,15 @@ import {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Tooltip,
+  Filler
+);
+
 const DataChart = ({ data }) => {
   const chartRef = useRef(null);
   const [chartData, setChartData] = useState({ datasets: [] });
@@ -23,62 +32,11 @@ const DataChart = ({ data }) => {
 
     // console.log({chart,data});
 
-    ChartJS.register(
-      CategoryScale,
-      LinearScale,
-      PointElement,
-      LineElement,
-      Tooltip,
-      Filler
-    );
-
-    // Linea de puntos del valor 0
-    // ChartJS.register({
-    //   id: "dottedLine",
-    //   beforeDatasetsDraw(chart) {
-    //     const ctx = chart.canvas.getContext("2d");
-    //     const chartArea = chart.chartArea;
-    //     const scales = chart.scales;
-
-    //     try {
-    //       const startingPoint = 0;
-    //       const yAxie = scales.y.getPixelForValue(0);
-
-    //       // Linea de puntos
-    //       ctx.save();
-    //       ctx.beginPath();
-    //       ctx.lineWidth = 1;
-    //       ctx.setLineDash([1, 5]);
-    //       ctx.strokeStyle = "rgba(102,102,102,1)";
-    //       ctx.moveTo(chartArea.left, yAxie);
-    //       ctx.lineTo(chartArea.right, yAxie);
-    //       ctx.stroke();
-    //       ctx.stroke();
-    //       ctx.closePath();
-    //       ctx.setLineDash([]);
-
-    //       // Rectángulo
-    //       ctx.beginPath();
-    //       ctx.fillStyle = "rgba(102,102,102,1)";
-    //       ctx.fillRect(0, yAxie - 15, chartArea.left, 20);
-    //       ctx.closePath();
-
-    //       // Texto dentro del rectángulo
-    //       ctx.font = "10px sans-serif";
-    //       ctx.fillStyle = "white";
-    //       ctx.textBaseLine = "middle";
-    //       ctx.textAlign = "center";
-    //       ctx.fillText(startingPoint, chartArea.left / 2, yAxie);
-    //     } catch (err) {}
-    //   },
-    // });
-
     const createGradientColor = (value) => {
-      var ctx = chart.ctx;
-      var chartArea = chart.chartArea;
-      var scales = chart.scales;
-
-      var gradient = ctx.createLinearGradient(0, 0, 0, chartArea.bottom);
+      const ctx = chart.ctx;
+      const chartArea = chart.chartArea;
+      const scales = chart.scales;
+      const gradient = ctx.createLinearGradient(0, 0, 0, chartArea.bottom);
       var shift = scales.y.getPixelForValue(value) / chartArea.bottom;
 
       if (shift > 1) {
@@ -97,7 +55,6 @@ const DataChart = ({ data }) => {
       const ctx = chart.ctx;
       const chartArea = chart.chartArea;
       const scales = chart.scales;
-
       const yAxie = scales.y.getPixelForValue(value);
       const gradient = ctx.createLinearGradient(0, yAxie, 0, chartArea.top);
 
@@ -111,7 +68,6 @@ const DataChart = ({ data }) => {
       const ctx = chart.ctx;
       const chartArea = chart.chartArea;
       const scales = chart.scales;
-
       const yAxie = scales.y.getPixelForValue(value);
       const gradient = ctx.createLinearGradient(0, yAxie, 0, chartArea.bottom);
 
@@ -121,152 +77,55 @@ const DataChart = ({ data }) => {
       return gradient;
     };
 
-    // const crosshairLine = (mousemove) => {
-    //   const ctx = chart.ctx;
-    //   const chartArea = chart.chartArea;
-    //   const canvas = chart.canvas;
+    const title = (tooltipItems) => {
+      return "ID: " + tooltipItems[0].label;
+    };
 
-    //   const coorX = mousemove.offsetX;
-    //   const coorY = mousemove.offsetY;
+    const beforeFooter = (tooltipItems) => {
+      const index = parseInt(tooltipItems[0].dataIndex);
+      return "Usd Amount: " + data.usdAmounts[index];
+    };
 
-    //   chart.update("none");
-    //   ctx.restore();
+    const footer = (tooltipItems) => {
+      const index = parseInt(tooltipItems[0].dataIndex);
+      return "Matic Amount: " + data.maticAmounts[index];
+    };
 
-    //   if (
-    //     coorX >= chartArea.left &&
-    //     coorX <= chartArea.right &&
-    //     coorY >= chartArea.top &&
-    //     coorY <= chartArea.bottom
-    //   ) {
-    //     canvas.style.cursor = "crosshair";
-    //   } else {
-    //     canvas.style.cursor = "default";
-    //   }
+    const afterFooter = (tooltipItems) => {
+      const index = parseInt(tooltipItems[0].dataIndex);
+      const datas = tooltipItems[0].dataset.data;
+      var result = "";
 
-    //   // Dot line
-    //   ctx.lineWidth = 1;
-    //   ctx.strokeStyle = "#666";
-    //   ctx.setLineDash([3, 3]);
+      if (index === 0 && datas[index] > 0) {
+        result = "Win";
+      } else {
+        result = "Loss";
+      }
 
-    //   if (
-    //     coorX >= chartArea.left &&
-    //     coorX <= chartArea.right &&
-    //     coorY >= chartArea.top &&
-    //     coorY <= chartArea.bottom
-    //   ) {
-    //     // Horizontal line
-    //     ctx.beginPath();
-    //     ctx.moveTo(chartArea.left, coorY);
-    //     ctx.lineTo(chartArea.right, coorY);
-    //     ctx.stroke();
-    //     ctx.closePath();
+      if (index > 0 && datas[index - 1] > datas[index]) {
+        result = "Loss";
+      }
+      if (index > 0 && datas[index - 1] < datas[index]) {
+        result = "Win";
+      }
 
-    //     // Vertical line
-    //     ctx.beginPath();
-    //     ctx.moveTo(coorX, chartArea.top);
-    //     ctx.lineTo(coorX, chartArea.bottom);
-    //     ctx.stroke();
-    //     ctx.closePath();
-
-    //     crosshairLabel(coorX, coorY);
-    //     // crossHairPoint(coorX);
-    //   }
-    // };
-
-    // chart.canvas.addEventListener("mousemove", (e) => {
-    //   crosshairLine(e);
-    // });
-
-    // const crosshairLabel = (coorX, coorY) => {
-    //   const ctx = chart.ctx;
-    //   const chartArea = chart.chartArea;
-    //   const scales = chart.scales;
-    //   const labels = chart.data.labels;
-
-    //   try {
-    //     const xData = labels[scales.x.getValueForPixel(coorX)];
-    //     const textWidth = ctx.measureText(xData).width + 15;
-
-    //     // Label
-    //     ctx.font = "10px sans-serif";
-    //     ctx.textBaseLine = "middle";
-    //     ctx.textAlign = "center";
-
-    //     // yLabel
-    //     ctx.beginPath();
-    //     ctx.fillStyle = "rgba(132,132,132,1)";
-    //     ctx.fillRect(0, coorY - 15, chartArea.left, 20);
-    //     ctx.closePath();
-
-    //     ctx.fillStyle = "white";
-    //     ctx.fillText(
-    //       scales.y.getValueForPixel(coorY).toFixed(2),
-    //       chartArea.left / 2,
-    //       coorY
-    //     );
-
-    //     // xLabel
-    //     ctx.beginPath();
-    //     ctx.fillStyle = "rgba(132,132,132,1)";
-    //     ctx.fillRect(coorX - textWidth / 2, chartArea.bottom, textWidth, 20);
-    //     ctx.closePath();
-
-    //     ctx.fillStyle = "white";
-    //     ctx.fillText(xData, coorX, chartArea.bottom + 15);
-    //   } catch (err) {}
-    // };
-
-    // const crossHairPoint = (coorX) => {
-    //   const ctx = chart.ctx;
-    //   const chartArea = chart.chartArea;
-    //   const scales = chart.scales;
-
-    //   try {
-    //     const data = chart.data.datasets[0].data;
-    //     const labels = chart.data.labels;
-
-    //     ctx.beginPath();
-    //     ctx.strokeStyle = "#fff";
-    //     ctx.lineWidth = 3;
-    //     ctx.setLineDash([]);
-
-    //     const angle = Math.PI / 180;
-    //     const yOpening = scales.y.getPixelForValue(data[0]);
-    //     if (scales.x._gridLineItems) {
-    //       const segments = scales.x._gridLineItems.length - 1;
-    //       for (let i = 0; i < segments; i++) {
-    //         if (
-    //           coorX >= scales.x._gridLineItems[i].tx1 &&
-    //           coorX <= scales.x._gridLineItems[i + 1].tx1
-    //         ) {
-    //           let yStart = scales.y.getPixelForValue(data[i]);
-    //           let yEnd = scales.y.getPixelForValue(data[i + 1]);
-
-    //           let yInterpolation =
-    //             yStart +
-    //             ((yEnd - yStart) / (chartArea.width / segments)) *
-    //               (coorX - scales.x._gridLineItems[i].tx1);
-
-    //           if (yOpening >= yInterpolation) {
-    //             ctx.fillStyle = "rgba(255, 245, 117, 1)";
-    //           } else {
-    //             ctx.fillStyle = "rgba(255, 127, 80, 1)";
-    //           }
-
-    //           ctx.arc(coorX, yInterpolation, 5, angle * 0, angle * 360, false);
-    //           ctx.fill();
-    //           ctx.stroke();
-    //         }
-    //       }
-    //     }
-    //   } catch (err) {}
-    // };
+      return "Result: " + result;
+    };
 
     setOptions({
       responsive: true,
-      tooltips: {
-        mode: "index",
-        intersect: false,
+      plugins: {
+        tooltip: {
+          backgroundColor: "#4d4763ec",
+          mode: "index",
+          intersect: false,
+          callbacks: {
+            title: title,
+            beforeFooter: beforeFooter,
+            footer: footer,
+            afterFooter: afterFooter,
+          },
+        },
       },
       hover: {
         mode: "index",
@@ -274,14 +133,21 @@ const DataChart = ({ data }) => {
       },
       scales: {
         x: {
-          min: data.time,
-          max: data.time[data.time.length - 1],
+          ticks: {
+            beginAtZero: true,
+            stepSize: 100,
+          },
+
           grid: {
             display: false,
             drawBorder: false,
           },
         },
         y: {
+          ticks: {
+            type: "category",
+            labelOffset: 35,
+          },
           grid: {
             display: false,
             drawBorder: false,
@@ -296,14 +162,19 @@ const DataChart = ({ data }) => {
         {
           label: "Profit",
           data: data.profit,
+
+          // point
           pointBackgroundColor: function (context) {
             return context.raw > 0 ? "rgba(255, 245, 117, 1)" : "#ff7f50";
           },
           pointBorderColor: function (context) {
             return context.raw > 0 ? "rgba(255, 245, 117, 1)" : "#ff7f50";
           },
-          pointRadius: 3,
+          pointRadius: 2,
           pointHoverRadius: 5,
+
+          // lines
+          tension: 0,
           borderWidth: 2,
           fill: {
             target: {
@@ -319,11 +190,9 @@ const DataChart = ({ data }) => {
           borderColor: function (context) {
             return createGradientColor(context.dataset.data[0]);
           },
-          tension: 0,
         },
       ],
     });
-
   }, [data]);
 
   return <Line options={options} ref={chartRef} data={chartData} />;

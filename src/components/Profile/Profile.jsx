@@ -26,18 +26,10 @@ const Profile = () => {
   const url = queryParams.get("code");
 
   const localToken = window.localStorage.getItem("token");
-  const localUser = window.localStorage.getItem("user");
-
-  useEffect(() => {
-    if (localUser !== null) {
-      const data = JSON.parse(localUser);
-      setUser(data);
-    }
-  }, [localUser]);
 
   useEffect(() => {
     const getAccessToken = async () => {
-      if (url !== null && localToken === null && localUser === null) {
+      if (url !== null && localToken === null) {
         const apiConfig = {
           method: "POST",
           body: new URLSearchParams({
@@ -85,12 +77,14 @@ const Profile = () => {
                 window.localStorage.setItem(
                   "user",
                   JSON.stringify({
-                    id: data.id,
+                    id: data.uid,
                     name: data.name,
                     photo: avatar,
+                    level: data.level,
                   })
                 );
                 window.localStorage.setItem("age", false);
+                setUser(JSON.parse(window.localStorage.getItem("user")));
               } else {
                 const avatar = userData.avatar
                   ? `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}`
@@ -102,10 +96,11 @@ const Profile = () => {
                     id: userData.id,
                     name: userData.username,
                     photo: avatar,
+                    level: 1,
                   })
                 );
                 window.localStorage.setItem("age", false);
-
+                setUser(JSON.parse(window.localStorage.getItem("user")));
                 const unixTimeStamp = Math.round(new Date().getTime() / 1000);
                 const arrayData = {
                   uid: userData.id,
@@ -146,7 +141,7 @@ const Profile = () => {
         }
       }
 
-      if (localToken !== null && localUser !== null) {
+      if (localToken !== null) {
         var decrypted = CryptoJS.AES.decrypt(
           localToken,
           process.env.REACT_APP_SECRET_KEY
@@ -169,6 +164,7 @@ const Profile = () => {
             const arrayUpdate = {
               name: userData.username,
               photo: avatar,
+              level: docData.level,
             };
             updateDoc(doc(db, "clubUsers", userData.id), arrayUpdate);
             window.localStorage.setItem(
@@ -177,12 +173,18 @@ const Profile = () => {
                 id: userData.id,
                 name: userData.username,
                 photo: avatar,
+                level: docData.level,
               })
             );
+            setUser(JSON.parse(window.localStorage.getItem("user")));
           } else {
             window.localStorage.removeItem("token");
             window.localStorage.removeItem("user");
-            window.localStorage.setItem("age", false);
+            window.localStorage.removeItem("age");
+            window.localStorage.removeItem("sound");
+            window.localStorage.removeItem("gas");
+            window.localStorage.removeItem("chat");
+            window.localStorage.removeItem("WEB3_CONNECT_CACHED_PROVIDER");
             window.location.reload();
           }
         }
@@ -191,8 +193,9 @@ const Profile = () => {
     getAccessToken();
     return () => {
       setDiscordId("");
+      setUser(false);
     };
-  }, [url, localToken, localUser]);
+  }, [url, localToken]);
 
   const toggleMenu = () => {
     setDropdown(!dropdown);
@@ -209,6 +212,11 @@ const Profile = () => {
   const removeToken = () => {
     window.localStorage.removeItem("token");
     window.localStorage.removeItem("user");
+    window.localStorage.removeItem("age");
+    window.localStorage.removeItem("sound");
+    window.localStorage.removeItem("gas");
+    window.localStorage.removeItem("chat");
+    window.localStorage.removeItem("WEB3_CONNECT_CACHED_PROVIDER");
     window.location.reload();
   };
 
@@ -226,6 +234,11 @@ const Profile = () => {
           width="30px"
           height="30px"
           src={user.photo}
+          onError={({ currentTarget }) => {
+            currentTarget.onerror = null; // prevents looping
+            currentTarget.src =
+              "https://firebasestorage.googleapis.com/v0/b/rpsgame-c4a38.appspot.com/o/profile%2FClubLogo.png?alt=media&token=7d14512f-c4a8-400f-a7ca-413239add111";
+          }}
           alt="discord-pic"
         />
       </DropdownToggle>

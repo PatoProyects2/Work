@@ -26,6 +26,8 @@ const RPSDemo = () => {
   const [load, setLoad] = useState(false);
   const music = new Audio(winSound);
 
+  const age = window.localStorage.getItem("age");
+
   useEffect(() => {
     setLoad(true);
   }, []);
@@ -60,9 +62,12 @@ const RPSDemo = () => {
       toast.error("Select an amount");
       return false;
     }
-    if (document.getElementById("age").checked === false) {
-      toast.error("Confirm that you are at least 18 years old");
-      return false;
+
+    if (age === "false" || age === null) {
+      if (document.getElementById("age").checked === false) {
+        toast.error("Confirm that you are at least 18 years old");
+        return false;
+      }
     }
 
     const userStreak = gameResult.userStreak + 1;
@@ -145,6 +150,7 @@ const RPSDemo = () => {
       <article>
         {active ? (
           <GamePanel
+          age={age}
             playing={playing}
             animation={animation}
             result={result}

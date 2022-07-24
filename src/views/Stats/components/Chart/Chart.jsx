@@ -13,35 +13,31 @@ const Chart = ({ clubData }) => {
       );
 
       var times = [];
+      var usdAmounts = [];
+      var maticAmounts = [];
 
       const profit = orderGames.map((user, index) => {
         let created = parseInt(user.createdAt);
         let date = new Date(created * 1000);
 
-        // let year = date.getFullYear().toString();
-        // let month = (date.getMonth() + 1).toString();
-        // if (month.length === 1) {
-        //   month = `0${date.getMonth() + 1}`;
-        // }
-        // let day = date.getDate().toString();
-        // if (day.length === 1) {
-        //   day = `0${date.getDate()}`;
-        // }
-
-        // let time = year + "-" + month + "-" + day;
-
-        // let time = index + 1;
         let time = user.gameId;
+        let usd = parseFloat(user.amount.toFixed(2));
+        let matic = user.maticAmount;
         let profit = parseFloat(user.profit.toFixed(2));
 
         times.push(time);
+        usdAmounts.push(usd);
+        maticAmounts.push(matic);
 
-        let value = profit;
-
-        return value;
+        return profit;
       });
 
-      setData({ time: times, profit: profit });
+      setData({
+        time: times,
+        profit: profit,
+        usdAmounts: usdAmounts,
+        maticAmounts: maticAmounts,
+      });
     }
   }, [userGames]);
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useUserGames } from "../../hooks/firebase/useUserGames";
 import { useUserProfile } from "../../hooks/firebase/useUserProfile";
@@ -45,6 +45,7 @@ const Stats = () => {
   const [gamesData, setGamesData] = useState(false);
   const [changeModal, setChangeModal] = useState(false);
   const isMobileResolution = useMatchMedia("(max-width:700px)", false);
+  let navigate = useNavigate();
 
   const { uid } = useParams();
   const userStorage = window.localStorage.getItem("user");
@@ -56,10 +57,16 @@ const Stats = () => {
 
   var userGames = useUserGames(uid ? uid : discordId);
   var userProfile = useUserProfile(uid ? uid : discordId);
-
+  
   const handleChangeModal = () => {
     setChangeModal(!changeModal);
   };
+
+  useEffect(() => {
+    if (userGames.length === 0 && userProfile.length === 0) {
+      navigate("/stats", { replace: true });
+    }
+  }, [userGames, userProfile]);
 
   useEffect(() => {
     if (userGames[0]) {
@@ -96,7 +103,7 @@ const Stats = () => {
 
   return (
     <StyledProfile>
-      {userProfile && (
+      {userProfile[0] && (
         <div className="profile-container">
           <h3 className="TitleUsuario my-3 text-center">
             {userProfile[0].name + "#" + userProfile[0].id} Stats

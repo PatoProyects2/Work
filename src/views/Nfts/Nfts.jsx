@@ -3,7 +3,7 @@ import RoadMap from "./components/RoadMap/RoadMap";
 
 const Nfts = () => {
   return (
-    <div className="container">
+    <div className="text-white">
       <h1 className="text-center heading-black text-capitalize mt-5">NFTs</h1>
       <RoadMap />
 

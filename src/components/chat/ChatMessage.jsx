@@ -1,12 +1,8 @@
 import { NavLink } from "react-router-dom";
-import { useUserProfile } from "../../hooks/firebase/useUserProfile";
 import CrownLevel from "../../views/Stats/components/Info/CrownLevel";
 
-const ChatMessage = ({ text, uid, index }) => {
-  const userProfile = useUserProfile(uid);
-
+const ChatMessage = ({ name, photo, level, text, uid, index, setShowChat }) => {
   const xpClassText = () => {
-    const level = userProfile[0].level;
     if (level <= 4) {
       return "text-yellow";
     } else if (level > 4 && level < 10) {
@@ -23,29 +19,31 @@ const ChatMessage = ({ text, uid, index }) => {
   };
 
   return (
-    <>
-      {userProfile[0] && (
-        <li className={index % 2 === 0 ? "active message" : "message"}>
-          <NavLink to={`/stats/${uid}`}>
-            <div
-              className="chat-users"
-              role="button"
-            >
-              <div className="d-flex">
-                <img
-                  className="chat_user_img"
-                  src={userProfile[0].photo}
-                  alt={userProfile[0].name}
-                />
-                <CrownLevel userLevel={userProfile[0].level} />
-                <span className={xpClassText()}>{userProfile[0].name}:</span>
-              </div>
-            </div>
-          </NavLink>
-          <div className="chat_cont">{text}</div>
-        </li>
-      )}
-    </>
+    <li className={index % 2 === 0 ? "active message" : "message"}>
+      <NavLink
+        style={{ pointerEvents: uid !== "anonymous" ? "" : "none" }}
+        to={`/stats/${uid}`}
+        onClick={() => setShowChat(false)}
+      >
+        <div className="chat-users" role="button">
+          <div className="d-flex">
+            <img
+              className="chat_user_img"
+              src={photo}
+              onError={({ currentTarget }) => {
+                currentTarget.onerror = null; // prevents looping
+                currentTarget.src =
+                  "https://firebasestorage.googleapis.com/v0/b/rpsgame-c4a38.appspot.com/o/profile%2FClubLogo.png?alt=media&token=7d14512f-c4a8-400f-a7ca-413239add111";
+              }}
+              alt={name}
+            />
+            <CrownLevel userLevel={level} />
+            <span className={xpClassText()}>{name}:</span>
+          </div>
+        </div>
+      </NavLink>
+      <div className="chat_cont">{text}</div>
+    </li>
   );
 };
 export default ChatMessage;

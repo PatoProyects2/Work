@@ -13,7 +13,6 @@ export const useAllGames = () => {
   const [allGames, setAllGames] = useState(false);
 
   useEffect(() => {
-    console.log("Reading useAllGames...");
     const q = query(
       collection(db, "allGames"),
       where("state", "==", "confirmed"),

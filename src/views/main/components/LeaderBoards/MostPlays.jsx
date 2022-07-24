@@ -17,7 +17,7 @@ const MostPlays = (props) => {
           return (
             <tr key={index} className={index % 2 === 0 ? "table-selected" : ""}>
               <td>{index + 1}</td>
-              <td role="button">
+              <td>
                 <NavLink to={`/stats/${user.uid}`}>
                   <img
                     width="25"

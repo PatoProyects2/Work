@@ -1,23 +1,30 @@
-import { useContext, useEffect } from "react";
-import { Context } from "../../../../context/Context";
-import { useGas } from "../../../../hooks/useGas";
+import { useState, useEffect } from "react";
 
 const Settings = () => {
-  const {
-    soundToggle,
-    setSoundToggle,
-    chatHistory,
-    setChatHistory,
-    gas,
-    setGas,
-  } = useContext(Context);
-  const gasTrack = useGas();
+  const [sound, setSound] = useState("on");
+  const [gas, setGas] = useState("instant");
+  const [chat, setChat] = useState("50");
+
+  const soundStorage = window.localStorage.getItem("sound");
+  const gasStorage = window.localStorage.getItem("gas");
+  const chatStorage = window.localStorage.getItem("chat");
+
+  const ageStorage = window.localStorage.getItem("chat");
 
   useEffect(() => {
-    if (!gas && gasTrack) {
-      setGas({ state: "instant", value: parseInt(gasTrack.fast.maxFee) });
+    if (soundStorage === null && gasStorage === null && chatStorage === null) {
+      window.localStorage.setItem("sound", "on");
+      window.localStorage.setItem("gas", "instant");
+      window.localStorage.setItem("chat", 50);
+    } else {
+      setSound(soundStorage);
+      setGas(gasStorage);
+      setChat(chatStorage);
     }
-  }, [gas, gasTrack]);
+    if (ageStorage === null) {
+      window.localStorage.setItem("age", false);
+    }
+  }, [soundStorage, gasStorage, chatStorage,ageStorage]);
 
   useEffect(() => {
     let open = document.querySelectorAll(".open-modal")[0];
@@ -88,89 +95,105 @@ const Settings = () => {
               <i className="fa fa-times" aria-hidden="true"></i>
             </span>
           </div>
+
           <span className="subtitle-modal">Sound</span>
           <div className="settings-div">
             <button
-              className={soundToggle ? "green setting-button" : "setting-button"}
-              onClick={() => !soundToggle && setSoundToggle(true)}
+              className={
+                sound === "on" ? "green setting-button" : "setting-button"
+              }
+              onClick={() =>
+                sound === "off" &&
+                (window.localStorage.setItem("sound", "on"), setSound("on"))
+              }
             >
               <i className="fas fa-volume-up"></i>
             </button>
             <button
-              className={!soundToggle ? "red setting-button" : "setting-button"}
-              onClick={() => soundToggle && setSoundToggle(false)}
+              className={
+                sound === "off" ? "red setting-button" : "setting-button"
+              }
+              onClick={() =>
+                sound === "on" &&
+                (window.localStorage.setItem("sound", "off"), setSound("off"))
+              }
             >
               <i className="fas fa-volume-mute"></i>
             </button>
           </div>
-          <span className="d-block text-white">Transaction speed (GWEI)</span>
+          <span className="subtitle-modal">Transaction speed (GWEI)</span>
           <div className="settings-div text-center">
-            {gasTrack && (
-              <div>
-                <button
-                  className={
-                    gas.state === "standard" ? "green setting-button" : "setting-button"
-                  }
-                  onClick={() =>
-                    gas.state !== "standard" &&
-                    setGas({
-                      state: "standard",
-                      value: parseInt(gasTrack.safeLow.maxFee),
-                    })
-                  }
-                >
-                  Standard
-                  {/* ({gasTrack.safeLow.maxFee.toFixed(2)}) */}
-                </button>
-                <button
-                  className={gas.state === "fast" ? "green setting-button" : "setting-button"}
-                  onClick={() =>
-                    gas.state !== "fast" &&
-                    setGas({
-                      state: "fast",
-                      value: parseInt(gasTrack.standard.maxFee),
-                    })
-                  }
-                >
-                  Fast
-                  {/* ({gasTrack.standard.maxFee.toFixed(2)}) */}
-                </button>
-                <button
-                  className={
-                    gas.state === "instant" ? "green setting-button" : "setting-button"
-                  }
-                  onClick={() =>
-                    gas.state !== "instant" &&
-                    setGas({
-                      state: "instant",
-                      value: parseInt(gasTrack.fast.maxFee),
-                    })
-                  }
-                >
-                  Instant
-                  {/* ({gasTrack.fast.maxFee.toFixed(2)}) */}
-                </button>
-              </div>
-            )}
+            <div>
+              <button
+                className={
+                  gas === "standard" ? "green setting-button" : "setting-button"
+                }
+                onClick={() =>
+                  gas !== "standard" &&
+                  (window.localStorage.setItem("gas", "standard"),
+                  setGas("standard"))
+                }
+              >
+                Standard
+              </button>
+              <button
+                className={
+                  gas === "fast" ? "green setting-button" : "setting-button"
+                }
+                onClick={() =>
+                  gas !== "fast" &&
+                  (window.localStorage.setItem("gas", "fast"), setGas("fast"))
+                }
+              >
+                Fast
+              </button>
+              <button
+                className={
+                  gas === "instant" ? "green setting-button" : "setting-button"
+                }
+                onClick={() =>
+                  gas !== "instant" &&
+                  (window.localStorage.setItem("gas", "instant"),
+                  setGas("instant"))
+                }
+              >
+                Instant
+              </button>
+            </div>
           </div>
-          <span className="d-block text-white">Message History</span>
+          <span className="subtitle-modal">Message history</span>
           <div className="text-center settings-div">
             <div>
               <button
-                className={chatHistory === 50 ? "green setting-button" : "setting-button"}
-                onClick={() => chatHistory !== 50 && setChatHistory(50)}
+                className={
+                  chat === "50" ? "green setting-button" : "setting-button"
+                }
+                onClick={() =>
+                  chat !== "50" &&
+                  (window.localStorage.setItem("chat", 50), setChat("50"))
+                }
               >
                 50
               </button>
               <button
-                className={chatHistory === 100 ? "green setting-button" : "setting-button"}
-                onClick={() => chatHistory !== 100 && setChatHistory(100)}
+                className={
+                  chat === "100" ? "green setting-button" : "setting-button"
+                }
+                onClick={() =>
+                  chat !== "100" &&
+                  (window.localStorage.setItem("chat", 100), setChat("100"))
+                }
               >
                 100
               </button>
               <button
-                className={chatHistory === 300 ? "green setting-button" : "setting-button"}
-                onClick={() => chatHistory !== 300 && setChatHistory(300)}
+                className={
+                  chat === "300" ? "green setting-button" : "setting-button"
+                }
+                onClick={() =>
+                  chat !== "300" &&
+                  (window.localStorage.setItem("chat", 300), setChat("300"))
+                }
               >
                 300
               </button>

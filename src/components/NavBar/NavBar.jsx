@@ -5,8 +5,9 @@ import styled from "styled-components";
 import RPSLogo from "../../assets/imgs/Nav_Bar/logo.png";
 import MenuIcon from "../../assets/imgs/Nav_Bar/menuIcon.png";
 import CloseButton from "../../assets/imgs/Nav_Bar/exitIcon.png";
+import DiscordLogo from "../../assets/imgs/Home_Page/discordIcon.png";
+import TwitterLogo from "../../assets/imgs/Home_Page/twitterIcon.png";
 import { useMatchMedia } from "../../hooks/useMatchMedia";
-import { useWeb3 } from "../../hooks/useWeb3";
 import Profile from "../Profile/Profile";
 import Balance from "./components/Balance/Balance";
 import OnlineUsers from "./components/OnlineUsers/OnlineUsers";
@@ -68,9 +69,7 @@ const NavBar = () => {
           {!isMobileResolution && <OnlineUsers />}
         </div>
         {!isMobileResolution && (
-          <Balance
-            isMobileResolution={isMobileResolution}
-          />
+          <Balance isMobileResolution={isMobileResolution} />
         )}
         <div className="d-flex align-items-center gap-2">
           <Settings />
@@ -284,6 +283,37 @@ const NavBar = () => {
                 </div>
               </>
             )}
+
+            <div className="footer-nav-icons">
+              <img
+                src={DiscordLogo}
+                alt="Discord Logo"
+                width={30}
+                height={30}
+              />
+              <img
+                src={TwitterLogo}
+                alt="Twitter Logo"
+                width={30}
+                height={30}
+              />
+            </div>
+            <div className="footer-nav">
+              <NavLink
+                onClick={() => setShowOffCanvas(false)}
+                className="nav-link-secondary"
+                to="/refund-policy"
+              >
+                Refund Policy
+              </NavLink>
+              <NavLink
+                onClick={() => setShowOffCanvas(false)}
+                className="nav-link-secondary"
+                to="/terms"
+              >
+                Terms & Conditions
+              </NavLink>
+            </div>
           </OffcanvasBody>
         </Offcanvas>
       </Navbar>

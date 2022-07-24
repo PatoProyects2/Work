@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
-import { useTime } from "../../hooks/useTime";
-import { useUserProfile } from "../../hooks/firebase/useUserProfile";
 
 const TableGames = ({
   uid,
@@ -14,9 +12,10 @@ const TableGames = ({
   account,
   isMobileResolution,
   index,
+  photo,
+  name,
+  unixTime,
 }) => {
-  const unixTime = useTime();
-  const userProfile = uid !== "anonymous" ? useUserProfile(uid) : true;
   const [gameTime, setGameTime] = useState(false);
 
   useEffect(() => {
@@ -28,7 +27,7 @@ const TableGames = ({
   }, [createdAt, unixTime]);
 
   return (
-    userProfile &&
+    photo &&
     gameTime && (
       <tr className={index % 2 === 0 ? "table-selected" : ""}>
         <td>
@@ -45,8 +44,8 @@ const TableGames = ({
               className="rounded-circle me-2"
               alt=""
               src={
-                uid !== "anonymous" && userProfile[0]
-                  ? userProfile[0].photo
+                uid !== "anonymous" && photo
+                  ? photo
                   : "https://firebasestorage.googleapis.com/v0/b/games-club-dce4d.appspot.com/o/ClubLogo.png?alt=media&token=5dd64484-c99f-4ce9-a06b-0a3ee112b37b"
               }
               onError={({ currentTarget }) => {
@@ -56,17 +55,17 @@ const TableGames = ({
               }}
             />
             <span style={{ color: "#ffe869" }}>
-              {uid !== "anonymous" && userProfile[0] ? (
+              {uid !== "anonymous" && name ? (
                 isMobileResolution ? (
-                  userProfile[0].name.length > 9 ? (
-                    userProfile[0].name.substring(0, 9) + "..."
+                  name.length > 9 ? (
+                    name.substring(0, 9) + "..."
                   ) : (
-                    userProfile[0].name
+                    name
                   )
-                ) : userProfile[0].name.length > 13 ? (
-                  userProfile[0].name.substring(0, 13) + "..."
+                ) : name.length > 13 ? (
+                  name.substring(0, 13) + "..."
                 ) : (
-                  userProfile[0].name
+                  name
                 )
               ) : isMobileResolution ? (
                 <span style={{ color: "#ffe869" }}>

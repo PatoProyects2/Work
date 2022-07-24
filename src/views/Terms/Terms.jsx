@@ -1,10 +1,9 @@
 import React from 'react'
-import { NavLink } from 'react-router-dom';
 
 const Terms = () => {
 
     return (
-        <div className='container'>
+        <div className='container text-white'>
             <div className='row pt-5'>
                 <div className='col-sm-10 col-12 mx-auto my-auto'>
                     <h1 className='d-inline heading-black text-capitalize'>Terms & Conditions</h1>

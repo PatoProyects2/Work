@@ -1,13 +1,51 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Button } from "reactstrap";
+import { doc, onSnapshot, setDoc, updateDoc } from "firebase/firestore";
+import { db } from "../../../../config/firesbaseConfig";
 import { Context } from "../../../../context/Context";
 import PolygonLogo from "../../../../assets/imgs/Nav_Bar/polygon.png";
 import MetamaskLogo from "../../../../assets/imgs/Nav_Bar/fox.png";
 import { useWeb3 } from "../../../../hooks/useWeb3";
 
 const Balance = (props) => {
-  const { balance } = useContext(Context);
-  const {readBalance} = useWeb3();
+  const { balance, discordId, setPlayerDocument } = useContext(Context);
+  const { readBalance, account } = useWeb3();
+
+  useEffect(() => {
+    const deadWallet = "0x000000000000000000000000000000000000dEaD";
+    if (account !== undefined && account !== deadWallet) {
+      const query =
+        discordId !== ""
+          ? doc(db, "clubUsers", discordId)
+          : doc(db, "anonUsers", account);
+      const unsub = onSnapshot(query, async (document) => {
+        const profile = document.data();
+        if (profile) {
+          setPlayerDocument(profile);
+          if (profile.account === "") {
+            updateDoc(doc(db, "clubUsers", discordId), {
+              account: account,
+            });
+          }
+        } else {
+          const arrayData = {
+            uid: "anonymous",
+            account: account,
+            name: "",
+            photo:
+              "https://firebasestorage.googleapis.com/v0/b/games-club-dce4d.appspot.com/o/ClubLogo.png?alt=media&token=5dd64484-c99f-4ce9-a06b-0a3ee112b37b",
+            level: 1,
+            chat: {
+              banned: false,
+              unbanTime: 0,
+            },
+          };
+          setDoc(doc(db, "anonUsers", account), arrayData);
+        }
+      });
+      return () => unsub();
+    }
+  }, [account, discordId]);
 
   const openMetamask = () => {
     const ouathLink = "https://metamask.app.link/dapp/rpsgames.club/";

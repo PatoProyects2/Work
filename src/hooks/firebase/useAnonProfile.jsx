@@ -2,19 +2,22 @@ import { useState, useEffect } from "react";
 import { collection, query, onSnapshot, where } from "firebase/firestore";
 import { db } from "../../config/firesbaseConfig";
 
-export const useUserProfile = (uid) => {
-  const [userProfile, setUserProfile] = useState(false);
+export const useAnonProfile = (account) => {
+  const [anonProfile, setAnonProfile] = useState(false);
 
   useEffect(() => {
-    if (uid !== "" && uid !== undefined) {
-      const q = query(collection(db, "clubUsers"), where("uid", "==", uid));
+    if (account !== "0x000000000000000000000000000000000000dEaD") {
+      const q = query(
+        collection(db, "anonUsers"),
+        where("account", "==", account)
+      );
       const unsub = onSnapshot(q, async (doc) => {
         const profile = doc.docs.map((document) => document.data());
-        setUserProfile(profile);
+        setAnonProfile(profile);
       });
       return () => unsub();
     }
-  }, [uid]);
+  }, [account]);
 
-  return userProfile;
+  return anonProfile;
 };

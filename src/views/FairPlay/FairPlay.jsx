@@ -32,7 +32,7 @@ const FairPlay = () => {
   }, [])
 
   return (
-    <div className='fairplay-container'>
+    <div className='fairplay-container text-white'>
       <div className='text-justify fairplay-content'>
         <h1 className='heading-black text-capitalize'>Fair Play</h1>
         <p className='lead py-3'>
