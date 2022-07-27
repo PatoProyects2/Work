@@ -78,7 +78,15 @@ const DataChart = ({ data }) => {
     };
 
     const title = (tooltipItems) => {
-      return "ID: " + tooltipItems[0].label;
+      const index = parseInt(tooltipItems[0].dataIndex);
+      return (
+        "ID: " +
+        tooltipItems[0].label +
+        "\nWallet: " +
+        data.accounts[index].substring(0, 5) +
+        "..." +
+        data.accounts[index].substring(38, 42)
+      );
     };
 
     const beforeFooter = (tooltipItems) => {

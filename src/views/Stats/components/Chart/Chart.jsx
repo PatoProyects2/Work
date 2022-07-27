@@ -15,11 +15,9 @@ const Chart = ({ clubData }) => {
       var times = [];
       var usdAmounts = [];
       var maticAmounts = [];
+      var accounts = [];
 
       const profit = orderGames.map((user, index) => {
-        let created = parseInt(user.createdAt);
-        let date = new Date(created * 1000);
-
         let time = user.gameId;
         let usd = parseFloat(user.amount.toFixed(2));
         let matic = user.maticAmount;
@@ -28,6 +26,7 @@ const Chart = ({ clubData }) => {
         times.push(time);
         usdAmounts.push(usd);
         maticAmounts.push(matic);
+        accounts.push(user.account);
 
         return profit;
       });
@@ -37,6 +36,7 @@ const Chart = ({ clubData }) => {
         profit: profit,
         usdAmounts: usdAmounts,
         maticAmounts: maticAmounts,
+        accounts: accounts,
       });
     }
   }, [userGames]);

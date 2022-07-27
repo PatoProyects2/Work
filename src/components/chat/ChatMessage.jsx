@@ -1,7 +1,16 @@
 import { NavLink } from "react-router-dom";
 import CrownLevel from "../../views/Stats/components/Info/CrownLevel";
 
-const ChatMessage = ({ name, photo, level, text, uid, index, setShowChat }) => {
+const ChatMessage = ({
+  name,
+  photo,
+  level,
+  text,
+  uid,
+  index,
+  setShowChat,
+  account,
+}) => {
   const xpClassText = () => {
     if (level <= 4) {
       return "text-yellow";
@@ -38,7 +47,12 @@ const ChatMessage = ({ name, photo, level, text, uid, index, setShowChat }) => {
               alt={name}
             />
             <CrownLevel userLevel={level} />
-            <span className={xpClassText()}>{name}:</span>
+            <span className={xpClassText()}>
+              {uid === "anonymous"
+                ? account.substring(0, 5) + "..." + account.substring(38, 42)
+                : name}
+              :
+            </span>
           </div>
         </div>
       </NavLink>

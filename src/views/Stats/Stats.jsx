@@ -57,7 +57,7 @@ const Stats = () => {
 
   var userGames = useUserGames(uid ? uid : discordId);
   var userProfile = useUserProfile(uid ? uid : discordId);
-  
+
   const handleChangeModal = () => {
     setChangeModal(!changeModal);
   };
@@ -169,14 +169,14 @@ const Stats = () => {
               )}
             </div>
           ) : (
-            <h2 className="text-center mt-2">No games found</h2>
+            <h2 className="text-center text-white mt-2">No games found</h2>
           )}
         </div>
       )}
       {discordId === "" && !uid && (
-        <h2 className="text-center mt-3">Log in with discord</h2>
+        <h2 className="text-center text-white mt-3">Log in with discord</h2>
       )}
-      {uid && !userProfile && <h2 className="text-center mt-3">Loading...</h2>}
+      {uid && !userProfile && <h2 className="text-center text-white mt-3">Loading...</h2>}
     </StyledProfile>
   );
 };

@@ -1,15 +1,16 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useContext } from "react";
 import Picker from "emoji-picker-react";
 // import "emoji-picker-react/dist/main.css";
 import { addDoc, collection, updateDoc, doc } from "firebase/firestore";
 import { db } from "../../config/firesbaseConfig";
 import ChatMessage from "./ChatMessage";
+import { Context } from "../../context/Context";
 import { useAllMessages } from "../../hooks/firebase/useAllMessages";
 import { useUserProfile } from "../../hooks/firebase/useUserProfile";
 import { useAnonProfile } from "../../hooks/firebase/useAnonProfile";
-import { useWeb3 } from "../../hooks/useWeb3";
 
 const ChatRoom = ({ showChat, setShowChat }) => {
+  const { account } = useContext(Context);
   const messagesEndRef = useRef(null);
   const allMessages = useAllMessages();
   const [formValue, setFormValue] = useState("");
@@ -23,14 +24,12 @@ const ChatRoom = ({ showChat, setShowChat }) => {
   const [unixTime, setUnixTime] = useState(0);
   const [placeholder, setPlaceholder] = useState("");
   const [userBan, setUserBan] = useState(false);
-  const { account } = useWeb3();
   const userStorage = window.localStorage.getItem("user");
 
   const userProfile = useUserProfile(userInfo.id !== "" && userInfo.id);
   const anonProfile = useAnonProfile(
     account !== "0x000000000000000000000000000000000000dEaD" && account
   );
-
   const handleInputChange = (e) => {
     setFormValue(e.target.value);
   };
@@ -102,8 +101,7 @@ const ChatRoom = ({ showChat, setShowChat }) => {
         });
       }
     }
-
-    // leer si el usuario esta baneado
+    // leer estado del usuario
     setUserBan(banned);
     if (time > 0 && banned) {
       setPlaceholder("You are banned for " + time + " seconds");
@@ -151,6 +149,7 @@ const ChatRoom = ({ showChat, setShowChat }) => {
       text: formValue.trim(),
       createdAt: unixTime,
       uid: userInfo.id !== "" ? userInfo.id : "anonymous",
+      account: userInfo.id !== "" ? "" : account,
       name: userInfo.name,
       photo: userInfo.photo,
       level: userInfo.level,

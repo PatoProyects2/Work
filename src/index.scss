@@ -401,6 +401,7 @@ a.btn-hover {
 }
 
 .DoubleOrNothing {
+  position: relative;
   margin-top: 15px;
   font-weight: 700;
   margin-bottom: 15px;
@@ -616,6 +617,9 @@ div.center {
   }
 
   .rock-img {
+    content: url("./assets/imgs/Bet_Screen/imageRock.png")
+      url("./assets/imgs/Bet_Screen/RockUnselectedGIF.gif")
+      url("./assets/imgs/Bet_Screen/RockSelectedGIF.gif");
     background-image: url("./assets/imgs/Bet_Screen/imageRock.png");
     background-repeat: no-repeat;
     background-size: contain;
@@ -626,6 +630,9 @@ div.center {
   }
 
   .paper-img {
+    content: url("./assets/imgs/Bet_Screen/imagePaper.png")
+      url("./assets/imgs/Bet_Screen/PaperUnselectedGIF.gif")
+      url("./assets/imgs/Bet_Screen/PaperSelectedGIF.gif");
     background-image: url("./assets/imgs/Bet_Screen/imagePaper.png");
     background-repeat: no-repeat;
     background-size: contain;
@@ -636,6 +643,9 @@ div.center {
   }
 
   .scissors-img {
+    content: url("./assets/imgs/Bet_Screen/imageScissors.png")
+      url("./assets/imgs/Bet_Screen/ScissorsUnselectedGIF.gif")
+      url("./assets/imgs/Bet_Screen/ScissorsSelectedGIF.gif");
     background-image: url("./assets/imgs/Bet_Screen/imageScissors.png");
     background-repeat: no-repeat;
     background-size: contain;
@@ -1924,6 +1934,27 @@ ul.messages {
 
 .result-rps-image {
   margin-bottom: 1rem;
+}
+
+.rock-win {
+  background-image: url("./assets/imgs/Win_Lose_Screens/RockWin.gif");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+.paper-win {
+  background-image: url("./assets/imgs/Win_Lose_Screens/PaperWin.gif");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.scissors-win {
+  background-image: url("./assets/imgs/Win_Lose_Screens/ScissorsWin.gif");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
 }
 
 .rps-result-title {

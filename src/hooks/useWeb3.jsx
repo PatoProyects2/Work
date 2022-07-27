@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import Web3 from "web3";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
@@ -15,19 +15,15 @@ import {
   pRouterAddress,
 } from "../utils/Address";
 import { Context } from "../context/Context";
-import { useEffect } from "react";
 
 export const useWeb3 = () => {
-  const { setBalance } = useContext(Context);
-  const [account, setAccount] = useState(
-    "0x000000000000000000000000000000000000dEaD"
-  );
+  const { setAccount } = useContext(Context);
   const [web3, setWeb3] = useState(false);
   const [rpsgame, setRpsgame] = useState(false);
   const [web3ModalInfo, setWeb3ModalInfo] = useState({});
+  const [privateWeb3, setPrivateWeb3] = useState({});
   const [network, setNetwork] = useState(0);
   const [maticPrice, setMaticPrice] = useState(0);
-  const [privateWeb3, setPrivateWeb3] = useState(false);
   const [privateGamesClub, setPrivateGamesClub] = useState(false);
 
   const providerOptions = {
@@ -90,12 +86,25 @@ export const useWeb3 = () => {
   };
 
   useEffect(() => {
-    const web3 = new Web3(
+    const myWeb3 = new Web3(
       new Web3.providers.HttpProvider(process.env.REACT_APP_INFURA_POLYGON)
     );
-    setPrivateWeb3(web3);
+    setPrivateWeb3(myWeb3);
 
-    const gamesClubContract = new web3.eth.Contract(
+    const polygonSwap = new myWeb3.eth.Contract(
+      UniswapRouter.abi,
+      pRouterAddress
+    );
+    polygonSwap.methods
+      .getAmountsOut("1000000000000000000", [pMaticAddress, pUsdcAddress])
+      .call()
+      .then((price) => {
+        const matic = parseFloat((parseInt(price[1]) / 1000000).toFixed(4));
+        setMaticPrice(matic);
+      })
+      .catch((err) => console.log(err));
+
+    const gamesClubContract = new myWeb3.eth.Contract(
       RpsGamePolygon.abi,
       pRpsGameAddress
     );
@@ -103,35 +112,7 @@ export const useWeb3 = () => {
   }, []);
 
   useEffect(() => {
-    readBalance();
-  }, [privateWeb3, account]);
-
-  const readBalance = () => {
-    if (
-      privateWeb3 &&
-      account !== "0x000000000000000000000000000000000000dEaD"
-    ) {
-      privateWeb3.eth
-        .getBalance(account)
-        .then((balance) => {
-          const userBalance = (
-            parseFloat(balance / 1000000000) / 1000000000
-          ).toFixed(3);
-          setBalance(userBalance);
-        })
-        .catch((err) => console.log(err));
-    }
-  };
-
-  useEffect(() => {
     readBlockchainData();
-    return () => {
-      setWeb3ModalInfo(false);
-      setWeb3(false);
-      setAccount("0x000000000000000000000000000000000000dEaD");
-      setNetwork(0);
-      setRpsgame(false);
-    };
   }, []);
 
   const readBlockchainData = async () => {
@@ -162,19 +143,6 @@ export const useWeb3 = () => {
       });
       setNetwork(chainId);
       if (chainId === 137) {
-        const polygonSwap = new web3.eth.Contract(
-          UniswapRouter.abi,
-          pRouterAddress
-        );
-        polygonSwap.methods
-          .getAmountsOut("1000000000000000000", [pMaticAddress, pUsdcAddress])
-          .call()
-          .then((price) => {
-            const matic = parseFloat((parseInt(price[1]) / 1000000).toFixed(4));
-            setMaticPrice(matic);
-          })
-          .catch((err) => console.log(err));
-
         const rpsgame = new web3.eth.Contract(
           RpsGamePolygon.abi,
           pRpsGameAddress
@@ -208,14 +176,13 @@ export const useWeb3 = () => {
   };
 
   return {
-    account,
     web3,
+    privateWeb3,
     rpsgame,
     privateGamesClub,
     network,
     maticPrice,
     readBlockchainData,
     disconnectWallet,
-    readBalance,
   };
 };

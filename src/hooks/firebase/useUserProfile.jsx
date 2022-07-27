@@ -7,6 +7,7 @@ export const useUserProfile = (uid) => {
 
   useEffect(() => {
     if (uid !== "" && uid !== undefined) {
+      // console.log("Reading useUserProfile");
       const q = query(collection(db, "clubUsers"), where("uid", "==", uid));
       const unsub = onSnapshot(q, async (doc) => {
         const profile = doc.docs.map((document) => document.data());

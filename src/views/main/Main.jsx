@@ -9,7 +9,7 @@ import {
   limit,
   onSnapshot,
 } from "firebase/firestore";
-import { useContext, useEffect, useState, useCallback } from "react";
+import { useContext, useEffect, useState } from "react";
 import { db } from "../../config/firesbaseConfig";
 import { Context } from "../../context/Context";
 import { useMatchMedia } from "../../hooks/useMatchMedia";
@@ -46,6 +46,7 @@ const Main = () => {
   }, [discordId]);
 
   const getLiveGames = () => {
+    // console.log("Reading liveGames");
     const q = query(
       collection(db, "allGames"),
       where("state", "==", "confirmed"),
@@ -74,7 +75,7 @@ const Main = () => {
       let weekGames = [];
       let monthGames = [];
       let globalGames = [];
-
+      // console.log("Reading topGames");
       const q = query(
         collection(db, "allGames"),
         where("state", "==", "confirmed")

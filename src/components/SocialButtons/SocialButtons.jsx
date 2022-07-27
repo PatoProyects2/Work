@@ -70,9 +70,42 @@ const StyledMenu = styled.div`
   }
 `;
 
-const SocialButtons = () => {
+const Buttons = () => {
   let navigate = useNavigate();
 
+  return (
+    <>
+      <li>
+        <button
+          className="item1"
+          onClick={() =>
+            window.open("https://twitter.com/RPSGamesClub", "_blank")
+          }
+        >
+          <img className="image-logo" src={TwitterLogo} alt="" />
+          <p>Join Us on Twitter</p>
+        </button>
+      </li>
+      <li>
+        <button
+          className="item2"
+          onClick={() => window.open("https://discord.gg/XBHfrwfcrq", "_blank")}
+        >
+          <img className="image-logo" src={DiscordLogo} alt="" />
+          <p>Join Us on Discord</p>
+        </button>
+      </li>
+      <li>
+        <button className="item3" onClick={() => navigate("/fair-play")}>
+          <img className="image-logo" src={EnergyLogo} alt="" />
+          <p>Provable Fairness</p>
+        </button>
+      </li>
+    </>
+  );
+};
+
+const SocialButtons = () => {
   useEffect(() => {
     const root = document.documentElement;
     const marqueeElementsDisplayed = getComputedStyle(root).getPropertyValue(
@@ -94,121 +127,10 @@ const SocialButtons = () => {
     <StyledMenu>
       <div className="marquee">
         <ul className="marquee-content">
-          <li>
-            <button
-              className="item1"
-              onClick={() =>
-                window.open("https://twitter.com/RPSGamesClub", "_blank")
-              }
-            >
-              <img className="image-logo" src={TwitterLogo} alt="" />
-              <p>Join Us on Twitter</p>
-            </button>
-          </li>
-          <li>
-            <button
-              className="item2"
-              onClick={() =>
-                window.open("https://discord.gg/XBHfrwfcrq", "_blank")
-              }
-            >
-              <img className="image-logo" src={DiscordLogo} alt="" />
-              <p>Join Us on Discord</p>
-            </button>
-          </li>
-          <li>
-            <button className="item3" onClick={() => navigate("/fair-play")}>
-              <img className="image-logo" src={EnergyLogo} alt="" />
-              <p>Provable Fairness</p>
-            </button>
-          </li>
-
-          <li>
-            <button
-              className="item1"
-              onClick={() =>
-                window.open("https://twitter.com/RPSGamesClub", "_blank")
-              }
-            >
-              <img className="image-logo" src={TwitterLogo} alt="" />
-              <p>Join Us on Twitter</p>
-            </button>
-          </li>
-          <li>
-            <button
-              className="item2"
-              onClick={() =>
-                window.open("https://discord.gg/XBHfrwfcrq", "_blank")
-              }
-            >
-              <img className="image-logo" src={DiscordLogo} alt="" />
-              <p>Join Us on Discord</p>
-            </button>
-          </li>
-          <li>
-            <button className="item3" onClick={() => navigate("/fair-play")}>
-              <img className="image-logo" src={EnergyLogo} alt="" />
-              <p>Provable Fairness</p>
-            </button>
-          </li>
-
-          <li>
-            <button
-              className="item1"
-              onClick={() =>
-                window.open("https://twitter.com/RPSGamesClub", "_blank")
-              }
-            >
-              <img className="image-logo" src={TwitterLogo} alt="" />
-              <p>Join Us on Twitter</p>
-            </button>
-          </li>
-          <li>
-            <button
-              className="item2"
-              onClick={() =>
-                window.open("https://discord.gg/XBHfrwfcrq", "_blank")
-              }
-            >
-              <img className="image-logo" src={DiscordLogo} alt="" />
-              <p>Join Us on Discord</p>
-            </button>
-          </li>
-          <li>
-            <button className="item3" onClick={() => navigate("/fair-play")}>
-              <img className="image-logo" src={EnergyLogo} alt="" />
-              <p>Provable Fairness</p>
-            </button>
-          </li>
-
-          <li>
-            <button
-              className="item1"
-              onClick={() =>
-                window.open("https://twitter.com/RPSGamesClub", "_blank")
-              }
-            >
-              <img className="image-logo" src={TwitterLogo} alt="" />
-              <p>Join Us on Twitter</p>
-            </button>
-          </li>
-          <li>
-            <button
-              className="item2"
-              onClick={() =>
-                window.open("https://discord.gg/XBHfrwfcrq", "_blank")
-              }
-            >
-              <img className="image-logo" src={DiscordLogo} alt="" />
-              <p>Join Us on Discord</p>
-            </button>
-          </li>
-          <li>
-            <button className="item3" onClick={() => navigate("/fair-play")}>
-              <img className="image-logo" src={EnergyLogo} alt="" />
-              <p>Provable Fairness</p>
-            </button>
-          </li>
+          <Buttons />
+          <Buttons />
+          <Buttons />
+          <Buttons />
         </ul>
       </div>
     </StyledMenu>

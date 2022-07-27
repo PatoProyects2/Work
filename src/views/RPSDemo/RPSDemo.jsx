@@ -1,32 +1,26 @@
-import { useContext, useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import toast from "react-hot-toast";
 import winSound from "../../assets/audio/win_sound.mpeg";
-import lose1 from "../../assets/imgs/Win_Lose_Screens/lose1.gif";
-import lose2 from "../../assets/imgs/Win_Lose_Screens/lose2.png";
 import win1 from "../../assets/imgs/Win_Lose_Screens/win1.gif";
 import win2 from "../../assets/imgs/Win_Lose_Screens/win2.png";
-import { Context } from "../../context/Context";
-import { GameLogo, RpsImage, GamePanel } from "../RPS/components/Modals/Modals";
+import { GameLogo, RpsImage, GamePanel } from "./components/Modals/Modals";
 
 const RPSDemo = () => {
   const screen = useRef(null);
-  const { soundToggle } = useContext(Context);
-  const [usergame, setUsergame] = useState({});
+  const [usergame, setUsergame] = useState({ hand: "", amount: 0 });
   const [randomItem, setRandomItem] = useState("");
-  const [gameResult, setGameResult] = useState({
-    userResult: false,
-    userStreak: 0,
-    gameBlock: 0,
-  });
+  const [gameResult, setGameResult] = useState(false);
   const [active, setActive] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [animation, setAnimation] = useState(false);
   const [result, setResult] = useState(false);
   const [save, setSave] = useState(false);
   const [load, setLoad] = useState(false);
+
   const music = new Audio(winSound);
 
   const age = window.localStorage.getItem("age");
+  const sound = window.localStorage.getItem("sound");
 
   useEffect(() => {
     setLoad(true);
@@ -70,42 +64,25 @@ const RPSDemo = () => {
       }
     }
 
-    const userStreak = gameResult.userStreak + 1;
-    const userBlock = 0;
-    const userResult = true;
     setPlaying(true);
     setAnimation(true);
-    setGameResult({ userResult, userStreak, userBlock });
     setSave(true);
   };
 
   const showResult = () => {
+    setGameResult(true);
     setAnimation(false);
     setResult(true);
     let arrayOptions = ["a", "b"];
     var randomArray = (Math.random() * arrayOptions.length) | 0;
     var result = arrayOptions[randomArray];
-
     const toastOptions = {
       duration: 5000,
       position: "bottom-left",
       style: {},
       className: "pop-up toast-modal",
       icon: (
-        <img
-          src={
-            result === "a"
-              ? gameResult.userResult
-                ? win1
-                : lose1
-              : gameResult.userResult
-              ? win2
-              : lose2
-          }
-          width="25"
-          height="25"
-          alt=""
-        />
+        <img src={result === "a" ? win1 : win2} width="25" height="25" alt="" />
       ),
       iconTheme: {
         primary: "#000",
@@ -117,28 +94,23 @@ const RPSDemo = () => {
       },
     };
 
-    if (gameResult.userResult) {
-      if (soundToggle) {
-        music.play();
-      }
-      toast(
-        result === "a"
-          ? "You doubled your money!!"
-          : "You are doing some business here",
-        toastOptions
-      );
-    } else {
-      toast(
-        result === "a" ? "Better luck next time" : "Wrong hand :P",
-        toastOptions
-      );
+    if (sound === "on") {
+      music.play();
     }
+    toast(
+      gameResult === "a"
+        ? "You doubled your money!!"
+        : "You are doing some business here",
+      toastOptions
+    );
 
     setSave(false);
     setAnimation(false);
   };
 
   const backGame = () => {
+    setUsergame({ hand: "", amount: 0 });
+    setGameResult(false);
     setPlaying(false);
     setAnimation(false);
     setResult(false);
@@ -150,7 +122,7 @@ const RPSDemo = () => {
       <article>
         {active ? (
           <GamePanel
-          age={age}
+            age={age}
             playing={playing}
             animation={animation}
             result={result}
@@ -162,6 +134,7 @@ const RPSDemo = () => {
             showResult={showResult}
             backGame={backGame}
             handleInputChange={handleInputChange}
+            sound={sound}
           />
         ) : (
           <>

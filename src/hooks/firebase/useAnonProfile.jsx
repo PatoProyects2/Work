@@ -7,6 +7,7 @@ export const useAnonProfile = (account) => {
 
   useEffect(() => {
     if (account !== "0x000000000000000000000000000000000000dEaD") {
+      // console.log("Reading useAnonProfile");
       const q = query(
         collection(db, "anonUsers"),
         where("account", "==", account)

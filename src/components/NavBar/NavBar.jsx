@@ -12,6 +12,7 @@ import Profile from "../Profile/Profile";
 import Balance from "./components/Balance/Balance";
 import OnlineUsers from "./components/OnlineUsers/OnlineUsers";
 import Settings from "./components/Settings/Settings";
+import { useProfile } from "../../hooks/firebase/useProfile";
 
 const StyledNavbar = styled.div`
   .Main-Menu {
@@ -49,6 +50,8 @@ const StyledNavbar = styled.div`
 const NavBar = () => {
   const [showOffcanvas, setShowOffCanvas] = useState(false);
   const isMobileResolution = useMatchMedia("(max-width:1000px)", false);
+
+  useProfile();
 
   return (
     <StyledNavbar>

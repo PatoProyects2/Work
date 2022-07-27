@@ -1,20 +1,7 @@
-import { useState, useContext, useEffect } from "react";
 import { Spinner } from "react-bootstrap";
 import { Table } from "reactstrap";
 import { Fireworks } from "@fireworks-js/react";
-import toast from "react-hot-toast";
-import { addDoc, collection } from "firebase/firestore";
-import { useStatus } from "../../../../hooks/useStatus";
-import { useRandomItem } from "../../../../hooks/useRandomItem";
 
-import { Context } from "../../../../context/Context";
-
-import winSound from "../../../../assets/audio/win_sound.mpeg";
-import lose1 from "../../../../assets/imgs/Win_Lose_Screens/lose1.gif";
-import lose2 from "../../../../assets/imgs/Win_Lose_Screens/lose2.png";
-import win1 from "../../../../assets/imgs/Win_Lose_Screens/win1.gif";
-import win2 from "../../../../assets/imgs/Win_Lose_Screens/win2.png";
-import { db } from "../../../../config/firesbaseConfig";
 // Game Logo
 import RPSGames from "../../../../assets/imgs/Home_Page/RPS Games.png";
 
@@ -34,7 +21,6 @@ import imageVS from "../../../../assets/imgs/Bet_Screen/VStext.png";
 import rotatingCard from "../../../../assets/imgs/Bet_Screen/RotatingCard.gif";
 
 // Result panel
-
 import RockWin from "../../../../assets/imgs/Win_Lose_Screens/RockWin.gif";
 import RockLose from "../../../../assets/imgs/Win_Lose_Screens/RockLose.gif";
 
@@ -127,106 +113,28 @@ const Amounts = (props) => {
 };
 
 const Play = (props) => {
-  const { setBalance } = useContext(Context);
-
-  const music = new Audio(winSound);
-
-  const showResult = async () => {
-    props.setAnimation(false);
-    props.setResult(true);
-
-    if (
-      props.privateWeb3 &&
-      props.account !== "0x000000000000000000000000000000000000dEaD"
-    ) {
-      props.privateWeb3.eth
-        .getBalance(props.account)
-        .then((myBalance) => {
-          const userBalance = parseFloat(
-            myBalance / 1000000000 / 1000000000
-          ).toFixed(3);
-          setBalance(userBalance);
-        })
-        .catch((err) => console.log(err));
-    }
-
-    let arrayOptions = ["a", "b"];
-    var randomArray = (Math.random() * arrayOptions.length) | 0;
-    var result = arrayOptions[randomArray];
-
-    const toastOptions = {
-      duration: 5000,
-      position: "bottom-left",
-      style: {},
-      className: "pop-up toast-modal",
-      icon: (
-        <img
-          src={
-            result === "a"
-              ? props.gameResult
-                ? win1
-                : lose1
-              : props.gameResult
-              ? win2
-              : lose2
-          }
-          width="25"
-          height="25"
-          alt=""
-        />
-      ),
-      iconTheme: {
-        primary: "#000",
-        secondary: "#fff",
-      },
-      ariaProps: {
-        role: "status",
-        "aria-live": "polite",
-      },
-    };
-
-    if (props.gameResult) {
-      if (props.sound === "on") {
-        music.play();
-      }
-      toast(
-        result === "a"
-          ? "You doubled your money!!"
-          : "You are doing some business here",
-        toastOptions
-      );
-    } else {
-      toast(
-        result === "a" ? "Better luck next time" : "Wrong hand :P",
-        toastOptions
-      );
-    }
-
-    props.setSave(false);
-  };
-
   return (
     <>
       <div className="processing-game">
         <img
           className="card-selected"
           src={
-            (props.userGame.hand === "ROCK" && imageRockGIF) ||
-            (props.userGame.hand === "PAPER" && imagePaperGIF) ||
-            (props.userGame.hand === "SCISSORS" && imageScissorsGIF)
+            (props.userhand === "ROCK" && imageRockGIF) ||
+            (props.userhand === "PAPER" && imagePaperGIF) ||
+            (props.userhand === "SCISSORS" && imageScissorsGIF)
           }
         />
         <img className="vs" src={imageVS} />
         <img className="rotating-card" src={rotatingCard} />
       </div>
       <h3>
-        <span className="text-playing">Playing {props.userGame.hand} for</span>
+        <span className="text-playing">Playing {props.userhand} for</span>
         <br />
-        <span className="valor-matic">{props.userGame.amount + " MATIC"}</span>
+        <span className="valor-matic">{props.useramount + " MATIC"}</span>
       </h3>
       <div>
         {props.save ? (
-          <button className="DoubleOrNothing" onClick={showResult}>
+          <button className="DoubleOrNothing" onClick={props.showResult}>
             SHOW RESULT
           </button>
         ) : (
@@ -254,8 +162,8 @@ const Play = (props) => {
                 <tbody>
                   <tr>
                     <td>{props.gameId ? props.gameId : "-"}</td>
-                    <td>{props.userGame.hand}</td>
-                    <td>{props.userGame.amount}</td>
+                    <td>{props.userhand}</td>
+                    <td>{props.useramount}</td>
                   </tr>
                 </tbody>
               </Table>
@@ -271,26 +179,27 @@ const Result = (props) => {
   var imageResult;
 
   if (props.gameResult) {
-    if (props.userGame.hand === "ROCK") {
+    if (props.userhand === "ROCK") {
       imageResult = RockWin;
     }
-    if (props.userGame.hand === "PAPER") {
+    if (props.userhand === "PAPER") {
       imageResult = PaperWin;
     }
-    if (props.userGame.hand === "SCISSORS") {
+    if (props.userhand === "SCISSORS") {
       imageResult = ScissorsWin;
     }
   } else {
-    if (props.userGame.hand === "ROCK") {
+    if (props.userhand === "ROCK") {
       imageResult = RockLose;
     }
-    if (props.userGame.hand === "PAPER") {
+    if (props.userhand === "PAPER") {
       imageResult = PaperLose;
     }
-    if (props.userGame.hand === "SCISSORS") {
+    if (props.userhand === "SCISSORS") {
       imageResult = ScissorsLose;
     }
   }
+
   return (
     <>
       <div className="relative-result-img">
@@ -391,9 +300,7 @@ const Result = (props) => {
                 color: props.gameResult ? "#f1cf61" : "#9845eb",
               }}
             >
-              {props.gameResult
-                ? props.userGame.amount * 2
-                : props.userGame.amount}
+              {props.gameResult ? props.useramount * 2 : props.useramount}
               {" MATIC"}
             </span>
             {props.gameResult && <img src={Star} />}
@@ -414,143 +321,6 @@ const Result = (props) => {
   );
 };
 
-const PlayButton = ({
-  account,
-  userGame,
-  age,
-  web3,
-  privateGamesClub,
-  rpsgame,
-  network,
-  maticPrice,
-  setGameLog,
-  setGameId,
-  setPlaying,
-  setAnimation,
-  setGameResult,
-  setSave,
-  backGame,
-  playing,
-  gas,
-}) => {
-  const { playerDocument } = useContext(Context);
-  const verifyGame = () => {
-    if (userGame.hand === "") {
-      toast.error("Select a hand");
-      return false;
-    }
-    if (userGame.amount === 0) {
-      toast.error("Select an amount");
-      return false;
-    }
-    if (age === "false" || age === null) {
-      if (document.getElementById("age").checked === false) {
-        toast.error("Confirm that you are at least 18 years old");
-        return false;
-      }
-    }
-    if (network !== 137) {
-      toast.error("Network not supported, please select Polygon network");
-      return false;
-    }
-
-    const inputAmount = web3.utils.toWei(userGame.amount.toString(), "ether");
-
-    privateGamesClub.methods
-      .calculateValue(inputAmount)
-      .call()
-      .then((feeValue) => {
-        doubleOrNothing(inputAmount, feeValue);
-        setGameLog("WAITING FOR DEPOSIT");
-        setPlaying(true);
-        setAnimation(true);
-      });
-  };
-
-  const sleep = (milliseconds) => {
-    return new Promise((resolve) => setTimeout(resolve, milliseconds));
-  };
-
-  const doubleOrNothing = async (inputAmount, feeValue) => {
-    if (age === "false") {
-      window.localStorage.setItem("age", true);
-    }
-    rpsgame.methods
-      .play(inputAmount)
-      .send({
-        from: account,
-        value: feeValue,
-        gasPrice: web3.utils.toWei(gas.toString(), "gwei"),
-        gasLimit: 500000,
-      })
-      .on("transactionHash", function (hash) {
-        setGameLog("SAVING YOUR GAME");
-      })
-      .on("receipt", async function (playEvent) {
-        setGameLog("PLAYING");
-
-        const gameId = parseInt(playEvent.events.BetPlaced.returnValues.betId);
-        const gameBlock = playEvent.blockNumber;
-        const txHash = playEvent.transactionHash;
-        const usdAmount = parseInt(userGame.amount) * maticPrice;
-
-        addDoc(collection(db, "allGames"), {
-          game: "RPS",
-          uid: playerDocument.uid,
-          account: account,
-          name: playerDocument.name,
-          photo: playerDocument.photo,
-          txHash: txHash,
-          createdAt: Math.round(new Date().getTime() / 1000),
-          block: gameBlock,
-          gameId: gameId,
-          amount: usdAmount,
-          hand: userGame.hand,
-          maticAmount: parseInt(userGame.amount),
-          state: "pending",
-        });
-
-        setGameId(gameId);
-
-        var betGame = [false, false, false, false, false, false];
-        while (!betGame[5]) {
-          try {
-            betGame = await privateGamesClub.methods.bets(gameId).call();
-          } catch (err) {}
-          await sleep(1000);
-        }
-        if (betGame[5]) {
-          const userResult = parseInt(betGame[3]) > 0 ? true : false;
-          setGameResult(userResult);
-          setSave(true);
-        }
-      })
-      .on("error", async function (err, receipt) {
-        if (err.code === -32603) {
-          toast.error("This transaction needs more gas to be executed");
-          backGame();
-          return false;
-        }
-        if (err.code === 4001) {
-          toast.error("You denied transaction signature");
-          backGame();
-          return false;
-        }
-        if (!err.code) {
-          toast.error("Transaction reverted");
-          backGame();
-          return false;
-        }
-      });
-  };
-
-  return (
-    <button onClick={verifyGame} className="DoubleOrNothing" disabled={playing}>
-      DOUBLE OR NOTHING
-    </button>
-  );
-};
-
 export const GameLogo = () => {
   return (
     <div className="left-content-rps">
@@ -560,83 +330,46 @@ export const GameLogo = () => {
 };
 
 export const GamePanel = ({
-  web3,
-  privateWeb3,
-  privateGamesClub,
-  rpsgame,
-  network,
-  maticPrice,
-  screen,
-  account,
-  gas,
+  age,
+  playing,
+  animation,
+  result,
+  verifyGame,
+  randomItem,
+  save,
+  gameLog,
+  gameId,
+  usergame,
+  busyNetwork,
+  gameResult,
+  showResult,
+  backGame,
+  sound,
+  handleInputChange,
 }) => {
-  const [gameResult, setGameResult] = useState(undefined);
-  const [gameLog, setGameLog] = useState("");
-  const [playing, setPlaying] = useState(false);
-  const [animation, setAnimation] = useState(false);
-  const [gameId, setGameId] = useState(false);
-  const [save, setSave] = useState(false);
-  const [busyNetwork, setBusyNetwork] = useState(false);
-  const [result, setResult] = useState(false);
-  const [userGame, setUserGame] = useState({ hand: "", amount: 0 });
-
-  const { load } = useStatus();
-  const { randomItem } = useRandomItem({ playing });
-
-  const age = window.localStorage.getItem("age");
-  const sound = window.localStorage.getItem("sound");
-
-  const handleInputChange = (event) => {
-    setUserGame({
-      ...userGame,
-      [event.target.name]: event.target.value,
-    });
-  };
-
-  const backGame = () => {
-    setPlaying(false);
-    setAnimation(false);
-    setGameId(false);
-    setResult(false);
-    setGameResult(undefined);
-    setUserGame({ hand: "", amount: 0 });
-  };
-
-  const scrollToBottom = () => {
-    screen.current.scrollIntoView({ behavior: "smooth" });
-  };
-
-  useEffect(scrollToBottom, [load, account, playing]);
   return (
     <div className="game-container">
       {playing ? (
         <div className="game-playing-container">
           {animation && (
             <Play
-              account={account}
-              privateWeb3={privateWeb3}
               save={save}
               gameLog={gameLog}
               gameId={gameId}
-              userGame={userGame}
+              userhand={usergame.hand}
+              useramount={usergame.amount}
               busyNetwork={busyNetwork}
-              animation={animation}
-              result={result}
-              gameResult={gameResult}
-              privateGamesClub={privateGamesClub}
-              setAnimation={setAnimation}
-              setResult={setResult}
-              setSave={setSave}
-              sound={sound}
+              showResult={showResult}
             />
           )}
           {result && (
             <Result
-              userGame={userGame}
+              userhand={usergame.hand}
+              useramount={usergame.amount}
               gameResult={gameResult}
               result={result}
-              backGame={backGame}
               sound={sound}
+              backGame={backGame}
             />
           )}
         </div>
@@ -703,25 +436,14 @@ export const GamePanel = ({
             <Amounts handleInputChange={handleInputChange} amount={25} />
             <Amounts handleInputChange={handleInputChange} amount={50} />
           </div>
-          <PlayButton
-            account={account}
-            userGame={userGame}
-            age={age}
-            playing={playing}
-            gas={gas}
-            web3={web3}
-            privateGamesClub={privateGamesClub}
-            rpsgame={rpsgame}
-            network={network}
-            maticPrice={maticPrice}
-            setGameLog={setGameLog}
-            setGameId={setGameId}
-            setPlaying={setPlaying}
-            setAnimation={setAnimation}
-            setGameResult={setGameResult}
-            setSave={setSave}
-            backGame={backGame}
-          />
+
+          <button
+            onClick={verifyGame}
+            className="DoubleOrNothing"
+            disabled={playing}
+          >
+            DOUBLE OR NOTHING
+          </button>
           {age === "false" && (
             <p className="text-center mb-3 mt-3">
               <label className="switch">
@@ -737,22 +459,5 @@ export const GamePanel = ({
         </>
       )}
     </div>
-  );
-};
-
-export const ConnectPanel = ({ readBlockchainData }) => {
-  return (
-    <>
-      <div className="game-gifs-wrapper">
-        <RpsImage image="Rock" />
-        <RpsImage image="Paper" />
-        <RpsImage image="Scissors" />
-      </div>
-      <div className="center">
-        <button className="DoubleOrNothing" onClick={readBlockchainData}>
-          CONNECT WALLET
-        </button>
-      </div>
-    </>
   );
 };

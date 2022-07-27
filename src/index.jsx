@@ -1,59 +1,123 @@
-import React from "react";
+import React, { Suspense, lazy } from "react";
 import ReactDOM from "react-dom";
-import {
-  Route,
-  Routes,
-  Navigate,
-  HashRouter,
-  BrowserRouter,
-} from "react-router-dom";
+import { Route, Routes, Navigate, HashRouter } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.css";
-import { MixpanelProvider } from "react-mixpanel-browser";
 import MainLayout from "./components/Layout/MainLayout";
+import Spinner from "./components/Spinner/Spinner";
 // import TestLayout from "./components/Layout/TestLayout";
-import Main from "./views/Main/Main";
-import RPS from "./views/RPS/RPS";
-import RPSDemo from "./views/RPSDemo/RPSDemo";
-import Nfts from "./views/Nfts/Nfts";
-import FairPlay from "./views/FairPlay/FairPlay";
-import About from "./views/About/About";
-import Stats from "./views/Stats/Stats";
-import RefundPolicy from "./views/RefundPolicy/RefundPolicy";
-import Terms from "./views/Terms/Terms";
+
+const Main = lazy(() => import("./views/Main/Main"));
+const RPS = lazy(() => import("./views/RPS/RPS"));
+const RPSDemo = lazy(() => import("./views/RPSDemo/RPSDemo"));
+const Nfts = lazy(() => import("./views/Nfts/Nfts"));
+const FairPlay = lazy(() => import("./views/FairPlay/FairPlay"));
+const About = lazy(() => import("./views/About/About"));
+const Stats = lazy(() => import("./views/Stats/Stats"));
+const RefundPolicy = lazy(() => import("./views/RefundPolicy/RefundPolicy"));
+const Terms = lazy(() => import("./views/Terms/Terms"));
+
 // import Maintenance from "./views/Maintenance/Maintenance";
 import ScrollToTop from "./hooks//ScrollToTop";
 import * as serviceWorker from "./serviceWorker";
 import "./index.scss";
 
 ReactDOM.render(
-  <MixpanelProvider>
-    <HashRouter>
-      <ScrollToTop>
-        <Routes>
-          <Route path="/" element={<MainLayout />}>
-            <Route index element={<Main />} />
-            <Route path="rps" element={<RPS />} />
-            <Route path="demo" element={<RPSDemo />} />
-            <Route path="nfts" element={<Nfts />} />
-            <Route path="fair-play" element={<FairPlay />} />
-            <Route path="about" element={<About />} />
-            <Route path="stats">
-              <Route index element={<Stats />} />
-              <Route path=":uid" element={<Stats />} />
-            </Route>
-            <Route path="refund-policy" element={<RefundPolicy />} />
-            <Route path="terms" element={<Terms />} />
+  <HashRouter>
+    <ScrollToTop>
+      <Routes>
+        <Route path="/" element={<MainLayout />}>
+          <Route
+            index
+            element={
+              <Suspense fallback={<Spinner />}>
+                <Main />
+              </Suspense>
+            }
+          />
+          <Route
+            path="rps"
+            element={
+              <Suspense fallback={<Spinner />}>
+                <RPS />
+              </Suspense>
+            }
+          />
+          <Route
+            path="demo"
+            element={
+              <Suspense fallback={<Spinner />}>
+                <RPSDemo />
+              </Suspense>
+            }
+          />
+          <Route
+            path="nfts"
+            element={
+              <Suspense fallback={<Spinner />}>
+                <Nfts />
+              </Suspense>
+            }
+          />
+          <Route
+            path="fair-play"
+            element={
+              <Suspense fallback={<Spinner />}>
+                <FairPlay />
+              </Suspense>
+            }
+          />
+          <Route
+            path="about"
+            element={
+              <Suspense fallback={<Spinner />}>
+                <About />
+              </Suspense>
+            }
+          />
+          <Route path="stats">
+            <Route
+              index
+              element={
+                <Suspense fallback={<Spinner />}>
+                  <Stats />
+                </Suspense>
+              }
+            />
+            <Route
+              path=":uid"
+              element={
+                <Suspense fallback={<Spinner />}>
+                  <Stats />
+                </Suspense>
+              }
+            />
           </Route>
+          <Route
+            path="refund-policy"
+            element={
+              <Suspense fallback={<Spinner />}>
+                <RefundPolicy />
+              </Suspense>
+            }
+          />
+          <Route
+            path="terms"
+            element={
+              <Suspense fallback={<Spinner />}>
+                <Terms />
+              </Suspense>
+            }
+          />
+        </Route>
 
-          {/* <Route path="/" element={<TestLayout />}>
+        {/* <Route path="/" element={<TestLayout />}>
             <Route index element={<Maintenance />} />
           </Route> */}
 
-          <Route path="*" element={<Navigate replace to="/" />} />
-        </Routes>
-      </ScrollToTop>
-    </HashRouter>
-  </MixpanelProvider>,
+        <Route path="*" element={<Navigate replace to="/" />} />
+      </Routes>
+    </ScrollToTop>
+  </HashRouter>,
   document.getElementById("root")
 );
 
