@@ -6,46 +6,29 @@ import { db } from "../../config/firesbaseConfig";
 import ChatMessage from "./ChatMessage";
 import { Context } from "../../context/Context";
 import { useAllMessages } from "../../hooks/firebase/useAllMessages";
-import { useUserProfile } from "../../hooks/firebase/useUserProfile";
-import { useAnonProfile } from "../../hooks/firebase/useAnonProfile";
+import { useTime } from "../../hooks/useTime";
+import { useChatBan } from "../../hooks/useChatBan";
 
 const ChatRoom = ({ showChat, setShowChat }) => {
-  const { account } = useContext(Context);
+  const { account, playerDocument } = useContext(Context);
   const messagesEndRef = useRef(null);
   const allMessages = useAllMessages();
   const [formValue, setFormValue] = useState("");
   const [emojis, setEmojis] = useState(false);
-  const [userInfo, setUserInfo] = useState({
-    id: "",
-    name: "",
-    photo: "",
-    level: 1,
-  });
-  const [unixTime, setUnixTime] = useState(0);
-  const [placeholder, setPlaceholder] = useState("");
-  const [userBan, setUserBan] = useState(false);
-  const userStorage = window.localStorage.getItem("user");
 
-  const userProfile = useUserProfile(userInfo.id !== "" && userInfo.id);
-  const anonProfile = useAnonProfile(
-    account !== "0x000000000000000000000000000000000000dEaD" && account
-  );
+  const unixTime = useTime();
+  const banValue = useChatBan({
+    playerDocument,
+    account,
+    unixTime,
+    db,
+    doc,
+    updateDoc,
+  });
+
   const handleInputChange = (e) => {
     setFormValue(e.target.value);
   };
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setUnixTime(Math.round(new Date().getTime() / 1000));
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [unixTime]);
-
-  useEffect(() => {
-    if (userStorage !== null) {
-      setUserInfo(JSON.parse(userStorage));
-    }
-  }, [userStorage]);
 
   const onEmojiClick = (event, emojiObject) => {
     let emoticon = emojiObject.emoji;
@@ -54,69 +37,6 @@ const ChatRoom = ({ showChat, setShowChat }) => {
     }
   };
 
-  var banned = false;
-  var unbanTime = 0;
-  var time = 0;
-
-  useEffect(() => {
-    // Leer si el usuario esta logueado con discord
-    if (
-      userInfo.id !== "" &&
-      unbanTime >= 0 &&
-      unixTime > 0 &&
-      userProfile[0]
-    ) {
-      banned = userProfile[0].chat.banned;
-      unbanTime = userProfile[0].chat.unbanTime;
-      time = unbanTime - unixTime;
-
-      if (time < 0 && banned) {
-        updateDoc(doc(db, "clubUsers", userInfo.id), {
-          chat: {
-            banned: false,
-            unbanTime: 0,
-          },
-        });
-      }
-    }
-
-    // Leer si el usuario ha conectado la wallet y no ha logueado con discord
-    if (
-      userInfo.id === "" &&
-      account !== "0x000000000000000000000000000000000000dEaD" &&
-      unbanTime >= 0 &&
-      unixTime > 0 &&
-      anonProfile[0]
-    ) {
-      banned = anonProfile[0].chat.banned;
-      unbanTime = anonProfile[0].chat.unbanTime;
-      time = unbanTime - unixTime;
-
-      if (time < 0 && banned) {
-        updateDoc(doc(db, "anonUsers", account), {
-          chat: {
-            banned: false,
-            unbanTime: 0,
-          },
-        });
-      }
-    }
-    // leer estado del usuario
-    setUserBan(banned);
-    if (time > 0 && banned) {
-      setPlaceholder("You are banned for " + time + " seconds");
-    } else {
-      if (
-        userInfo.id !== "" ||
-        account !== "0x000000000000000000000000000000000000dEaD"
-      ) {
-        setPlaceholder("Type something...");
-      } else {
-        setPlaceholder("Login or connect wallet to chat");
-      }
-    }
-  }, [account, userInfo, userProfile, anonProfile, unixTime]);
-
   const sendMessage = (e) => {
     e.preventDefault();
     if (formValue.trim() === "") {
@@ -124,16 +44,16 @@ const ChatRoom = ({ showChat, setShowChat }) => {
       return false;
     }
     const myMessages = allMessages.filter(
-      (messages) => messages.uid === userInfo.id
+      (messages) => messages.account === account
     );
     const lastMessages = myMessages.filter(
       (messages) => messages.createdAt > unixTime - 10
     );
     if (lastMessages.length > 4) {
       const userDoc =
-        userInfo.id !== ""
-          ? doc(db, "clubUsers", userInfo.id)
-          : doc(db, "anonUsers", account);
+        playerDocument.uid === "anonymous"
+          ? doc(db, "anonUsers", account)
+          : doc(db, "clubUsers", playerDocument.uid);
       updateDoc(userDoc, {
         chat: {
           banned: true,
@@ -145,17 +65,21 @@ const ChatRoom = ({ showChat, setShowChat }) => {
       return false;
     }
 
-    addDoc(collection(db, "messages"), {
-      text: formValue.trim(),
-      createdAt: unixTime,
-      uid: userInfo.id !== "" ? userInfo.id : "anonymous",
-      account: userInfo.id !== "" ? "" : account,
-      name: userInfo.name,
-      photo: userInfo.photo,
-      level: userInfo.level,
-    });
-    setFormValue("");
-    setEmojis(false);
+    if (playerDocument) {
+      if (!playerDocument.chat.banned) {
+        addDoc(collection(db, "messages"), {
+          text: formValue.trim(),
+          createdAt: unixTime,
+          uid: playerDocument.uid,
+          account: account,
+          name: playerDocument.name,
+          photo: playerDocument.photo,
+          level: playerDocument.level,
+        });
+        setFormValue("");
+        setEmojis(false);
+      }
+    }
   };
 
   const scrollToBottom = () => {
@@ -203,9 +127,7 @@ const ChatRoom = ({ showChat, setShowChat }) => {
         <form onSubmit={sendMessage}>
           <div
             className={
-              (userInfo.id === "" &&
-                account === "0x000000000000000000000000000000000000dEaD") ||
-              userBan
+              !playerDocument
                 ? "chat_input_contain disabled"
                 : "chat_input_contain"
             }
@@ -213,10 +135,17 @@ const ChatRoom = ({ showChat, setShowChat }) => {
             <input
               type="text"
               className="chat_input"
-              placeholder={placeholder}
-              value={formValue}
+              placeholder={
+                playerDocument ? "Type something..." : "Connect wallet to chat"
+              }
+              value={
+                playerDocument && playerDocument.chat.banned
+                  ? banValue
+                  : formValue
+              }
               onChange={handleInputChange}
               maxLength="50"
+              spellCheck="false"
             />
             <div className="chat_buttons">
               <button

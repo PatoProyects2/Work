@@ -1,15 +1,13 @@
-import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useEffect, useContext } from "react";
+import { useParams } from "react-router-dom";
 import styled from "styled-components";
-import { useUserGames } from "../../hooks/firebase/useUserGames";
-import { useUserProfile } from "../../hooks/firebase/useUserProfile";
+import { useNavigate } from "react-router-dom";
+import { Context } from "../../context/Context";
+import DiscordProfile from "./components/DiscordProfile";
+import LocalDiscordProfile from "./components/LocalDiscordProfile";
+import WalletProfile from "./components/WalletProfile";
+import LocalWalletProfile from "./components/LocalWalletProfile";
 import { useMatchMedia } from "../../hooks/useMatchMedia";
-import Chart from "./components/Chart/Chart";
-import HistoryGames from "./components/Info/HistoryGames";
-import Level from "./components/Info/Level";
-import CrownLevel from "./components/Info/CrownLevel";
-import RPSStats from "./components/Info/RPSStats";
-import RPSStatsNew from "./components/Info/RPSStatsNew";
 
 const StyledProfile = styled.div`
   width: 100%;
@@ -42,141 +40,61 @@ const StyledProfile = styled.div`
 `;
 
 const Stats = () => {
-  const [gamesData, setGamesData] = useState(false);
-  const [changeModal, setChangeModal] = useState(false);
+  const { account, playerDocument } = useContext(Context);
+  const { urlParams } = useParams();
   const isMobileResolution = useMatchMedia("(max-width:700px)", false);
+
   let navigate = useNavigate();
 
-  const { uid } = useParams();
-  const userStorage = window.localStorage.getItem("user");
-
-  var discordId = "";
-  if (userStorage) {
-    discordId = JSON.parse(userStorage).id;
-  }
-
-  var userGames = useUserGames(uid ? uid : discordId);
-  var userProfile = useUserProfile(uid ? uid : discordId);
-
-  const handleChangeModal = () => {
-    setChangeModal(!changeModal);
-  };
-
   useEffect(() => {
-    if (userGames.length === 0 && userProfile.length === 0) {
-      navigate("/stats", { replace: true });
+    if (urlParams) {
+      if (urlParams.length !== 18 && urlParams.length !== 42) {
+        navigate("/stats", { replace: true });
+      }
     }
-  }, [userGames, userProfile]);
-
-  useEffect(() => {
-    if (userGames[0]) {
-      const gameData = userGames.map((game) => {
-        const data = {
-          id: game.gameId,
-          result: game.result,
-          amount: game.maticAmount,
-          txHash: game.txHash,
-        };
-        return data;
-      });
-      const orderGames = gameData.sort((a, b) => b.id - a.id);
-      setGamesData(orderGames);
-    }
-  }, [userGames, uid]);
-
-  const xpClassText = () => {
-    const level = userProfile[0].level;
-    if (level <= 4) {
-      return "text-yellow";
-    } else if (level > 4 && level < 10) {
-      return "text-orange";
-    } else if (level > 9 && level < 15) {
-      return "text-pink";
-    } else if (level > 14 && level < 20) {
-      return "text-blue";
-    } else if (level > 19 && level < 24) {
-      return "text-green";
-    } else {
-      return "text-red";
-    }
-  };
+  }, [urlParams]);
 
   return (
     <StyledProfile>
-      {userProfile[0] && (
-        <div className="profile-container">
-          <h3 className="TitleUsuario my-3 text-center">
-            {userProfile[0].name + "#" + userProfile[0].id} Stats
-          </h3>
-          <div className="profile-info">
-            <div className="profile-info-container">
-              <img
-                alt={userProfile[0].name}
-                className="rounded-circle profile-img"
-                src={userProfile[0].photo}
-              />
-              <div className="d-flex m-auto">
-                <CrownLevel userLevel={userProfile[0].level} />
-                <span className={xpClassText()}>
-                  {userProfile[0].name + "#" + userProfile[0].id}
-                </span>
-              </div>
-              <Level clubData={userProfile[0]} />
-            </div>
-            {!isMobileResolution && (
-              <div className="profile-stats-container">
-                <RPSStats clubData={userProfile[0]} />
-              </div>
-            )}
-          </div>
-          {isMobileResolution && (
-            <div className="rps-stats-mobile mt-2">
-              <RPSStats clubData={userProfile[0]} />
-            </div>
+      {urlParams ? (
+        <>
+          {urlParams.length === 18 && (
+            <DiscordProfile
+              uid={urlParams}
+              isMobileResolution={isMobileResolution}
+            />
           )}
-          {gamesData ? (
-            <div className="mt-2">
-              <RPSStatsNew
-                clubData={userProfile[0]}
+          {urlParams.length === 42 && (
+            <WalletProfile
+              account={urlParams.toLocaleLowerCase()}
+              isMobileResolution={isMobileResolution}
+            />
+          )}
+        </>
+      ) : (
+        <>
+          {playerDocument.uid !== "anonymous" &&
+            account !== "0x000000000000000000000000000000000000dEaD" && (
+              <LocalDiscordProfile
+                playerDocument={playerDocument}
                 isMobileResolution={isMobileResolution}
               />
-              <div className="botones-tabla mt-4 mb-4">
-                <div className="botones-tipos">
-                  <button
-                    onClick={handleChangeModal}
-                    disabled={!changeModal}
-                    className={
-                      changeModal ? "btn-rango-left" : "active btn-rango-left"
-                    }
-                  >
-                    Chart
-                  </button>
-                  <button
-                    onClick={handleChangeModal}
-                    disabled={changeModal}
-                    className={
-                      changeModal ? "active btn-rango-right" : "btn-rango-right"
-                    }
-                  >
-                    Games
-                  </button>
-                </div>
-              </div>
-              {changeModal ? (
-                <HistoryGames gamesData={gamesData} />
-              ) : (
-                <Chart clubData={userProfile[0]} />
-              )}
-            </div>
-          ) : (
-            <h2 className="text-center text-white mt-2">No games found</h2>
-          )}
-        </div>
+            )}
+          {playerDocument.uid === "anonymous" &&
+            account !== "0x000000000000000000000000000000000000dEaD" && (
+              <LocalWalletProfile
+                playerDocument={playerDocument}
+                isMobileResolution={isMobileResolution}
+              />
+            )}
+        </>
       )}
-      {discordId === "" && !uid && (
-        <h2 className="text-center text-white mt-3">Log in with discord</h2>
-      )}
-      {uid && !userProfile && <h2 className="text-center text-white mt-3">Loading...</h2>}
+
+      {!playerDocument &&
+        account === "0x000000000000000000000000000000000000dEaD" &&
+        !urlParams && (
+          <h2 className="text-center text-white">Login or connect wallet</h2>
+        )}
     </StyledProfile>
   );
 };

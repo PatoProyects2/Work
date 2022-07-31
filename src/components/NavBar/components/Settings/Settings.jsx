@@ -7,7 +7,7 @@ const Settings = () => {
     let open = document.querySelectorAll(".open-modal")[0];
     let close = document.querySelectorAll(".close")[0];
     let container = document.querySelectorAll(".container-modal")[0];
-    let modal = document.querySelectorAll(".modal")[0];
+    let modal = document.querySelectorAll(".modal-settings")[0];
     let body = document.querySelectorAll("body")[0];
 
     open.onclick = function (event) {
@@ -65,7 +65,7 @@ const Settings = () => {
       ></i>
 
       <div className="container-modal">
-        <div className="modal modal-close">
+        <div className="modal-settings modal-close">
           <div className="modal-flex">
             <h4 className="text-settings">Settings</h4>
             <span className="close" aria-label="Close">

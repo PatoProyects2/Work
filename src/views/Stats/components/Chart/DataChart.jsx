@@ -173,10 +173,10 @@ const DataChart = ({ data }) => {
 
           // point
           pointBackgroundColor: function (context) {
-            return context.raw > 0 ? "rgba(255, 245, 117, 1)" : "#ff7f50";
+            return context.raw >= 0 ? "rgba(255, 245, 117, 1)" : "#ff7f50";
           },
           pointBorderColor: function (context) {
-            return context.raw > 0 ? "rgba(255, 245, 117, 1)" : "#ff7f50";
+            return context.raw >= 0 ? "rgba(255, 245, 117, 1)" : "#ff7f50";
           },
           pointRadius: 2,
           pointHoverRadius: 5,

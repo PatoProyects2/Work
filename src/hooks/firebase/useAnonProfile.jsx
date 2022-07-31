@@ -4,10 +4,9 @@ import { db } from "../../config/firesbaseConfig";
 
 export const useAnonProfile = (account) => {
   const [anonProfile, setAnonProfile] = useState(false);
-
   useEffect(() => {
     if (account !== "0x000000000000000000000000000000000000dEaD") {
-      // console.log("Reading useAnonProfile");
+      console.log("Reading useAnonProfile");
       const q = query(
         collection(db, "anonUsers"),
         where("account", "==", account)

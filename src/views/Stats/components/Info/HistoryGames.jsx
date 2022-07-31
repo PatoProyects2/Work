@@ -1,6 +1,6 @@
 import { Table } from "reactstrap";
 
-const HistoryGames = ({ gamesData }) => {
+const HistoryGames = ({ userGames }) => {
   return (
     <Table borderless responsive>
       <thead>
@@ -11,7 +11,7 @@ const HistoryGames = ({ gamesData }) => {
         </tr>
       </thead>
       <tbody>
-        {gamesData.map((games, index) => {
+        {userGames.map((games, index) => {
           return (
             <tr key={index}>
               <td>

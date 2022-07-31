@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
+import ClubLogo from "../../assets/imgs/Views_Nfts/ClubLogo.png";
 
 const TableGames = ({
   uid,
@@ -27,7 +28,6 @@ const TableGames = ({
   }, [createdAt, unixTime]);
 
   return (
-    photo &&
     gameTime && (
       <tr className={index % 2 === 0 ? "table-selected" : ""}>
         <td>
@@ -35,24 +35,18 @@ const TableGames = ({
         </td>
         <td>
           <NavLink
-            style={{ pointerEvents: uid !== "anonymous" ? "" : "none" }}
-            to={`/stats/${uid}`}
+            to={uid !== "anonymous" ? `/stats/${uid}` : `/stats/${account}`}
           >
             <img
               width="25"
               height="25"
               className="rounded-circle me-2"
-              alt=""
-              src={
-                uid !== "anonymous" && photo
-                  ? photo
-                  : "https://firebasestorage.googleapis.com/v0/b/games-club-dce4d.appspot.com/o/ClubLogo.png?alt=media&token=5dd64484-c99f-4ce9-a06b-0a3ee112b37b"
-              }
+              src={photo}
               onError={({ currentTarget }) => {
                 currentTarget.onerror = null; // prevents looping
-                currentTarget.src =
-                  "https://firebasestorage.googleapis.com/v0/b/rpsgame-c4a38.appspot.com/o/profile%2FClubLogo.png?alt=media&token=7d14512f-c4a8-400f-a7ca-413239add111";
+                currentTarget.src = ClubLogo;
               }}
+              alt={uid}
             />
             <span style={{ color: "#ffe869" }}>
               {uid !== "anonymous" && name ? (

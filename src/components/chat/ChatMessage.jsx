@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 import CrownLevel from "../../views/Stats/components/Info/CrownLevel";
+import ClubLogo from "../../assets/imgs/Views_Nfts/ClubLogo.png";
 
 const ChatMessage = ({
   name,
@@ -30,8 +31,7 @@ const ChatMessage = ({
   return (
     <li className={index % 2 === 0 ? "active message" : "message"}>
       <NavLink
-        style={{ pointerEvents: uid !== "anonymous" ? "" : "none" }}
-        to={`/stats/${uid}`}
+        to={uid !== "anonymous" ? `/stats/${uid}` : `/stats/${account}`}
         onClick={() => setShowChat(false)}
       >
         <div className="chat-users" role="button">
@@ -41,10 +41,9 @@ const ChatMessage = ({
               src={photo}
               onError={({ currentTarget }) => {
                 currentTarget.onerror = null; // prevents looping
-                currentTarget.src =
-                  "https://firebasestorage.googleapis.com/v0/b/rpsgame-c4a38.appspot.com/o/profile%2FClubLogo.png?alt=media&token=7d14512f-c4a8-400f-a7ca-413239add111";
+                currentTarget.src = ClubLogo;
               }}
-              alt={name}
+              alt={uid}
             />
             <CrownLevel userLevel={level} />
             <span className={xpClassText()}>

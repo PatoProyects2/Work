@@ -4,6 +4,7 @@ import TableGames from "./TableGames";
 
 const Games = ({ isMobileResolution, liveGames }) => {
   const [unixTime, setUnixTime] = useState(0);
+  const [lastGames, setLastGames] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -12,6 +13,11 @@ const Games = ({ isMobileResolution, liveGames }) => {
     return () => clearInterval(interval);
   }, [unixTime]);
 
+  useEffect(() => {
+    if (liveGames) {
+      setLastGames(liveGames.slice(0, 10));
+    }
+  }, [liveGames]);
   return (
     <Table className="tbl-ranking" borderless responsive>
       <thead>
@@ -30,8 +36,8 @@ const Games = ({ isMobileResolution, liveGames }) => {
         </tr>
       </thead>
       <tbody>
-        {liveGames &&
-          liveGames.map((games, index) => (
+        {lastGames &&
+          lastGames.map((games, index) => (
             <TableGames
               key={games.gameId}
               {...games}

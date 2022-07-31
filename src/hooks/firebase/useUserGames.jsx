@@ -7,7 +7,7 @@ export const useUserGames = (uid) => {
 
   useEffect(() => {
     if (uid !== "" && uid !== undefined) {
-      // console.log("Reading useUserGames");
+      console.log("Reading useUserGames");
       const q = query(
         collection(db, "allGames"),
         where("uid", "==", uid),

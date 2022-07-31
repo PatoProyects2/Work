@@ -63,6 +63,9 @@ const RPSStats = ({ clubData }) => {
           </tr>
         </tbody>
       </table>
+      <span className="text-center text-white">
+        {clubData.whitelist ? "WHITELISTED" : "NOT WHITELISTED"}
+      </span>
     </StyledStats>
   );
 };

@@ -4,9 +4,9 @@ import { Table } from "reactstrap";
 import { Fireworks } from "@fireworks-js/react";
 import toast from "react-hot-toast";
 import { addDoc, collection } from "firebase/firestore";
+import { db } from "../../../../config/firesbaseConfig";
 import { useStatus } from "../../../../hooks/useStatus";
 import { useRandomItem } from "../../../../hooks/useRandomItem";
-
 import { Context } from "../../../../context/Context";
 
 import winSound from "../../../../assets/audio/win_sound.mpeg";
@@ -14,7 +14,6 @@ import lose1 from "../../../../assets/imgs/Win_Lose_Screens/lose1.gif";
 import lose2 from "../../../../assets/imgs/Win_Lose_Screens/lose2.png";
 import win1 from "../../../../assets/imgs/Win_Lose_Screens/win1.gif";
 import win2 from "../../../../assets/imgs/Win_Lose_Screens/win2.png";
-import { db } from "../../../../config/firesbaseConfig";
 // Game Logo
 import RPSGames from "../../../../assets/imgs/Home_Page/RPS Games.png";
 
@@ -434,6 +433,7 @@ const PlayButton = ({
   gas,
 }) => {
   const { playerDocument } = useContext(Context);
+
   const verifyGame = () => {
     if (userGame.hand === "") {
       toast.error("Select a hand");
@@ -494,7 +494,7 @@ const PlayButton = ({
         const txHash = playEvent.transactionHash;
         const usdAmount = parseInt(userGame.amount) * maticPrice;
 
-        addDoc(collection(db, "allGames"), {
+        const gameData = {
           game: "RPS",
           uid: playerDocument.uid,
           account: account,
@@ -508,7 +508,9 @@ const PlayButton = ({
           hand: userGame.hand,
           maticAmount: parseInt(userGame.amount),
           state: "pending",
-        });
+        };
+
+        addDoc(collection(db, "allGames"), gameData)
 
         setGameId(gameId);
 

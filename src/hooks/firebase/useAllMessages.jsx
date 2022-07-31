@@ -21,7 +21,7 @@ export const useAllMessages = () => {
   }, [chat]);
 
   useEffect(() => {
-    // console.log("Reading useAllMessages");
+    console.log("Reading useAllMessages");
     const q = query(
       collection(db, "messages"),
       orderBy("createdAt", "desc"),

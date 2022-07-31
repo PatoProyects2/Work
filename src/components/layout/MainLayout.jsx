@@ -10,10 +10,11 @@ import SocialButtons from "../../components/SocialButtons/SocialButtons";
 
 export default function MainLayout() {
   const [balance, setBalance] = useState("");
-  const [discordId, setDiscordId] = useState("");
   const [account, setAccount] = useState(
     "0x000000000000000000000000000000000000dEaD"
   );
+  const [liveGames, setLiveGames] = useState(false);
+
   const [showChat, setShowChat] = useState(false);
   const [playerDocument, setPlayerDocument] = useState(false);
 
@@ -22,14 +23,14 @@ export default function MainLayout() {
   return (
     <Context.Provider
       value={{
+        liveGames,
+        setLiveGames,
         account,
         setAccount,
         playerDocument,
         setPlayerDocument,
         balance,
         setBalance,
-        discordId,
-        setDiscordId,
       }}
     >
       <div className="div-test">

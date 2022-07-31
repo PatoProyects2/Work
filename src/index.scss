@@ -2677,7 +2677,7 @@ article {
   align-items: center;
   z-index: 1000;
   width: 100%;
-  height: 100vh;
+  height: 100%;
   top: 0;
   left: 0;
   animation: none;
@@ -2686,13 +2686,28 @@ article {
   visibility: hidden;
 }
 
-.modal {
+.modal-settings {
   display: flex;
   position: relative;
   flex-direction: column;
   justify-content: space-evenly;
   width: 350px;
   height: 445px;
+  background: #3d3657;
+  border: 1px solid #211746;
+  text-align: center;
+  transition: transform 0.3s;
+  transition: translateY(0px);
+  border-radius: 30px;
+}
+
+.modal-login {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  justify-content: space-evenly;
+  width: 350px;
+  height: 250px;
   background: #3d3657;
   border: 1px solid #211746;
   text-align: center;

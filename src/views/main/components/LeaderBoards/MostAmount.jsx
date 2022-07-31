@@ -1,6 +1,7 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { Table } from "reactstrap";
+import ClubLogo from "../../../../assets/imgs/Views_Nfts/ClubLogo.png";
 
 const MostAmount = (props) => {
   return (
@@ -27,8 +28,7 @@ const MostAmount = (props) => {
                     src={user.photo}
                     onError={({ currentTarget }) => {
                       currentTarget.onerror = null; // prevents looping
-                      currentTarget.src =
-                        "https://firebasestorage.googleapis.com/v0/b/rpsgame-c4a38.appspot.com/o/profile%2FClubLogo.png?alt=media&token=7d14512f-c4a8-400f-a7ca-413239add111";
+                      currentTarget.src = ClubLogo;
                     }}
                   />
                   <span style={{ color: "#ffe869" }}>

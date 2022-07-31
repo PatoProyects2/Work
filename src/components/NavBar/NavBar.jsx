@@ -8,11 +8,11 @@ import CloseButton from "../../assets/imgs/Nav_Bar/exitIcon.png";
 import DiscordLogo from "../../assets/imgs/Home_Page/discordIcon.png";
 import TwitterLogo from "../../assets/imgs/Home_Page/twitterIcon.png";
 import { useMatchMedia } from "../../hooks/useMatchMedia";
-import Profile from "../Profile/Profile";
+import Profile from "./components/Profile/Profile";
 import Balance from "./components/Balance/Balance";
 import OnlineUsers from "./components/OnlineUsers/OnlineUsers";
 import Settings from "./components/Settings/Settings";
-import { useProfile } from "../../hooks/firebase/useProfile";
+import { useAllGames } from "../../hooks/firebase/useAllGames";
 
 const StyledNavbar = styled.div`
   .Main-Menu {
@@ -51,7 +51,7 @@ const NavBar = () => {
   const [showOffcanvas, setShowOffCanvas] = useState(false);
   const isMobileResolution = useMatchMedia("(max-width:1000px)", false);
 
-  useProfile();
+  useAllGames();
 
   return (
     <StyledNavbar>

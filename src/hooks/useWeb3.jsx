@@ -111,9 +111,13 @@ export const useWeb3 = () => {
     setPrivateGamesClub(gamesClubContract);
   }, []);
 
+  const web3Cache = window.localStorage.getItem("WEB3_CONNECT_CACHED_PROVIDER");
+
   useEffect(() => {
-    readBlockchainData();
-  }, []);
+    if (web3Cache !== null) {
+      readBlockchainData();
+    }
+  }, [web3Cache]);
 
   const readBlockchainData = async () => {
     const web3Modal = new Web3Modal({
@@ -135,6 +139,7 @@ export const useWeb3 = () => {
       ethereum.on("accountsChanged", () => {
         window.location.reload();
       });
+
       setAccount(accounts[0].toLowerCase());
 
       const chainId = await web3.eth.getChainId();

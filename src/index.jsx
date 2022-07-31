@@ -84,7 +84,7 @@ ReactDOM.render(
               }
             />
             <Route
-              path=":uid"
+              path=":urlParams"
               element={
                 <Suspense fallback={<Spinner />}>
                   <Stats />
