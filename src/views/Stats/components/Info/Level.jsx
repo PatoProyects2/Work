@@ -28,7 +28,7 @@ const ProgressExp = ({ maxGames, minGames, cGames, xpClass }) => {
   );
 };
 
-const Level = ({ clubData, showLvl = true }) => {
+const Level = ({ clubUser, showLvl = true }) => {
   const totalGamesPerLevel = [
     10, 20, 30, 40, 55, 70, 85, 100, 115, 140, 165, 190, 215, 240, 280, 320,
     360, 400, 440, 490, 540, 590, 640, 690,
@@ -66,9 +66,9 @@ const Level = ({ clubData, showLvl = true }) => {
     <>
       <div className="my-2">
         <ProgressExp
-          {...getMinMaxGames(clubData.level)}
-          cGames={clubData.rps.gameWon + clubData.rps.gameLoss}
-          xpClass={xpClass(clubData.level)[1]}
+          {...getMinMaxGames(clubUser.level)}
+          cGames={clubUser.rps.gameWon + clubUser.rps.gameLoss}
+          xpClass={xpClass(clubUser.level)[1]}
         />
       </div>
     </>

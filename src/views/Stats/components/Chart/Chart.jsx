@@ -1,41 +1,37 @@
 import React, { useState, useEffect } from "react";
 import DataChart from "./DataChart";
 
-const Chart = ({ clubData, userGames }) => {
+const Chart = ({ clubUser, userGames }) => {
   const [data, setData] = useState(false);
 
   useEffect(() => {
-    const orderGames = [...userGames].sort((a, b) => a.createdAt - b.createdAt);
-
     var times = [];
     var usdAmounts = [];
-    var maticAmounts = [];
+    var coinAmounts = [];
+    var coins = [];
     var accounts = [];
 
-    const profit = orderGames.map((user, index) => {
-      let time = user.gameId;
-      let usd = parseFloat(user.amount.toFixed(2));
-      let matic = user.maticAmount;
-      let profit = parseFloat(user.profit.toFixed(2));
+    const profit = userGames.map((game, index) => {
+      times.push(game.gameId);
+      usdAmounts.push(parseFloat(game.amount.toFixed(2)));
+      coins.push(game.coin);
+      coinAmounts.push(game.coinAmount)
+      accounts.push(game.account);
 
-      times.push(time);
-      usdAmounts.push(usd);
-      maticAmounts.push(matic);
-      accounts.push(user.account);
-
-      return profit;
+      return parseFloat(game.profit.toFixed(2));
     });
 
     setData({
-      time: times,
       profit: profit,
+      time: times,
       usdAmounts: usdAmounts,
-      maticAmounts: maticAmounts,
+      coinAmounts: coinAmounts,
+      coins: coins,
       accounts: accounts,
     });
-  }, []);
+  }, [clubUser, userGames]);
 
-  return clubData && data && <DataChart data={data} />;
+  return data && <DataChart data={data} />;
 };
 
 export default Chart;

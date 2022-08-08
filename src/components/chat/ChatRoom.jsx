@@ -1,30 +1,18 @@
 import { useEffect, useRef, useState, useContext } from "react";
 import Picker from "emoji-picker-react";
 // import "emoji-picker-react/dist/main.css";
-import { addDoc, collection, updateDoc, doc } from "firebase/firestore";
-import { db } from "../../config/firesbaseConfig";
 import ChatMessage from "./ChatMessage";
 import { Context } from "../../context/Context";
-import { useAllMessages } from "../../hooks/firebase/useAllMessages";
 import { useTime } from "../../hooks/useTime";
-import { useChatBan } from "../../hooks/useChatBan";
+import { useMessages } from "../../hooks/firebase/useMessages";
 
 const ChatRoom = ({ showChat, setShowChat }) => {
-  const { account, playerDocument } = useContext(Context);
   const messagesEndRef = useRef(null);
-  const allMessages = useAllMessages();
+  const { account, playerDocument, socket } = useContext(Context);
   const [formValue, setFormValue] = useState("");
   const [emojis, setEmojis] = useState(false);
-
   const unixTime = useTime();
-  const banValue = useChatBan({
-    playerDocument,
-    account,
-    unixTime,
-    db,
-    doc,
-    updateDoc,
-  });
+  const messages = useMessages();
 
   const handleInputChange = (e) => {
     setFormValue(e.target.value);
@@ -43,42 +31,50 @@ const ChatRoom = ({ showChat, setShowChat }) => {
       setFormValue("");
       return false;
     }
-    const myMessages = allMessages.filter(
+    const myMessages = messages.filter(
       (messages) => messages.account === account
     );
     const lastMessages = myMessages.filter(
-      (messages) => messages.createdAt > unixTime - 10
+      (messages) => messages.createdAt > unixTime - 30
     );
+
+    var flood = false;
+
+    const warningMessage = {
+      text: "wait 30 seconds before sending another message",
+      createdAt: unixTime,
+      uid: playerDocument.uid,
+      id: socket.id,
+      account: account,
+      name: playerDocument.name,
+      photo: playerDocument.photo,
+      level: playerDocument.level,
+      room: 1,
+      flood: flood,
+    };
+
     if (lastMessages.length > 4) {
-      const userDoc =
-        playerDocument.uid === "anonymous"
-          ? doc(db, "anonUsers", account)
-          : doc(db, "clubUsers", playerDocument.uid);
-      updateDoc(userDoc, {
-        chat: {
-          banned: true,
-          unbanTime: unixTime + 30,
-        },
-      });
-      setEmojis(false);
-      setFormValue("");
-      return false;
+      flood = true;
+      socket.emit("join_chat", warningMessage);
     }
 
-    if (playerDocument) {
-      if (!playerDocument.chat.banned) {
-        addDoc(collection(db, "messages"), {
-          text: formValue.trim(),
-          createdAt: unixTime,
-          uid: playerDocument.uid,
-          account: account,
-          name: playerDocument.name,
-          photo: playerDocument.photo,
-          level: playerDocument.level,
-        });
-        setFormValue("");
-        setEmojis(false);
-      }
+    const text = formValue.trim();
+    const message = {
+      text: text,
+      createdAt: unixTime,
+      uid: playerDocument.uid,
+      id: socket.id,
+      account: account,
+      name: playerDocument.name,
+      photo: playerDocument.photo,
+      level: playerDocument.level,
+      room: 1,
+      flood: flood,
+    };
+
+    if (text !== "") {
+      socket.emit("send_message", message);
+      setFormValue("");
     }
   };
 
@@ -86,7 +82,7 @@ const ChatRoom = ({ showChat, setShowChat }) => {
     messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
   };
 
-  useEffect(scrollToBottom, [showChat, allMessages]);
+  useEffect(scrollToBottom, [showChat, messages]);
 
   return (
     <div className="chatting_chat_msgs">
@@ -96,10 +92,10 @@ const ChatRoom = ({ showChat, setShowChat }) => {
         </div>
         <div className="chat_msgs">
           <ul className="messages">
-            {allMessages &&
-              allMessages.map((msg, index) => (
+            {messages &&
+              messages.map((msg, index) => (
                 <ChatMessage
-                  key={msg.id}
+                  key={index}
                   index={index}
                   {...msg}
                   setShowChat={setShowChat}
@@ -138,22 +134,19 @@ const ChatRoom = ({ showChat, setShowChat }) => {
               placeholder={
                 playerDocument ? "Type something..." : "Connect wallet to chat"
               }
-              value={
-                playerDocument && playerDocument.chat.banned
-                  ? banValue
-                  : formValue
-              }
+              value={formValue}
               onChange={handleInputChange}
               maxLength="50"
               spellCheck="false"
             />
             <div className="chat_buttons">
-              <button
+              <div
+                role="button"
                 className={emojis ? "chat_btn_selected" : "chat_btn"}
                 onClick={() => setEmojis(!emojis)}
               >
                 <i className="fas fa-smile"></i>
-              </button>
+              </div>
               <button type="submit" className="chat_btn">
                 <i className="fa fa-paper-plane" aria-hidden="true"></i>
               </button>

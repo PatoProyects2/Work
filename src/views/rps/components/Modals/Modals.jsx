@@ -6,7 +6,10 @@ import toast from "react-hot-toast";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../../../../config/firesbaseConfig";
 import { useStatus } from "../../../../hooks/useStatus";
+import { useMetamask } from "../../../../hooks/useMetamask";
 import { useRandomItem } from "../../../../hooks/useRandomItem";
+import { useBalance } from "../../../../hooks/useBalance";
+import { useMatchMedia } from "../../../../hooks/useMatchMedia";
 import { Context } from "../../../../context/Context";
 
 import winSound from "../../../../assets/audio/win_sound.mpeg";
@@ -126,28 +129,15 @@ const Amounts = (props) => {
 };
 
 const Play = (props) => {
-  const { setBalance } = useContext(Context);
-
   const music = new Audio(winSound);
+
+  const readBalance = useBalance();
 
   const showResult = async () => {
     props.setAnimation(false);
     props.setResult(true);
 
-    if (
-      props.privateWeb3 &&
-      props.account !== "0x000000000000000000000000000000000000dEaD"
-    ) {
-      props.privateWeb3.eth
-        .getBalance(props.account)
-        .then((myBalance) => {
-          const userBalance = parseFloat(
-            myBalance / 1000000000 / 1000000000
-          ).toFixed(3);
-          setBalance(userBalance);
-        })
-        .catch((err) => console.log(err));
-    }
+    readBalance();
 
     let arrayOptions = ["a", "b"];
     var randomArray = (Math.random() * arrayOptions.length) | 0;
@@ -506,11 +496,12 @@ const PlayButton = ({
           gameId: gameId,
           amount: usdAmount,
           hand: userGame.hand,
-          maticAmount: parseInt(userGame.amount),
+          coinAmount: parseInt(userGame.amount),
+          coin: network === 137 ? "MATIC" : "SOL",
           state: "pending",
         };
 
-        addDoc(collection(db, "allGames"), gameData)
+        addDoc(collection(db, "allGames"), gameData);
 
         setGameId(gameId);
 
@@ -743,6 +734,8 @@ export const GamePanel = ({
 };
 
 export const ConnectPanel = ({ readBlockchainData }) => {
+  const isMobileResolution = useMatchMedia("(max-width:525px)", false);
+  const metamask = useMetamask({ isMobileResolution });
   return (
     <>
       <div className="game-gifs-wrapper">
@@ -751,7 +744,15 @@ export const ConnectPanel = ({ readBlockchainData }) => {
         <RpsImage image="Scissors" />
       </div>
       <div className="center">
-        <button className="DoubleOrNothing" onClick={readBlockchainData}>
+        <button
+          className="DoubleOrNothing"
+          onClick={() =>
+            !metamask && isMobileResolution
+              ? (window.location.href =
+                  "https://metamask.app.link/dapp/rpsgames.club/")
+              : readBlockchainData()
+          }
+        >
           CONNECT WALLET
         </button>
       </div>

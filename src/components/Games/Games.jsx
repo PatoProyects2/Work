@@ -1,23 +1,19 @@
 import { useState, useEffect } from "react";
 import { Table } from "reactstrap";
 import TableGames from "./TableGames";
+import { useTime } from "../../hooks/useTime";
 
-const Games = ({ isMobileResolution, liveGames }) => {
-  const [unixTime, setUnixTime] = useState(0);
+const Games = ({ isMobileResolution, allGames }) => {
   const [lastGames, setLastGames] = useState(false);
+  const unixTime = useTime();
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setUnixTime(Math.round(new Date().getTime() / 1000));
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [unixTime]);
-
-  useEffect(() => {
-    if (liveGames) {
-      setLastGames(liveGames.slice(0, 10));
+    if (allGames) {
+      const games = allGames.filter((userGame) => userGame.state === "confirmed");
+      setLastGames(games.slice(0, 10));
     }
-  }, [liveGames]);
+  }, [allGames]);
+
   return (
     <Table className="tbl-ranking" borderless responsive>
       <thead>
@@ -26,7 +22,7 @@ const Games = ({ isMobileResolution, liveGames }) => {
           <th>Player</th>
           {!isMobileResolution && (
             <>
-              <th>Amount</th>
+              <th>Bet</th>
               <th>Result</th>
               <th>Win Streak</th>
             </>

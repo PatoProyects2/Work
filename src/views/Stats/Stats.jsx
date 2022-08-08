@@ -4,9 +4,7 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { Context } from "../../context/Context";
 import DiscordProfile from "./components/DiscordProfile";
-import LocalDiscordProfile from "./components/LocalDiscordProfile";
 import WalletProfile from "./components/WalletProfile";
-import LocalWalletProfile from "./components/LocalWalletProfile";
 import { useMatchMedia } from "../../hooks/useMatchMedia";
 
 const StyledProfile = styled.div`
@@ -56,43 +54,40 @@ const Stats = () => {
 
   return (
     <StyledProfile>
-      {urlParams ? (
-        <>
-          {urlParams.length === 18 && (
-            <DiscordProfile
-              uid={urlParams}
-              isMobileResolution={isMobileResolution}
-            />
-          )}
-          {urlParams.length === 42 && (
-            <WalletProfile
-              account={urlParams.toLocaleLowerCase()}
-              isMobileResolution={isMobileResolution}
-            />
-          )}
-        </>
+      {playerDocument && urlParams === undefined ? (
+        playerDocument.uid !== "anonymous" ? (
+          <DiscordProfile
+            uid={playerDocument.uid}
+            isMobileResolution={isMobileResolution}
+          />
+        ) : (
+          <WalletProfile
+            account={playerDocument.account}
+            isMobileResolution={isMobileResolution}
+          />
+        )
       ) : (
-        <>
-          {playerDocument.uid !== "anonymous" &&
-            account !== "0x000000000000000000000000000000000000dEaD" && (
-              <LocalDiscordProfile
-                playerDocument={playerDocument}
+        urlParams && (
+          <>
+            {urlParams.length === 18 && (
+              <DiscordProfile
+                uid={urlParams}
                 isMobileResolution={isMobileResolution}
               />
             )}
-          {playerDocument.uid === "anonymous" &&
-            account !== "0x000000000000000000000000000000000000dEaD" && (
-              <LocalWalletProfile
-                playerDocument={playerDocument}
+            {urlParams.length === 42 && (
+              <WalletProfile
+                account={urlParams.toLocaleLowerCase()}
                 isMobileResolution={isMobileResolution}
               />
             )}
-        </>
+          </>
+        )
       )}
 
       {!playerDocument &&
         account === "0x000000000000000000000000000000000000dEaD" &&
-        !urlParams && (
+        urlParams === undefined && (
           <h2 className="text-center text-white">Login or connect wallet</h2>
         )}
     </StyledProfile>

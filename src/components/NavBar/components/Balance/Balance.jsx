@@ -1,34 +1,17 @@
 import React, { useContext, useEffect } from "react";
-import { Button } from "reactstrap";
-import Web3 from "web3";
 import { Context } from "../../../../context/Context";
 import PolygonLogo from "../../../../assets/imgs/Nav_Bar/polygon.png";
-import MetamaskLogo from "../../../../assets/imgs/Nav_Bar/fox.png";
 import { useMatchMedia } from "../../../../hooks/useMatchMedia";
+import { useBalance } from "../../../../hooks/useBalance";
 
-const BalanceModal = ({ isMobileResolution }) => {
-  const { account, balance, setBalance } = useContext(Context);
+const Balance = () => {
+  const { account, balance } = useContext(Context);
+  const isMobileResolution = useMatchMedia("(max-width:770px)", false);
+  const readBalance = useBalance();
 
   useEffect(() => {
-    updateBalance();
+    readBalance();
   }, [account]);
-
-  const updateBalance = () => {
-    const myWeb3 = new Web3(
-      new Web3.providers.HttpProvider(process.env.REACT_APP_INFURA_POLYGON)
-    );
-    if (myWeb3 && account !== "0x000000000000000000000000000000000000dEaD") {
-      myWeb3.eth
-        .getBalance(account)
-        .then((myBalance) => {
-          const userBalance = parseFloat(
-            myBalance / 1000000000 / 1000000000
-          ).toFixed(3);
-          setBalance(userBalance);
-        })
-        .catch((err) => console.log(err));
-    }
-  };
 
   return (
     balance !== "" && (
@@ -39,7 +22,7 @@ const BalanceModal = ({ isMobileResolution }) => {
             : "matic-balance-wrapper"
         }
       >
-        <button onClick={updateBalance} className="refresh-balance">
+        <button onClick={readBalance} className="refresh-balance">
           <i className="fas fa-sync-alt"></i>
         </button>
 
@@ -70,41 +53,6 @@ const BalanceModal = ({ isMobileResolution }) => {
         </div>
       </div>
     )
-  );
-};
-
-const MetamaskModal = ({ isMobileResolution }) => {
-  return (
-    isMobileResolution && (
-      <div className="d-flex align-items-center gap-2">
-        <Button
-          onClick={() =>
-            (location.href = "https://metamask.app.link/dapp/rpsgames.club/")
-          }
-          color="warning"
-        >
-          <span>OPEN</span>
-          &nbsp;
-          <img
-            src={MetamaskLogo}
-            className="mb-1"
-            width="20"
-            height="20"
-            alt="fox"
-          />
-        </Button>
-      </div>
-    )
-  );
-};
-
-const Balance = () => {
-  const isMobileResolution = useMatchMedia("(max-width:500px)", false);
-  return (
-    <>
-      <BalanceModal isMobileResolution={isMobileResolution} />
-      <MetamaskModal isMobileResolution={isMobileResolution} />
-    </>
   );
 };
 

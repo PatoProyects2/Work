@@ -24,14 +24,12 @@ export const StyledMain = styled.div`
     width: 100%;
     height: 100px;
   }
-
   .ParteImg {
     position: relative;
     margin-bottom: 10px;
     display: flex;
     justify-content: center;
   }
-
   .ParteImg img {
     width: 202%;
     display: flex;
@@ -39,26 +37,22 @@ export const StyledMain = styled.div`
       width: 202%;
     }
   }
-
   .ParteImgAbajo {
     position: relative;
     margin-bottom: 10px;
     display: flex;
     justify-content: center;
   }
-
   .ParteImgAbajo img {
     width: 100%;
     display: flex;
   }
-
   .Tabla {
     width: 100%;
     margin-top: 10px;
     gap: 1rem;
     padding-bottom: 40px;
   }
-
   .table-title {
     height: 50px;
     display: flex;
@@ -70,27 +64,22 @@ export const StyledMain = styled.div`
     justify-content: center;
     background-color: #554c77;
   }
-
   .table-title p {
     margin-top: 1rem;
   }
-
   .table-section {
     border: 1px solid #554c77;
     border-bottom-left-radius: 20px;
     border-bottom-right-radius: 20px;
     background-color: transparent;
   }
-
   .img-games {
     width: 150px;
     margin-bottom: 10px;
   }
-
   table {
     width: 100%;
   }
-
   thead th {
     cursor: pointer;
     color: #60597a;
@@ -98,7 +87,6 @@ export const StyledMain = styled.div`
     font-weight: 400;
     font-size: 17px;
   }
-
   thead button {
     cursor: pointer;
     border: none;
@@ -110,7 +98,6 @@ export const StyledMain = styled.div`
     background-color: #2c2640;
     width: 100%;
   }
-
   thead button:active {
     cursor: pointer;
     border: none;
@@ -121,11 +108,9 @@ export const StyledMain = styled.div`
     height: 48px;
     background-color: #eece5d;
   }
-
   .FlexTh {
     display: flex;
   }
-
   .FlexTh button {
     border: 1px solid #554c77;
     padding: 10px;
@@ -273,7 +258,7 @@ export const Tables = (props) => {
         {props.liveBets && (
           <Games
             isMobileResolution={props.isMobileResolution}
-            liveGames={props.liveGames}
+            allGames={props.allGames}
           />
         )}
         {props.mostPlays && props.topLeaderboards && (

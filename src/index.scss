@@ -414,6 +414,18 @@ a.btn-hover {
   box-shadow: -3px 0px 29px -8px #3ff269;
 }
 
+.ConnectWallet {
+  position: relative;
+  font-weight: 700;
+  padding: 10px;
+  background-color: #3ff269;
+  color: #27273d;
+  border: none;
+  font-size: 14px;
+  border-radius: 10px;
+  filter: drop-shadow(0 0 0.2rem #3ff269);
+}
+
 .playing button {
   margin-top: 15px;
   margin-bottom: 15px;
@@ -439,27 +451,6 @@ a.btn-hover {
 
 div.center {
   text-align: center;
-}
-
-.ConnectWallet {
-  margin-top: 15px;
-  margin-bottom: 50px;
-  font-weight: 700;
-  background-color: #40f26a;
-  color: #27273d;
-  border: none;
-  border-radius: 20px;
-  box-shadow: -3px 0px 29px -8px #40f26a;
-}
-
-.ConnectWallet:hover {
-  margin-top: 15px;
-  margin-bottom: 50px;
-  font-weight: 700;
-  background-color: #269b44;
-  color: white;
-  border: none;
-  box-shadow: -3px 0px 29px -8px #40f26a;
 }
 
 .processing-game {

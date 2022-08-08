@@ -1,5 +1,4 @@
-import { useState, useContext } from "react";
-import { Context } from "../../context/Context";
+import { useState } from "react";
 import { useMatchMedia } from "../../hooks/useMatchMedia";
 import {
   BannerCards,
@@ -7,21 +6,23 @@ import {
   TableButtons,
   Tables,
 } from "./components/Modals/Modals";
+import { useAllGames } from "../../hooks/firebase/useAllGames";
 import { useTopGames } from "../../hooks/useTopGames";
 
 const Main = () => {
-  const { liveGames } = useContext(Context);
   const [liveBets, setLiveBets] = useState(true);
   const [mostPlays, setMostPlays] = useState(false);
   const [mostAmount, setMostAmount] = useState(false);
+
   const [daily, setDaily] = useState(true);
   const [weekly, setWeekly] = useState(false);
   const [monthly, setMonthly] = useState(false);
   const [global, setGlobal] = useState(false);
+
   const isMobileResolution = useMatchMedia("(max-width:750px)", false);
   const isTabletResolution = useMatchMedia("(max-width:1000px)", false);
-
-  const topLeaderboards = useTopGames({ liveGames });
+  const allGames = useAllGames();
+  const topLeaderboards = useTopGames({ allGames });
 
   const day = () => {
     setDaily(true);
@@ -93,7 +94,7 @@ const Main = () => {
       />
 
       <Tables
-        liveGames={liveGames}
+        allGames={allGames}
         topLeaderboards={topLeaderboards}
         isMobileResolution={isMobileResolution}
         liveBets={liveBets}

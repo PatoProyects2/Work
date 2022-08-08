@@ -1,18 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { Context } from "../context/Context";
 
 export const useGas = () => {
+  const { setGas } = useContext(Context);
   const [gasTrack, setGasTrack] = useState(false);
-  const [gas, setGas] = useState(false);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      getGas();
-    }, 2000);
-    return () => {
-      clearInterval(timer);
-      setGasTrack(false);
-    };
-  }, []);
 
   const gasStorage = window.localStorage.getItem("gas");
 
@@ -30,11 +21,24 @@ export const useGas = () => {
     }
   }, [gasStorage, gasTrack]);
 
+  useEffect(() => {
+    const timer = setInterval(() => {
+      getGas();
+    }, 10000);
+    return () => {
+      clearInterval(timer);
+    };
+  }, []);
+
+  useEffect(() => {
+    getGas();
+  }, []);
+
   const getGas = async () => {
     const response = await fetch("https://gasstation-mainnet.matic.network/v2");
     const gwei = await response.json();
     setGasTrack(gwei);
   };
 
-  return {gas};
+  return;
 };

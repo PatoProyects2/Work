@@ -32,25 +32,6 @@ const DataChart = ({ data }) => {
 
     // console.log({chart,data});
 
-    const createGradientColor = (value) => {
-      const ctx = chart.ctx;
-      const chartArea = chart.chartArea;
-      const scales = chart.scales;
-      const gradient = ctx.createLinearGradient(0, 0, 0, chartArea.bottom);
-      var shift = scales.y.getPixelForValue(value) / chartArea.bottom;
-
-      if (shift > 1) {
-        shift = 1;
-      }
-
-      gradient.addColorStop(0, "rgba(255, 245, 117, 1)");
-      gradient.addColorStop(shift, "rgba(255, 245, 117, 1)");
-      gradient.addColorStop(shift, "rgba(255,  127, 80, 1)");
-      gradient.addColorStop(1, "rgba(255, 127, 80, 1)");
-
-      return gradient;
-    };
-
     const aboveGradient = (value) => {
       const ctx = chart.ctx;
       const chartArea = chart.chartArea;
@@ -96,7 +77,8 @@ const DataChart = ({ data }) => {
 
     const footer = (tooltipItems) => {
       const index = parseInt(tooltipItems[0].dataIndex);
-      return "Matic Amount: " + data.maticAmounts[index];
+      const coin = data.coins[index];
+      return "Bet: " + data.coinAmounts[index] + " " + coin;
     };
 
     const afterFooter = (tooltipItems) => {
@@ -105,16 +87,16 @@ const DataChart = ({ data }) => {
       var result = "";
 
       if (index === 0 && datas[index] > 0) {
-        result = "Win";
+        result = "Won";
       } else {
-        result = "Loss";
+        result = "Lost";
       }
 
       if (index > 0 && datas[index - 1] > datas[index]) {
-        result = "Loss";
+        result = "Lost";
       }
       if (index > 0 && datas[index - 1] < datas[index]) {
-        result = "Win";
+        result = "Won";
       }
 
       return "Result: " + result;
@@ -173,10 +155,14 @@ const DataChart = ({ data }) => {
 
           // point
           pointBackgroundColor: function (context) {
-            return context.raw >= 0 ? "rgba(255, 245, 117, 1)" : "#ff7f50";
+            return context.raw >= 0
+              ? "rgba(255, 245, 117, 1)"
+              : "rgba(255,  127, 80, 1)";
           },
           pointBorderColor: function (context) {
-            return context.raw >= 0 ? "rgba(255, 245, 117, 1)" : "#ff7f50";
+            return context.raw >= 0
+              ? "rgba(255, 245, 117, 1)"
+              : "rgba(255,  127, 80, 1)";
           },
           pointRadius: 2,
           pointHoverRadius: 5,
@@ -195,8 +181,14 @@ const DataChart = ({ data }) => {
               return belowGradient(context.dataset.data[0]);
             },
           },
-          borderColor: function (context) {
-            return createGradientColor(context.dataset.data[0]);
+          segment: {
+            borderColor: function (context) {
+              if (context.type === "segment") {
+                return context.p0.raw >= 0
+                  ? "rgba(255, 245, 117, 1)"
+                  : "rgba(255,  127, 80, 1)";
+              }
+            },
           },
         },
       ],

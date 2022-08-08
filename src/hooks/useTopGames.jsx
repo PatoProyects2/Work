@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 
-export const useTopGames = ({ liveGames }) => {
+export const useTopGames = ({ allGames }) => {
   const [topLeaderboards, setTopLeaderboards] = useState(false);
 
   useEffect(() => {
-    if (liveGames) {
+    if (allGames) {
       readLeaderboard();
     }
-  }, [liveGames]);
+  }, [allGames]);
 
   const readLeaderboard = () => {
     const unixTime = Math.round(new Date().getTime() / 1000);
@@ -22,7 +22,7 @@ export const useTopGames = ({ liveGames }) => {
 
     // Filtrar por preiodo de tiempo y usuarios registrados
 
-    liveGames.forEach((data) => {
+    allGames.forEach((data) => {
       if (data.uid !== "anonymous") {
         let created = data.createdAt;
 

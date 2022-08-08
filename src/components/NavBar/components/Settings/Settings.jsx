@@ -138,7 +138,7 @@ const Settings = () => {
               </button>
             </div>
           </div>
-          <span className="subtitle-modal">Message history</span>
+          <span className="subtitle-modal">Chat history duration</span>
           <div className="text-center settings-div">
             <div>
               <button
@@ -147,7 +147,7 @@ const Settings = () => {
                 }
                 onClick={() =>
                   chat !== "50" &&
-                  (window.localStorage.setItem("chat", 50), setChat("50"))
+                  (window.localStorage.setItem("chat", 50), setChat("20"))
                 }
               >
                 50
@@ -158,7 +158,7 @@ const Settings = () => {
                 }
                 onClick={() =>
                   chat !== "100" &&
-                  (window.localStorage.setItem("chat", 100), setChat("100"))
+                  (window.localStorage.setItem("chat", 100), setChat("30"))
                 }
               >
                 100
@@ -169,7 +169,7 @@ const Settings = () => {
                 }
                 onClick={() =>
                   chat !== "300" &&
-                  (window.localStorage.setItem("chat", 300), setChat("300"))
+                  (window.localStorage.setItem("chat", 300), setChat("40"))
                 }
               >
                 300

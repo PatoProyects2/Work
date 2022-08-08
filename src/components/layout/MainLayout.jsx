@@ -14,8 +14,11 @@ export default function MainLayout() {
     "0x000000000000000000000000000000000000dEaD"
   );
   const [liveGames, setLiveGames] = useState(false);
+  const [gas, setGas] = useState(false);
+  const [dayGames, setDayGames] = useState(false);
 
   const [showChat, setShowChat] = useState(false);
+  const [socket, setSocket] = useState(false);
   const [playerDocument, setPlayerDocument] = useState(false);
 
   const isMobileResolution = useMatchMedia("(max-width:650px)", false);
@@ -23,8 +26,14 @@ export default function MainLayout() {
   return (
     <Context.Provider
       value={{
+        gas,
+        setGas,
+        socket,
+        setSocket,
         liveGames,
         setLiveGames,
+        dayGames,
+        setDayGames,
         account,
         setAccount,
         playerDocument,

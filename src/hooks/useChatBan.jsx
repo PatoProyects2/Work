@@ -21,6 +21,7 @@ export const useChatBan = ({
       }
 
       if (time < 0 && banned) {
+        console.log("writing");
         setBanValue("");
         const document =
           playerDocument.uid === "anonymous"

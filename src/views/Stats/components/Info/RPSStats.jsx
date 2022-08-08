@@ -38,7 +38,7 @@ const StyledStats = styled.div`
   }
 `;
 
-const RPSStats = ({ clubData }) => {
+const RPSStats = ({ clubUser }) => {
   return (
     <StyledStats>
       <table className="profile-game-stats">
@@ -56,15 +56,15 @@ const RPSStats = ({ clubData }) => {
         <tbody>
           <tr>
             <td className="Vacio"></td>
-            <td>{clubData.rps.topWinStreak}</td>
-            <td>{clubData.rps.rock}</td>
-            <td>{clubData.rps.paper}</td>
-            <td>{clubData.rps.scissors}</td>
+            <td>{clubUser.rps.topWinStreak}</td>
+            <td>{clubUser.rps.rock}</td>
+            <td>{clubUser.rps.paper}</td>
+            <td>{clubUser.rps.scissors}</td>
           </tr>
         </tbody>
       </table>
       <span className="text-center text-white">
-        {clubData.whitelist ? "WHITELISTED" : "NOT WHITELISTED"}
+        {clubUser.whitelist ? "WHITELISTED" : "NOT WHITELISTED"}
       </span>
     </StyledStats>
   );

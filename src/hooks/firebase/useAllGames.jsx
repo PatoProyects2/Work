@@ -1,31 +1,36 @@
-import { useEffect, useContext } from "react";
-import {
-  collection,
-  query,
-  onSnapshot,
-  orderBy,
-  where,
-} from "firebase/firestore";
-import { db } from "../../config/firesbaseConfig";
+import { useState, useEffect, useContext } from "react";
 import { Context } from "../../context/Context";
 
-export const useAllGames = () => {
-  const { setLiveGames } = useContext(Context);
-  // const [allGames, setAllGames] = useState(false);
-  useEffect(() => {
-    console.log("Reading useAllGames");
-    const q = query(
-      collection(db, "allGames"),
-      where("state", "==", "confirmed"),
-      orderBy("createdAt", "desc"),
-    );
-    const unsub = onSnapshot(q, async (doc) => {
-      const games = doc.docs.map((document) => document.data());
-      // setAllGames(games);
-      setLiveGames(games);
-    });
-    return () => unsub();
-  }, []);
+export const useAllGames = (uid) => {
+  const [allGames, setAllGames] = useState(false);
+  const { socket } = useContext(Context);
 
-  return;
+  useEffect(() => {
+    if (socket) {
+      const timer = setInterval(() => {
+        socket.emit("join_allGames", uid);
+      }, 10000);
+      return () => {
+        clearInterval(timer);
+      };
+    }
+  }, [socket, uid]);
+
+  useEffect(() => {
+    const dataCallback = (data) => {
+      setAllGames(data);
+    };
+
+    if (socket) {
+      socket.emit("join_allGames", uid);
+
+      socket.on("receive_allGames", dataCallback);
+    }
+
+    return () => {
+      socket && socket.off("receive_allGames", dataCallback);
+    };
+  }, [socket, uid]);
+
+  return allGames;
 };

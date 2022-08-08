@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import CrownLevel from "./Info/CrownLevel";
 import rps from "../../../assets/imgs/Home_Page/RPS.png";
-import { useAnonProfile } from "../../../hooks/firebase/useAnonProfile";
+import { useAnonUsers } from "../../../hooks/firebase/useAnonUsers";
 import ClubLogo from "../../../assets/imgs/Views_Nfts/ClubLogo.png";
 import Spinner from "../../../components/Spinner/Spinner";
 
@@ -45,18 +45,18 @@ const StyledStats = styled.div`
 `;
 
 const WalletProfile = ({ account, isMobileResolution }) => {
-  const anonProfile = useAnonProfile(account);
+  const anonUser = useAnonUsers(account);
 
   let navigate = useNavigate();
 
   useEffect(() => {
-    if (anonProfile.length === 0) {
+    if (anonUser === null) {
       navigate("/stats", { replace: true });
     }
-  }, [anonProfile]);
+  }, [anonUser]);
 
   const xpClassText = () => {
-    const level = anonProfile[0].level;
+    const level = anonUser.level;
     if (level <= 4) {
       return "text-yellow";
     } else if (level > 4 && level < 10) {
@@ -72,34 +72,34 @@ const WalletProfile = ({ account, isMobileResolution }) => {
     }
   };
 
-  return anonProfile[0] ? (
+  return anonUser ? (
     <div className="profile-container">
       <h3 className="TitleUsuario my-3 text-center">
-        {anonProfile[0].account.substring(0, 5) +
+        {anonUser.account.substring(0, 5) +
           "..." +
-          anonProfile[0].account.substring(38, 42) +
+          anonUser.account.substring(38, 42) +
           " Stats"}
       </h3>
       <div className="profile-info">
         <div className="profile-info-container">
           <img
             className="rounded-circle profile-img"
-            src={anonProfile[0].photo}
+            src={anonUser.photo}
             onError={({ currentTarget }) => {
               currentTarget.onerror = null; // prevents looping
               currentTarget.src = ClubLogo;
             }}
-            alt={anonProfile[0].account}
+            alt={anonUser.account}
           />
           <div className="d-flex m-auto">
-            <CrownLevel userLevel={anonProfile[0].level} />
+            <CrownLevel userLevel={anonUser.level} />
             <span className={xpClassText()}>
-              {anonProfile[0].account.substring(0, 5) +
+              {anonUser.account.substring(0, 5) +
                 "..." +
-                anonProfile[0].account.substring(38, 42)}
+                anonUser.account.substring(38, 42)}
             </span>
           </div>
-          <span className="text-white">Login to save your game data</span>
+          <span className="text-white mt-2">Login to save your game data</span>
         </div>
         {!isMobileResolution && (
           <div className="profile-stats-container">
@@ -108,7 +108,7 @@ const WalletProfile = ({ account, isMobileResolution }) => {
                 <img src={rps} className="LogoImg" alt="Logo" />
               </div>
               <span className="text-center text-white">
-                {anonProfile[0].whitelist ? "WHITELISTED" : "NOT WHITELISTED"}
+                {anonUser.whitelist ? "WHITELISTED" : "NOT WHITELISTED"}
               </span>
             </StyledStats>
           </div>

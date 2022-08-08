@@ -9,7 +9,7 @@ export const useSettings = () => {
   const gasStorage = window.localStorage.getItem("gas");
   const chatStorage = window.localStorage.getItem("chat");
 
-  const ageStorage = window.localStorage.getItem("chat");
+  const ageStorage = window.localStorage.getItem("age");
 
   useEffect(() => {
     if (soundStorage === null && gasStorage === null && chatStorage === null) {

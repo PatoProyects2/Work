@@ -2,13 +2,11 @@ import { useContext, useRef } from "react";
 import { Context } from "../../context/Context";
 import { GameLogo, GamePanel, ConnectPanel } from "./components/Modals/Modals";
 import Spinner from "../../components/Spinner/Spinner";
-import { useGas } from "../../hooks/useGas";
 import { useWeb3 } from "../../hooks/useWeb3";
 
 const RPS = () => {
   const screen = useRef(null);
-  const { account } = useContext(Context);
-  const { gas } = useGas();
+  const { account, gas } = useContext(Context);
   const {
     web3,
     privateWeb3,

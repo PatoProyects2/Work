@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import ClubLogo from "../../assets/imgs/Views_Nfts/ClubLogo.png";
+import PolygonLogo from "../../assets/imgs/Nav_Bar/polygon.png";
 
 const TableGames = ({
   uid,
   result,
   streak,
-  maticAmount,
+  coinAmount,
+  coin,
   amount,
   createdAt,
   game,
@@ -75,7 +77,16 @@ const TableGames = ({
         </td>
         {!isMobileResolution && (
           <>
-            <td>{maticAmount}</td>
+            <td>
+              {coinAmount}
+              <img
+                className="ms-2"
+                src={coin === "MATIC" ? PolygonLogo : PolygonLogo}
+                width="25"
+                height="25"
+                alt="polygon"
+              />
+            </td>
             <td>
               <span className={result ? "profit-plus" : "profit-minus"}>
                 {result ? "doubled " : "bankrupt "}

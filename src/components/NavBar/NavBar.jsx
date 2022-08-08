@@ -1,18 +1,21 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { Nav, Navbar, Offcanvas, OffcanvasBody } from "reactstrap";
 import styled from "styled-components";
+import { Context } from "../../context/Context";
 import RPSLogo from "../../assets/imgs/Nav_Bar/logo.png";
 import MenuIcon from "../../assets/imgs/Nav_Bar/menuIcon.png";
 import CloseButton from "../../assets/imgs/Nav_Bar/exitIcon.png";
 import DiscordLogo from "../../assets/imgs/Home_Page/discordIcon.png";
 import TwitterLogo from "../../assets/imgs/Home_Page/twitterIcon.png";
 import { useMatchMedia } from "../../hooks/useMatchMedia";
-import Profile from "./components/Profile/Profile";
+import Profile, { LogOut } from "./components/Profile/Profile";
 import Balance from "./components/Balance/Balance";
 import OnlineUsers from "./components/OnlineUsers/OnlineUsers";
 import Settings from "./components/Settings/Settings";
-import { useAllGames } from "../../hooks/firebase/useAllGames";
+import { useLogin } from "../../hooks/useLogin";
+import { useGas } from "../../hooks/useGas";
+import { useSocket } from "../../hooks/useSocket";
 
 const StyledNavbar = styled.div`
   .Main-Menu {
@@ -48,10 +51,12 @@ const StyledNavbar = styled.div`
 `;
 
 const NavBar = () => {
+  useSocket();
+  const { account } = useContext(Context);
   const [showOffcanvas, setShowOffCanvas] = useState(false);
-  const isMobileResolution = useMatchMedia("(max-width:1000px)", false);
-
-  useAllGames();
+  const isMobileResolution = useMatchMedia("(max-width:770px)", false);
+  const { user } = useLogin();
+  useGas();
 
   return (
     <StyledNavbar>
@@ -76,7 +81,7 @@ const NavBar = () => {
         )}
         <div className="d-flex align-items-center gap-2">
           <Settings />
-          <Profile />
+          <Profile user={user} account={account} />
         </div>
 
         <Offcanvas
@@ -285,6 +290,12 @@ const NavBar = () => {
                   <Balance isMobileResolution={isMobileResolution} />
                 </div>
               </>
+            )}
+
+            {isMobileResolution && !user && (
+              <div className="d-flex justify-content-center mt-3">
+                <LogOut account={account} />
+              </div>
             )}
 
             <div className="footer-nav-icons">
