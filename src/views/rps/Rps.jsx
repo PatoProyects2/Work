@@ -1,56 +1,56 @@
-import { useContext, useRef } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import { Context } from "../../context/Context";
-import { GameLogo, GamePanel, ConnectPanel } from "./components/Modals/Modals";
-import Spinner from "../../components/Spinner/Spinner";
+import { GamePanel, ConnectPanel } from "./components/Modals/Modals";
 import { useWeb3 } from "../../hooks/useWeb3";
+import RPSGames from "../../assets/imgs/Home_Page/RPS Games.png";
 
-const RPS = () => {
+export default function RPS() {
+  const [load, setLoad] = useState(false);
   const screen = useRef(null);
-  const { account, gas } = useContext(Context);
-  const {
-    web3,
-    privateWeb3,
-    privateGamesClub,
-    rpsgame,
-    network,
-    maticPrice,
-    readBlockchainData,
-  } = useWeb3();
+  const { web3Data } = useContext(Context);
+  const { readBlockchainData } = useWeb3();
+  const age = window.localStorage.getItem("age");
+
+  const scrollToBottom = () => {
+    if (screen.current) {
+      screen.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [screen, web3Data.account, load]);
+
+  useEffect(() => {
+    setLoad(true);
+  }, []);
 
   return (
-    <>
-      {account !== undefined &&
-        account !== "0x000000000000000000000000000000000000dEaD" &&
-        gas && <GameLogo />}
-      {account === undefined ||
-        (account === "0x000000000000000000000000000000000000dEaD" && (
-          <GameLogo />
-        ))}
-      <article>
-        {account !== undefined &&
-        account !== "0x000000000000000000000000000000000000dEaD" ? (
-          gas ? (
+    load && (
+      <>
+        <div className="left-content-rps">
+          <img src={RPSGames} alt="" />
+        </div>
+        <article>
+          {web3Data.account && age === "true" ? (
             <GamePanel
-              web3={web3}
-              privateWeb3={privateWeb3}
-              privateGamesClub={privateGamesClub}
-              rpsgame={rpsgame}
-              network={network}
-              maticPrice={maticPrice}
-              screen={screen}
-              account={account}
-              gas={gas}
+              account={web3Data.account}
+              web3={web3Data.web3}
+              privateRpsGame={web3Data.chainStackRpsGame}
+              rpsGame={web3Data.rpsGame}
+              network={web3Data.network}
+              maticPrice={web3Data.maticPrice}
             />
           ) : (
-            <Spinner />
-          )
-        ) : (
-          <ConnectPanel readBlockchainData={readBlockchainData} />
-        )}
+            <ConnectPanel
+              readBlockchainData={readBlockchainData}
+              age={age}
+              account={web3Data.account}
+            />
+          )}
+        </article>
         <div ref={screen}></div>
-      </article>
-    </>
+      </>
+    )
   );
-};
-
-export default RPS;
+}

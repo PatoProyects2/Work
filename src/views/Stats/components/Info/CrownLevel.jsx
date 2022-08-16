@@ -19,10 +19,10 @@ const CrownLevel = ({ userLevel }) => {
   };
 
   return (
-    <div className={xpClass()}>
-      <img src={Crown} alt="Level" />
-      <span>{userLevel}</span>
-    </div>
+    <span className={xpClass()}>
+      <img src={Crown} />
+      {userLevel}
+    </span>
   );
 };
 

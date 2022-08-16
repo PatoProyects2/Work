@@ -1,2 +1,3 @@
 @echo off
-code . & npm run start
+start .\ngrok.exe http 3000 & code .
+

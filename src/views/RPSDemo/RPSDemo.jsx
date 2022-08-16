@@ -5,7 +5,7 @@ import win1 from "../../assets/imgs/Win_Lose_Screens/win1.gif";
 import win2 from "../../assets/imgs/Win_Lose_Screens/win2.png";
 import { GameLogo, RpsImage, GamePanel } from "./components/Modals/Modals";
 
-const RPSDemo = () => {
+export default function RPSDemo() {
   const screen = useRef(null);
   const [usergame, setUsergame] = useState({ hand: "", amount: 0 });
   const [randomItem, setRandomItem] = useState("");
@@ -154,6 +154,4 @@ const RPSDemo = () => {
       </article>
     </>
   );
-};
-
-export default RPSDemo;
+}

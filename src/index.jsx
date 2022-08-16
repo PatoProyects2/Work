@@ -1,7 +1,6 @@
 import React, { Suspense, lazy } from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { Route, Routes, Navigate, HashRouter } from "react-router-dom";
-import "bootstrap/dist/css/bootstrap.css";
 import MainLayout from "./components/Layout/MainLayout";
 import Spinner from "./components/Spinner/Spinner";
 // import TestLayout from "./components/Layout/TestLayout";
@@ -15,13 +14,11 @@ const About = lazy(() => import("./views/About/About"));
 const Stats = lazy(() => import("./views/Stats/Stats"));
 const RefundPolicy = lazy(() => import("./views/RefundPolicy/RefundPolicy"));
 const Terms = lazy(() => import("./views/Terms/Terms"));
-
 // import Maintenance from "./views/Maintenance/Maintenance";
 import ScrollToTop from "./hooks//ScrollToTop";
-import * as serviceWorker from "./serviceWorker";
 import "./index.scss";
 
-ReactDOM.render(
+createRoot(document.getElementById("root")).render(
   <HashRouter>
     <ScrollToTop>
       <Routes>
@@ -117,8 +114,5 @@ ReactDOM.render(
         <Route path="*" element={<Navigate replace to="/" />} />
       </Routes>
     </ScrollToTop>
-  </HashRouter>,
-  document.getElementById("root")
+  </HashRouter>
 );
-
-serviceWorker.unregister();

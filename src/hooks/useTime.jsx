@@ -4,11 +4,17 @@ export const useTime = () => {
   const [unixTime, setUnixTime] = useState(0);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setUnixTime(Math.round(new Date().getTime() / 1000));
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [unixTime]);
+    const time = setInterval(() => {
+      getUnixTime();
+    }, 30000);
+    return () => {
+      clearInterval(time);
+    };
+  }, []);
 
-  return unixTime;
+  const getUnixTime = () => {
+    setUnixTime(Math.round(new Date().getTime() / 1000));
+  };
+
+  return { unixTime, getUnixTime };
 };

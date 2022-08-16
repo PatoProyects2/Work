@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 
@@ -13,7 +14,7 @@ import FairPlayImg from "../../../../assets/imgs/Home_Page/imageFairplay.png";
 import NFTImg from "../../../../assets/imgs/Home_Page/imageNFT.png";
 import RPSGameImg from "../../../../assets/imgs/Home_Page/imageRPSgame.png";
 
-import Games from "../../../../components/Games/Games";
+import Games from "../Games/Games";
 import MostAmount from "../LeaderBoards/MostAmount";
 import MostPlays from "../LeaderBoards/MostPlays";
 
@@ -48,6 +49,7 @@ export const StyledMain = styled.div`
     display: flex;
   }
   .Tabla {
+    visibility: hidden;
     width: 100%;
     margin-top: 10px;
     gap: 1rem;
@@ -121,13 +123,35 @@ export const StyledMain = styled.div`
 `;
 
 export const BannerCards = (props) => {
+  const [image1, setImage1] = useState(false);
+  const [image2, setImage2] = useState(false);
+  const [image3, setImage3] = useState(false);
+  const [image4, setImage4] = useState(false);
+  const [image5, setImage5] = useState(false);
+
+  useEffect(() => {
+    if (image1 && image2 && image3 && image4 && image5) {
+      const banners = document.querySelector(".cards-container");
+      const botonesTabla = document.querySelector(".botones-tabla");
+      const tabla = document.querySelector(".Tabla");
+      if (banners && botonesTabla && tabla) {
+        banners.style.visibility = "visible";
+        botonesTabla.style.visibility = "visible";
+        tabla.style.visibility = "visible";
+      }
+    }
+  }, [image1, image2, image3, image4, image5]);
+
   return (
     <div className="cards-container">
       <img className="img-games" src={gamesLogo} alt="gamesLogo" />
       <div className="game-card mx-auto">
         <NavLink to="/rps">
           <div className="ParteImg">
-            <img src={props.isTabletResolution ? RPSGameMobile : RPSGameImg} />
+            <img
+              src={props.isTabletResolution ? RPSGameMobile : RPSGameImg}
+              onLoad={() => setImage1(true)}
+            />
           </div>
         </NavLink>
       </div>
@@ -137,6 +161,7 @@ export const BannerCards = (props) => {
           <div className="ParteImgAbajo">
             <img
               src={props.isTabletResolution ? ComingSoonMobile : ComingSoonImg}
+              onLoad={() => setImage2(true)}
             />
           </div>
           {/* </NavLink> */}
@@ -144,7 +169,10 @@ export const BannerCards = (props) => {
         <div className="game-card mx-auto">
           <NavLink to="/nfts">
             <div className="ParteImgAbajo">
-              <img src={props.isTabletResolution ? NFTMobile : NFTImg} />
+              <img
+                src={props.isTabletResolution ? NFTMobile : NFTImg}
+                onLoad={() => setImage3(true)}
+              />
             </div>
           </NavLink>
         </div>
@@ -155,6 +183,7 @@ export const BannerCards = (props) => {
           <div className="ParteImgAbajo">
             <img
               src={props.isTabletResolution ? CoinFlipMobile : CoinflipImg}
+              onLoad={() => setImage4(true)}
             />
           </div>
           {/* </NavLink> */}
@@ -164,6 +193,7 @@ export const BannerCards = (props) => {
             <div className="ParteImgAbajo">
               <img
                 src={props.isTabletResolution ? FairPlayMobile : FairPlayImg}
+                onLoad={() => setImage5(true)}
               />
             </div>
           </NavLink>

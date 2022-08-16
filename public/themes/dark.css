@@ -127,20 +127,34 @@ svg:hover > g.brand-icon {
 
 /* DROPDOWN BUTTON */
 
+.dd-profile .dropdown-toggle {
+  background-color: transparent !important;
+  border: none;
+}
+
+.dd-profile .dropdown-toggle::after {
+  background-color: transparent !important;
+  border: none;
+}
+
 .dd-profile .dropdown-menu {
-  background-color: #3d3657;
+  background-color: #3d3657 !important;
+  text-decoration: none;
 }
 
 .dd-profile .dropdown-item {
   color: whitesmoke !important;
+  text-decoration: none;
 }
 
 .dd-profile .dropdown-item:disabled {
   color: #adb5bd !important;
+  text-decoration: none;
 }
 
 .dd-profile .dropdown-item:hover {
   background-color: #2c2640 !important;
+  text-decoration: none;
 }
 
 /* WEB3 MODAL */

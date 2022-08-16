@@ -6,10 +6,13 @@ import {
   TableButtons,
   Tables,
 } from "./components/Modals/Modals";
-import { useAllGames } from "../../hooks/firebase/useAllGames";
 import { useTopGames } from "../../hooks/useTopGames";
+import { useAllGames } from "../../hooks/socket/useAllGames";
+import Spinner from "../../components/Spinner/Spinner";
 
-const Main = () => {
+export default function Main() {
+  const allGames = useAllGames();
+
   const [liveBets, setLiveBets] = useState(true);
   const [mostPlays, setMostPlays] = useState(false);
   const [mostAmount, setMostAmount] = useState(false);
@@ -21,7 +24,6 @@ const Main = () => {
 
   const isMobileResolution = useMatchMedia("(max-width:750px)", false);
   const isTabletResolution = useMatchMedia("(max-width:1000px)", false);
-  const allGames = useAllGames();
   const topLeaderboards = useTopGames({ allGames });
 
   const day = () => {
@@ -94,7 +96,7 @@ const Main = () => {
       />
 
       <Tables
-        allGames={allGames}
+        allGames={allGames && allGames.slice(0, 10)}
         topLeaderboards={topLeaderboards}
         isMobileResolution={isMobileResolution}
         liveBets={liveBets}
@@ -107,6 +109,4 @@ const Main = () => {
       />
     </StyledMain>
   );
-};
-
-export default Main;
+}

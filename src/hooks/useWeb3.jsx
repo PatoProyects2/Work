@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
 import Web3 from "web3";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
@@ -17,14 +17,14 @@ import {
 import { Context } from "../context/Context";
 
 export const useWeb3 = () => {
-  const { setAccount } = useContext(Context);
-  const [web3, setWeb3] = useState(false);
-  const [rpsgame, setRpsgame] = useState(false);
-  const [web3ModalInfo, setWeb3ModalInfo] = useState({});
-  const [privateWeb3, setPrivateWeb3] = useState({});
-  const [network, setNetwork] = useState(0);
-  const [maticPrice, setMaticPrice] = useState(0);
-  const [privateGamesClub, setPrivateGamesClub] = useState(false);
+  const { setWeb3Data } = useContext(Context);
+  const [infuraWeb3, setInfuraWeb3] = useState(false);
+  const [infuraRpsGame, setInfuraRpsGame] = useState(false);
+  const chainUrl = process.env.REACT_APP_CHAINSTACK_WSS_POLYGON;
+  const chainUser = process.env.REACT_APP_CHAINSTACK_WSS_POLYGON_USER;
+  const chainPass = process.env.REACT_APP_CHAINSTACK_WSS_POLYGON_PASSWORD;
+
+  const web3Cache = window.localStorage.getItem("WEB3_CONNECT_CACHED_PROVIDER");
 
   const providerOptions = {
     walletconnect: {
@@ -34,10 +34,11 @@ export const useWeb3 = () => {
       package: WalletConnectProvider,
       options: {
         rpc: {
-          137: "https://polygon-rpc.com",
+          137: `https://polygon-mainnet.infura.io/v3/${process.env.REACT_APP_INFURA_POLYGON}`,
         },
       },
     },
+
     torus: {
       display: {
         description: " ",
@@ -45,7 +46,7 @@ export const useWeb3 = () => {
       package: Torus,
       options: {
         networkParams: {
-          host: process.env.REACT_APP_INFURA_RPC,
+          host: `https://polygon-mainnet.infura.io/v3/${process.env.REACT_APP_INFURA_POLYGON}`,
           chainId: 137,
           networkId: 137,
           blockExplorer: "https://polygonscan.com/",
@@ -54,6 +55,7 @@ export const useWeb3 = () => {
         },
       },
     },
+
     portis: {
       display: {
         description: " ",
@@ -64,6 +66,7 @@ export const useWeb3 = () => {
         network: "matic",
       },
     },
+
     walletlink: {
       display: {
         description: " ",
@@ -71,12 +74,13 @@ export const useWeb3 = () => {
       package: WalletLink,
       options: {
         appName: "Games Club",
-        rpc: "https://polygon-rpc.com",
+        rpc: `https://polygon-mainnet.infura.io/v3/${process.env.REACT_APP_INFURA_POLYGON}`,
         chainId: 137,
         appLogoUrl: null,
         darkMode: false,
       },
     },
+
     frame: {
       display: {
         description: " ",
@@ -86,108 +90,175 @@ export const useWeb3 = () => {
   };
 
   useEffect(() => {
-    const myWeb3 = new Web3(
-      new Web3.providers.HttpProvider(process.env.REACT_APP_INFURA_POLYGON)
-    );
-    setPrivateWeb3(myWeb3);
+    readPrivateEndpoints();
+  }, [web3Cache]);
 
-    const polygonSwap = new myWeb3.eth.Contract(
-      UniswapRouter.abi,
-      pRouterAddress
-    );
-    polygonSwap.methods
-      .getAmountsOut("1000000000000000000", [pMaticAddress, pUsdcAddress])
-      .call()
-      .then((price) => {
-        const matic = parseFloat((parseInt(price[1]) / 1000000).toFixed(4));
-        setMaticPrice(matic);
-      })
-      .catch((err) => console.log(err));
+  const readPrivateEndpoints = () => {
+    const infura = `https://polygon-mainnet.infura.io/v3/${process.env.REACT_APP_INFURA_POLYGON}`;
+    const infuraProvider = new Web3.providers.HttpProvider(infura);
+    const infWeb3 = new Web3(infuraProvider);
 
-    const gamesClubContract = new myWeb3.eth.Contract(
+    const infRpsGame = new infWeb3.eth.Contract(
       RpsGamePolygon.abi,
       pRpsGameAddress
     );
-    setPrivateGamesClub(gamesClubContract);
-  }, []);
+    setInfuraWeb3(infWeb3);
+    setInfuraRpsGame(infRpsGame);
 
-  const web3Cache = window.localStorage.getItem("WEB3_CONNECT_CACHED_PROVIDER");
-
-  useEffect(() => {
-    if (web3Cache !== null) {
-      readBlockchainData();
+    if (web3Cache === null) {
+      setWeb3Data({
+        infuraWeb3: infWeb3,
+        infuraRpsGame: infRpsGame,
+      });
     }
-  }, [web3Cache]);
-
-  const readBlockchainData = async () => {
-    const web3Modal = new Web3Modal({
-      cacheProvider: true,
-      providerOptions,
-      //theme: theme
-    });
-    setWeb3ModalInfo(web3Modal);
-    try {
-      const web3Provider = await web3Modal.connect();
-      if (web3Provider._portis) {
-        web3Provider._portis.showPortis();
-      }
-
-      const web3 = new Web3(web3Provider);
-      setWeb3(web3);
-
-      const accounts = await web3.eth.getAccounts();
-      ethereum.on("accountsChanged", () => {
-        window.location.reload();
-      });
-
-      setAccount(accounts[0].toLowerCase());
-
-      const chainId = await web3.eth.getChainId();
-      ethereum.on("chainChanged", () => {
-        window.location.reload();
-      });
-      setNetwork(chainId);
-      if (chainId === 137) {
-        const rpsgame = new web3.eth.Contract(
-          RpsGamePolygon.abi,
-          pRpsGameAddress
-        );
-        setRpsgame(rpsgame);
-      } else {
-        await ethereum.sendAsync({
-          method: "wallet_addEthereumChain",
-          params: [
-            {
-              chainId: "0x89",
-              chainName: "Polygon Mainnet",
-              rpcUrls: ["https://polygon-rpc.com"],
-              iconUrls: [""],
-              nativeCurrency: {
-                name: "MATIC",
-                symbol: "MATIC",
-                decimals: 18,
-              },
-              blockExplorerUrls: ["https://explorer.matic.network/"],
-            },
-          ],
-        });
-      }
-    } catch (e) {}
   };
 
-  const disconnectWallet = () => {
-    web3ModalInfo.clearCachedProvider();
-    window.location.reload();
+  useEffect(() => {
+    if (web3Cache !== null && infuraWeb3 && infuraRpsGame) {
+      readBlockchainData();
+    }
+  }, [web3Cache, infuraWeb3, infuraRpsGame]);
+
+  const readBlockchainData = async () => {
+    var account = false;
+    var network = false;
+    try {
+      const web3Modal = new Web3Modal({
+        cacheProvider: true,
+        providerOptions,
+      });
+
+      // Injected connector
+      const provider = await web3Modal.connect();
+      if (provider._portis) {
+        provider._portis.showPortis();
+      }
+
+      const web3 = new Web3(provider);
+
+      account = await web3.eth.getAccounts();
+      network = await web3.eth.getChainId();
+
+      const chainStack = `wss://${chainUser}:${chainPass}@${chainUrl}`;
+      const chainStackProvider = new Web3.providers.WebsocketProvider(
+        chainStack
+      );
+      const chainStackWeb3 = new Web3(chainStackProvider);
+
+      // Setting Contracts
+      const polygonSwapContract = new web3.eth.Contract(
+        UniswapRouter.abi,
+        pRouterAddress
+      );
+
+      const rpsGame = new web3.eth.Contract(
+        RpsGamePolygon.abi,
+        pRpsGameAddress
+      );
+
+      const chainStackRpsGame = new chainStackWeb3.eth.Contract(
+        RpsGamePolygon.abi,
+        pRpsGameAddress
+      );
+
+      // Read Matic Price
+      const price = await polygonSwapContract.methods
+        .getAmountsOut("1000000000000000000", [pMaticAddress, pUsdcAddress])
+        .call();
+      const maticPrice = parseFloat((parseInt(price[1]) / 1000000).toFixed(4));
+
+      const web3Array = {
+        web3: web3,
+        account: account[0].toLowerCase(),
+        network: network,
+        rpsGame: rpsGame,
+        infuraWeb3: infuraWeb3,
+        infuraRpsGame: infuraRpsGame,
+        chainStackWeb3: chainStackWeb3,
+        chainStackRpsGame: chainStackRpsGame,
+        maticPrice: maticPrice,
+      };
+      setWeb3Data(web3Array);
+
+      provider.on("accountsChanged", (accounts) => {
+        if (accounts.length === 0) {
+          window.location.reload();
+        } else {
+          account = accounts;
+          setWeb3Data({
+            web3: web3,
+            account: account[0].toLowerCase(),
+            network: network,
+            rpsGame: rpsGame,
+            infuraWeb3: infuraWeb3,
+            infuraRpsGame: infuraRpsGame,
+            chainStackWeb3: chainStackWeb3,
+            chainStackRpsGame: chainStackRpsGame,
+            maticPrice: maticPrice,
+          });
+        }
+      });
+
+      provider.on("chainChanged", (chainId) => {
+        network = chainId === "0x89" ? 137 : chainId;
+        if (network !== 137) {
+          setWeb3Data(account, network);
+        } else {
+          setWeb3Data({
+            web3: web3,
+            account: account[0].toLowerCase(),
+            network: network,
+            rpsGame: rpsGame,
+            infuraWeb3: infuraWeb3,
+            infuraRpsGame: infuraRpsGame,
+            chainStackWeb3: chainStackWeb3,
+            chainStackRpsGame: chainStackRpsGame,
+            maticPrice: maticPrice,
+          });
+        }
+      });
+    } catch (e) {
+      console.log(e);
+      readBlockchainData();
+    }
+    if (account && network !== 137) {
+      try {
+        await ethereum.request({
+          method: "wallet_switchEthereumChain",
+          params: [{ chainId: "0x89" }],
+        });
+      } catch (switchError) {
+        // This error code indicates that the chain has not been added to MetaMask.
+        if (switchError.code === 4902) {
+          try {
+            await ethereum.request({
+              method: "wallet_addEthereumChain",
+              params: [
+                {
+                  chainId: "0x89",
+                  chainName: "Polygon Mainnet",
+                  rpcUrls: ["https://rpc-mainnet.matic.quiknode.pro/"],
+                  iconUrls: [""],
+                  nativeCurrency: {
+                    name: "MATIC",
+                    symbol: "MATIC",
+                    decimals: 18,
+                  },
+                  blockExplorerUrls: ["https://polygonscan.com/"],
+                },
+              ],
+            });
+          } catch (addError) {
+            // handle "add" error
+          }
+        }
+        // handle other "switch" errors
+      }
+      setWeb3Data(account, network);
+    }
   };
 
   return {
-    web3,
-    privateWeb3,
-    rpsgame,
-    privateGamesClub,
-    network,
-    maticPrice,
     readBlockchainData,
-    disconnectWallet,
   };
 };

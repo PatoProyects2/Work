@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import UsersIcon from "../../../../assets/imgs/Nav_Bar/usersIcon.png";
-import { useStatus } from "../../../../hooks/firebase/useStatus";
+import { useOnlineUsers } from "../../../../hooks/socket/useOnlineUsers";
 
 const StyledActive = styled.div`
   .Logo {
@@ -22,14 +22,16 @@ const StyledActive = styled.div`
 `;
 
 const OnlineUsers = () => {
-  const online = useStatus();
+  const onlineUsers = useOnlineUsers();
 
   return (
     <StyledActive>
       <span className="LogoBackground d-flex align-items-center">
         <img className="Logo" src={UsersIcon} alt="" />
         &nbsp;
-        <div className="ActiveText">{online.length > 0 && online.length}</div>
+        <div className="ActiveText">
+          {onlineUsers.length > 0 && onlineUsers.length}
+        </div>
       </span>
     </StyledActive>
   );

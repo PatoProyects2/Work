@@ -1,12 +1,12 @@
-import React from 'react';
-import { Pie } from '@ant-design/plots'
+import React from "react";
+import { Pie } from "@ant-design/plots";
 
 const FairGame = ({ data }) => {
   const config = {
     appendPadding: 10,
     data,
-    angleField: 'value',
-    colorField: 'type',
+    angleField: "value",
+    colorField: "type",
     radius: 0.8,
     innerRadius: 0.64,
     meta: {
@@ -15,12 +15,12 @@ const FairGame = ({ data }) => {
       },
     },
     label: {
-      type: 'inner',
-      offset: '-50%',
+      type: "inner",
+      offset: "-50%",
       autoRotate: false,
       style: {
-        textAlign: 'center',
-        fill: '#fff',
+        textAlign: "center",
+        fill: "#fff",
       },
       formatter: ({ percent }) => `${(percent * 100).toFixed(0)}%`,
     },
@@ -28,12 +28,12 @@ const FairGame = ({ data }) => {
       title: {
         offsetY: -8,
         style: {
-          color: '#fff',
+          color: "#fff",
         },
       },
       content: {
         style: {
-          color: '#fff',
+          color: "#fff",
         },
         offsetY: -4,
       },
@@ -42,13 +42,7 @@ const FairGame = ({ data }) => {
       lineWidth: 0,
     },
   };
-  return (
-    <div>
-      {data &&
-        <Pie {...config} />
-      }
-    </div>
-  )
-}
+  return <Pie {...config} />;
+};
 
 export default FairGame;

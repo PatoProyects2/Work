@@ -6,28 +6,32 @@ import Level from "./Info/Level";
 import CrownLevel from "./Info/CrownLevel";
 import RPSStats from "./Info/RPSStats";
 import RPSStatsNew from "./Info/RPSStatsNew";
-import { useUserGames } from "../../../hooks/firebase/useUserGames";
-import { useClubUsers } from "../../../hooks/firebase/useClubUsers";
 import ClubLogo from "../../../assets/imgs/Views_Nfts/ClubLogo.png";
 import Spinner from "../../../components/Spinner/Spinner";
 
-const DiscordProfile = ({ uid, isMobileResolution }) => {
+const DiscordProfile = ({ uid, isMobileResolution, clubUsers, allGames }) => {
+  const [user, setUser] = useState(false);
+  const [games, setGames] = useState(false);
   const [changeModal, setChangeModal] = useState(false);
   const [register, setRegister] = useState(false);
-
-  const clubUser = useClubUsers(uid);
-  const userGames = useUserGames(uid);
 
   let navigate = useNavigate();
 
   useEffect(() => {
-    if (clubUser === null && userGames.length === 0) {
+    if (clubUsers.length && allGames.length) {
+      setUser(clubUsers.find((user) => user.uid === uid));
+      setGames(allGames.filter((game) => game.uid === uid));
+    }
+  }, [clubUsers, allGames]);
+
+  useEffect(() => {
+    if (user === null && games.length === 0) {
       navigate("/stats", { replace: true });
     }
-  }, [userGames, clubUser]);
+  }, [user, games]);
 
   const xpClassText = () => {
-    const level = clubUser.level;
+    const level = user.level;
     if (level <= 4) {
       return "text-yellow";
     } else if (level > 4 && level < 10) {
@@ -44,8 +48,8 @@ const DiscordProfile = ({ uid, isMobileResolution }) => {
   };
 
   useEffect(() => {
-    if (clubUser) {
-      const date = new Date(clubUser.register * 1000);
+    if (user) {
+      const date = new Date(user.register * 1000);
       var day = date.getDate().toString();
       var month = (date.getMonth() + 1).toString();
       const year = date.getFullYear().toString();
@@ -59,53 +63,49 @@ const DiscordProfile = ({ uid, isMobileResolution }) => {
 
       setRegister(`${day}/${month}/${year}`);
     }
-  }, [clubUser]);
-  return clubUser ? (
+  }, [user]);
+
+  return user ? (
     <div className="profile-container">
       <h3 className="TitleUsuario my-3 text-center">
-        {clubUser.name + "#" + clubUser.id} Stats
+        {user.name + "#" + user.id} Stats
       </h3>
       <div className="profile-info">
         <div className="profile-info-container">
           <img
             className="rounded-circle profile-img"
-            src={clubUser.photo}
+            src={user.photo}
             onError={({ currentTarget }) => {
               currentTarget.onerror = null; // prevents looping
               currentTarget.src = ClubLogo;
             }}
-            alt={clubUser.uid}
+            alt={user.uid}
           />
           <div className="d-flex m-auto mb-2">
-            <CrownLevel userLevel={clubUser.level} />
-            <span className={xpClassText()}>
-              {clubUser.name + "#" + clubUser.id}
-            </span>
+            <CrownLevel userLevel={user.level} />
+            <span className={xpClassText()}>{user.name + "#" + user.id}</span>
           </div>
-          <Level clubUser={clubUser} />
+          <Level clubUser={user} />
           <span className="text-white mt-2">User since: {register}</span>
         </div>
         {!isMobileResolution && (
           <div className="profile-stats-container">
-            <RPSStats clubUser={clubUser} />
+            <RPSStats clubUser={user} />
           </div>
         )}
       </div>
       {isMobileResolution && (
         <div className="rps-stats-mobile mt-2">
-          <RPSStats clubUser={clubUser} />
+          <RPSStats clubUser={user} />
         </div>
       )}
 
       <div className="mt-2">
-        <RPSStatsNew
-          clubUser={clubUser}
-          isMobileResolution={isMobileResolution}
-        />
+        <RPSStatsNew clubUser={user} isMobileResolution={isMobileResolution} />
 
-        {userGames.length > 0 ? (
+        {games.length > 0 ? (
           <>
-            <div className="botones-tabla mt-4 mb-4">
+            <div className="botones-tabla-stats mt-4 mb-4">
               <div className="botones-tipos">
                 <button
                   onClick={() => setChangeModal(!changeModal)}
@@ -128,9 +128,9 @@ const DiscordProfile = ({ uid, isMobileResolution }) => {
               </div>
             </div>
             {changeModal ? (
-              <HistoryGames userGames={userGames} />
+              <HistoryGames userGames={games} />
             ) : (
-              <Chart clubUser={clubUser} userGames={userGames} />
+              <Chart clubUser={user} userGames={[...games].reverse()} />
             )}
           </>
         ) : (

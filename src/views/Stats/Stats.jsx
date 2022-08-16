@@ -6,6 +6,9 @@ import { Context } from "../../context/Context";
 import DiscordProfile from "./components/DiscordProfile";
 import WalletProfile from "./components/WalletProfile";
 import { useMatchMedia } from "../../hooks/useMatchMedia";
+import { useAllGames } from "../../hooks/socket/useAllGames";
+import { useClubUsers } from "../../hooks/socket/useClubUsers";
+import { useAnonUsers } from "../../hooks/socket/useAnonUsers";
 
 const StyledProfile = styled.div`
   width: 100%;
@@ -37,10 +40,13 @@ const StyledProfile = styled.div`
   }
 `;
 
-const Stats = () => {
-  const { account, playerDocument } = useContext(Context);
+export default function Stats() {
+  const { web3Data, playerDocument } = useContext(Context);
   const { urlParams } = useParams();
   const isMobileResolution = useMatchMedia("(max-width:700px)", false);
+  const allGames = useAllGames();
+  const clubUsers = useClubUsers();
+  const anonUsers = useAnonUsers();
 
   let navigate = useNavigate();
 
@@ -57,11 +63,14 @@ const Stats = () => {
       {playerDocument && urlParams === undefined ? (
         playerDocument.uid !== "anonymous" ? (
           <DiscordProfile
+            clubUsers={clubUsers}
+            allGames={allGames}
             uid={playerDocument.uid}
             isMobileResolution={isMobileResolution}
           />
         ) : (
           <WalletProfile
+            anonUsers={anonUsers}
             account={playerDocument.account}
             isMobileResolution={isMobileResolution}
           />
@@ -71,12 +80,15 @@ const Stats = () => {
           <>
             {urlParams.length === 18 && (
               <DiscordProfile
+                clubUsers={clubUsers}
+                allGames={allGames}
                 uid={urlParams}
                 isMobileResolution={isMobileResolution}
               />
             )}
             {urlParams.length === 42 && (
               <WalletProfile
+                anonUsers={anonUsers}
                 account={urlParams.toLocaleLowerCase()}
                 isMobileResolution={isMobileResolution}
               />
@@ -85,13 +97,9 @@ const Stats = () => {
         )
       )}
 
-      {!playerDocument &&
-        account === "0x000000000000000000000000000000000000dEaD" &&
-        urlParams === undefined && (
-          <h2 className="text-center text-white">Login or connect wallet</h2>
-        )}
+      {!playerDocument && !web3Data.account && urlParams === undefined && (
+        <h2 className="text-center text-white">Login or connect wallet</h2>
+      )}
     </StyledProfile>
   );
-};
-
-export default Stats;
+}

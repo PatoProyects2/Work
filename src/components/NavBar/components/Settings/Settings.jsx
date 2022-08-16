@@ -1,184 +1,99 @@
-import { useEffect } from "react";
-import { useSettings } from "../../../../hooks/useSettings";
+import { useEffect, useState } from "react";
+import { Modal, Group, Button } from "./components/SettingModal";
+
 const Settings = () => {
-  const { sound, setSound, gas, setGas, chat, setChat } = useSettings();
+  const [sound, setSound] = useState(window.localStorage.getItem("sound"));
+  const [gas, setGas] = useState(window.localStorage.getItem("gas"));
+  const [chat, setChat] = useState(window.localStorage.getItem("chat"));
 
+  const age = window.localStorage.getItem("chat");
+
+  // Crear ajustes si no estan definidos por defecto
   useEffect(() => {
-    let open = document.querySelectorAll(".open-modal")[0];
-    let close = document.querySelectorAll(".close")[0];
-    let container = document.querySelectorAll(".container-modal")[0];
-    let modal = document.querySelectorAll(".modal-settings")[0];
-    let body = document.querySelectorAll("body")[0];
-
-    open.onclick = function (event) {
-      event.preventDefault();
-
-      container.style.opacity = "1";
-      container.style.visibility = "visible";
-      container.style.animation = "fadeIn 0.3s";
-
-      modal.classList.toggle("modal-close");
-
-      body.style.position = "static";
-      body.style.height = "100%";
-      body.style.overflow = "hidden";
-    };
-
-    close.onclick = function () {
-      modal.classList.toggle("modal-close");
-      container.style.animation = "fadeOut 0.3s";
-
-      setTimeout(() => {
-        container.style.opacity = "0";
-        container.style.visibility = "hidden";
-
-        body.style.position = "inherit";
-        body.style.height = "auto";
-        body.style.overflow = "visible";
-      }, 200);
-    };
-
-    window.onclick = function (event) {
-      if (event.target === container) {
-        modal.classList.toggle("modal-close");
-        container.style.animation = "fadeOut 0.3s";
-
-        setTimeout(() => {
-          container.style.opacity = "0";
-          container.style.visibility = "hidden";
-
-          body.style.position = "inherit";
-          body.style.height = "auto";
-          body.style.overflow = "visible";
-        }, 200);
-      }
-    };
-  }, []);
+    if (sound === null || gas === null || chat === null || age === null) {
+      window.localStorage.setItem("sound", "on");
+      window.localStorage.setItem("gas", "instant");
+      window.localStorage.setItem("chat", "50");
+      window.localStorage.setItem("age", false);
+      setSound(window.localStorage.getItem("sound"));
+      setGas(window.localStorage.getItem("gas"));
+      setChat(window.localStorage.getItem("chat"));
+    }
+  }, [sound, gas, chat, age]);
 
   return (
-    <>
-      <i
-        role="button"
-        className="open-modal fa fa-cog"
-        style={{ color: "#ffe869" }}
-        aria-hidden="true"
-      ></i>
-
-      <div className="container-modal">
-        <div className="modal-settings modal-close">
-          <div className="modal-flex">
-            <h4 className="text-settings">Settings</h4>
-            <span className="close" aria-label="Close">
-              <i className="fa fa-times" aria-hidden="true"></i>
-            </span>
-          </div>
-
-          <span className="subtitle-modal">Sound</span>
-          <div className="settings-div">
-            <button
-              className={
-                sound === "on" ? "green setting-button" : "setting-button"
-              }
-              onClick={() =>
-                sound === "off" &&
-                (window.localStorage.setItem("sound", "on"), setSound("on"))
-              }
-            >
-              <i className="fas fa-volume-up"></i>
-            </button>
-            <button
-              className={
-                sound === "off" ? "red setting-button" : "setting-button"
-              }
-              onClick={() =>
-                sound === "on" &&
-                (window.localStorage.setItem("sound", "off"), setSound("off"))
-              }
-            >
-              <i className="fas fa-volume-mute"></i>
-            </button>
-          </div>
-          <span className="subtitle-modal">Transaction speed (GWEI)</span>
-          <div className="settings-div text-center">
-            <div>
-              <button
-                className={
-                  gas === "standard" ? "green setting-button" : "setting-button"
-                }
-                onClick={() =>
-                  gas !== "standard" &&
-                  (window.localStorage.setItem("gas", "standard"),
-                  setGas("standard"))
-                }
-              >
-                Standard
-              </button>
-              <button
-                className={
-                  gas === "fast" ? "green setting-button" : "setting-button"
-                }
-                onClick={() =>
-                  gas !== "fast" &&
-                  (window.localStorage.setItem("gas", "fast"), setGas("fast"))
-                }
-              >
-                Fast
-              </button>
-              <button
-                className={
-                  gas === "instant" ? "green setting-button" : "setting-button"
-                }
-                onClick={() =>
-                  gas !== "instant" &&
-                  (window.localStorage.setItem("gas", "instant"),
-                  setGas("instant"))
-                }
-              >
-                Instant
-              </button>
-            </div>
-          </div>
-          <span className="subtitle-modal">Chat history duration</span>
-          <div className="text-center settings-div">
-            <div>
-              <button
-                className={
-                  chat === "50" ? "green setting-button" : "setting-button"
-                }
-                onClick={() =>
-                  chat !== "50" &&
-                  (window.localStorage.setItem("chat", 50), setChat("20"))
-                }
-              >
-                50
-              </button>
-              <button
-                className={
-                  chat === "100" ? "green setting-button" : "setting-button"
-                }
-                onClick={() =>
-                  chat !== "100" &&
-                  (window.localStorage.setItem("chat", 100), setChat("30"))
-                }
-              >
-                100
-              </button>
-              <button
-                className={
-                  chat === "300" ? "green setting-button" : "setting-button"
-                }
-                onClick={() =>
-                  chat !== "300" &&
-                  (window.localStorage.setItem("chat", 300), setChat("40"))
-                }
-              >
-                300
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
+    <Modal>
+      <Group title="Sound">
+        <Button
+          storage={sound}
+          setStorage={setSound}
+          item="sound"
+          value="off"
+          color="red"
+          label={<i className="fas fa-volume-mute"></i>}
+        />
+        <Button
+          storage={sound}
+          setStorage={setSound}
+          item="sound"
+          value="on"
+          color="green"
+          label={<i className="fas fa-volume-up"></i>}
+        />
+      </Group>
+      <Group title="Transaction speed (GWEI)">
+        <Button
+          storage={gas}
+          setStorage={setGas}
+          item="gas"
+          value="standard"
+          color="red"
+          label="standard"
+        />
+        <Button
+          storage={gas}
+          setStorage={setGas}
+          item="gas"
+          value="fast"
+          color="yellow"
+          label="fast"
+        />
+        <Button
+          storage={gas}
+          setStorage={setGas}
+          item="gas"
+          value="instant"
+          color="green"
+          label="instant"
+        />
+      </Group>
+      <Group title="Chat history duration">
+        <Button
+          storage={chat}
+          setStorage={setChat}
+          item="chat"
+          value="300"
+          color="red"
+          label="300"
+        />
+        <Button
+          storage={chat}
+          setStorage={setChat}
+          item="chat"
+          value="100"
+          color="yellow"
+          label="100"
+        />
+        <Button
+          storage={chat}
+          setStorage={setChat}
+          item="chat"
+          value="50"
+          color="green"
+          label="50"
+        />
+      </Group>
+    </Modal>
   );
 };
 

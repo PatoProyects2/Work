@@ -1,9 +1,8 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import CrownLevel from "./Info/CrownLevel";
 import rps from "../../../assets/imgs/Home_Page/RPS.png";
-import { useAnonUsers } from "../../../hooks/firebase/useAnonUsers";
 import ClubLogo from "../../../assets/imgs/Views_Nfts/ClubLogo.png";
 import Spinner from "../../../components/Spinner/Spinner";
 
@@ -44,19 +43,23 @@ const StyledStats = styled.div`
   }
 `;
 
-const WalletProfile = ({ account, isMobileResolution }) => {
-  const anonUser = useAnonUsers(account);
+const WalletProfile = ({ account, isMobileResolution, anonUsers }) => {
+  const [user, setUser] = useState(false);
+
+  useEffect(() => {
+    setUser(anonUsers.find((user) => user.account === account))
+  }, [anonUsers]);
 
   let navigate = useNavigate();
 
   useEffect(() => {
-    if (anonUser === null) {
+    if (user === null) {
       navigate("/stats", { replace: true });
     }
-  }, [anonUser]);
+  }, [user]);
 
   const xpClassText = () => {
-    const level = anonUser.level;
+    const level = user.level;
     if (level <= 4) {
       return "text-yellow";
     } else if (level > 4 && level < 10) {
@@ -72,31 +75,31 @@ const WalletProfile = ({ account, isMobileResolution }) => {
     }
   };
 
-  return anonUser ? (
+  return user ? (
     <div className="profile-container">
       <h3 className="TitleUsuario my-3 text-center">
-        {anonUser.account.substring(0, 5) +
+        {user.account.substring(0, 5) +
           "..." +
-          anonUser.account.substring(38, 42) +
+          user.account.substring(38, 42) +
           " Stats"}
       </h3>
       <div className="profile-info">
         <div className="profile-info-container">
           <img
             className="rounded-circle profile-img"
-            src={anonUser.photo}
+            src={user.photo}
             onError={({ currentTarget }) => {
               currentTarget.onerror = null; // prevents looping
               currentTarget.src = ClubLogo;
             }}
-            alt={anonUser.account}
+            alt={user.account}
           />
           <div className="d-flex m-auto">
-            <CrownLevel userLevel={anonUser.level} />
+            <CrownLevel userLevel={user.level} />
             <span className={xpClassText()}>
-              {anonUser.account.substring(0, 5) +
+              {user.account.substring(0, 5) +
                 "..." +
-                anonUser.account.substring(38, 42)}
+                user.account.substring(38, 42)}
             </span>
           </div>
           <span className="text-white mt-2">Login to save your game data</span>
@@ -108,7 +111,7 @@ const WalletProfile = ({ account, isMobileResolution }) => {
                 <img src={rps} className="LogoImg" alt="Logo" />
               </div>
               <span className="text-center text-white">
-                {anonUser.whitelist ? "WHITELISTED" : "NOT WHITELISTED"}
+                {user.whitelist ? "WHITELISTED" : "NOT WHITELISTED"}
               </span>
             </StyledStats>
           </div>

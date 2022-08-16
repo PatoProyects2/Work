@@ -4,7 +4,7 @@ export const useTopGames = ({ allGames }) => {
   const [topLeaderboards, setTopLeaderboards] = useState(false);
 
   useEffect(() => {
-    if (allGames) {
+    if (allGames.length > 0) {
       readLeaderboard();
     }
   }, [allGames]);

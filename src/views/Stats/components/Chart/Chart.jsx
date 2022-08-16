@@ -3,7 +3,7 @@ import DataChart from "./DataChart";
 
 const Chart = ({ clubUser, userGames }) => {
   const [data, setData] = useState(false);
-
+  
   useEffect(() => {
     var times = [];
     var usdAmounts = [];
@@ -15,7 +15,7 @@ const Chart = ({ clubUser, userGames }) => {
       times.push(game.gameId);
       usdAmounts.push(parseFloat(game.amount.toFixed(2)));
       coins.push(game.coin);
-      coinAmounts.push(game.coinAmount)
+      coinAmounts.push(game.coinAmount);
       accounts.push(game.account);
 
       return parseFloat(game.profit.toFixed(2));

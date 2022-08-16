@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Terms = () => {
+export default function Terms () {
 
     return (
         <div className='container text-white'>
@@ -273,5 +273,3 @@ const Terms = () => {
         </div>
     );
 }
-
-export default Terms;

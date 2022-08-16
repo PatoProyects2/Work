@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import RoadMap from "./components/RoadMap/RoadMap";
 
-const Nfts = () => {
+export default function Nfts() {
   const navigate = useNavigate();
   return (
     <div className="text-white">
@@ -15,6 +15,4 @@ const Nfts = () => {
       </div>
     </div>
   );
-};
-
-export default Nfts;
+}
