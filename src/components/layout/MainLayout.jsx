@@ -61,60 +61,46 @@ export default function MainLayout() {
 function MainDom() {
   useEffect(() => {
     let openChat = document.querySelectorAll(".chat_collapse_ico")[0];
-    let chat = document.querySelectorAll(".chat-section")[0];
     let messages = document.querySelectorAll(".chat_msgs")[0];
     let title = document.querySelectorAll(".background-messages")[0];
+    let chat = document.querySelectorAll(".chat-section")[0];
     let social = document.querySelectorAll(".social-section")[0];
     let content = document.querySelectorAll(".content-section")[0];
 
-    if (openChat && chat && messages && social && content) {
-      openChat.classList.add("expanded");
-      content.classList.add("expanded");
-      social.classList.add("expanded");
-      chat.classList.add("expanded");
-      messages.style.visibility = "visible";
-      title.style.visibility = "visible";
-
-      openChat.onclick = function (event) {
-        event.preventDefault();
-        if (
-          openChat.classList.contains("expanded") &&
-          chat.classList.contains("expanded") &&
-          social.classList.contains("expanded") &&
-          content.classList.contains("expanded")
-        ) {
-          openChat.classList.remove("expanded");
-          content.classList.remove("expanded");
-          social.classList.remove("expanded");
-          chat.classList.remove("expanded");
-          messages.style.visibility = "hidden";
-          title.style.visibility = "hidden";
-        } else {
-          openChat.classList.add("expanded");
-          content.classList.add("expanded");
-          social.classList.add("expanded");
-          chat.classList.add("expanded");
-          setTimeout(() => {
-            messages.style.visibility = "visible";
-            title.style.visibility = "visible";
-          }, 300);
-        }
-      };
-    }
+    openChat.onclick = function (event) {
+      event.preventDefault();
+      if (openChat.classList.contains("expanded")) {
+        openChat.classList.remove("expanded");
+        content.classList.remove("expanded");
+        social.classList.remove("expanded");
+        chat.classList.remove("expanded");
+        messages.style.visibility = "hidden";
+        title.style.visibility = "hidden";
+      } else {
+        openChat.classList.add("expanded");
+        content.classList.add("expanded");
+        social.classList.add("expanded");
+        chat.classList.add("expanded");
+        setTimeout(() => {
+          messages.style.visibility = "visible";
+          title.style.visibility = "visible";
+        }, 400);
+      }
+    };
   }, []);
 
   return (
     <>
-      <div className="chat-section">
+      <div className="chat-section expanded">
         <ChatRoom />
       </div>
-      <div className="chat_expand">
-        <span className="chat_collapse_ico"></span>
+      <div className="chat_expand expanded">
+        <span className="chat_collapse_ico expanded"></span>
       </div>
-      <div className="social-section">
+      <div className="social-section expanded">
         <SocialBar />
       </div>
-      <div className="content-section">
+      <div className="content-section expanded">
         <Outlet />
       </div>
     </>

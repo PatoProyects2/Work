@@ -1,3 +1,3 @@
 @echo off
-start .\ngrok.exe http 3000 & code .
+code . & .\ngrok.exe http 3000 & 
 

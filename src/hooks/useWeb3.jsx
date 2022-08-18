@@ -20,6 +20,8 @@ export const useWeb3 = () => {
   const { setWeb3Data } = useContext(Context);
   const [infuraWeb3, setInfuraWeb3] = useState(false);
   const [infuraRpsGame, setInfuraRpsGame] = useState(false);
+  const [publicWeb3, setPublicWeb3] = useState(false);
+  const [publicRpsGame, setPublicRpsGame] = useState(false);
   const chainUrl = process.env.REACT_APP_CHAINSTACK_WSS_POLYGON;
   const chainUser = process.env.REACT_APP_CHAINSTACK_WSS_POLYGON_USER;
   const chainPass = process.env.REACT_APP_CHAINSTACK_WSS_POLYGON_PASSWORD;
@@ -105,19 +107,40 @@ export const useWeb3 = () => {
     setInfuraWeb3(infWeb3);
     setInfuraRpsGame(infRpsGame);
 
-    if (web3Cache === null) {
+    const publicPolygon = `https://polygon-mainnet.infura.io/v3/${process.env.REACT_APP_INFURA_POLYGON}`;
+    const publicProvider = new Web3.providers.HttpProvider(publicPolygon);
+    const pubWeb3 = new Web3(publicProvider);
+
+    const pubRpsGame = new pubWeb3.eth.Contract(
+      RpsGamePolygon.abi,
+      pRpsGameAddress
+    );
+    setPublicWeb3(pubWeb3);
+    setPublicRpsGame(pubRpsGame);
+
+    //rpc-mainnet.matic.quiknode.pro/
+
+    https: if (web3Cache === null) {
       setWeb3Data({
         infuraWeb3: infWeb3,
         infuraRpsGame: infRpsGame,
+        publicWeb3: pubWeb3,
+        publicRpsGame: pubRpsGame,
       });
     }
   };
 
   useEffect(() => {
-    if (web3Cache !== null && infuraWeb3 && infuraRpsGame) {
+    if (
+      web3Cache !== null &&
+      infuraWeb3 &&
+      infuraRpsGame &&
+      publicWeb3 &&
+      publicRpsGame
+    ) {
       readBlockchainData();
     }
-  }, [web3Cache, infuraWeb3, infuraRpsGame]);
+  }, [web3Cache, infuraWeb3, infuraRpsGame, publicWeb3, publicRpsGame]);
 
   const readBlockchainData = async () => {
     var account = false;
@@ -174,6 +197,8 @@ export const useWeb3 = () => {
         rpsGame: rpsGame,
         infuraWeb3: infuraWeb3,
         infuraRpsGame: infuraRpsGame,
+        publicWeb3: publicWeb3,
+        publicRpsGame: publicRpsGame,
         chainStackWeb3: chainStackWeb3,
         chainStackRpsGame: chainStackRpsGame,
         maticPrice: maticPrice,
@@ -192,6 +217,8 @@ export const useWeb3 = () => {
             rpsGame: rpsGame,
             infuraWeb3: infuraWeb3,
             infuraRpsGame: infuraRpsGame,
+            publicWeb3: publicWeb3,
+            publicRpsGame: publicRpsGame,
             chainStackWeb3: chainStackWeb3,
             chainStackRpsGame: chainStackRpsGame,
             maticPrice: maticPrice,
@@ -211,6 +238,8 @@ export const useWeb3 = () => {
             rpsGame: rpsGame,
             infuraWeb3: infuraWeb3,
             infuraRpsGame: infuraRpsGame,
+            publicWeb3: publicWeb3,
+            publicRpsGame: publicRpsGame,
             chainStackWeb3: chainStackWeb3,
             chainStackRpsGame: chainStackRpsGame,
             maticPrice: maticPrice,

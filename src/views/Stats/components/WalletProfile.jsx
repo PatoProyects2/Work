@@ -47,7 +47,7 @@ const WalletProfile = ({ account, isMobileResolution, anonUsers }) => {
   const [user, setUser] = useState(false);
 
   useEffect(() => {
-    setUser(anonUsers.find((user) => user.account === account))
+    setUser(anonUsers.find((user) => user.account === account));
   }, [anonUsers]);
 
   let navigate = useNavigate();
@@ -96,6 +96,7 @@ const WalletProfile = ({ account, isMobileResolution, anonUsers }) => {
           />
           <div className="d-flex m-auto">
             <CrownLevel userLevel={user.level} />
+            &nbsp;
             <span className={xpClassText()}>
               {user.account.substring(0, 5) +
                 "..." +

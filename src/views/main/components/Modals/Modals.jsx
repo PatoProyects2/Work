@@ -157,14 +157,16 @@ export const BannerCards = (props) => {
       </div>
       <div className="d-flex responsive-card">
         <div role="button" className="game-card mx-auto">
-          {/* <NavLink style={{ pointerEvents: "none" }} to="/comingsoon"> */}
-          <div className="ParteImgAbajo">
-            <img
-              src={props.isTabletResolution ? ComingSoonMobile : ComingSoonImg}
-              onLoad={() => setImage2(true)}
-            />
-          </div>
-          {/* </NavLink> */}
+          <NavLink style={{ pointerEvents: "none" }} to="/comingsoon">
+            <div className="ParteImgAbajo">
+              <img
+                src={
+                  props.isTabletResolution ? ComingSoonMobile : ComingSoonImg
+                }
+                onLoad={() => setImage2(true)}
+              />
+            </div>
+          </NavLink>
         </div>
         <div className="game-card mx-auto">
           <NavLink to="/nfts">
@@ -179,14 +181,14 @@ export const BannerCards = (props) => {
       </div>
       <div className="d-flex responsive-card">
         <div role="button" className="game-card mx-auto">
-          {/* <NavLink style={{ pointerEvents: "none" }} to="/coinflip"> */}
-          <div className="ParteImgAbajo">
-            <img
-              src={props.isTabletResolution ? CoinFlipMobile : CoinflipImg}
-              onLoad={() => setImage4(true)}
-            />
-          </div>
-          {/* </NavLink> */}
+          <NavLink style={{ pointerEvents: "none" }} to="/coinflip">
+            <div className="ParteImgAbajo">
+              <img
+                src={props.isTabletResolution ? CoinFlipMobile : CoinflipImg}
+                onLoad={() => setImage4(true)}
+              />
+            </div>
+          </NavLink>
         </div>
         <div className="game-card mx-auto">
           <NavLink to="/fair-play">

@@ -83,6 +83,7 @@ const DiscordProfile = ({ uid, isMobileResolution, clubUsers, allGames }) => {
           />
           <div className="d-flex m-auto mb-2">
             <CrownLevel userLevel={user.level} />
+            &nbsp;
             <span className={xpClassText()}>{user.name + "#" + user.id}</span>
           </div>
           <Level clubUser={user} />

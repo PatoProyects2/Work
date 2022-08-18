@@ -4,12 +4,7 @@ body {
   background: #2c2640 !important;
 }
 
-/* TOAST */
-
-.toast-modal {
-  background: rgba(28, 31, 35, 1) !important;
-  color: whitesmoke !important;
-}
+@import url("https://fonts.googleapis.com/css?family=Open+Sans&display=swap");
 
 .toast-close {
   color: #ffdb5b !important;

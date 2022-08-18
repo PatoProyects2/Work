@@ -25,15 +25,6 @@ import imagePaper from "../../../../assets/imgs/Bet_Screen/imagePaper.png";
 import imageScissors from "../../../../assets/imgs/Bet_Screen/imageScissors.png";
 import matic from "../../../../assets/imgs/Bet_Screen/matic.png";
 
-// Play panel
-import imageRockGIF from "../../../../assets/imgs/Bet_Screen/RockUnselectedGIF.gif";
-import imagePaperGIF from "../../../../assets/imgs/Bet_Screen/PaperUnselectedGIF.gif";
-import imageScissorsGIF from "../../../../assets/imgs/Bet_Screen/ScissorsUnselectedGIF.gif";
-
-import imageVS from "../../../../assets/imgs/Bet_Screen/VStext.png";
-
-import rotatingCard from "../../../../assets/imgs/Bet_Screen/RotatingCard.gif";
-
 // Result panel
 
 import RockWin from "../../../../assets/imgs/Win_Lose_Screens/RockWin.gif";
@@ -74,7 +65,7 @@ const Rock = (props) => {
         name="hand"
         id="rock"
         onChange={props.handleInputChange}
-        value="ROCK"
+        value="rock"
       ></input>
       <div role="button" className="rps-img rock-img"></div>
     </label>
@@ -89,7 +80,7 @@ const Paper = (props) => {
         name="hand"
         id="paper"
         onChange={props.handleInputChange}
-        value="PAPER"
+        value="paper"
       ></input>
       <div role="button" className="rps-img paper-img"></div>
     </label>
@@ -104,7 +95,7 @@ const Scissors = (props) => {
         name="hand"
         id="scissors"
         onChange={props.handleInputChange}
-        value="SCISSORS"
+        value="scissors"
       ></input>
       <div role="button" className="rps-img scissors-img"></div>
     </label>
@@ -128,23 +119,9 @@ const Amounts = (props) => {
 };
 
 const Play = (props) => {
-  const [image1, setImage1] = useState(false);
-  const [image2, setImage2] = useState(false);
-  const [image3, setImage3] = useState(false);
-
   const music = new Audio(winSound);
 
   const readBalance = useBalance();
-
-  useEffect(() => {
-    if (image1 && image2 && image3) {
-      const result1 = document.querySelector(".play-animation-modal");
-
-      if (result1) {
-        result1.style.visibility = "visible";
-      }
-    }
-  }, [image1, image2, image3]);
 
   const showResult = async () => {
     props.setAnimation(false);
@@ -208,24 +185,11 @@ const Play = (props) => {
   };
 
   return (
-    <div className="play-animation-modal">
+    <>
       <div className="processing-game">
-        <img
-          className="card-selected"
-          src={
-            (props.userGame.hand === "ROCK" && imageRockGIF) ||
-            (props.userGame.hand === "PAPER" && imagePaperGIF) ||
-            (props.userGame.hand === "SCISSORS" && imageScissorsGIF)
-          }
-          onLoad={() => setImage1(true)}
-        />
-        <img className="vs" src={imageVS} onLoad={() => setImage2(true)} />
-
-        <img
-          className="rotating-card"
-          src={rotatingCard}
-          onLoad={() => setImage3(true)}
-        />
+        <div className={`rps-img ${props.userGame.hand + "-animation"}`}></div>
+        <div className="vs-img vs"></div>
+        <div className="rps-img rotating-card-img"></div>
       </div>
       <h3>
         <span className="text-playing">Playing {props.userGame.hand} for</span>
@@ -262,7 +226,7 @@ const Play = (props) => {
                 <tbody>
                   <tr>
                     <td>{props.gameId ? props.gameId : "-"}</td>
-                    <td>{props.userGame.hand}</td>
+                    <td>{props.userGame.hand.toUpperCase()}</td>
                     <td>
                       {props.userGame.amount + " "}
                       {props.network === 137 && (
@@ -281,44 +245,43 @@ const Play = (props) => {
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 };
 
 const Result = (props) => {
   const [image1, setImage1] = useState(false);
-  const [image2, setImage2] = useState(false);
 
   useEffect(() => {
-    if (image1 && image2) {
+    if (image1) {
       const result1 = document.querySelector(".result-modal");
 
       if (result1) {
         result1.style.visibility = "visible";
       }
     }
-  }, [image1, image2]);
+  }, [image1]);
 
   var imageResult = false;
 
   if (props.gameResult) {
-    if (props.userGame.hand === "ROCK") {
+    if (props.userGame.hand === "rock") {
       imageResult = RockWin;
     }
-    if (props.userGame.hand === "PAPER") {
+    if (props.userGame.hand === "paper") {
       imageResult = PaperWin;
     }
-    if (props.userGame.hand === "SCISSORS") {
+    if (props.userGame.hand === "scissors") {
       imageResult = ScissorsWin;
     }
   } else {
-    if (props.userGame.hand === "ROCK") {
+    if (props.userGame.hand === "rock") {
       imageResult = RockLose;
     }
-    if (props.userGame.hand === "PAPER") {
+    if (props.userGame.hand === "paper") {
       imageResult = PaperLose;
     }
-    if (props.userGame.hand === "SCISSORS") {
+    if (props.userGame.hand === "scissors") {
       imageResult = ScissorsLose;
     }
   }
@@ -410,7 +373,6 @@ const Result = (props) => {
           <img
             className="absolute-image"
             src={props.gameResult ? bannerWin : bannerLose}
-            onLoad={() => setImage2(true)}
           />
         </div>
       </div>
@@ -782,7 +744,7 @@ export const ConnectPanel = ({ readBlockchainData, age, account }) => {
               : verifyAge()
           }
         >
-          {account ? "PLAY" : "CONNECT WALLET"}
+          {account ? "DOUBLE OR NOTHING" : "CONNECT WALLET"}
         </button>
       </div>
       {age === "false" && (

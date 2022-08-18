@@ -203,7 +203,7 @@ const ChatRoom = () => {
                       />
                       &nbsp;
                     </div>
-                    <div>
+                    <div style={{ marginTop: "3px" }}>
                       <span className="text-red">{msg.name + ": "}</span>
                       <span className="chat_cont">{msg.text}</span>
                     </div>

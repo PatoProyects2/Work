@@ -63,9 +63,7 @@ export const useLogin = () => {
           socket.emit("send_clubUsers", 1);
           setDoc(doc(db, "clubUsers", user.uid), firebaseArray);
         } else {
-          if (!playerDocument) {
-            setPlayerDocument(clubUser);
-          }
+          setPlayerDocument(clubUser);
         }
       }
     } else {

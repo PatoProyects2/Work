@@ -5,8 +5,8 @@ export const useBalance = () => {
   const { web3Data, setBalance } = useContext(Context);
 
   const readBalance = () => {
-    if (web3Data.infuraWeb3 && web3Data.account) {
-      web3Data.infuraWeb3.eth
+    if (web3Data.publicWeb3 && web3Data.account) {
+      web3Data.publicWeb3.eth
         .getBalance(web3Data.account)
         .then((balance) => {
           const walletBalance = parseFloat(

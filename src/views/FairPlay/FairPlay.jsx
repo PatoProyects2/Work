@@ -7,17 +7,17 @@ function FairPlay() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    if (web3Data.infuraRpsGame) {
+    if (web3Data.publicRpsGame) {
       readFairGames();
     }
     return () => {
       setData([]);
     };
-  }, [web3Data.infuraRpsGame]);
+  }, [web3Data.publicRpsGame]);
 
   const readFairGames = async () => {
-    const winGames = await web3Data.infuraRpsGame.methods.totalWins().call();
-    const loseGames = await web3Data.infuraRpsGame.methods.totalLosses().call();
+    const winGames = await web3Data.publicRpsGame.methods.totalWins().call();
+    const loseGames = await web3Data.publicRpsGame.methods.totalLosses().call();
     const games = [
       {
         type: "Win Games",

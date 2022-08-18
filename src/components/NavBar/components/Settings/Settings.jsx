@@ -48,7 +48,7 @@ const Settings = () => {
           item="gas"
           value="standard"
           color="red"
-          label="standard"
+          label="Standard"
         />
         <Button
           storage={gas}
@@ -56,7 +56,7 @@ const Settings = () => {
           item="gas"
           value="fast"
           color="yellow"
-          label="fast"
+          label="Fast"
         />
         <Button
           storage={gas}
@@ -64,7 +64,7 @@ const Settings = () => {
           item="gas"
           value="instant"
           color="green"
-          label="instant"
+          label="Instant"
         />
       </Group>
       <Group title="Chat history duration">

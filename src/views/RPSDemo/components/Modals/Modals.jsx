@@ -1,24 +1,10 @@
+import { useState, useEffect } from "react";
 import { Spinner } from "react-bootstrap";
 import { Table } from "reactstrap";
 import { Fireworks } from "@fireworks-js/react";
 
-// Game Logo
-import RPSGames from "../../../../assets/imgs/Home_Page/RPS Games.png";
-
 // Bet panel
-import imageRock from "../../../../assets/imgs/Bet_Screen/imageRock.png";
-import imagePaper from "../../../../assets/imgs/Bet_Screen/imagePaper.png";
-import imageScissors from "../../../../assets/imgs/Bet_Screen/imageScissors.png";
 import matic from "../../../../assets/imgs/Bet_Screen/matic.png";
-
-// Play panel
-import imageRockGIF from "../../../../assets/imgs/Bet_Screen/RockUnselectedGIF.gif";
-import imagePaperGIF from "../../../../assets/imgs/Bet_Screen/PaperUnselectedGIF.gif";
-import imageScissorsGIF from "../../../../assets/imgs/Bet_Screen/ScissorsUnselectedGIF.gif";
-
-import imageVS from "../../../../assets/imgs/Bet_Screen/VStext.png";
-
-import rotatingCard from "../../../../assets/imgs/Bet_Screen/RotatingCard.gif";
 
 // Result panel
 import RockWin from "../../../../assets/imgs/Win_Lose_Screens/RockWin.gif";
@@ -35,22 +21,6 @@ import bannerWin from "../../../../assets/imgs/Win_Lose_Screens/bannerWin.png";
 
 import Star from "../../../../assets/imgs/Win_Lose_Screens/star.png";
 
-export const RpsImage = (props) => {
-  return (
-    <div className="gameAntes col-3 col-md-2">
-      <img
-        className="my-3 image-game"
-        src={
-          (props.image === "Rock" && imageRock) ||
-          (props.image === "Paper" && imagePaper) ||
-          (props.image === "Scissors" && imageScissors)
-        }
-        alt="Rock"
-      />
-    </div>
-  );
-};
-
 const Rock = (props) => {
   return (
     <label>
@@ -59,7 +29,7 @@ const Rock = (props) => {
         name="hand"
         id="rock"
         onChange={props.handleInputChange}
-        value="ROCK"
+        value="rock"
       ></input>
       <div className="rps-img rock-img"></div>
     </label>
@@ -74,7 +44,7 @@ const Paper = (props) => {
         name="hand"
         id="paper"
         onChange={props.handleInputChange}
-        value="PAPER"
+        value="paper"
       ></input>
       <div className="rps-img paper-img"></div>
     </label>
@@ -89,7 +59,7 @@ const Scissors = (props) => {
         name="hand"
         id="scissors"
         onChange={props.handleInputChange}
-        value="SCISSORS"
+        value="scissors"
       ></input>
       <div className="rps-img scissors-img"></div>
     </label>
@@ -116,16 +86,9 @@ const Play = (props) => {
   return (
     <>
       <div className="processing-game">
-        <img
-          className="card-selected"
-          src={
-            (props.userhand === "ROCK" && imageRockGIF) ||
-            (props.userhand === "PAPER" && imagePaperGIF) ||
-            (props.userhand === "SCISSORS" && imageScissorsGIF)
-          }
-        />
-        <img className="vs" src={imageVS} />
-        <img className="rotating-card" src={rotatingCard} />
+        <div className={`rps-img ${props.userhand + "-animation"}`}></div>
+        <div className="vs-img vs"></div>
+        <div className="rps-img rotating-card-img"></div>
       </div>
       <h3>
         <span className="text-playing">Playing {props.userhand} for</span>
@@ -176,26 +139,38 @@ const Play = (props) => {
 };
 
 const Result = (props) => {
+  const [image1, setImage1] = useState(false);
+
+  useEffect(() => {
+    if (image1) {
+      const result1 = document.querySelector(".result-modal");
+
+      if (result1) {
+        result1.style.visibility = "visible";
+      }
+    }
+  }, [image1]);
+
   var imageResult;
 
   if (props.gameResult) {
-    if (props.userhand === "ROCK") {
+    if (props.userhand === "rock") {
       imageResult = RockWin;
     }
-    if (props.userhand === "PAPER") {
+    if (props.userhand === "paper") {
       imageResult = PaperWin;
     }
-    if (props.userhand === "SCISSORS") {
+    if (props.userhand === "scissors") {
       imageResult = ScissorsWin;
     }
   } else {
-    if (props.userhand === "ROCK") {
+    if (props.userhand === "rock") {
       imageResult = RockLose;
     }
-    if (props.userhand === "PAPER") {
+    if (props.userhand === "paper") {
       imageResult = PaperLose;
     }
-    if (props.userhand === "SCISSORS") {
+    if (props.userhand === "scissors") {
       imageResult = ScissorsLose;
     }
   }
@@ -275,9 +250,15 @@ const Result = (props) => {
             }}
           />
         )}
-        <div className="anim-win-lose">
-          <img className="result-rps-image" src={imageResult} />
-        </div>
+        {imageResult && (
+          <div className="anim-win-lose">
+            <img
+              className="result-rps-image"
+              src={imageResult}
+              onLoad={() => setImage1(true)}
+            />
+          </div>
+        )}
         <div>
           <img
             className="absolute-image"
@@ -321,16 +302,7 @@ const Result = (props) => {
   );
 };
 
-export const GameLogo = () => {
-  return (
-    <div className="left-content-rps">
-      <img src={RPSGames} alt="" />
-    </div>
-  );
-};
-
 export const GamePanel = ({
-  age,
   playing,
   animation,
   result,
@@ -444,18 +416,6 @@ export const GamePanel = ({
           >
             DOUBLE OR NOTHING
           </button>
-          {age === "false" && (
-            <p className="text-center mb-3 mt-3">
-              <label className="switch">
-                <input id="age" type="checkbox"></input>
-                &nbsp;
-                <span className="slider round"></span>
-              </label>
-              &nbsp;&nbsp;&nbsp;
-              <span className="text-white">I confirm that I am at least</span>
-              <span style={{ color: "#ffdb5b" }}> 18 years old</span>
-            </p>
-          )}
         </>
       )}
     </div>

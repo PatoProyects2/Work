@@ -34,7 +34,7 @@ const ChatMessage = ({ name, photo, level, text, uid, index, account, id }) => {
           />
           &nbsp;
         </div>
-        <div>
+        <div style={{ marginTop: "3px" }}>
           <span className="text-green">{name + ": "}</span>
           <span className="chat_cont">{text}</span>
         </div>
@@ -59,6 +59,7 @@ const ChatMessage = ({ name, photo, level, text, uid, index, account, id }) => {
             &nbsp;
           </div>
         </NavLink>
+
         <div>
           <NavLink
             to={uid !== "anonymous" ? `/stats/${uid}` : `/stats/${account}`}

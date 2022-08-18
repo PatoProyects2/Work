@@ -3,7 +3,8 @@ import toast from "react-hot-toast";
 import winSound from "../../assets/audio/win_sound.mpeg";
 import win1 from "../../assets/imgs/Win_Lose_Screens/win1.gif";
 import win2 from "../../assets/imgs/Win_Lose_Screens/win2.png";
-import { GameLogo, RpsImage, GamePanel } from "./components/Modals/Modals";
+import RPSGames from "../../assets/imgs/Home_Page/RPS Games.png";
+import { GamePanel } from "./components/Modals/Modals";
 
 export default function RPSDemo() {
   const screen = useRef(null);
@@ -40,6 +41,10 @@ export default function RPSDemo() {
   useEffect(scrollToBottom, [load, active, playing]);
 
   const openGame = () => {
+    if (document.getElementById("age").checked === false) {
+      toast.error("Confirm that you are at least 18 years old");
+      return false;
+    }
     let arrayOptions = ["a", "b", "c", "d", "e", "f"];
     var randomArray = (Math.random() * arrayOptions.length) | 0;
     var result = arrayOptions[randomArray];
@@ -55,13 +60,6 @@ export default function RPSDemo() {
     if (usergame.amount === 0) {
       toast.error("Select an amount");
       return false;
-    }
-
-    if (age === "false" || age === null) {
-      if (document.getElementById("age").checked === false) {
-        toast.error("Confirm that you are at least 18 years old");
-        return false;
-      }
     }
 
     setPlaying(true);
@@ -118,7 +116,9 @@ export default function RPSDemo() {
 
   return (
     <>
-      <GameLogo />
+      <div className="left-content-rps">
+        <img src={RPSGames} alt="" />
+      </div>
       <article>
         {active ? (
           <GamePanel
@@ -138,16 +138,28 @@ export default function RPSDemo() {
           />
         ) : (
           <>
-            <div className="game-gifs-wrapper">
-              <RpsImage image="Rock" />
-              <RpsImage image="Paper" />
-              <RpsImage image="Scissors" />
+            <div className="game-container">
+              <div className="game-selection-hand">
+                <div className="rps-img rock"></div>
+                <div className="rps-img paper"></div>
+                <div className="rps-img scissors"></div>
+              </div>
             </div>
             <div className="center">
               <button className="DoubleOrNothing" onClick={openGame}>
                 DOUBLE OR NOTHING
               </button>
             </div>
+            <p className="text-center mb-3 mt-3">
+              <label className="switch">
+                <input id="age" type="checkbox"></input>
+                &nbsp;
+                <span className="slider round"></span>
+              </label>
+              &nbsp;&nbsp;&nbsp;
+              <span className="text-white">I confirm that I am at least</span>
+              <span style={{ color: "#ffdb5b" }}> 18 years old</span>
+            </p>
           </>
         )}
         <div ref={screen}></div>
